@@ -49,12 +49,10 @@ operational:
 
 Optional, but recommended:
 
-* `PyCryptodomex <https://pypi.python.org/pypi/pycryptodomex/>`_,
-  used by SNMPv3 crypto features
 * `PySMI <https://pypi.python.org/pypi/pysmi-lextudio/>`_ for automatic
   MIB download and compilation. That helps visualizing more SNMP objects
-* `Ply <https://pypi.python.org/pypi/ply/>`_, parser generator
-  required by PySMI
+* `pysnmpcrypto <https://pypi.python.org/pypi/pysnmpcrypto/>`_,
+  for strong SNMPv3 crypto support
 
 The installation procedure for all the above packages is as follows 
 (on UNIX-based systems):

@@ -5,17 +5,7 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import random
-from pyasn1.type import univ
-from pysnmp.proto.secmod.rfc3414.priv import base
-from pysnmp.proto.secmod.rfc3414.auth import hmacmd5, hmacsha
-from pysnmp.proto.secmod.rfc7860.auth import hmacsha2
-from pysnmp.proto.secmod.rfc3414 import localkey
-from pysnmp.proto import errind, error
 
-try:
-    from Cryptodome.Cipher import AES
-except ImportError:
-    AES = None
 try:
     from hashlib import md5, sha1
 except ImportError:
@@ -24,6 +14,20 @@ except ImportError:
 
     md5 = md5.new
     sha1 = sha.new
+
+try:
+    from pysnmpcrypto import aes, PysnmpCryptoError
+
+except ImportError:
+    PysnmpCryptoError = AttributeError
+    aes = None
+
+from pyasn1.type import univ
+from pysnmp.proto.secmod.rfc3414.priv import base
+from pysnmp.proto.secmod.rfc3414.auth import hmacmd5, hmacsha
+from pysnmp.proto.secmod.rfc7860.auth import hmacsha2
+from pysnmp.proto.secmod.rfc3414 import localkey
+from pysnmp.proto import errind, error
 
 random.seed()
 
@@ -102,7 +106,7 @@ class Aes(base.AbstractEncryptionService):
 
     # 3.2.4.1
     def encryptData(self, encryptKey, privParameters, dataToEncrypt):
-        if AES is None:
+        if aes is None:
             raise error.StatusInformation(
                 errorIndication=errind.encryptionError
             )
@@ -115,16 +119,20 @@ class Aes(base.AbstractEncryptionService):
         )
 
         # 3.3.1.3
-        aesObj = AES.new(aesKey, AES.MODE_CFB, iv, segment_size=128)
+        try:
+            ciphertext = aes.encrypt(dataToEncrypt, aesKey, iv)
 
-        ciphertext = aesObj.encrypt(dataToEncrypt)
+        except PysnmpCryptoError:
+            raise error.StatusInformation(
+                errorIndication=errind.unsupportedPrivProtocol
+            )
 
         # 3.3.1.4
         return univ.OctetString(ciphertext), univ.OctetString(salt)
 
     # 3.2.4.2
     def decryptData(self, decryptKey, privParameters, encryptedData):
-        if AES is None:
+        if aes is None:
             raise error.StatusInformation(
                 errorIndication=errind.decryptionError
             )
@@ -142,7 +150,11 @@ class Aes(base.AbstractEncryptionService):
             decryptKey, snmpEngineBoots, snmpEngineTime, salt
         )
 
-        aesObj = AES.new(aesKey, AES.MODE_CFB, iv, segment_size=128)
+        try:
+            # 3.3.2.4-6
+            return aes.decrypt(encryptedData.asOctets(), aesKey, iv)
 
-        # 3.3.2.4-6
-        return aesObj.decrypt(encryptedData.asOctets())
+        except PysnmpCryptoError:
+            raise error.StatusInformation(
+                errorIndication=errind.unsupportedPrivProtocol
+            )
