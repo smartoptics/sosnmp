@@ -26,7 +26,6 @@ class NotificationReceiver:
         )
 
         self.__snmpTrapCommunity = ""
-        self.__cbFunVer = 0
         self.__cbFun = cbFun
         self.__cbCtx = cbCtx
 
@@ -132,28 +131,11 @@ class NotificationReceiver:
             )
         )
 
-        if self.__cbFunVer:
-            self.__cbFun(
-                snmpEngine,
-                stateReference,
-                contextEngineId,
-                contextName,
-                varBinds,
-                self.__cbCtx,
-            )
-        else:
-            # Compatibility stub (handle legacy cbFun interface)
-            try:
-                self.__cbFun(
-                    snmpEngine, contextEngineId, contextName, varBinds, self.__cbCtx
-                )
-            except TypeError:
-                self.__cbFunVer = 1
-                self.__cbFun(
-                    snmpEngine,
-                    stateReference,
-                    contextEngineId,
-                    contextName,
-                    varBinds,
-                    self.__cbCtx,
-                )
+        self.__cbFun(
+            snmpEngine,
+            stateReference,
+            contextEngineId,
+            contextName,
+            varBinds,
+            self.__cbCtx,
+        )

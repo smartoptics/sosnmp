@@ -1007,9 +1007,8 @@ class NotificationType:
     Instances of :py:class:`~pysnmp.smi.rfc1902.NotificationType` class are
     containers incorporating :py:class:`~pysnmp.smi.rfc1902.ObjectIdentity`
     class instance (identifying particular notification) and a collection
-    of MIB variables IDs that
-    :py:class:`~pysnmp.entity.rfc3413.oneliner.cmdgen.NotificationOriginator`
-    should gather and put into notification message.
+    of MIB variables IDs that *NotificationOriginator* should gather
+    and put into notification message.
 
     Typical notification is defined like this (from *IF-MIB.txt*):
 

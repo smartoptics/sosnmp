@@ -309,10 +309,6 @@ class CommandGenerator:
         return sendRequestHandle
 
 
-# backward compatibility stub
-CommandGeneratorBase = CommandGenerator
-
-
 class GetCommandGenerator(CommandGenerator):
     def processResponseVarBinds(
         self, snmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
@@ -666,78 +662,3 @@ class BulkCommandGenerator(BulkCommandGeneratorSingleRun):
                 (),
                 cbCtx,
             )  # type: ignore
-
-
-#
-# Obsolete, compatibility interfaces.
-#
-
-
-def __sendReqCbFun(
-    snmpEngine,
-    sendRequestHandle,
-    errorIndication,
-    errorStatus,
-    errorIndex,
-    varBinds,
-    cbCtx,
-):
-    cbFun, cbCtx = cbCtx
-    return cbFun(
-        sendRequestHandle, errorIndication, errorStatus, errorIndex, varBinds, cbCtx
-    )
-
-
-def _sendReq(
-    self,
-    snmpEngine,
-    targetName,
-    varBinds,
-    cbFun,
-    cbCtx=None,
-    contextEngineId=None,
-    contextName="",
-):
-    return self.sendVarBinds(
-        snmpEngine,
-        targetName,
-        contextEngineId,
-        contextName,
-        varBinds,
-        __sendReqCbFun,
-        (cbFun, cbCtx),
-    )
-
-
-def _sendBulkReq(
-    self,
-    snmpEngine,
-    targetName,
-    nonRepeaters,
-    maxRepetitions,
-    varBinds,
-    cbFun,
-    cbCtx=None,
-    contextEngineId=None,
-    contextName="",
-):
-    return self.sendVarBinds(
-        snmpEngine,
-        targetName,
-        contextEngineId,
-        contextName,
-        nonRepeaters,
-        maxRepetitions,
-        varBinds,
-        __sendReqCbFun,
-        (cbFun, cbCtx),
-    )
-
-
-# install compatibility wrappers
-GetCommandGenerator.sendReq = _sendReq  # type: ignore
-SetCommandGenerator.sendReq = _sendReq  # type: ignore
-NextCommandGenerator.sendReq = _sendReq  # type: ignore
-NextCommandGeneratorSingleRun.sendReq = _sendReq  # type: ignore
-BulkCommandGenerator.sendReq = _sendBulkReq  # type: ignore
-BulkCommandGeneratorSingleRun.sendReq = _sendBulkReq  # type: ignore

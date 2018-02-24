@@ -62,14 +62,6 @@ transportDispatcher.registerTransport(
 )
 transportDispatcher.sendMessage(encoder.encode(trapMsg), udp6.DOMAIN_NAME, ("::1", 162))
 
-## Local domain socket
-# transportDispatcher.registerTransport(
-#    unix.domainName, unix.UnixSocketTransport().openClientMode()
-# )
-# transportDispatcher.sendMessage(
-#    encoder.encode(trapMsg), unix.domainName, '/tmp/snmp-manager'
-# )
-
 # Dispatcher will finish as all scheduled messages are sent
 transportDispatcher.runDispatcher(3)
 

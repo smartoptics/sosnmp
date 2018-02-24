@@ -20,7 +20,7 @@ with Command Generators - UDP over IPv4 and UDP over IPv6.
 
 """  #
 from pysnmp.carrier.asyncio.dispatch import AsyncioDispatcher
-from pysnmp.carrier.asyncio.dgram import udp, udp6, unix
+from pysnmp.carrier.asyncio.dgram import udp, udp6
 from pyasn1.codec.ber import encoder, decoder
 from pysnmp.proto import api
 import time, bisect
@@ -156,11 +156,6 @@ transportDispatcher.registerTransport(
 transportDispatcher.registerTransport(
     udp6.DOMAIN_NAME, udp6.Udp6AsyncioTransport().openServerMode(("::1", 161))
 )
-
-## Local domain socket
-# transportDispatcher.registerTransport(
-#    unix.domainName, unix.UnixAsyncioTransport().openServerMode('/tmp/snmp-agent')
-# )
 
 transportDispatcher.jobStarted(1)
 

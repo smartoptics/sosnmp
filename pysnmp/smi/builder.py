@@ -305,21 +305,6 @@ class MibBuilder:
     def getMibSources(self):
         return tuple(self.__mibSources)
 
-    # Legacy/compatibility methods (won't work for .eggs)
-    def setMibPath(self, *mibPaths):
-        self.setMibSources(*[DirMibSource(x) for x in mibPaths])
-
-    def getMibPath(self):
-        paths = ()
-        for mibSource in self.getMibSources():
-            if isinstance(mibSource, DirMibSource):
-                paths += (mibSource.fullPath(),)
-            else:
-                raise error.MibLoadError(
-                    f"MIB source is not a plain directory: {mibSource}"
-                )
-        return paths
-
     def loadModule(self, modName, **userCtx):
         """Load and execute MIB modules as Python code"""
         for mibSource in self.__mibSources:
