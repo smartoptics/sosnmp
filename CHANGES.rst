@@ -5,6 +5,16 @@ Revision 7.0.0, released on Aug 22, 2024
 - Many really old backward-compatibility code snippets removed.
   Most importantly, everything related to (non-standard) UNIX domain socket
   transport are gone.
+- The MIB instrumentation API overhauled in backward incompatible
+  way:
+
+      - MIB instrumentation methods signatures simplified to accept
+        just var-binds (as var-arg), the rest of the parameters packed
+        into opaque kwargs
+      - CommandResponder application passes `snmpEngine` and optionally
+        user-supplied `cbCtx` object throughout the MIB instrumentation
+        methods. The goal is to let MIB objects access/modify whatever
+        custom Python objects they need while being called back.
 
 Revision 6.2.5, released on Aug 10, 2024
 -----------------------------------------

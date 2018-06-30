@@ -28,11 +28,9 @@ print("done")
 
 print("Create/update SNMP-COMMUNITY-MIB::snmpCommunityEntry table row: ")
 varBinds = mibInstrum.writeVars(
-    (
-        (snmpCommunityEntry.name + (2,) + instanceId, "mycomm"),
-        (snmpCommunityEntry.name + (3,) + instanceId, "mynmsname"),
-        (snmpCommunityEntry.name + (7,) + instanceId, "volatile"),
-    )
+    (snmpCommunityEntry.name + (2,) + instanceId, "mycomm"),
+    (snmpCommunityEntry.name + (3,) + instanceId, "mynmsname"),
+    (snmpCommunityEntry.name + (7,) + instanceId, "volatile"),
 )
 for oid, val in varBinds:
     print(
@@ -44,9 +42,10 @@ for oid, val in varBinds:
 print("done")
 
 print("Read whole MIB (table walk)")
-oid, val = (), None
+varBinds = [((), None)]
 while True:
-    oid, val = mibInstrum.readNextVars(((oid, val),))[0]
+    varBinds = mibInstrum.readNextVars(*varBinds)
+    oid, val = varBinds[0]
     if exval.endOfMib.isSameTypeWith(val):
         break
     print(

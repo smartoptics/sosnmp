@@ -201,7 +201,9 @@ class SnmpUSMSecurityModel(AbstractSecurityModel):
             pysnmpUsmKeyPrivLocalized,
         )
 
-    def __cloneUserInfo(self, mibInstrumController, securityEngineID, userName):
+    def __cloneUserInfo(self, snmpEngine, securityEngineID, userName):
+        mibInstrumController = snmpEngine.msgAndPduDsp.mibInstrumController
+
         (snmpEngineID,) = mibInstrumController.mibBuilder.importSymbols(
             "__SNMP-FRAMEWORK-MIB", "snmpEngineID"
         )
@@ -232,7 +234,9 @@ class SnmpUSMSecurityModel(AbstractSecurityModel):
         tblIdx2 = usmUserEntry.getInstIdFromIndices(securityEngineID, userName)
 
         # New row
-        mibInstrumController.writeVars(((usmUserEntry.name + (13,) + tblIdx2, 4),))
+        mibInstrumController.writeVars(
+            (usmUserEntry.name + (13,) + tblIdx2, 4), **dict(snmpEngine=snmpEngine)
+        )
 
         # Set user&securityNames
         usmUserEntry.getNode(
@@ -440,7 +444,7 @@ class SnmpUSMSecurityModel(AbstractSecurityModel):
                             usmUserPrivProtocol,
                             usmUserPrivKeyLocalized,
                         ) = self.__cloneUserInfo(
-                            snmpEngine.msgAndPduDsp.mibInstrumController,
+                            snmpEngine,
                             securityEngineID,
                             self.__sec2usr(snmpEngine, securityName),
                         )

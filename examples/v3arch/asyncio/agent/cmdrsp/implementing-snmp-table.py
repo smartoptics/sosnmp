@@ -29,6 +29,7 @@ from pysnmp.entity.rfc3413 import cmdrsp, context
 from pysnmp.carrier.asyncio.dgram import udp
 from pysnmp.proto.api import v2c
 
+
 # Create SNMP engine
 snmpEngine = engine.SnmpEngine()
 
@@ -105,11 +106,9 @@ mibBuilder.exportSymbols(
 rowInstanceId = exampleTableEntry.getInstIdFromIndices("example record one")
 mibInstrumentation = snmpContext.getMibInstrum()
 mibInstrumentation.writeVars(
-    (
-        (exampleTableColumn2.name + rowInstanceId, "my string value"),
-        (exampleTableColumn3.name + rowInstanceId, 123456),
-        (exampleTableStatus.name + rowInstanceId, "createAndGo"),
-    )
+    (exampleTableColumn2.name + rowInstanceId, "my string value"),
+    (exampleTableColumn3.name + rowInstanceId, 123456),
+    (exampleTableStatus.name + rowInstanceId, "createAndGo"),
 )
 
 # --- end of SNMP table population ---

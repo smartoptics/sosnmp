@@ -14,13 +14,13 @@ __all__ = ["AbstractMibInstrumController", "MibInstrumController"]
 
 
 class AbstractMibInstrumController:
-    def readVars(self, varBinds, acInfo=(None, None)):
+    def readVars(self, *varBinds, **context):
         raise error.NoSuchInstanceError(idx=0)
 
-    def readNextVars(self, varBinds, acInfo=(None, None)):
+    def readNextVars(self, *varBinds, **context):
         raise error.EndOfMibViewError(idx=0)
 
-    def writeVars(self, varBinds, acInfo=(None, None)):
+    def writeVars(self, *varBinds, **context):
         raise error.NoSuchObjectError(idx=0)
 
 
@@ -191,7 +191,7 @@ class MibInstrumController(AbstractMibInstrumController):
 
     # MIB instrumentation
 
-    def flipFlopFsm(self, fsmTable, inputVarBinds, acInfo):
+    def flipFlopFsm(self, fsmTable, *varBinds, **context):
         self.__indexMib()
         debug.logger & debug.FLAG_INS and debug.logger(
             f"flipFlopFsm: input var-binds {inputVarBinds!r}"
@@ -199,13 +199,13 @@ class MibInstrumController(AbstractMibInstrumController):
         (mibTree,) = self.mibBuilder.importSymbols("SNMPv2-SMI", "iso")
         outputVarBinds = []
         state, status = "start", "ok"
-        origExc = None
+        origExc = origTraceback = None
         while True:
-            k = (state, status)
+            k = state, status
             if k in fsmTable:
                 fsmState = fsmTable[k]
             else:
-                k = ("*", status)
+                k = "*", status
                 if k in fsmTable:
                     fsmState = fsmTable[k]
                 else:
@@ -217,20 +217,24 @@ class MibInstrumController(AbstractMibInstrumController):
             status = "ok"
             if state == "stop":
                 break
-            idx = 0
-            for name, val in inputVarBinds:
-                f = getattr(mibTree, state, None)
-                if f is None:
+
+            for idx, (name, val) in enumerate(varBinds):
+                mgmtFun = getattr(mibTree, state, None)
+                if not mgmtFun:
                     raise error.SmiError(f"Unsupported state handler {state} at {self}")
+
+                context["idx"] = idx
+
                 try:
                     # Convert to tuple to avoid ObjectName instantiation
                     # on subscription
-                    rval = f(tuple(name), val, idx, acInfo)
+                    rval = mgmtFun((tuple(name), val), **context)
+
                 except error.SmiError:
                     exc_t, exc_v, exc_tb = sys.exc_info()
                     debug.logger & debug.FLAG_INS and debug.logger(
                         "flipFlopFsm: fun {} exception {} for {}={!r} with traceback: {}".format(
-                            f,
+                            mgmtFun,
                             exc_t,
                             name,
                             val,
@@ -243,11 +247,11 @@ class MibInstrumController(AbstractMibInstrumController):
                     break
                 else:
                     debug.logger & debug.FLAG_INS and debug.logger(
-                        f"flipFlopFsm: fun {f} suceeded for {name}={val!r}"
+                        f"flipFlopFsm: fun {mgmtFun} suceeded for {name}={val!r}"
                     )
                     if rval is not None:
                         outputVarBinds.append((rval[0], rval[1]))
-                idx += 1
+
         if origExc:
             try:
                 raise origExc.with_traceback(origTraceback)
@@ -255,13 +259,14 @@ class MibInstrumController(AbstractMibInstrumController):
                 # Break cycle between locals and traceback object
                 # (seems to be irrelevant on Py3 but just in case)
                 del origTraceback
+
         return outputVarBinds
 
-    def readVars(self, varBinds, acInfo=(None, None)):
-        return self.flipFlopFsm(self.fsmReadVar, varBinds, acInfo)
+    def readVars(self, *varBinds, **context):
+        return self.flipFlopFsm(self.fsmReadVar, *varBinds, **context)
 
-    def readNextVars(self, varBinds, acInfo=(None, None)):
-        return self.flipFlopFsm(self.fsmReadNextVar, varBinds, acInfo)
+    def readNextVars(self, *varBinds, **context):
+        return self.flipFlopFsm(self.fsmReadNextVar, *varBinds, **context)
 
-    def writeVars(self, varBinds, acInfo=(None, None)):
-        return self.flipFlopFsm(self.fsmWriteVar, varBinds, acInfo)
+    def writeVars(self, *varBinds, **context):
+        return self.flipFlopFsm(self.fsmWriteVar, *varBinds, **context)
