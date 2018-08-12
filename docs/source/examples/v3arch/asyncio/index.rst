@@ -1,7 +1,7 @@
 .. include:: /includes/_links.rst
 
-Asynchronous: asyncio
-=====================
+Asynchronous SNMP (asyncio, v3arch)
+===================================
 
 Python 3.4 introduced a new module - `asyncio` (former Tulip,
 PEP 3156) featuring infrastructure for writing single-threaded concurrent
@@ -22,7 +22,7 @@ remains available to asyncio-backed applications.
 
 We do not provide Command Generator and Notification Originator examples,
 as it is much easier to use
-:doc:`high-level interfaces </examples/hlapi/asyncio/index>` instead.
+:doc:`high-level interfaces </examples/hlapi/v3arch/asyncio/index>` instead.
 
 Command Responder Applications
 ------------------------------

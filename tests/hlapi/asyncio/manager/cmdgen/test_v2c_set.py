@@ -1,5 +1,5 @@
 import pytest
-from pysnmp.hlapi.asyncio.slim import Slim
+from pysnmp.hlapi.v3arch.asyncio.slim import Slim
 from pysnmp.proto.rfc1902 import OctetString
 from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
 from tests.agent_context import AGENT_PORT, AgentContextManager

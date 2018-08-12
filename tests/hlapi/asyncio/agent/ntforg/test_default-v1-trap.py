@@ -1,5 +1,5 @@
 import pytest
-from pysnmp.hlapi.asyncio import *
+from pysnmp.hlapi.v3arch.asyncio import *
 from pysnmp.proto.api import v2c
 from tests.manager_context import MANAGER_PORT, ManagerContextManager
 
@@ -45,8 +45,13 @@ async def test_send_trap_generic():
             UdpTransportTarget(("demo.pysnmp.com", 162)),
             ContextData(),
             "trap",
-            NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2")).addVarBinds(
-                ("1.3.6.1.6.3.1.1.4.3.0", "1.3.6.1.4.1.20408.4.1.1.2"),
+            NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2"))
+            .loadMibs("SNMPv2-MIB")
+            .addVarBinds(
+                (
+                    "1.3.6.1.6.3.1.1.4.3.0",
+                    "1.3.6.1.4.1.20408.4.1.1.2",
+                ),  # IMPORTANT: MIB is needed to resolve str to correct type.
                 ("1.3.6.1.2.1.1.1.0", OctetString("my system")),
             ),
         )

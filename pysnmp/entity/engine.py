@@ -8,7 +8,7 @@ import os
 import shutil
 import sys
 import tempfile
-from typing import Any
+from typing import Any, Dict
 
 from pyasn1.compat.octets import str2octs
 
@@ -64,6 +64,7 @@ class SnmpEngine:
     transportDispatcher: "AbstractTransportDispatcher | None"
     msgAndPduDsp: MsgAndPduDispatcher
     snmpEngineId: OctetString
+    cache: Dict[str, Any]
 
     def __init__(
         self,

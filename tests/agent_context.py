@@ -1,7 +1,7 @@
 from pysnmp.carrier.asyncio.dgram import udp, udp6
 from pysnmp.entity import config, engine
 from pysnmp.entity.rfc3413 import cmdrsp, context
-from pysnmp.hlapi.asyncio import SnmpEngine
+from pysnmp.hlapi.v3arch.asyncio import SnmpEngine
 from pysnmp.proto.api import v2c
 
 

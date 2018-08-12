@@ -19,35 +19,6 @@ from pysnmp.proto.proxy import rfc2576
 
 getNextHandle = nextid.Integer(0x7FFFFFFF)  # noqa: N816
 
-__null = univ.Null("")
-
-
-def getNextVarBinds(varBinds, origVarBinds=None):
-    errorIndication = None
-    idx = nonNulls = len(varBinds)
-    rspVarBinds = []
-    while idx:
-        idx -= 1
-        if varBinds[idx][1].tagSet in (
-            rfc1905.NoSuchObject.tagSet,
-            rfc1905.NoSuchInstance.tagSet,
-            rfc1905.EndOfMibView.tagSet,
-        ):
-            nonNulls -= 1
-        elif origVarBinds is not None:
-            if (
-                v2c.ObjectIdentifier(origVarBinds[idx][0]).asTuple()
-                >= varBinds[idx][0].asTuple()
-            ):
-                errorIndication = errind.oidNotIncreasing
-
-        rspVarBinds.insert(0, (varBinds[idx][0], __null))
-
-    if not nonNulls:
-        rspVarBinds = []
-
-    return errorIndication, rspVarBinds
-
 
 class CommandGenerator:
     _null = univ.Null("")
@@ -455,7 +426,7 @@ class NextCommandGenerator(NextCommandGeneratorSingleRun):
         elif not varBindTable:
             errorIndication, varBinds = errind.emptyResponse, ()
         else:
-            errorIndication, varBinds = getNextVarBinds(
+            errorIndication, varBinds = v2c.apiPDU.getNextVarBinds(
                 varBindTable[-1], v2c.apiPDU.getVarBinds(reqPDU)
             )
 
@@ -598,7 +569,7 @@ class BulkCommandGenerator(BulkCommandGeneratorSingleRun):
         elif not varBindTable:
             errorIndication, varBinds = errind.emptyResponse, ()
         else:
-            errorIndication, varBinds = getNextVarBinds(
+            errorIndication, varBinds = v2c.apiBulkPDU.getNextVarBinds(
                 varBindTable[-1], v2c.apiPDU.getVarBinds(reqPDU)
             )
             nonRepeaters = v2c.apiBulkPDU.getNonRepeaters(reqPDU)

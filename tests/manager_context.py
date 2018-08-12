@@ -1,6 +1,6 @@
 # manager_context.py
 from pysnmp.entity.rfc3413 import ntfrcv
-from pysnmp.hlapi.asyncio import *
+from pysnmp.hlapi.v3arch.asyncio import *
 from pysnmp.carrier.asyncio.dgram import udp
 from pysnmp.entity import engine, config
 from pysnmp.proto.api import v2c

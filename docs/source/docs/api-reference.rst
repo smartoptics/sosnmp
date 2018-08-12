@@ -19,8 +19,8 @@ Most of SNMP operations involve packet exchange over network. PySNMP
 is shipped with asyncio binding that let you run PySNMP in parallel with
 other tasks your application may perform.
 
-Synchronous SNMP
-----------------
+High-level, v3arch, sync
+------------------------
 
 Most simple and straightforward way to use PySNMP is by employing its
 Synchronous, blocking API. It's also the default API offered by
@@ -28,8 +28,8 @@ users on *pysnmp.hlapi* sub-package import.
 
 .. warning:: Completely deprecated in PySNMP 6.2 release.
 
-Asynchronous: asyncio
----------------------
+High-level v3arch asyncio
+-------------------------
 
 The :mod:`asyncio` module first appeared in standard library since
 Python 3.3 (in provisional basis). Its main design feature is that
@@ -41,19 +41,19 @@ Command Generator
 .. toctree::
    :maxdepth: 2
 
-   /docs/hlapi/asyncio/manager/cmdgen/getcmd
-   /docs/hlapi/asyncio/manager/cmdgen/setcmd
-   /docs/hlapi/asyncio/manager/cmdgen/nextcmd
-   /docs/hlapi/asyncio/manager/cmdgen/bulkcmd
-   /docs/hlapi/asyncio/manager/cmdgen/walkcmd
-   /docs/hlapi/asyncio/manager/cmdgen/bulkwalkcmd
+   /docs/hlapi/v3arch/asyncio/manager/cmdgen/getcmd
+   /docs/hlapi/v3arch/asyncio/manager/cmdgen/setcmd
+   /docs/hlapi/v3arch/asyncio/manager/cmdgen/nextcmd
+   /docs/hlapi/v3arch/asyncio/manager/cmdgen/bulkcmd
+   /docs/hlapi/v3arch/asyncio/manager/cmdgen/walkcmd
+   /docs/hlapi/v3arch/asyncio/manager/cmdgen/bulkwalkcmd
 
 Notification Originator
 
 .. toctree::
    :maxdepth: 2
 
-   /docs/hlapi/asyncio/agent/ntforg/notification
+   /docs/hlapi/v3arch/asyncio/agent/ntforg/notification
 
 Transport Configuration
 +++++++++++++++++++++++
@@ -66,15 +66,14 @@ saves its configuration for the lifetime of SNMP engine object.
 .. toctree::
    :maxdepth: 2
 
-.. autoclass:: pysnmp.hlapi.asyncio.UdpTransportTarget
+.. autoclass:: pysnmp.hlapi.v3arch.asyncio.UdpTransportTarget
    :members: setLocalAddress
 
-.. autoclass:: pysnmp.hlapi.asyncio.Udp6TransportTarget
+.. autoclass:: pysnmp.hlapi.v3arch.asyncio.Udp6TransportTarget
    :members: setLocalAddress
 
-
-SNMP Engine
------------
+High-level v3arch SNMP Engine
+-----------------------------
 
 SNMP Engine is a central, stateful object used by all SNMP v3
 subsystems.  Calls to high-level Applications API also consume SNMP
@@ -83,10 +82,10 @@ Engine object on input.
 .. toctree::
    :maxdepth: 2
 
-.. autoclass:: pysnmp.hlapi.asyncio.SnmpEngine(snmpEngineID=None)
+.. autoclass:: pysnmp.hlapi.v3arch.asyncio.SnmpEngine(snmpEngineID=None)
 
-Security Parameters
--------------------
+High-level v3arch auth
+----------------------
 
 Calls to high-level Applications API consume Security Parameters
 configuration object on input. The shortcut classes described in
@@ -99,48 +98,48 @@ Community-Based
 +++++++++++++++
 
 Security Parameters object is Security Model specific. The
-:py:class:`~pysnmp.hlapi.asyncio.CommunityData` class is used for configuring
+:py:class:`~pysnmp.hlapi.v3arch.asyncio.CommunityData` class is used for configuring
 Community-Based Security Model of SNMPv1/SNMPv2c.
 
 .. toctree::
    :maxdepth: 2
 
-.. autoclass:: pysnmp.hlapi.asyncio.CommunityData(communityIndex, communityName=None, mpModel=1, contextEngineId=None, contextName='', tag='')
+.. autoclass:: pysnmp.hlapi.v3arch.asyncio.CommunityData(communityIndex, communityName=None, mpModel=1, contextEngineId=None, contextName='', tag='')
 
 User-Based
 ++++++++++
 
-The :py:class:`~pysnmp.hlapi.asyncio.UsmUserData` class provides SNMPv3 User-Based
+The :py:class:`~pysnmp.hlapi.v3arch.asyncio.UsmUserData` class provides SNMPv3 User-Based
 Security Model configuration for SNMP v3 systems.
 
-.. autoclass:: pysnmp.hlapi.asyncio.UsmUserData(userName, authKey=None, privKey=None, authProtocol=usmNoAuthProtocol, privProtocol=usmNoPrivProtocol, securityEngineId=None, authKeyType=usmKeyTypePassphrase, privKeyType=usmKeyTypePassphrase)
+.. autoclass:: pysnmp.hlapi.v3arch.asyncio.UsmUserData(userName, authKey=None, privKey=None, authProtocol=usmNoAuthProtocol, privProtocol=usmNoPrivProtocol, securityEngineId=None, authKeyType=usmKeyTypePassphrase, privKeyType=usmKeyTypePassphrase)
 
 **Authentication protocol identifiers**
 
-.. autodata:: pysnmp.hlapi.asyncio.USM_AUTH_NONE
-.. autodata:: pysnmp.hlapi.asyncio.USM_AUTH_HMAC96_MD5
-.. autodata:: pysnmp.hlapi.asyncio.USM_AUTH_HMAC96_SHA
-.. autodata:: pysnmp.hlapi.asyncio.USM_AUTH_HMAC128_SHA224
-.. autodata:: pysnmp.hlapi.asyncio.USM_AUTH_HMAC192_SHA256
-.. autodata:: pysnmp.hlapi.asyncio.USM_AUTH_HMAC256_SHA384
-.. autodata:: pysnmp.hlapi.asyncio.USM_AUTH_HMAC384_SHA512
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_AUTH_NONE
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_AUTH_HMAC96_MD5
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_AUTH_HMAC96_SHA
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_AUTH_HMAC128_SHA224
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_AUTH_HMAC192_SHA256
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_AUTH_HMAC256_SHA384
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_AUTH_HMAC384_SHA512
 
 **Privacy (encryption) protocol identifiers**
 
-.. autodata:: pysnmp.hlapi.asyncio.USM_PRIV_NONE
-.. autodata:: pysnmp.hlapi.asyncio.USM_PRIV_CBC56_DES
-.. autodata:: pysnmp.hlapi.asyncio.USM_PRIV_CBC168_3DES
-.. autodata:: pysnmp.hlapi.asyncio.USM_PRIV_CFB128_AES
-.. autodata:: pysnmp.hlapi.asyncio.USM_PRIV_CFB192_AES
-.. autodata:: pysnmp.hlapi.asyncio.USM_PRIV_CFB256_AES
-.. autodata:: pysnmp.hlapi.asyncio.USM_PRIV_CFB192_AES_BLUMENTHAL
-.. autodata:: pysnmp.hlapi.asyncio.USM_PRIV_CFB256_AES_BLUMENTHAL
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_PRIV_NONE
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_PRIV_CBC56_DES
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_PRIV_CBC168_3DES
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_PRIV_CFB128_AES
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_PRIV_CFB192_AES
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_PRIV_CFB256_AES
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_PRIV_CFB192_AES_BLUMENTHAL
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_PRIV_CFB256_AES_BLUMENTHAL
 
 **Key material types**
 
-.. autodata:: pysnmp.hlapi.asyncio.USM_KEY_TYPE_PASSPHRASE
-.. autodata:: pysnmp.hlapi.asyncio.USM_KEY_TYPE_MASTER
-.. autodata:: pysnmp.hlapi.asyncio.USM_KEY_TYPE_LOCALIZED
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_KEY_TYPE_PASSPHRASE
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_KEY_TYPE_MASTER
+.. autodata:: pysnmp.hlapi.v3arch.asyncio.USM_KEY_TYPE_LOCALIZED
 
 .. note::
 
@@ -150,8 +149,8 @@ Security Model configuration for SNMP v3 systems.
 Transport configuration is I/O framework specific and is described in
 respective sections.
 
-SNMP Context
-------------
+High-level v3arch SNMP Context
+------------------------------
 
 SNMP engine may serve several instances of the same MIB within
 possibly multiple SNMP entities. SNMP context is a tool for
@@ -175,12 +174,79 @@ SNMP engine. See :RFC:`3411#section-3.3.1` for details.
 
    The SNMP context information necessary for this mapping procedure
    to operate is supplied through the
-   :py:class:`~pysnmp.hlapi.asyncio.CommunityData` object.
+   :py:class:`~pysnmp.hlapi.v3arch.asyncio.CommunityData` object.
 
 .. toctree::
    :maxdepth: 2
 
-.. autoclass:: pysnmp.hlapi.asyncio.ContextData
+.. autoclass:: pysnmp.hlapi.v3arch.asyncio.ContextData
+
+High-level v1arch asyncio
+-------------------------
+
+The :mod:`asyncio` module is in Python standard library since ancient
+times. Main loop is built around :mod:`select` dispatcher, user
+code is invoked through callback callables.
+
+Command Generator
+
+.. toctree::
+   :maxdepth: 2
+
+   /docs/hlapi/v1arch/asyncio/manager/cmdgen/getcmd
+   /docs/hlapi/v1arch/asyncio/manager/cmdgen/setcmd
+   /docs/hlapi/v1arch/asyncio/manager/cmdgen/nextcmd
+   /docs/hlapi/v1arch/asyncio/manager/cmdgen/bulkcmd
+   /docs/hlapi/v1arch/asyncio/manager/cmdgen/walkcmd
+   /docs/hlapi/v1arch/asyncio/manager/cmdgen/bulkwalkcmd
+
+Notification Originator
+
+.. toctree::
+   :maxdepth: 2
+
+   /docs/hlapi/v1arch/asyncio/agent/ntforg/notification
+
+Transport configuration
++++++++++++++++++++++++
+
+.. toctree::
+   :maxdepth: 2
+
+.. autoclass:: pysnmp.hlapi.v1arch.asyncio.UdpTransportTarget
+   :members: setLocalAddress
+
+.. autoclass:: pysnmp.hlapi.v1arch.asyncio.Udp6TransportTarget
+   :members: setLocalAddress
+
+High-level v1arch SNMP Dispatcher
+---------------------------------
+
+SNMP Dispatcher is a stateful object representing asynchronous
+I/O event loop and also holding some caches. Calls to `v1arch`
+always require consume SNMP Dispatcher object on input.
+
+.. toctree::
+   :maxdepth: 2
+
+.. autoclass:: pysnmp.hlapi.v1arch.SnmpDispatcher()
+
+High-level v1arch auth
+----------------------
+
+Calls to `v1arch` API require SNMP authentication object on input.
+
+Community-based
++++++++++++++++
+
+Security Parameters object is Security Model specific. The
+:py:class:`~pysnmp.hlapi.v1arch.CommunityData`
+class is used for configuring Community-Based Security Model of SNMPv1/SNMPv2c.
+
+.. toctree::
+   :maxdepth: 2
+
+.. autoclass:: pysnmp.hlapi.v1arch.CommunityData(communityName, mpModel=1)
 
 .. _mib-services:
 

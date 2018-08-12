@@ -1,3 +1,26 @@
+Revision 7.0.3, released on Aug 26, 2024
+----------------------------------------
+
+- The high-level API (`hlapi`) extended to cover lightweight SNMP v1arch
+  in hope to ease the use of packet-level SNMP API.
+
+  By way of introducing v1arch hlapi, the sub-packages layout changed
+  so that `pysnmp.hlapi` is moved to `pysnmp.hlapi.v3arch` and the new
+  v1arch layer is introduced in `pysnmp.hlapi.v1arch`. This change does
+  not break backward compatibility as `pysnmp.hlapi` still defaults to
+  `pysnmp.hlapi.v3arch`.
+
+  The `pysnmp.hlapi.v1arch` is designed to be as much similar in use
+  to `pysnmp.hlapi.v3arch`, but with high-performance in mind. One of
+  the consequences of this higher performance focus is that various
+  automation around building well-formed SNMP messages is and mediating
+  differences between SNMP versions is not present in this new `v1arch`
+  layer.
+- The signature of the hlapi `.sendNotification()` call has changed
+  to accept `*varBinds` instead of a sequence of `varBinds`. The rationale
+  is to unify this method call with similar methods of CommandGenerator.
+  This change should not compromise backward compatibility with pysnmp 4.
+
 Revision 7.0.2, released on Aug 25, 2024
 ----------------------------------------
 

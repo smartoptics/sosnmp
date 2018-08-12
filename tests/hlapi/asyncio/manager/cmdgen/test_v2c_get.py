@@ -1,7 +1,7 @@
 from datetime import datetime
 import pytest
-from pysnmp.hlapi.asyncio.slim import Slim
-from pysnmp.hlapi.asyncio import *
+from pysnmp.hlapi.v3arch.asyncio.slim import Slim
+from pysnmp.hlapi.v3arch.asyncio import *
 from pysnmp.proto import errind
 from tests.agent_context import AGENT_PORT, AgentContextManager
 

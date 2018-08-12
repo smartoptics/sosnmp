@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime
 import pytest
 from pysnmp import debug
-from pysnmp.hlapi.asyncio import *
+from pysnmp.hlapi.v3arch.asyncio import *
 from pysnmp.proto.rfc1905 import errorStatus as pysnmp_errorStatus
 
 from tests.agent_context import AGENT_PORT, AgentContextManager

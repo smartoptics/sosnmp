@@ -61,11 +61,11 @@ Next, let's write some test script and play with PySNMP manager side operations.
 #. Create a Python script in the test field folder, such as ``v1-get.py``.
 #. Cut and paste the following contents below into this file,
 
-   .. literalinclude:: /../../examples/hlapi/asyncio/manager/cmdgen/v1-get.py
+   .. literalinclude:: /../../examples/hlapi/v3arch/asyncio/manager/cmdgen/v1-get.py
       :start-after: """  #
       :language: python
 
-   :download:`Download</../../examples/hlapi/asyncio/manager/cmdgen/v1-get.py>` script.
+   :download:`Download</../../examples/hlapi/v3arch/asyncio/manager/cmdgen/v1-get.py>` script.
 
 #. Execute this script. If everything works as it should you will get the following on your
    console:
@@ -78,7 +78,7 @@ Next, let's write some test script and play with PySNMP manager side operations.
       >>>
 
 Here you can see SNMP v1 GET operation can be easily done with the
-:py:class:`~pysnmp.hlapi.asyncio.Slim` class. Other operations in SNMP v1
+:py:class:`~pysnmp.hlapi.v3arch.asyncio.slim` class. Other operations in SNMP v1
 and v2c can be done in similar manner. To execute SNMP v3 operations,
 however, requires more complex code.
 
@@ -92,11 +92,11 @@ Similarly we can perform agent side operations with PySNMP.
 #. Create a script file ``default-v1-trap.py``.
 #. Cut and paste the following contents below into this file,
 
-   .. literalinclude:: /../../examples/hlapi/asyncio/agent/ntforg/default-v1-trap.py
+   .. literalinclude:: /../../examples/hlapi/v3arch/asyncio/agent/ntforg/default-v1-trap.py
       :start-after: """  #
       :language: python
 
-   :download:`Download</../../examples/hlapi/asyncio/agent/ntforg/default-v1-trap.py>` script.
+   :download:`Download</../../examples/hlapi/v3arch/asyncio/agent/ntforg/default-v1-trap.py>` script.
 
 #. Execute this script.
 

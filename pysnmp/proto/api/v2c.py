@@ -6,7 +6,7 @@
 #
 from pyasn1.type import constraint, univ
 
-from pysnmp.proto import rfc1901, rfc1902, rfc1905
+from pysnmp.proto import errind, rfc1901, rfc1902, rfc1905
 from pysnmp.proto.api import v1
 
 # Shortcuts to SNMP types
@@ -62,6 +62,32 @@ class PDUAPI(v1.PDUAPI):
 
     def getVarBindTable(self, reqPDU, rspPDU):
         return [apiPDU.getVarBinds(rspPDU)]
+
+    def getNextVarBinds(self, varBinds, origVarBinds=None):
+        errorIndication = None
+        idx = nonNulls = len(varBinds)
+        rspVarBinds = []
+        while idx:
+            idx -= 1
+            if varBinds[idx][1].tagSet in (
+                rfc1905.NoSuchObject.tagSet,
+                rfc1905.NoSuchInstance.tagSet,
+                rfc1905.EndOfMibView.tagSet,
+            ):
+                nonNulls -= 1
+            elif origVarBinds is not None:
+                if (
+                    ObjectIdentifier(origVarBinds[idx][0]).asTuple()
+                    >= varBinds[idx][0].asTuple()
+                ):
+                    errorIndication = errind.oidNotIncreasing
+
+            rspVarBinds.insert(0, (varBinds[idx][0], null))
+
+        if not nonNulls:
+            rspVarBinds = []
+
+        return errorIndication, rspVarBinds
 
     def setEndOfMibError(self, pdu, errorIndex):
         varBindList = self.getVarBindList(pdu)
@@ -139,9 +165,14 @@ class BulkPDUAPI(PDUAPI):
         reqVarBinds = self.getVarBinds(reqPDU)
 
         N = min(int(nonRepeaters), len(reqVarBinds))
-        R = max(len(reqVarBinds) - N, 0)
 
         rspVarBinds = self.getVarBinds(rspPDU)
+
+        # shortcut for the most trivial case
+        if N == 0 and len(reqVarBinds) == 1:
+            return [[vb] for vb in rspVarBinds]
+
+        R = max(len(reqVarBinds) - N, 0)
 
         varBindTable = []
 

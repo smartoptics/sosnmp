@@ -16,7 +16,7 @@ A. Starting from PySNMP 4.3.x, plain-text (ASN.1) MIBs can be
    MIB repos, you are welcome to use our collection of ASN.1
    MIB files at `mibs.pysnmp.com`_ as shown below.
 
-.. literalinclude:: /../../examples/hlapi/asyncio/manager/cmdgen/custom-asn1-mib-search-path.py
+.. literalinclude:: /../../examples/hlapi/v3arch/asyncio/manager/cmdgen/custom-asn1-mib-search-path.py
    :start-after: """  #
    :language: python
 
@@ -35,7 +35,7 @@ A. Starting from PySNMP 4.3.x, plain-text (ASN.1) MIBs can be
         'https://mibs.pysnmp.com/asn1/@mib@',
     ])
 
-:download:`Download</../../examples/hlapi/asyncio/manager/cmdgen/custom-asn1-mib-search-path.py>` script.
+:download:`Download</../../examples/hlapi/v3arch/asyncio/manager/cmdgen/custom-asn1-mib-search-path.py>` script.
 
 Alternatively, you can invoke the `mibdump`_ command
 (shipped with PySMI) by hand and this way compile plain-text MIB

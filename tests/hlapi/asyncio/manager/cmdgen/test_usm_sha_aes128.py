@@ -1,5 +1,5 @@
 import pytest
-from pysnmp.hlapi.asyncio import *
+from pysnmp.hlapi.v3arch.asyncio import *
 from pysnmp.proto.errind import DecryptionError, UnknownUserName, WrongDigest
 from tests.agent_context import AGENT_PORT, AgentContextManager
 

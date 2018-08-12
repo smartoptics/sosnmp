@@ -1,5 +1,5 @@
 import pytest
-from pysnmp.hlapi.asyncio import *
+from pysnmp.hlapi.v3arch.asyncio import *
 from tests.manager_context import MANAGER_PORT, ManagerContextManager
 
 

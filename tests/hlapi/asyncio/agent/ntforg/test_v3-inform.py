@@ -1,12 +1,28 @@
 import pytest
-from pysnmp.hlapi.asyncio import *
+from pysnmp.hlapi.v3arch.asyncio import *
+from pysnmp.smi import builder, compiler, view
 from tests.manager_context import MANAGER_PORT, ManagerContextManager
 
 
 @pytest.mark.asyncio
 async def test_send_v3_inform():
     async with ManagerContextManager():
+        # Assemble MIB browser
+        mibBuilder = builder.MibBuilder()
+        mibViewController = view.MibViewController(mibBuilder)
+        compiler.addMibCompiler(
+            mibBuilder,
+            sources=[
+                "file:///usr/share/snmp/mibs",
+                "https://mibs.pysnmp.com/asn1/@mib@",
+            ],
+        )
+
+        # Pre-load MIB modules we expect to work with
+        mibBuilder.loadModules("SNMPv2-MIB")
+
         snmpEngine = SnmpEngine()
+        snmpEngine.cache["mibViewController"] = mibViewController
         errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
             snmpEngine,
             UsmUserData("usr-md5-des", "authkey1", "privkey1"),
@@ -22,7 +38,9 @@ async def test_send_v3_inform():
         assert errorStatus == 0
         assert errorIndex == 0
         assert len(varBinds) == 3
-        assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysUpTime.0"
+        assert (
+            varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysUpTime.0"
+        )  # IMPORTANT: MIB is needed to resolve this name
         assert varBinds[1][0].prettyPrint() == "SNMPv2-MIB::snmpTrapOID.0"
         assert varBinds[2][0].prettyPrint() == "SNMPv2-MIB::sysDescr.0"
         isinstance(varBinds[0][1], TimeTicks)

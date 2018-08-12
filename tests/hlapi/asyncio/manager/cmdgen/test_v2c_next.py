@@ -16,7 +16,7 @@ Functionally similar to:
 
 """  #
 import pytest
-from pysnmp.hlapi.asyncio.slim import Slim
+from pysnmp.hlapi.v3arch.asyncio.slim import Slim
 from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
 from tests.agent_context import AGENT_PORT, AgentContextManager
 
@@ -37,4 +37,3 @@ async def test_v2_next():
             assert errorIndex == 0
             assert len(varBinds) == 1
             assert varBinds[0][0][0].prettyPrint() == "SNMPv2-MIB::sysObjectID.0"
-            assert varBinds[0][0][1].prettyPrint() == "PYSNMP-MIB::pysnmp"

@@ -1,9 +1,9 @@
 import pytest
 
-from pysnmp.hlapi.asyncio import *
+from pysnmp.hlapi.v3arch.asyncio import *
 from tests.agent_context import AGENT_PORT, AgentContextManager
 import pytest
-from pysnmp.hlapi.asyncio import *
+from pysnmp.hlapi.v3arch.asyncio import *
 from tests.agent_context import AGENT_PORT, AgentContextManager
 
 

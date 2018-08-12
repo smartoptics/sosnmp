@@ -1,7 +1,7 @@
 from unittest import mock
 
-from pysnmp.hlapi.asyncio import *
-from pysnmp.hlapi.asyncio.lcd import CommandGeneratorLcdConfigurator
+from pysnmp.hlapi.v3arch.asyncio import *
+from pysnmp.hlapi.v3arch.asyncio.lcd import CommandGeneratorLcdConfigurator
 
 
 @mock.patch("pysnmp.entity.config.addV3User")
