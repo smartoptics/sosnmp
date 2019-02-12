@@ -5,10 +5,11 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 from typing import Any
+
+from pysnmp.entity import config
 from pysnmp.entity.engine import SnmpEngine
 from pysnmp.error import PySnmpError
-from pysnmp.smi.error import SmiError, NoSuchInstanceError
-from pysnmp.entity import config
+from pysnmp.smi.error import NoSuchInstanceError, SmiError
 
 
 def getTargetAddr(snmpEngine: SnmpEngine, snmpTargetAddrName):

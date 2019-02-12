@@ -4,23 +4,23 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-import os
-import sys
-import struct
 import marshal
+import os
+import struct
+import sys
 import time
 import traceback
 from errno import ENOENT
-from importlib.machinery import SOURCE_SUFFIXES, BYTECODE_SUFFIXES
+from importlib.machinery import BYTECODE_SUFFIXES, SOURCE_SUFFIXES
 from importlib.util import MAGIC_NUMBER as PY_MAGIC_NUMBER
-from pysnmp import version as pysnmp_version
+
+from pysnmp import debug, version as pysnmp_version
 from pysnmp.smi import error
-from pysnmp import debug
 
 
 PY_SUFFIXES = SOURCE_SUFFIXES + BYTECODE_SUFFIXES
 
-classTypes = (type,)
+classTypes = (type,)  # noqa: N816
 
 
 class __AbstractMibSource:
@@ -175,13 +175,13 @@ class ZipMibSource(__AbstractMibSource):
         return time.mktime(t)
 
     def _listdir(self):
-        l = []
+        value = []
         # noinspection PyProtectedMember
         for f in self.__loader._files.keys():
             d, f = os.path.split(f)
             if d == self._srcName:
-                l.append(f)
-        return tuple(self._uniqNames(l))
+                value.append(f)
+        return tuple(self._uniqNames(value))
 
     def _getTimestamp(self, f):
         p = os.path.join(self._srcName, f)

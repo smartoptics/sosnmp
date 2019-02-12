@@ -4,13 +4,15 @@
 # Copyright (c) 2005-2018, Olivier Verriest <verri@x25.pm>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-import sys
 import hmac
+import sys
 from hashlib import sha224, sha256, sha384, sha512
+
 from pyasn1.type import univ
-from pysnmp.proto.secmod.rfc3414.auth import base
-from pysnmp.proto.secmod.rfc3414 import localkey
+
 from pysnmp.proto import errind, error
+from pysnmp.proto.secmod.rfc3414 import localkey
+from pysnmp.proto.secmod.rfc3414.auth import base
 
 
 # 7.2.4

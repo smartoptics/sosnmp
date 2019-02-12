@@ -5,17 +5,21 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import sys
+
 from pyasn1.compat.octets import null
 from pyasn1.error import PyAsn1Error
-from pysnmp.smi import builder, instrum
-from pysnmp.proto import errind, error, cache
-from pysnmp.proto.api import verdec  # XXX
+
+from pysnmp import debug, nextid
 from pysnmp.error import PySnmpError
-from pysnmp import nextid, debug
+from pysnmp.proto import cache, errind, error
+from pysnmp.proto.api import verdec  # XXX
+from pysnmp.smi import builder, instrum
 
 
 class MsgAndPduDispatcher:
-    """SNMP engine PDU & message dispatcher. Exchanges SNMP PDU's with
+    r"""SNMP engine PDU & message dispatcher.
+
+    Exchanges SNMP PDU's with
     applications and serialized messages with transport level.
     """
 

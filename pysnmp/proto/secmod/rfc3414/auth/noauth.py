@@ -5,8 +5,8 @@
 #
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-from pysnmp.proto.secmod.rfc3414.auth import base
 from pysnmp.proto import errind, error
+from pysnmp.proto.secmod.rfc3414.auth import base
 
 
 class NoAuth(base.AbstractAuthenticationService):

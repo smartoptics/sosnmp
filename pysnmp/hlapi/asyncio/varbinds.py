@@ -5,7 +5,7 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 from pysnmp.smi import view
-from pysnmp.smi.rfc1902 import *
+from pysnmp.smi.rfc1902 import NotificationType, ObjectIdentity, ObjectType
 
 __all__ = ["CommandGeneratorVarBinds", "NotificationOriginatorVarBinds"]
 

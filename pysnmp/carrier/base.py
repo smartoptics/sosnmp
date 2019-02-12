@@ -6,8 +6,8 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 from typing import Any, Callable
+
 from pysnmp.carrier import error
-from typing import Callable
 
 
 class TimerCallable:

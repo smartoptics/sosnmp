@@ -5,10 +5,12 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 from hashlib import md5
+
 from pyasn1.type import univ
-from pysnmp.proto.secmod.rfc3414.auth import base
-from pysnmp.proto.secmod.rfc3414 import localkey
+
 from pysnmp.proto import errind, error
+from pysnmp.proto.secmod.rfc3414 import localkey
+from pysnmp.proto.secmod.rfc3414.auth import base
 
 TWELVE_ZEROS = univ.OctetString((0,) * 12).asOctets()
 FORTY_EIGHT_ZEROS = (0,) * 48
@@ -38,11 +40,11 @@ class HmacMd5(base.AbstractAuthenticationService):
         # should be in the substrate. Also, it pre-sets digest placeholder
         # so we hash wholeMsg out of the box.
         # Yes, that's ugly but that's rfc...
-        l = wholeMsg.find(TWELVE_ZEROS)
-        if l == -1:
+        value = wholeMsg.find(TWELVE_ZEROS)
+        if value == -1:
             raise error.ProtocolError("Cant locate digest placeholder")
-        wholeHead = wholeMsg[:l]
-        wholeTail = wholeMsg[l + 12 :]
+        wholeHead = wholeMsg[:value]
+        wholeTail = wholeMsg[value + 12 :]
 
         # 6.3.1.1
 
@@ -78,11 +80,11 @@ class HmacMd5(base.AbstractAuthenticationService):
             raise error.StatusInformation(errorIndication=errind.authenticationError)
 
         # 6.3.2.3
-        l = wholeMsg.find(authParameters.asOctets())
-        if l == -1:
+        value = wholeMsg.find(authParameters.asOctets())
+        if value == -1:
             raise error.ProtocolError("Cant locate digest in wholeMsg")
-        wholeHead = wholeMsg[:l]
-        wholeTail = wholeMsg[l + 12 :]
+        wholeHead = wholeMsg[:value]
+        wholeTail = wholeMsg[value + 12 :]
         authenticatedWholeMsg = wholeHead + TWELVE_ZEROS + wholeTail
 
         # 6.3.2.4a

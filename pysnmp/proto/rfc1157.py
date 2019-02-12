@@ -4,7 +4,8 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-from pyasn1.type import univ, tag, namedtype, namedval
+from pyasn1.type import namedtype, namedval, tag, univ
+
 from pysnmp.proto import rfc1155
 
 __all__ = [
@@ -27,7 +28,7 @@ class VarBindList(univ.SequenceOf):
     componentType = VarBind()
 
 
-errorStatus = univ.Integer(
+errorStatus = univ.Integer(  # noqa: N816
     namedValues=namedval.NamedValues(
         ("noError", 0),
         ("tooBig", 1),
@@ -72,7 +73,7 @@ class SetRequestPDU(_RequestBase):
     )
 
 
-genericTrap = univ.Integer().clone(
+genericTrap = univ.Integer().clone(  # noqa: N816
     namedValues=namedval.NamedValues(
         ("coldStart", 0),
         ("warmStart", 1),

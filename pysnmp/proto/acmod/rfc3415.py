@@ -4,9 +4,9 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-from pysnmp.smi.error import NoSuchInstanceError
-from pysnmp.proto import errind, error
 from pysnmp import debug
+from pysnmp.proto import errind, error
+from pysnmp.smi.error import NoSuchInstanceError
 
 
 # 3.2

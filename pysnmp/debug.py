@@ -5,11 +5,11 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import logging
-from pyasn1.compat.octets import octs2ints
-from pysnmp import error
-from pysnmp import __version__
-
 import warnings
+
+from pyasn1.compat.octets import octs2ints
+
+from pysnmp import __version__, error
 
 
 def __getattr__(attr: str):

@@ -5,11 +5,12 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import sys
-from pysnmp.proto import rfc1902, rfc1905, rfc3411, errind, error
+
+from pysnmp import debug
+from pysnmp.proto import errind, error, rfc1902, rfc1905, rfc3411
 from pysnmp.proto.api import v2c  # backend is always SMIv2 compliant
 from pysnmp.proto.proxy import rfc2576
-import pysnmp.smi.error
-from pysnmp import debug
+from pysnmp.smi import error as smi_error
 
 
 # 3.2
@@ -18,24 +19,24 @@ class CommandResponderBase:
     SUPPORTED_PDU_TYPES = ()
 
     SMI_ERROR_MAP = {
-        pysnmp.smi.error.TooBigError: "tooBig",
-        pysnmp.smi.error.NoSuchNameError: "noSuchName",
-        pysnmp.smi.error.BadValueError: "badValue",
-        pysnmp.smi.error.ReadOnlyError: "readOnly",
-        pysnmp.smi.error.GenError: "genErr",
-        pysnmp.smi.error.NoAccessError: "noAccess",
-        pysnmp.smi.error.WrongTypeError: "wrongType",
-        pysnmp.smi.error.WrongLengthError: "wrongLength",
-        pysnmp.smi.error.WrongEncodingError: "wrongEncoding",
-        pysnmp.smi.error.WrongValueError: "wrongValue",
-        pysnmp.smi.error.NoCreationError: "noCreation",
-        pysnmp.smi.error.InconsistentValueError: "inconsistentValue",
-        pysnmp.smi.error.ResourceUnavailableError: "resourceUnavailable",
-        pysnmp.smi.error.CommitFailedError: "commitFailed",
-        pysnmp.smi.error.UndoFailedError: "undoFailed",
-        pysnmp.smi.error.AuthorizationError: "authorizationError",
-        pysnmp.smi.error.NotWritableError: "notWritable",
-        pysnmp.smi.error.InconsistentNameError: "inconsistentName",
+        smi_error.TooBigError: "tooBig",
+        smi_error.NoSuchNameError: "noSuchName",
+        smi_error.BadValueError: "badValue",
+        smi_error.ReadOnlyError: "readOnly",
+        smi_error.GenError: "genErr",
+        smi_error.NoAccessError: "noAccess",
+        smi_error.WrongTypeError: "wrongType",
+        smi_error.WrongLengthError: "wrongLength",
+        smi_error.WrongEncodingError: "wrongEncoding",
+        smi_error.WrongValueError: "wrongValue",
+        smi_error.NoCreationError: "noCreation",
+        smi_error.InconsistentValueError: "inconsistentValue",
+        smi_error.ResourceUnavailableError: "resourceUnavailable",
+        smi_error.CommitFailedError: "commitFailed",
+        smi_error.UndoFailedError: "undoFailed",
+        smi_error.AuthorizationError: "authorizationError",
+        smi_error.NotWritableError: "notWritable",
+        smi_error.InconsistentNameError: "inconsistentName",
     }
 
     def __init__(self, snmpEngine, snmpContext, cbCtx=None):
@@ -200,7 +201,7 @@ class CommandResponderBase:
             self.handleMgmtOperation(snmpEngine, stateReference, contextName, PDU)
 
         # SNMPv2 SMI exceptions
-        except pysnmp.smi.error.SmiError:
+        except smi_error.SmiError:
             errorIndication = sys.exc_info()[1]
 
             debug.logger & debug.FLAG_APP and debug.logger(
@@ -232,7 +233,7 @@ class CommandResponderBase:
                 snmpEngine, stateReference, errorStatus, errorIndex, varBinds
             )
 
-        except pysnmp.error.PySnmpError:
+        except smi_error.PySnmpError:
             debug.logger & debug.FLAG_APP and debug.logger(
                 "processPdu: stateReference %s, error "
                 "%s" % (stateReference, sys.exc_info()[1])
@@ -281,12 +282,10 @@ class CommandResponderBase:
                 or errorIndication == errind.noAccessEntry
                 or errorIndication == errind.noGroupName
             ):
-                raise pysnmp.smi.error.AuthorizationError(
-                    name=name, idx=context.get("idx")
-                )
+                raise smi_error.AuthorizationError(name=name, idx=context.get("idx"))
 
             elif errorIndication == errind.otherError:
-                raise pysnmp.smi.error.GenError(name=name, idx=context.get("idx"))
+                raise smi_error.GenError(name=name, idx=context.get("idx"))
 
             elif errorIndication == errind.noSuchContext:
                 (
@@ -296,7 +295,7 @@ class CommandResponderBase:
                 )
                 snmpUnknownContexts.syntax += 1
                 # Request REPORT generation
-                raise pysnmp.smi.error.GenError(
+                raise smi_error.GenError(
                     name=name,
                     idx=context.get("idx"),
                     oid=snmpUnknownContexts.name,
@@ -317,7 +316,7 @@ class CommandResponderBase:
                 and cls._getNextRequestType == pduType
             ):
                 # This will cause MibTree to skip this OID-value
-                raise pysnmp.smi.error.NoAccessError(name=name, idx=context.get("idx"))
+                raise smi_error.NoAccessError(name=name, idx=context.get("idx"))
 
 
 class GetCommandResponder(CommandResponderBase):
@@ -413,7 +412,7 @@ class BulkCommandResponder(CommandResponderBase):
             self.sendVarBinds(snmpEngine, stateReference, 0, 0, rspVarBinds)
             self.releaseStateInformation(stateReference)
         else:
-            raise pysnmp.smi.error.SmiError()
+            raise smi_error.SmiError()
 
 
 class SetCommandResponder(CommandResponderBase):
@@ -434,10 +433,10 @@ class SetCommandResponder(CommandResponderBase):
             rspVarBinds = mgmtFun(*varBinds, **context)
 
         except (
-            pysnmp.smi.error.NoSuchObjectError,
-            pysnmp.smi.error.NoSuchInstanceError,
+            smi_error.NoSuchObjectError,
+            smi_error.NoSuchInstanceError,
         ):
-            instrumError = pysnmp.smi.error.NotWritableError()
+            instrumError = smi_error.NotWritableError()
             instrumError.update(sys.exc_info()[1])
 
         else:

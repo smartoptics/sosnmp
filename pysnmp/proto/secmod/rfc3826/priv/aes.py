@@ -4,22 +4,22 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-from hashlib import md5, sha1
 import random
+from hashlib import md5, sha1
+
+from pyasn1.type import univ
+
+from pysnmp.proto import errind, error
+from pysnmp.proto.secmod.rfc3414 import localkey
+from pysnmp.proto.secmod.rfc3414.auth import hmacmd5, hmacsha
+from pysnmp.proto.secmod.rfc3414.priv import base
+from pysnmp.proto.secmod.rfc7860.auth import hmacsha2
 
 try:
-    from pysnmpcrypto import aes, PysnmpCryptoError
-
+    from pysnmpcrypto import PysnmpCryptoError, aes
 except ImportError:
     PysnmpCryptoError = AttributeError
     aes = None
-
-from pyasn1.type import univ
-from pysnmp.proto.secmod.rfc3414.priv import base
-from pysnmp.proto.secmod.rfc3414.auth import hmacmd5, hmacsha
-from pysnmp.proto.secmod.rfc7860.auth import hmacsha2
-from pysnmp.proto.secmod.rfc3414 import localkey
-from pysnmp.proto import errind, error
 
 random.seed()
 

@@ -5,9 +5,11 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 from typing import Tuple
+
 from pyasn1.compat.octets import null
-from pysnmp.carrier.base import AbstractTransport, AbstractTransportAddress
+
 from pysnmp import error
+from pysnmp.carrier.base import AbstractTransport, AbstractTransportAddress
 from pysnmp.entity.engine import SnmpEngine
 
 __all__ = []

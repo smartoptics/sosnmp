@@ -18,7 +18,7 @@ __all__ = ["Slim"]
 
 
 class Slim:
-    """Creates slim SNMP wrapper object.
+    r"""Creates slim SNMP wrapper object.
 
     With PySNMP new design, `Slim` is the new high level API to wrap up v1/v2c.
 
@@ -66,8 +66,7 @@ class Slim:
         timeout: int = 1,
         retries: int = 5,
     ) -> "tuple[ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
-        """
-        Creates a generator to perform SNMP GET query.
+        r"""Creates a generator to perform SNMP GET query.
 
         When iterator gets advanced by :py:mod:`asyncio` main loop,
         SNMP GET request is send (:RFC:`1905#section-4.2.1`).
@@ -85,7 +84,7 @@ class Slim:
         port : :py:obj:`int`
             Remote SNMP engine port number.
 
-        *varBinds : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
+        varBinds : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
             One or more class instances representing MIB variables to place
             into SNMP request.
 
@@ -135,7 +134,6 @@ class Slim:
         (None, 0, 0, [ObjectType(ObjectIdentity(ObjectName('1.3.6.1.2.1.1.1.0')), DisplayString('SunOS zeus.pysnmp.com 4.1.3_U1 1 sun4m'))])
         >>>
         """
-
         return await getCmd(
             self.snmpEngine,
             CommunityData(communityName, mpModel=self.version - 1),
@@ -155,8 +153,7 @@ class Slim:
         timeout: int = 1,
         retries: int = 5,
     ) -> "tuple[ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
-        """
-        Creates a generator to perform SNMP GETNEXT query.
+        r"""Creates a generator to perform SNMP GETNEXT query.
 
         When iterator gets advanced by :py:mod:`asyncio` main loop,
         SNMP GETNEXT request is send (:RFC:`1905#section-4.2.2`).
@@ -174,7 +171,7 @@ class Slim:
         port : :py:obj:`int`
             Remote SNMP engine port number.
 
-        *varBinds : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
+        varBinds : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
             One or more class instances representing MIB variables to place
             into SNMP request.
 
@@ -306,15 +303,15 @@ class Slim:
             ``varBindTable[i][j]`` represents:
 
             - For non-repeaters (``j < nonRepeaters``), the first lexicographic
-            successor of ``varBinds[j]``, regardless the value of ``i``, or an
-            :py:class:`~pysnmp.smi.rfc1902.ObjectType` instance with the
-            :py:obj:`~pysnmp.proto.rfc1905.endOfMibView` value if no such
-            successor exists;
+              successor of ``varBinds[j]``, regardless the value of ``i``, or an
+              :py:class:`~pysnmp.smi.rfc1902.ObjectType` instance with the
+              :py:obj:`~pysnmp.proto.rfc1905.endOfMibView` value if no such
+              successor exists;
             - For repeaters (``j >= nonRepeaters``), the ``i``-th lexicographic
-            successor of ``varBinds[j]``, or an
-            :py:class:`~pysnmp.smi.rfc1902.ObjectType` instance with the
-            :py:obj:`~pysnmp.proto.rfc1905.endOfMibView` value if no such
-            successor exists.
+              successor of ``varBinds[j]``, or an
+              :py:class:`~pysnmp.smi.rfc1902.ObjectType` instance with the
+              :py:obj:`~pysnmp.proto.rfc1905.endOfMibView` value if no such
+              successor exists.
 
             See :rfc:`3416#section-4.2.3` for details on the underlying
             ``GetBulkRequest-PDU`` and the associated ``GetResponse-PDU``, such as
@@ -347,9 +344,7 @@ class Slim:
         >>> asyncio.run(run())
         (None, 0, 0, [[ObjectType(ObjectIdentity(ObjectName('1.3.6.1.2.1.1.1.0')), DisplayString('SunOS zeus.pysnmp.com 4.1.3_U1 1 sun4m'))], [ObjectType(ObjectIdentity(ObjectName('1.3.6.1.2.1.1.2.0')), ObjectIdentifier('1.3.6.1.4.1.424242.1.1'))]])
         >>>
-
         """
-
         version = self.version - 1
         if version == 0:
             raise PySnmpError("Cannot send V2 PDU on V1 session")
@@ -374,8 +369,7 @@ class Slim:
         timeout: int = 1,
         retries: int = 5,
     ) -> "tuple[ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
-        """
-        Creates a generator to perform SNMP SET query.
+        r"""Creates a generator to perform SNMP SET query.
 
         When iterator gets advanced by :py:mod:`asyncio` main loop,
         SNMP SET request is send (:RFC:`1905#section-4.2.5`).
@@ -393,7 +387,7 @@ class Slim:
         port : :py:obj:`int`
             Remote SNMP engine port number.
 
-        *varBinds : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
+        varBinds : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
             One or more class instances representing MIB variables to place
             into SNMP request.
 
@@ -440,7 +434,6 @@ class Slim:
         (None, 0, 0, [ObjectType(ObjectIdentity(ObjectName('1.3.6.1.2.1.1.1.0')), DisplayString('Linux i386'))])
         >>>
         """
-
         return await setCmd(
             self.snmpEngine,
             CommunityData(communityName, mpModel=self.version - 1),

@@ -5,14 +5,16 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import sys
+
+from pyasn1.error import PyAsn1Error
+from pyasn1.type.base import AbstractSimpleAsn1Item
+
+from pysnmp import debug
 from pysnmp.proto import rfc1902, rfc1905
 from pysnmp.proto.api import v2c
 from pysnmp.smi.builder import ZipMibSource
 from pysnmp.smi.compiler import addMibCompiler
 from pysnmp.smi.error import SmiError
-from pyasn1.type.base import AbstractSimpleAsn1Item
-from pyasn1.error import PyAsn1Error
-from pysnmp import debug
 
 __all__ = ["ObjectIdentity", "ObjectType", "NotificationType"]
 
@@ -204,7 +206,7 @@ class ObjectIdentity:
 
         Parameters
         ----------
-        *asn1Sources :
+        asn1Sources :
             one or more URL in form of :py:obj:`str` identifying local or
             remote ASN.1 MIB repositories. Path must include the *@mib@*
             component which will be replaced with MIB module name at the
@@ -243,7 +245,7 @@ class ObjectIdentity:
 
         Parameters
         ----------
-        *mibSources :
+        mibSources :
             one or more paths to search or Python package names to import
             and search for PySNMP MIB modules.
 
@@ -279,7 +281,7 @@ class ObjectIdentity:
 
         Parameters
         ----------
-        *modNames:
+        modNames:
             one or more MIB module names to load up and use for MIB
             variables resolution purposes.
 
@@ -806,7 +808,7 @@ class ObjectType:
 
         Parameters
         ----------
-        *asn1Sources :
+        asn1Sources :
             one or more URL in form of :py:obj:`str` identifying local or
             remote ASN.1 MIB repositories. Path must include the *@mib@*
             component which will be replaced with MIB module name at the
@@ -838,7 +840,7 @@ class ObjectType:
 
         Parameters
         ----------
-        *mibSources :
+        mibSources :
             one or more paths to search or Python package names to import
             and search for PySNMP MIB modules.
 
@@ -870,7 +872,7 @@ class ObjectType:
 
         Parameters
         ----------
-        *modNames:
+        modNames:
             one or more MIB module names to load up and use for MIB
             variables resolution purposes.
 
@@ -1094,7 +1096,7 @@ class NotificationType:
 
         Parameters
         ----------
-        *varBinds : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
+        varBinds : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
             One or more :py:class:`~pysnmp.smi.rfc1902.ObjectType` class
             instances.
 
@@ -1131,7 +1133,7 @@ class NotificationType:
 
         Parameters
         ----------
-        *asn1Sources :
+        asn1Sources :
             one or more URL in form of :py:obj:`str` identifying local or
             remote ASN.1 MIB repositories. Path must include the *@mib@*
             component which will be replaced with MIB module name at the
@@ -1163,7 +1165,7 @@ class NotificationType:
 
         Parameters
         ----------
-        *mibSources :
+        mibSources :
             one or more paths to search or Python package names to import
             and search for PySNMP MIB modules.
 
@@ -1195,7 +1197,7 @@ class NotificationType:
 
         Parameters
         ----------
-        *modNames:
+        modNames:
             one or more MIB module names to load up and use for MIB
             variables resolution purposes.
 

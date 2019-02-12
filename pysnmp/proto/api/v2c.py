@@ -4,9 +4,10 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+from pyasn1.type import constraint, univ
+
 from pysnmp.proto import rfc1901, rfc1902, rfc1905
 from pysnmp.proto.api import v1
-from pyasn1.type import univ, constraint
 
 # Shortcuts to SNMP types
 Null = univ.Null
@@ -42,9 +43,9 @@ ReportPDU = rfc1905.ReportPDU
 
 Message = rfc1901.Message
 
-getNextRequestID = v1.getNextRequestID
+getNextRequestID = v1.getNextRequestID  # noqa: N816
 
-apiVarBind = v1.apiVarBind
+apiVarBind = v1.apiVarBind  # noqa: N816
 
 
 class PDUAPI(v1.PDUAPI):
@@ -83,7 +84,7 @@ class PDUAPI(v1.PDUAPI):
         )
 
 
-apiPDU = PDUAPI()
+apiPDU = PDUAPI()  # noqa: N816
 
 
 class BulkPDUAPI(PDUAPI):
@@ -156,7 +157,7 @@ class BulkPDUAPI(PDUAPI):
         return varBindTable
 
 
-apiBulkPDU = BulkPDUAPI()
+apiBulkPDU = BulkPDUAPI()  # noqa: N816
 
 
 class TrapPDUAPI(v1.PDUAPI):
@@ -178,7 +179,7 @@ class TrapPDUAPI(v1.PDUAPI):
         self.setVarBinds(pdu, varBinds)
 
 
-apiTrapPDU = TrapPDUAPI()
+apiTrapPDU = TrapPDUAPI()  # noqa: N816
 
 
 class MessageAPI(v1.MessageAPI):
@@ -210,4 +211,4 @@ class MessageAPI(v1.MessageAPI):
         return rspMsg
 
 
-apiMessage = MessageAPI()
+apiMessage = MessageAPI()  # noqa: N816

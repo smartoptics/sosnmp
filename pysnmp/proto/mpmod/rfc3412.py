@@ -5,15 +5,17 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import sys
-from pysnmp.proto.mpmod.base import AbstractMessageProcessingModel
-from pysnmp.proto import rfc1905, rfc3411, api, errind, error
-from pyasn1.type import univ, namedtype, constraint
+
 from pyasn1.codec.ber import decoder, eoo
 from pyasn1.error import PyAsn1Error
+from pyasn1.type import constraint, namedtype, univ
+
 from pysnmp import debug
+from pysnmp.proto import api, errind, error, rfc1905, rfc3411
+from pysnmp.proto.mpmod.base import AbstractMessageProcessingModel
 
 # API to rfc1905 protocol objects
-pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_2C]
+pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_2C]  # noqa: N816
 
 
 # SNMPv3 message format
@@ -81,7 +83,7 @@ class SNMPv3Message(univ.Sequence):
 
 
 # XXX move somewhere?
-_snmpErrors = {
+_snmpErrors = {  # noqa: N816
     (1, 3, 6, 1, 6, 3, 15, 1, 1, 1, 0): errind.unsupportedSecurityLevel,
     (1, 3, 6, 1, 6, 3, 15, 1, 1, 2, 0): errind.notInTimeWindow,
     (1, 3, 6, 1, 6, 3, 15, 1, 1, 3, 0): errind.unknownUserName,

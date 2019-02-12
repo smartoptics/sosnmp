@@ -4,7 +4,8 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-from pyasn1.type import univ, namedtype, namedval
+from pyasn1.type import namedtype, namedval, univ
+
 from pysnmp.proto import rfc1905
 
 version = univ.Integer(namedValues=namedval.NamedValues(("version-2c", 1)))

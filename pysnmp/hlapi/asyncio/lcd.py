@@ -4,13 +4,13 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-from pysnmp.entity import config
-from pysnmp import nextid, error
-from pysnmp.entity.engine import SnmpEngine
-from pysnmp.hlapi.asyncio.auth import *
-
 from pyasn1.compat.octets import null
 
+
+from pysnmp import error, nextid
+from pysnmp.entity import config
+from pysnmp.entity.engine import SnmpEngine
+from pysnmp.hlapi.asyncio.auth import CommunityData, UsmUserData
 from pysnmp.hlapi.asyncio.transport import AbstractTransportTarget
 
 __all__ = ["CommandGeneratorLcdConfigurator", "NotificationOriginatorLcdConfigurator"]

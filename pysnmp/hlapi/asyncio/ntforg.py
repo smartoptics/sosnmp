@@ -8,18 +8,16 @@
 # Authors: Matt Hooks <me@matthooks.com>
 #          Zachary Lorusso <zlorusso@gmail.com>
 #
+import asyncio
 import sys
 
-from pysnmp.smi.rfc1902 import *
-from pysnmp.hlapi.asyncio.auth import *
-from pysnmp.hlapi.asyncio.context import *
-from pysnmp.hlapi.asyncio.lcd import *
-from pysnmp.hlapi.asyncio.varbinds import *
-from pysnmp.hlapi.asyncio.transport import *
 from pysnmp.entity.rfc3413 import ntforg
-
-import asyncio
-
+from pysnmp.hlapi.asyncio.auth import CommunityData, UsmUserData
+from pysnmp.hlapi.asyncio.context import ContextData
+from pysnmp.hlapi.asyncio.lcd import NotificationOriginatorLcdConfigurator
+from pysnmp.hlapi.asyncio.transport import Udp6TransportTarget, UdpTransportTarget
+from pysnmp.hlapi.asyncio.varbinds import NotificationOriginatorVarBinds
+from pysnmp.smi.rfc1902 import NotificationType, ObjectIdentity
 
 __all__ = ["sendNotification"]
 

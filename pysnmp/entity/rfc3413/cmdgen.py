@@ -5,16 +5,19 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import sys
-from pysnmp.entity.engine import SnmpEngine
-from pysnmp.entity.rfc3413 import config
-from pysnmp.proto import rfc1905, errind
-from pysnmp.proto.api import v2c
-from pysnmp.proto.proxy import rfc2576
-from pysnmp import error, nextid, debug
-from pysnmp.proto.error import StatusInformation
+
 from pyasn1.type import univ
 
-getNextHandle = nextid.Integer(0x7FFFFFFF)
+
+from pysnmp import debug, error, nextid
+from pysnmp.entity.engine import SnmpEngine
+from pysnmp.entity.rfc3413 import config
+from pysnmp.proto import errind, rfc1905
+from pysnmp.proto.api import v2c
+from pysnmp.proto.error import StatusInformation
+from pysnmp.proto.proxy import rfc2576
+
+getNextHandle = nextid.Integer(0x7FFFFFFF)  # noqa: N816
 
 __null = univ.Null("")
 

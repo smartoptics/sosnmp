@@ -33,14 +33,14 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 # THE POSSIBILITY OF SUCH DAMAGE.
 #
+import asyncio
 import sys
-from time import time
 import traceback
+from time import time
 from typing import Tuple
+
 from pysnmp.carrier.base import AbstractTransport, AbstractTransportDispatcher
 from pysnmp.error import PySnmpError
-
-import asyncio
 
 
 class AsyncioDispatcher(AbstractTransportDispatcher):

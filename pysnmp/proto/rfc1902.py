@@ -4,8 +4,9 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-from pyasn1.type import univ, tag, constraint, namedtype, namedval
-from pysnmp.proto import rfc1155, error
+from pyasn1.type import constraint, namedtype, namedval, tag, univ
+
+from pysnmp.proto import error, rfc1155
 
 __all__ = [
     "Opaque",
@@ -183,7 +184,7 @@ class Integer(Integer32):
 
 
 class OctetString(univ.OctetString):
-    """Creates an instance of SNMP OCTET STRING class.
+    r"""Creates an instance of SNMP OCTET STRING class.
 
     The :py:class:`~pysnmp.proto.rfc1902.OctetString` type represents
     arbitrary binary or text data (:RFC:`1902#section-7.1.2`).
@@ -301,7 +302,7 @@ class ObjectIdentifier(univ.ObjectIdentifier):
 
 
 class IpAddress(OctetString):
-    """Creates an instance of SNMP IpAddress class.
+    r"""Creates an instance of SNMP IpAddress class.
 
     The :py:class:`~pysnmp.proto.rfc1902.IpAddress` class represents
     a 32-bit internet address as an OCTET STRING of length 4, in network
@@ -514,7 +515,7 @@ class TimeTicks(univ.Integer):
 
 
 class Opaque(univ.OctetString):
-    """Creates an instance of SNMP Opaque class.
+    r"""Creates an instance of SNMP Opaque class.
 
     The :py:class:`~pysnmp.proto.rfc1902.Opaque` type supports the
     capability to pass arbitrary ASN.1 syntax.  A value is encoded
@@ -600,7 +601,7 @@ class Counter64(univ.Integer):
 
 
 class Bits(OctetString):
-    """Creates an instance of SNMP BITS class.
+    r"""Creates an instance of SNMP BITS class.
 
     The :py:class:`~pysnmp.proto.rfc1902.Bits` type represents
     an enumeration of named bits. This collection is assigned non-negative,

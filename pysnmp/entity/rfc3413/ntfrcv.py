@@ -5,11 +5,13 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import sys
+
 from pyasn1.compat.octets import null
-from pysnmp.proto import rfc3411, error
+
+from pysnmp import debug
+from pysnmp.proto import error, rfc3411
 from pysnmp.proto.api import v1, v2c  # backend is always SMIv2 compliant
 from pysnmp.proto.proxy import rfc2576
-from pysnmp import debug
 
 
 # 3.4

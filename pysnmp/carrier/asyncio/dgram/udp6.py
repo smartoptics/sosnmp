@@ -4,11 +4,13 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+
 import socket
-from typing import Tuple
 import warnings
-from pysnmp.carrier.base import AbstractTransportAddress
+from typing import Tuple
+
 from pysnmp.carrier.asyncio.dgram.base import DgramAsyncioProtocol
+from pysnmp.carrier.base import AbstractTransportAddress
 
 DOMAIN_NAME: Tuple[int, ...]
 SNMP_UDP6_DOMAIN: Tuple[int, ...]

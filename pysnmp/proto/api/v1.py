@@ -5,8 +5,9 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 from pyasn1.type import univ
-from pysnmp.proto import rfc1155, rfc1157, error
+
 from pysnmp import nextid
+from pysnmp.proto import error, rfc1155, rfc1157
 
 # Shortcuts to SNMP types
 Integer = univ.Integer
@@ -54,9 +55,9 @@ class VarBindAPI:
         return varBind[0], varBind[1].getComponent(1)
 
 
-apiVarBind = VarBindAPI()
+apiVarBind = VarBindAPI()  # noqa: N816
 
-getNextRequestID = nextid.Integer(0xFFFFFF)
+getNextRequestID = nextid.Integer(0xFFFFFF)  # noqa: N816
 
 
 class PDUAPI:
@@ -167,7 +168,7 @@ class PDUAPI:
             return [apiPDU.getVarBinds(rspPDU)]
 
 
-apiPDU = PDUAPI()
+apiPDU = PDUAPI()  # noqa: N816
 
 
 class TrapPDUAPI:
@@ -297,7 +298,7 @@ class TrapPDUAPI:
             idx += 1
 
 
-apiTrapPDU = TrapPDUAPI()
+apiTrapPDU = TrapPDUAPI()  # noqa: N816
 
 
 class MessageAPI:
@@ -361,4 +362,4 @@ class MessageAPI:
         return rspMsg
 
 
-apiMessage = MessageAPI()
+apiMessage = MessageAPI()  # noqa: N816

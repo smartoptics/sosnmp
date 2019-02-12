@@ -31,23 +31,21 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 # THE POSSIBILITY OF SUCH DAMAGE.
 #
+import asyncio
 import sys
 from typing import AsyncGenerator
+
 from pysnmp.entity.engine import SnmpEngine
-from pysnmp.hlapi.asyncio.transport import AbstractTransportTarget
-from pysnmp.proto.rfc1905 import EndOfMibView, endOfMibView
-
-from pysnmp.smi.rfc1902 import *
-from pysnmp.hlapi.asyncio.auth import *
-from pysnmp.hlapi.asyncio.context import *
-from pysnmp.hlapi.asyncio.lcd import *
-from pysnmp.hlapi.asyncio.varbinds import *
-from pysnmp.hlapi.asyncio.transport import *
 from pysnmp.entity.rfc3413 import cmdgen
-from pysnmp.proto.rfc1902 import Integer32, Null
+from pysnmp.hlapi.asyncio.auth import CommunityData, UsmUserData
+from pysnmp.hlapi.asyncio.context import ContextData
+from pysnmp.hlapi.asyncio.lcd import CommandGeneratorLcdConfigurator
+from pysnmp.hlapi.asyncio.transport import AbstractTransportTarget
+from pysnmp.hlapi.asyncio.varbinds import CommandGeneratorVarBinds
 from pysnmp.proto import errind
-
-import asyncio
+from pysnmp.proto.rfc1902 import Integer32, Null
+from pysnmp.proto.rfc1905 import EndOfMibView, endOfMibView
+from pysnmp.smi.rfc1902 import ObjectType
 
 
 __all__ = [
@@ -63,7 +61,18 @@ __all__ = [
 VB_PROCESSOR = CommandGeneratorVarBinds()
 LCD = CommandGeneratorLcdConfigurator()
 
-isEndOfMib = lambda x: not cmdgen.getNextVarBinds(x)[1]
+
+def isEndOfMib(var_binds):  # noqa: N816
+    """
+    Check if the given variable bindings indicate the end of the MIB.
+
+    Parameters:
+    var_binds (list): A list of variable bindings.
+
+    Returns:
+    bool: True if it is the end of the MIB, False otherwise.
+    """
+    return not cmdgen.getNextVarBinds(var_binds)[1]
 
 
 async def getCmd(
@@ -720,7 +729,6 @@ async def walkCmd(
     >>> g.send( [ ObjectType(ObjectIdentity('IF-MIB', 'ifInOctets')) ] )
     (None, 0, 0, [(ObjectName('1.3.6.1.2.1.2.2.1.10.1'), Counter32(284817787))])
     """
-
     lexicographicMode = options.get("lexicographicMode", True)
     ignoreNonIncreasingOid = options.get("ignoreNonIncreasingOid", False)
     maxRows = options.get("maxRows", 0)
@@ -919,7 +927,6 @@ async def bulkWalkCmd(
     >>> g.send( [ ObjectType(ObjectIdentity('IF-MIB', 'ifInOctets')) ] )
     (None, 0, 0, [(ObjectName('1.3.6.1.2.1.2.2.1.10.1'), Counter32(284817787))])
     """
-
     lexicographicMode = options.get("lexicographicMode", True)
     ignoreNonIncreasingOid = options.get("ignoreNonIncreasingOid", False)
     maxRows = options.get("maxRows", 0)

@@ -37,7 +37,7 @@ except ImportError:
 
         return addMibCompiler
 
-    addMibCompiler = addMibCompilerDecorator(sys.exc_info()[1])
+    addMibCompiler = addMibCompilerDecorator(sys.exc_info()[1])  # noqa: N816
 
 else:
 

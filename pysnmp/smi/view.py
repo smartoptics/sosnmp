@@ -5,14 +5,15 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import sys
-from pysnmp.smi.indices import OrderedDict, OidOrderedDict
-from pysnmp.smi import error
+
 from pysnmp import debug
+from pysnmp.smi import error
+from pysnmp.smi.indices import OidOrderedDict, OrderedDict
 
 __all__ = ["MibViewController"]
 
-classTypes = (type,)
-instanceTypes = (object,)
+classTypes = (type,)  # noqa: N816
+instanceTypes = (object,)  # noqa: N816
 
 
 class MibViewController:

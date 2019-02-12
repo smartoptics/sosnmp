@@ -6,8 +6,9 @@
 #
 import sys
 import traceback
-from pysnmp.smi import error
+
 from pysnmp import debug
+from pysnmp.smi import error
 from pysnmp.smi.builder import MibBuilder
 
 __all__ = ["AbstractMibInstrumController", "MibInstrumController"]
@@ -193,8 +194,8 @@ class MibInstrumController(AbstractMibInstrumController):
 
     def flipFlopFsm(self, fsmTable, *varBinds, **context):
         self.__indexMib()
-        debug.logger & debug.FLAG_INS and debug.logger(
-            f"flipFlopFsm: input var-binds {inputVarBinds!r}"
+        debug.logger and debug.FLAG_INS and debug.logger(
+            f"flipFlopFsm: input var-binds {varBinds!r}"
         )
         (mibTree,) = self.mibBuilder.importSymbols("SNMPv2-SMI", "iso")
         outputVarBinds = []

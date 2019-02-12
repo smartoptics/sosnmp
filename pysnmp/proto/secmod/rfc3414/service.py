@@ -7,24 +7,26 @@
 #
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-import time
 import sys
+import time
+
+from pyasn1.codec.ber import decoder, encoder, eoo
+from pyasn1.compat.octets import null
+from pyasn1.error import PyAsn1Error
+from pyasn1.type import constraint, namedtype, univ
+
+from pysnmp import debug
+from pysnmp.proto import api, errind, error, rfc1155, rfc3411
 from pysnmp.proto.secmod.base import AbstractSecurityModel
+from pysnmp.proto.secmod.eso.priv import aes192, aes256, des3
 from pysnmp.proto.secmod.rfc3414.auth import hmacmd5, hmacsha, noauth
 from pysnmp.proto.secmod.rfc3414.priv import des, nopriv
 from pysnmp.proto.secmod.rfc3826.priv import aes
 from pysnmp.proto.secmod.rfc7860.auth import hmacsha2
-from pysnmp.proto.secmod.eso.priv import des3, aes192, aes256
 from pysnmp.smi.error import NoSuchInstanceError
-from pysnmp.proto import api, rfc1155, rfc3411, errind, error
-from pysnmp import debug
-from pyasn1.type import univ, namedtype, constraint
-from pyasn1.codec.ber import encoder, decoder, eoo
-from pyasn1.error import PyAsn1Error
-from pyasn1.compat.octets import null
 
 # API to rfc1905 protocol objects
-pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_2C]
+pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_2C]  # noqa: N816
 
 
 # USM security params

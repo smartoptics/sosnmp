@@ -4,9 +4,9 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-from pysnmp.proto import rfc1905, rfc3411, error
-from pysnmp.proto.api import v1, v2c
 from pysnmp import debug
+from pysnmp.proto import error, rfc1905, rfc3411
+from pysnmp.proto.api import v1, v2c
 
 # 2.1.1
 
@@ -94,7 +94,7 @@ V2_TO_V1_ERROR_MAP = {
     16: 2,
 }
 
-zeroInt = v1.Integer(0)
+zeroInt = v1.Integer(0)  # noqa: N816
 
 
 def v1ToV2(v1Pdu, origV2Pdu=None, snmpTrapCommunity=""):

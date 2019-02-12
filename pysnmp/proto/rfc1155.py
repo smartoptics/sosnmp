@@ -4,10 +4,11 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-from pyasn1.type import univ, tag, constraint, namedtype
 from pyasn1.error import PyAsn1Error
-from pysnmp.smi.error import SmiError
+from pyasn1.type import constraint, namedtype, tag, univ
+
 from pysnmp.proto import error
+from pysnmp.smi.error import SmiError
 
 __all__ = [
     "Opaque",

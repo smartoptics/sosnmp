@@ -34,15 +34,15 @@
 # THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+import asyncio
 import sys
 import traceback
 from socket import socket
+
+from pysnmp import debug
+from pysnmp.carrier import error
 from pysnmp.carrier.asyncio.base import AbstractAsyncioTransport
 from pysnmp.carrier.base import AbstractTransportAddress
-from pysnmp.carrier import error
-from pysnmp import debug
-
-import asyncio
 
 
 class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):

@@ -30,11 +30,13 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 # THE POSSIBILITY OF SUCH DAMAGE.
 #
+
 import socket
-from typing import Tuple
 import warnings
-from pysnmp.carrier.base import AbstractTransportAddress
+from typing import Tuple
+
 from pysnmp.carrier.asyncio.dgram.base import DgramAsyncioProtocol
+from pysnmp.carrier.base import AbstractTransportAddress
 
 DOMAIN_NAME: Tuple[int, ...]
 SNMP_UDP6_DOMAIN: Tuple[int, ...]

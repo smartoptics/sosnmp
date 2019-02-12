@@ -15,11 +15,11 @@
 # Parts of the code below is taken from:
 # http://carnivore.it/2012/10/12/python3.3_sendmsg_and_recvmsg
 #
-from pysnmp import debug
-
 import ctypes
 import ipaddress
 import socket
+
+from pysnmp import debug
 
 
 uint32_t = ctypes.c_uint32

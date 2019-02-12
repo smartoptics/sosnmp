@@ -5,19 +5,19 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import warnings
+
 from pyasn1.compat.octets import null
+
+from pysnmp import debug, error
 from pysnmp.carrier.asyncio.dgram import udp, udp6
 from pysnmp.carrier.base import AbstractTransport
 from pysnmp.entity.engine import SnmpEngine
+from pysnmp.proto import rfc1902, rfc1905
+from pysnmp.proto.secmod.eso.priv import aes192, aes256, des3
 from pysnmp.proto.secmod.rfc3414.auth import hmacmd5, hmacsha, noauth
 from pysnmp.proto.secmod.rfc3414.priv import des, nopriv
 from pysnmp.proto.secmod.rfc3826.priv import aes
 from pysnmp.proto.secmod.rfc7860.auth import hmacsha2
-from pysnmp.proto.secmod.eso.priv import des3, aes192, aes256
-from pysnmp.proto import rfc1902
-from pysnmp.proto import rfc1905
-from pysnmp import error
-from pysnmp import debug
 
 # Old to new attribute mapping
 deprecated_attributes = {
@@ -61,8 +61,8 @@ def __getattr__(attr: str):
 # A shortcut to popular constants
 
 # Transports
-snmpUDPDomain = udp.SNMP_UDP_DOMAIN
-snmpUDP6Domain = udp6.SNMP_UDP6_DOMAIN
+SNMP_UDP_DOMAIN = udp.SNMP_UDP_DOMAIN
+SNMP_UDP6_DOMAIN = udp6.SNMP_UDP6_DOMAIN
 
 # Auth protocol
 USM_AUTH_HMAC96_MD5 = hmacmd5.HmacMd5.SERVICE_ID
@@ -395,8 +395,6 @@ def delV3User(
     userName,
     securityEngineId=None,
 ):
-    if securityEngineId is None:  # backward compatibility
-        securityEngineId = contextEngineId
     (
         securityEngineId,
         usmUserEntry,
@@ -516,13 +514,13 @@ def addTargetAddr(
         snmpEngine, addrName
     )
 
-    if transportDomain[: len(snmpUDPDomain)] == snmpUDPDomain:
+    if transportDomain[: len(SNMP_UDP_DOMAIN)] == SNMP_UDP_DOMAIN:
         (SnmpUDPAddress,) = mibBuilder.importSymbols("SNMPv2-TM", "SnmpUDPAddress")
         transportAddress = SnmpUDPAddress(transportAddress)
         if sourceAddress is None:
             sourceAddress = ("0.0.0.0", 0)
         sourceAddress = SnmpUDPAddress(sourceAddress)
-    elif transportDomain[: len(snmpUDP6Domain)] == snmpUDP6Domain:
+    elif transportDomain[: len(SNMP_UDP6_DOMAIN)] == SNMP_UDP6_DOMAIN:
         (TransportAddressIPv6,) = mibBuilder.importSymbols(
             "TRANSPORT-ADDRESS-MIB", "TransportAddressIPv6"
         )
@@ -616,8 +614,8 @@ def delTransport(snmpEngine: SnmpEngine, transportDomain: "tuple[int, ...]"):
     return transport
 
 
-addSocketTransport = addTransport
-delSocketTransport = delTransport
+addSocketTransport = addTransport  # noqa: N816
+delSocketTransport = delTransport  # noqa: N816
 
 
 # VACM shortcuts

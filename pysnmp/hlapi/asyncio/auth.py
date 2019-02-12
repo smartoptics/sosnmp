@@ -5,9 +5,10 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import warnings
-from pysnmp.entity import config
-from pysnmp import error
+
 from pyasn1.compat.octets import null
+from pysnmp import error
+from pysnmp.entity import config
 
 __all__ = [
     "CommunityData",
@@ -195,40 +196,6 @@ class CommunityData:
             tag is None and self.tag or tag,
             securityName is None and self.securityName or securityName,
         )
-
-
-# Old to new attribute mapping
-deprecated_attributes = {
-    "usmHMACMD5AuthProtocol": "USM_AUTH_HMAC96_MD5",
-    "usmHMACSHAAuthProtocol": "USM_AUTH_HMAC96_SHA",
-    "usmHMAC128SHA224AuthProtocol": "USM_AUTH_HMAC128_SHA224",
-    "usmHMAC192SHA256AuthProtocol": "USM_AUTH_HMAC192_SHA256",
-    "usmHMAC256SHA384AuthProtocol": "USM_AUTH_HMAC256_SHA384",
-    "usmHMAC384SHA512AuthProtocol": "USM_AUTH_HMAC384_SHA512",
-    "usmNoAuthProtocol": "USM_AUTH_NONE",
-    "usmDESPrivProtocol": "USM_PRIV_CBC56_DES",
-    "usm3DESEDEPrivProtocol": "USM_PRIV_CBC168_3DES",
-    "usmAesCfb128Protocol": "USM_PRIV_CFB128_AES",
-    "usmAesBlumenthalCfb192Protocol": "USM_PRIV_CFB192_AES_BLUMENTHAL",
-    "usmAesBlumenthalCfb256Protocol": "USM_PRIV_CFB256_AES_BLUMENTHAL",
-    "usmAesCfb192Protocol": "USM_PRIV_CFB192_AES",
-    "usmAesCfb256Protocol": "USM_PRIV_CFB256_AES",
-    "usmNoPrivProtocol": "USM_PRIV_NONE",
-    "usmKeyTypePassphrase": "USM_KEY_TYPE_PASSPHRASE",
-    "usmKeyTypeMaster": "USM_KEY_TYPE_MASTER",
-    "usmKeyTypeLocalized": "USM_KEY_TYPE_LOCALIZED",
-}
-
-
-def __getattr__(attr: str):
-    if new_attr := deprecated_attributes.get(attr):
-        warnings.warn(
-            f"{attr} is deprecated. Please use {new_attr} instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return globals()[new_attr]
-    raise AttributeError(f"module '{__name__}' has no attribute '{attr}'")
 
 
 USM_AUTH_NONE = config.USM_AUTH_NONE
@@ -504,25 +471,59 @@ class UsmUserData:
 
 # Backward-compatible protocol IDs
 
-usmNoAuthProtocol = USM_AUTH_NONE
-usmHMACMD5AuthProtocol = USM_AUTH_HMAC96_MD5
-usmHMACSHAAuthProtocol = USM_AUTH_HMAC96_SHA
-usmHMAC128SHA224AuthProtocol = USM_AUTH_HMAC128_SHA224
-usmHMAC192SHA256AuthProtocol = USM_AUTH_HMAC192_SHA256
-usmHMAC256SHA384AuthProtocol = USM_AUTH_HMAC256_SHA384
-usmHMAC384SHA512AuthProtocol = USM_AUTH_HMAC384_SHA512
-usmNoPrivProtocol = USM_PRIV_NONE
-usmDESPrivProtocol = USM_PRIV_CBC56_DES
-usm3DESEDEPrivProtocol = USM_PRIV_CBC168_3DES
-usmAesCfb128Protocol = USM_PRIV_CFB128_AES
-usmAesCfb192Protocol = USM_PRIV_CFB192_AES
-usmAesCfb256Protocol = USM_PRIV_CFB256_AES
-usmAesBlumenthalCfb192Protocol = USM_PRIV_CFB192_AES_BLUMENTHAL
-usmAesBlumenthalCfb256Protocol = USM_PRIV_CFB256_AES_BLUMENTHAL
+usmNoAuthProtocol = USM_AUTH_NONE  # noqa: N816
+usmHMACMD5AuthProtocol = USM_AUTH_HMAC96_MD5  # noqa: N816
+usmHMACSHAAuthProtocol = USM_AUTH_HMAC96_SHA  # noqa: N816
+usmHMAC128SHA224AuthProtocol = USM_AUTH_HMAC128_SHA224  # noqa: N816
+usmHMAC192SHA256AuthProtocol = USM_AUTH_HMAC192_SHA256  # noqa: N816
+usmHMAC256SHA384AuthProtocol = USM_AUTH_HMAC256_SHA384  # noqa: N816
+usmHMAC384SHA512AuthProtocol = USM_AUTH_HMAC384_SHA512  # noqa: N816
+usmNoPrivProtocol = USM_PRIV_NONE  # noqa: N816
+usmDESPrivProtocol = USM_PRIV_CBC56_DES  # noqa: N816
+usm3DESEDEPrivProtocol = USM_PRIV_CBC168_3DES  # noqa: N816
+usmAesCfb128Protocol = USM_PRIV_CFB128_AES  # noqa: N816
+usmAesCfb192Protocol = USM_PRIV_CFB192_AES  # noqa: N816
+usmAesCfb256Protocol = USM_PRIV_CFB256_AES  # noqa: N816
+usmAesBlumenthalCfb192Protocol = USM_PRIV_CFB192_AES_BLUMENTHAL  # noqa: N816
+usmAesBlumenthalCfb256Protocol = USM_PRIV_CFB256_AES_BLUMENTHAL  # noqa: N816
 
-usmKeyTypePassphrase = USM_KEY_TYPE_PASSPHRASE
-usmKeyTypeMaster = USM_KEY_TYPE_MASTER
-usmKeyTypeLocalized = USM_KEY_TYPE_LOCALIZED
+usmKeyTypePassphrase = USM_KEY_TYPE_PASSPHRASE  # noqa: N816
+usmKeyTypeMaster = USM_KEY_TYPE_MASTER  # noqa: N816
+usmKeyTypeLocalized = USM_KEY_TYPE_LOCALIZED  # noqa: N816
+
+# Old to new attribute mapping
+deprecated_attributes = {
+    "usmHMACMD5AuthProtocol": "USM_AUTH_HMAC96_MD5",
+    "usmHMACSHAAuthProtocol": "USM_AUTH_HMAC96_SHA",
+    "usmHMAC128SHA224AuthProtocol": "USM_AUTH_HMAC128_SHA224",
+    "usmHMAC192SHA256AuthProtocol": "USM_AUTH_HMAC192_SHA256",
+    "usmHMAC256SHA384AuthProtocol": "USM_AUTH_HMAC256_SHA384",
+    "usmHMAC384SHA512AuthProtocol": "USM_AUTH_HMAC384_SHA512",
+    "usmNoAuthProtocol": "USM_AUTH_NONE",
+    "usmDESPrivProtocol": "USM_PRIV_CBC56_DES",
+    "usm3DESEDEPrivProtocol": "USM_PRIV_CBC168_3DES",
+    "usmAesCfb128Protocol": "USM_PRIV_CFB128_AES",
+    "usmAesBlumenthalCfb192Protocol": "USM_PRIV_CFB192_AES_BLUMENTHAL",
+    "usmAesBlumenthalCfb256Protocol": "USM_PRIV_CFB256_AES_BLUMENTHAL",
+    "usmAesCfb192Protocol": "USM_PRIV_CFB192_AES",
+    "usmAesCfb256Protocol": "USM_PRIV_CFB256_AES",
+    "usmNoPrivProtocol": "USM_PRIV_NONE",
+    "usmKeyTypePassphrase": "USM_KEY_TYPE_PASSPHRASE",
+    "usmKeyTypeMaster": "USM_KEY_TYPE_MASTER",
+    "usmKeyTypeLocalized": "USM_KEY_TYPE_LOCALIZED",
+}
+
+
+def __getattr__(attr: str):
+    if new_attr := deprecated_attributes.get(attr):
+        warnings.warn(
+            f"{attr} is deprecated. Please use {new_attr} instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return globals()[new_attr]
+    raise AttributeError(f"module '{__name__}' has no attribute '{attr}'")
+
 
 __all__.extend(
     [

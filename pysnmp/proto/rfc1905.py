@@ -4,7 +4,8 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-from pyasn1.type import univ, tag, constraint, namedtype, namedval
+from pyasn1.type import constraint, namedtype, namedval, tag, univ
+
 from pysnmp.proto import rfc1902
 
 __all__ = [
@@ -33,7 +34,7 @@ max_bindings = rfc1902.Integer(2147483647)
 # Take SNMP exception values out of BindValue structure for convenience
 
 UnSpecified = univ.Null
-unSpecified = UnSpecified("")
+unSpecified = UnSpecified("")  # noqa: N816
 
 
 class NoSuchObject(univ.Null):
@@ -45,7 +46,7 @@ class NoSuchObject(univ.Null):
         return "No Such Object currently exists at this OID"
 
 
-noSuchObject = NoSuchObject("")
+noSuchObject = NoSuchObject("")  # noqa: N816
 
 
 class NoSuchInstance(univ.Null):
@@ -57,7 +58,7 @@ class NoSuchInstance(univ.Null):
         return "No Such Instance currently exists at this OID"
 
 
-noSuchInstance = NoSuchInstance("")
+noSuchInstance = NoSuchInstance("")  # noqa: N816
 
 
 class EndOfMibView(univ.Null):
@@ -69,7 +70,7 @@ class EndOfMibView(univ.Null):
         return "No more variables left in this MIB View"
 
 
-endOfMibView = EndOfMibView("")
+endOfMibView = EndOfMibView("")  # noqa: N816
 
 
 # Made a separate class for better readability
@@ -97,7 +98,7 @@ class VarBindList(univ.SequenceOf):
     )
 
 
-errorStatus = univ.Integer(
+errorStatus = univ.Integer(  # noqa: N816
     namedValues=namedval.NamedValues(
         ("noError", 0),
         ("tooBig", 1),
@@ -137,10 +138,10 @@ class PDU(univ.Sequence):
     )
 
 
-nonRepeaters = univ.Integer().subtype(
+nonRepeaters = univ.Integer().subtype(  # noqa: N816
     subtypeSpec=constraint.ValueRangeConstraint(0, max_bindings)
 )
-maxRepetitions = univ.Integer().subtype(
+maxRepetitions = univ.Integer().subtype(  # noqa: N816
     subtypeSpec=constraint.ValueRangeConstraint(0, max_bindings)
 )
 

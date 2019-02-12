@@ -5,6 +5,7 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 from hashlib import md5, sha1
+
 from pyasn1.type import univ
 
 
