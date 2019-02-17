@@ -13,6 +13,8 @@
 # It is a stripped version of MIB that contains only symbols that is
 # unique to SMIv1 and have no analogues in SMIv2
 #
+from pysnmp.proto.rfc1155 import NetworkAddress
+
 OctetString, ObjectIdentifier, Integer = mibBuilder.importSymbols(
     "ASN1", "OctetString", "ObjectIdentifier", "Integer"
 )
@@ -79,7 +81,7 @@ ModuleCompliance, NotificationGroup = mibBuilder.importSymbols(
 DisplayString, PhysAddress = mibBuilder.importSymbols(
     "SNMPv2-TC", "DisplayString", "PhysAddress"
 )
-from pysnmp.proto.rfc1155 import NetworkAddress
+
 
 at = MibIdentifier((1, 3, 6, 1, 2, 1, 3))
 ip = MibIdentifier((1, 3, 6, 1, 2, 1, 4))

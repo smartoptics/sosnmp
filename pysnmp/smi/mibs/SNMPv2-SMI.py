@@ -6,12 +6,15 @@
 #
 import sys
 import traceback
-from pysnmp.smi.indices import OidOrderedDict
-from pysnmp.smi import exval, error
-from pysnmp.proto import rfc1902
-from pysnmp import cache, debug
-from pyasn1.type import univ
+
 from pyasn1.error import PyAsn1Error
+from pyasn1.type import univ
+
+from pysnmp import cache, debug
+from pysnmp.proto import rfc1902
+from pysnmp.smi import error, exval
+from pysnmp.smi.indices import OidOrderedDict
+
 
 Integer, ObjectIdentifier = mibBuilder.importSymbols(
     "ASN1", "Integer", "ObjectIdentifier"
@@ -1202,7 +1205,9 @@ class MibTableColumn(MibScalar):
 
 
 class MibTableRow(MibTree):
-    """MIB table row (SMI 'Entry'). Manages a set of table columns.
+    r"""MIB table row (SMI 'Entry').
+
+    Manages a set of table columns.
     Implements row creation/destruction.
     """
 
@@ -1241,8 +1246,8 @@ class MibTableRow(MibTree):
             if impliedFlag:
                 return obj.clone(tuple(value)), ()
             elif obj.isFixedLength():
-                l = obj.getFixedLength()
-                return obj.clone(tuple(value[:l])), value[l:]
+                value = obj.getFixedLength()
+                return obj.clone(tuple(value[:value])), value[value:]
             else:
                 return obj.clone(tuple(value[1 : value[0] + 1])), value[value[0] + 1 :]
         elif baseTag == self.__oidBaseTag:

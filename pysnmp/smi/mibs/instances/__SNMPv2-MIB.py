@@ -6,6 +6,7 @@
 #
 from sys import version
 from time import time
+
 from pysnmp import __version__
 
 (MibScalarInstance, TimeTicks) = mibBuilder.importSymbols(

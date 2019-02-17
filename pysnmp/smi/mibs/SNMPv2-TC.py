@@ -4,14 +4,22 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-import sys
 import inspect
 import string
-from pysnmp.smi.error import *
-from pysnmp import debug
-from pyasn1.type import univ
+import sys
+
 from pyasn1.compat import octets
+from pyasn1.type import univ
 from pyasn1.type.base import Asn1Item
+
+from pysnmp import debug
+from pysnmp.smi.error import (
+    InconsistentValueError,
+    MibOperationError,
+    RowCreationWanted,
+    RowDestructionWanted,
+    SmiError,
+)
 
 OctetString, Integer, ObjectIdentifier = mibBuilder.importSymbols(
     "ASN1", "OctetString", "Integer", "ObjectIdentifier"
@@ -470,9 +478,7 @@ class RowPointer(TextualConvention, ObjectIdentifier):
 
 
 class RowStatus(TextualConvention, Integer):
-    """A special kind of scalar MIB variable responsible for
-    MIB table row creation/destruction.
-    """
+    r"""A special kind of scalar MIB variable responsible for MIB table row creation/destruction."""
 
     description = "The RowStatus textual convention is used to manage the creation and deletion of conceptual rows, and is used as the value of the SYNTAX clause for the status column of a conceptual row (as described in Section 7.7.1 of [2].)..."
     status = "current"
