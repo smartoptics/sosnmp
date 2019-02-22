@@ -19,7 +19,7 @@ from pysnmp.hlapi.v3arch.asyncio.transport import (
     Udp6TransportTarget,
     UdpTransportTarget,
 )
-from pysnmp.hlapi.v3arch.asyncio.varbinds import NotificationOriginatorVarBinds
+from pysnmp.hlapi.varbinds import NotificationOriginatorVarBinds
 from pysnmp.smi.rfc1902 import NotificationType, ObjectIdentity
 
 __all__ = ["sendNotification"]

@@ -12,9 +12,9 @@ Send multiple SNMP GET requests at once using the following options:
 
 Functionally similar to:
 
-| $ snmpget -v2c -c public demo.pysnmp.com:1161 SNMPv2-MIB::sysDescr.0
-| $ snmpget -v2c -c public demo.pysnmp.com:2161 SNMPv2-MIB::sysDescr.0
-| $ snmpget -v2c -c public demo.pysnmp.com:3161 SNMPv2-MIB::sysDescr.0
+| $ snmpget -v2c -c public demo.pysnmp.com:161 SNMPv2-MIB::sysDescr.0
+| $ snmpget -v2c -c public demo.pysnmp.com:161 SNMPv2-MIB::sysDescr.0
+| $ snmpget -v2c -c public demo.pysnmp.com:161 SNMPv2-MIB::sysDescr.0
 
 """  #
 import asyncio
@@ -47,9 +47,9 @@ async def getone(snmpEngine, hostname):
 async def main():
     snmpEngine = SnmpEngine()
     await asyncio.gather(
-        getone(snmpEngine, ("demo.pysnmp.com", 1161)),
-        getone(snmpEngine, ("demo.pysnmp.com", 2161)),
-        getone(snmpEngine, ("demo.pysnmp.com", 3161)),
+        getone(snmpEngine, ("demo.pysnmp.com", 161)),
+        getone(snmpEngine, ("demo.pysnmp.com", 161)),
+        getone(snmpEngine, ("demo.pysnmp.com", 161)),
     )
 
 

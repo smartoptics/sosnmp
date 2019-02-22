@@ -6,9 +6,9 @@
 #
 import socket
 import sys
-from typing import Tuple
 
-from pysnmp.carrier.asyncio.dgram import udp, udp6
+from pysnmp.carrier.asyncio.dgram import udp
+from pysnmp.carrier.asyncio.dgram import udp6
 from pysnmp.error import PySnmpError
 from pysnmp.hlapi.transport import AbstractTransportTarget
 
@@ -16,10 +16,13 @@ __all__ = ["Udp6TransportTarget", "UdpTransportTarget"]
 
 
 class UdpTransportTarget(AbstractTransportTarget):
-    """Represent UDP/IPv6 transport endpoint.
+    """Represent UDP/IPv4 transport endpoint.
 
-    This object can be used for adding new entries to Local Configuration
-    Datastore (LCD) managed by :py:class:`~pysnmp.hlapi.v3arch.asyncio.SnmpEngine`
+    This object can be used for passing UDP/IPv4 configuration
+    information to the
+    :py:class:`~pysnmp.hlapi.v1arch.asyncio.AsyncCommandGenerator` and
+    :py:class:`~pysnmp.hlapi.v1arch.asyncio.AsyncNotificationOriginator`
+    objects scheduled on I/O by :py:class:`~pysnmp.hlapi.SnmpDispatcher`
     class instance.
 
     See :RFC:`1906#section-3` for more information on the UDP transport mapping.
@@ -31,9 +34,9 @@ class UdpTransportTarget(AbstractTransportTarget):
         which is a tuple of FQDN, port where FQDN is a string representing
         either hostname or IPv4 address in quad-dotted form, port is an
         integer.
-    timeout: int
+    timeout: :py:class:`int`
         Response timeout in seconds.
-    retries: int
+    retries: :py:class:`int`
         Maximum number of request retries, 0 retries means just a single
         request.
     tagList: str
@@ -43,16 +46,16 @@ class UdpTransportTarget(AbstractTransportTarget):
 
     Examples
     --------
-    >>> from pysnmp.hlapi.v3arch.asyncio import UdpTransportTarget
+    >>> from pysnmp.hlapi.v1arch.asyncore import UdpTransportTarget
     >>> UdpTransportTarget(('demo.pysnmp.com', 161))
-    UdpTransportTarget(('195.218.195.228', 161), timeout=1, retries=5, tagList='')
+    UdpTransportTarget(('195.218.195.228', 161), timeout=1, retries=5)
     >>>
     """
 
-    TRANSPORT_DOMAIN: Tuple[int, ...] = udp.DOMAIN_NAME
+    TRANSPORT_DOMAIN = udp.domainName
     PROTO_TRANSPORT = udp.UdpAsyncioTransport
 
-    def _resolveAddr(self, transportAddr: Tuple) -> Tuple[str, int]:
+    def _resolveAddr(self, transportAddr):
         try:
             return socket.getaddrinfo(
                 transportAddr[0],
@@ -61,22 +64,22 @@ class UdpTransportTarget(AbstractTransportTarget):
                 socket.SOCK_DGRAM,
                 socket.IPPROTO_UDP,
             )[0][4][:2]
-        except socket.gaierror:
+        except socket.gaierror as exc:
             raise PySnmpError(
                 "Bad IPv4/UDP transport address {}: {}".format(
-                    "@".join([str(x) for x in transportAddr]), sys.exc_info()[1]
+                    "@".join([str(x) for x in transportAddr]), exc
                 )
             )
 
 
 class Udp6TransportTarget(AbstractTransportTarget):
-    """Creates UDP/IPv6 configuration entry and initialize socket API if needed.
+    """Represent UDP/IPv6 transport endpoint.
 
-    This object can be used by
-    :py:class:`~pysnmp.hlapi.v3arch.asyncio.AsyncCommandGenerator` or
-    :py:class:`~pysnmp.hlapi.v3arch.asyncio.AsyncNotificationOriginator`
-    and their derivatives for adding new entries to Local Configuration
-    Datastore (LCD) managed by :py:class:`~pysnmp.hlapi.v3arch.asyncio.SnmpEngine`
+    This object can be used for passing UDP/IPv6 configuration
+    information to the
+    :py:class:`~pysnmp.hlapi.v1arch.asyncio.AsyncCommandGenerator` and
+    :py:class:`~pysnmp.hlapi.v1arch.asyncio.AsyncNotificationOriginator`
+    objects scheduled on I/O by :py:class:`~pysnmp.hlapi.SnmpDispatcher`
     class instance.
 
     See :RFC:`1906#section-3`, :RFC:`2851#section-4` for more information
@@ -84,7 +87,7 @@ class Udp6TransportTarget(AbstractTransportTarget):
 
     Parameters
     ----------
-    transportAddr : tuple
+    transportAddr: tuple
         Indicates remote address in Python :py:mod:`socket` module format
         which is a tuple of FQDN, port where FQDN is a string representing
         either hostname or IPv6 address in one of three conventional forms
@@ -101,7 +104,7 @@ class Udp6TransportTarget(AbstractTransportTarget):
 
     Examples
     --------
-    >>> from pysnmp.hlapi.v3arch.asyncio import Udp6TransportTarget
+    >>> from pysnmp.hlapi.asyncio import Udp6TransportTarget
     >>> Udp6TransportTarget(('google.com', 161))
     Udp6TransportTarget(('2a00:1450:4014:80a::100e', 161), timeout=1, retries=5, tagList='')
     >>> Udp6TransportTarget(('FEDC:BA98:7654:3210:FEDC:BA98:7654:3210', 161))
@@ -115,10 +118,10 @@ class Udp6TransportTarget(AbstractTransportTarget):
     >>>
     """
 
-    TRANSPORT_DOMAIN: Tuple[int, ...] = udp6.DOMAIN_NAME
+    TRANSPORT_DOMAIN = udp6.domainName
     PROTO_TRANSPORT = udp6.Udp6AsyncioTransport
 
-    def _resolveAddr(self, transportAddr: tuple):
+    def _resolveAddr(self, transportAddr):
         try:
             return socket.getaddrinfo(
                 transportAddr[0],
@@ -127,9 +130,9 @@ class Udp6TransportTarget(AbstractTransportTarget):
                 socket.SOCK_DGRAM,
                 socket.IPPROTO_UDP,
             )[0][4][:2]
-        except socket.gaierror:
+        except socket.gaierror as exc:
             raise PySnmpError(
                 "Bad IPv6/UDP transport address {}: {}".format(
-                    "@".join([str(x) for x in transportAddr]), sys.exc_info()[1]
+                    "@".join([str(x) for x in transportAddr]), exc
                 )
             )

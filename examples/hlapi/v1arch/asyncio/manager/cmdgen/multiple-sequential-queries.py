@@ -18,20 +18,22 @@ Functionally similar to:
 
 """  #
 import asyncio
-from pysnmp.hlapi.v3arch.asyncio import *
+from pysnmp.hlapi.v1arch.asyncio import *
 
 
-async def getone(snmpEngine, hostname):
-    errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
-        snmpEngine,
+async def getone(snmpDispatcher, hostname):
+    iterator = await getCmd(
+        snmpDispatcher,
         CommunityData("public"),
         UdpTransportTarget(hostname),
-        ContextData(),
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
     )
 
+    errorIndication, errorStatus, errorIndex, varBinds = iterator
+
     if errorIndication:
         print(errorIndication)
+
     elif errorStatus:
         print(
             "{} at {}".format(
@@ -44,16 +46,16 @@ async def getone(snmpEngine, hostname):
             print(" = ".join([x.prettyPrint() for x in varBind]))
 
 
-async def getall(snmpEngine, hostnames):
+async def getall(snmpDispatcher, hostnames):
     for hostname in hostnames:
-        await getone(snmpEngine, hostname)
+        await getone(snmpDispatcher, hostname)
 
 
-snmpEngine = SnmpEngine()
+snmpDispatcher = SnmpDispatcher()
 
 asyncio.run(
     getall(
-        snmpEngine,
+        snmpDispatcher,
         [
             ("demo.pysnmp.com", 161),
             ("demo.pysnmp.com", 161),

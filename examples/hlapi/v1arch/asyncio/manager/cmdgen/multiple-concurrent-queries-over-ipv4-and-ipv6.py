@@ -1,8 +1,8 @@
 """
-Sequential queries
+Concurrent queries
 ++++++++++++++++++
 
-Send multiple SNMP GET requests one by one using the following options:
+Send multiple SNMP GET requests at once using the following options:
 
 * with SNMPv2c, community 'public'
 * over IPv4/UDP
@@ -18,20 +18,22 @@ Functionally similar to:
 
 """  #
 import asyncio
-from pysnmp.hlapi.v3arch.asyncio import *
+from pysnmp.hlapi.v1arch.asyncio import *
 
 
-async def getone(snmpEngine, hostname):
-    errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
-        snmpEngine,
+async def getone(snmpDispatcher, hostname):
+    iterator = await getCmd(
+        snmpDispatcher,
         CommunityData("public"),
         UdpTransportTarget(hostname),
-        ContextData(),
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
     )
 
+    errorIndication, errorStatus, errorIndex, varBinds = iterator
+
     if errorIndication:
         print(errorIndication)
+
     elif errorStatus:
         print(
             "{} at {}".format(
@@ -44,20 +46,13 @@ async def getone(snmpEngine, hostname):
             print(" = ".join([x.prettyPrint() for x in varBind]))
 
 
-async def getall(snmpEngine, hostnames):
-    for hostname in hostnames:
-        await getone(snmpEngine, hostname)
-
-
-snmpEngine = SnmpEngine()
-
-asyncio.run(
-    getall(
-        snmpEngine,
-        [
-            ("demo.pysnmp.com", 161),
-            ("demo.pysnmp.com", 161),
-            ("demo.pysnmp.com", 161),
-        ],
+async def main():
+    snmpDispatcher = SnmpDispatcher()
+    await asyncio.gather(
+        getone(snmpDispatcher, ("demo.pysnmp.com", 161)),
+        getone(snmpDispatcher, ("demo.pysnmp.com", 161)),
+        getone(snmpDispatcher, ("demo.pysnmp.com", 161)),
     )
-)
+
+
+asyncio.run(main())
