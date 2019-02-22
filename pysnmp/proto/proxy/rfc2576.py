@@ -138,6 +138,7 @@ def v1ToV2(v1Pdu, origV2Pdu=None, snmpTrapCommunity=""):
         )
 
         varBinds = v1.apiTrapPDU.getVarBinds(v1Pdu)
+
     else:
         varBinds = v1.apiPDU.getVarBinds(v1Pdu)
 
@@ -146,6 +147,7 @@ def v1ToV2(v1Pdu, origV2Pdu=None, snmpTrapCommunity=""):
         # 2.1.1.11
         if v1Val.tagSet == v1.NetworkAddress.tagSet:
             v1Val = v1Val.getComponent()
+
         v2VarBinds.append((oid, V1_TO_V2_VALUE_MAP[v1Val.tagSet].clone(v1Val)))
 
     if pduType not in rfc3411.NOTIFICATION_CLASS_PDUS:
@@ -189,6 +191,7 @@ def v2ToV1(v2Pdu, origV1Pdu=None):
 
     if pduType in V2_TO_V1_PDU_MAP:
         v1Pdu = V2_TO_V1_PDU_MAP[pduType].clone()
+
     else:
         raise error.ProtocolError("Unsupported PDU type")
 
@@ -197,22 +200,30 @@ def v2ToV1(v2Pdu, origV1Pdu=None):
 
     # 3.2
     if pduType in rfc3411.NOTIFICATION_CLASS_PDUS:
+        if len(v2VarBinds) < 2:
+            raise error.ProtocolError(
+                "SNMP v2c TRAP PDU requires at least two var-binds"
+            )
+
         # 3.2.1
         snmpTrapOID, snmpTrapOIDParam = v2VarBinds[1]
         if snmpTrapOID != v2c.apiTrapPDU.snmpTrapOID:
             raise error.ProtocolError("Second OID not snmpTrapOID")
-        snmpTrapOID, snmpTrapOIDParam = v2VarBinds[1]
+
         if snmpTrapOIDParam in V2_TO_V1_TRAP_MAP:
             for oid, val in v2VarBinds:
                 if oid == v2c.apiTrapPDU.snmpTrapEnterprise:
                     v1.apiTrapPDU.setEnterprise(v1Pdu, val)
                     break
+
             else:
                 # snmpTraps
                 v1.apiTrapPDU.setEnterprise(v1Pdu, (1, 3, 6, 1, 6, 3, 1, 1, 5))
+
         else:
             if snmpTrapOIDParam[-2] == 0:
                 v1.apiTrapPDU.setEnterprise(v1Pdu, snmpTrapOIDParam[:-2])
+
             else:
                 v1.apiTrapPDU.setEnterprise(v1Pdu, snmpTrapOIDParam[:-1])
 
@@ -224,18 +235,21 @@ def v2ToV1(v2Pdu, origV1Pdu=None):
                     v1Pdu, v1.IpAddress(val)
                 )  # v2c.OctetString is more constrained
                 break
+
         else:
             v1.apiTrapPDU.setAgentAddr(v1Pdu, v1.IpAddress("0.0.0.0"))
 
         # 3.2.3
         if snmpTrapOIDParam in V2_TO_V1_TRAP_MAP:
             v1.apiTrapPDU.setGenericTrap(v1Pdu, V2_TO_V1_TRAP_MAP[snmpTrapOIDParam])
+
         else:
             v1.apiTrapPDU.setGenericTrap(v1Pdu, 6)
 
         # 3.2.4
         if snmpTrapOIDParam in V2_TO_V1_TRAP_MAP:
             v1.apiTrapPDU.setSpecificTrap(v1Pdu, zeroInt)
+
         else:
             v1.apiTrapPDU.setSpecificTrap(v1Pdu, snmpTrapOIDParam[-1])
 
@@ -250,7 +264,9 @@ def v2ToV1(v2Pdu, origV1Pdu=None):
                 v2c.apiTrapPDU.snmpTrapEnterprise,
             ):
                 continue
+
             __v2VarBinds.append((oid, val))
+
         v2VarBinds = __v2VarBinds
 
         # 3.2.6 --> done below
@@ -261,6 +277,7 @@ def v2ToV1(v2Pdu, origV1Pdu=None):
 
     if pduType in rfc3411.RESPONSE_CLASS_PDUS:
         idx = len(v2VarBinds) - 1
+
         while idx >= 0:
             # 4.1.2.1
             oid, val = v2VarBinds[idx]
@@ -269,8 +286,10 @@ def v2ToV1(v2Pdu, origV1Pdu=None):
                     v1.apiPDU.setErrorStatus(v1Pdu, 2)
                     v1.apiPDU.setErrorIndex(v1Pdu, idx + 1)
                     break
+
                 elif origV1Pdu.tagSet == v1.GetNextRequestPDU.tagSet:
                     raise error.StatusInformation(idx=idx, pdu=v2Pdu)
+
                 else:
                     raise error.ProtocolError("Counter64 on the way")
 
@@ -300,12 +319,14 @@ def v2ToV1(v2Pdu, origV1Pdu=None):
     # Translate Var-Binds
     if pduType in rfc3411.RESPONSE_CLASS_PDUS and v1.apiPDU.getErrorStatus(v1Pdu):
         v1VarBinds = v1.apiPDU.getVarBinds(origV1Pdu)
+
     else:
         for oid, v2Val in v2VarBinds:
             v1VarBinds.append((oid, V2_TO_V1_VALUE_MAP[v2Val.tagSet].clone(v2Val)))
 
     if pduType in rfc3411.NOTIFICATION_CLASS_PDUS:
         v1.apiTrapPDU.setVarBinds(v1Pdu, v1VarBinds)
+
     else:
         v1.apiPDU.setVarBinds(v1Pdu, v1VarBinds)
 
