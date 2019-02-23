@@ -21,6 +21,10 @@ async def test_send_trap_enterprise_specific():
                 (v2c.apiTrapPDU.sysUpTime, TimeTicks(12345)),
                 ("1.3.6.1.2.1.1.1.0", OctetString("my system")),
                 (v2c.apiTrapPDU.snmpTrapAddress, IpAddress("127.0.0.1")),
+                (
+                    ObjectIdentity("SNMPv2-MIB", "snmpTrapOID", 0),
+                    ObjectIdentifier("1.3.6.1.4.1.20408.4.1.1.2.432"),
+                ),
             ),
         )
         assert errorIndication is None
