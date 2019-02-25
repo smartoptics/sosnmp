@@ -80,7 +80,7 @@ ntfOrg.sendVarBinds(
         # trap OID: Generic Trap #6 (enterpriseSpecific)
         #           and Specific Trap 432
         (
-            v2c.ObjectIdentifier("1.3.6.1.6.3.1.1.5.1"),
+            v2c.ObjectIdentifier("1.3.6.1.6.3.1.1.4.1.0"),
             v2c.ObjectIdentifier("1.3.6.1.4.1.20408.4.1.1.2.0.432"),
         ),
         # Agent Address with '127.0.0.1'

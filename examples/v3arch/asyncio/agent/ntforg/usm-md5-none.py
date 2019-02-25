@@ -88,7 +88,7 @@ sendRequestHandle = ntfOrg.sendVarBinds(
     # var-binds: SNMPv2-MIB::coldStart, ...
     [
         (
-            (1, 3, 6, 1, 6, 3, 1, 1, 5, 1),
+            (1, 3, 6, 1, 6, 3, 1, 1, 4, 1, 0),
             v2c.ObjectIdentifier((1, 3, 6, 1, 6, 3, 1, 1, 5, 1)),
         ),
         ((1, 3, 6, 1, 2, 1, 1, 5, 0), v2c.OctetString("system name")),
