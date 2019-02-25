@@ -16,6 +16,7 @@ Revision 7.0.3, released on Aug 26, 2024
   automation around building well-formed SNMP messages is and mediating
   differences between SNMP versions is not present in this new `v1arch`
   layer.
+
 - The signature of the hlapi `.sendNotification()` call has changed
   to accept `*varBinds` instead of a sequence of `varBinds`. The rationale
   is to unify this method call with similar methods of CommandGenerator.
