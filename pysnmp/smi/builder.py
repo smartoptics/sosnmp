@@ -382,27 +382,32 @@ class MibBuilder:
                 self.loadModule(modName, **userCtx)
 
             except error.MibNotFoundError:
-                if self.__mibCompiler:
-                    debug.logger & debug.FLAG_BLD and debug.logger(
-                        "loadModules: calling MIB compiler for %s" % modName
-                    )
-                    status = self.__mibCompiler.compile(
-                        modName, genTexts=self.loadTexts
-                    )
-                    errs = "; ".join(
-                        [
-                            hasattr(x, "error") and str(x.error) or x
-                            for x in status.values()
-                            if x in ("failed", "missing")
-                        ]
-                    )
-                    if errs:
-                        raise error.MibNotFoundError(
-                            f"{modName} compilation error(s): {errs}"
-                        )
+                if not self.__mibCompiler:
+                    raise
 
-                    # compilation succeeded, MIB might load now
-                    self.loadModule(modName, **userCtx)
+                debug.logger & debug.FLAG_BLD and debug.logger(
+                    "loadModules: calling MIB compiler for %s" % modName
+                )
+                status = self.__mibCompiler.compile(modName, genTexts=self.loadTexts)
+                errs = "; ".join(
+                    [
+                        hasattr(x, "error") and str(x.error) or x
+                        for x in status.values()
+                        if x in ("failed", "missing")
+                    ]
+                )
+                if errs:
+                    raise error.MibNotFoundError(
+                        f"{modName} compilation error(s): {errs}"
+                    )
+
+                if errs:
+                    raise error.MibNotFoundError(
+                        f"{modName} compilation error(s): {errs}"
+                    )
+
+                # compilation succeeded, MIB might load now
+                self.loadModule(modName, **userCtx)
 
         return self
 
