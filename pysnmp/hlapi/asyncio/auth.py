@@ -500,3 +500,49 @@ class UsmUserData:
             authKeyType is None and self.authKeyType or USM_KEY_TYPE_PASSPHRASE,
             privKeyType is None and self.privKeyType or USM_KEY_TYPE_PASSPHRASE,
         )
+
+
+# Backward-compatible protocol IDs
+
+usmNoAuthProtocol = USM_AUTH_NONE
+usmHMACMD5AuthProtocol = USM_AUTH_HMAC96_MD5
+usmHMACSHAAuthProtocol = USM_AUTH_HMAC96_SHA
+usmHMAC128SHA224AuthProtocol = USM_AUTH_HMAC128_SHA224
+usmHMAC192SHA256AuthProtocol = USM_AUTH_HMAC192_SHA256
+usmHMAC256SHA384AuthProtocol = USM_AUTH_HMAC256_SHA384
+usmHMAC384SHA512AuthProtocol = USM_AUTH_HMAC384_SHA512
+usmNoPrivProtocol = USM_PRIV_NONE
+usmDESPrivProtocol = USM_PRIV_CBC56_DES
+usm3DESEDEPrivProtocol = USM_PRIV_CBC168_3DES
+usmAesCfb128Protocol = USM_PRIV_CFB128_AES
+usmAesCfb192Protocol = USM_PRIV_CFB192_AES
+usmAesCfb256Protocol = USM_PRIV_CFB256_AES
+usmAesBlumenthalCfb192Protocol = USM_PRIV_CFB192_AES_BLUMENTHAL
+usmAesBlumenthalCfb256Protocol = USM_PRIV_CFB256_AES_BLUMENTHAL
+
+usmKeyTypePassphrase = USM_KEY_TYPE_PASSPHRASE
+usmKeyTypeMaster = USM_KEY_TYPE_MASTER
+usmKeyTypeLocalized = USM_KEY_TYPE_LOCALIZED
+
+__all__.extend(
+    [
+        "usm3DESEDEPrivProtocol",
+        "usmAesCfb128Protocol",
+        "usmAesCfb192Protocol",
+        "usmAesCfb256Protocol",
+        "usmAesBlumenthalCfb192Protocol",
+        "usmAesBlumenthalCfb256Protocol",
+        "usmDESPrivProtocol",
+        "usmHMACMD5AuthProtocol",
+        "usmHMACSHAAuthProtocol",
+        "usmHMAC128SHA224AuthProtocol",
+        "usmHMAC192SHA256AuthProtocol",
+        "usmHMAC256SHA384AuthProtocol",
+        "usmHMAC384SHA512AuthProtocol",
+        "usmNoAuthProtocol",
+        "usmNoPrivProtocol",
+        "usmKeyTypePassphrase",
+        "usmKeyTypeMaster",
+        "usmKeyTypeLocalized",
+    ]
+)
