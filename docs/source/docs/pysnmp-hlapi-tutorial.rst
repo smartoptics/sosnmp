@@ -41,7 +41,7 @@ Making SNMP Query
 
 We will send SNMP GET command to read a MIB object from SNMP agent.
 For that purpose we will call synchronous, high-level
-:py:func:`~pysnmp.hlapi.getCmd` function.
+:py:func:`~pysnmp.hlapi.asyncio.getCmd` function.
 Other SNMP commands can be used in a vary similar way by calling
 corresponding functions.
 
@@ -58,12 +58,12 @@ Choosing SNMP Protocol and Credentials
 
 We have a choice of three SNMP protocol versions. To employ
 SNMP versions 1 or 2c, we pass properly initialized instance of
-:py:class:`~pysnmp.hlapi.CommunityData` class. For the third
-SNMP version we pass :py:class:`~pysnmp.hlapi.UsmUserData` class
+:py:class:`~pysnmp.hlapi.asyncio.CommunityData` class. For the third
+SNMP version we pass :py:class:`~pysnmp.hlapi.asyncio.UsmUserData` class
 instance.
 
 SNMP community name, as well as the choice between SNMP v1 and v2c,
-is conveyed to SNMP LCD via :py:class:`~pysnmp.hlapi.CommunityData`
+is conveyed to SNMP LCD via :py:class:`~pysnmp.hlapi.asyncio.CommunityData`
 object.
 
 .. code-block:: python
@@ -75,7 +75,7 @@ object.
    >>> CommunityData('public', mpModel=1)  # SNMPv2c
    CommunityData('public')
 
-Use of :py:class:`~pysnmp.hlapi.UsmUserData` object for LCD
+Use of :py:class:`~pysnmp.hlapi.asyncio.UsmUserData` object for LCD
 configuration implies using SNMPv3. Besides setting up USM user name,
 *UsmUserData* object can also carry crypto keys and crypto protocols
 to SNMP engine LCD.
@@ -109,8 +109,8 @@ PySNMP supports UDP-over-IPv4 and UDP-over-IPv6 network transports.
 In this example we will query public SNMP Simulator available over IPv4 on
 the Internet at `demo.pysnmp.com`_. Transport configuration is passed to
 SNMP LCD in form of properly initialized
-:py:class:`~pysnmp.hlapi.UdpTransportTarget` or
-:py:class:`~pysnmp.hlapi.Udp6TransportTarget` objects respectively.
+:py:class:`~pysnmp.hlapi.asyncio.UdpTransportTarget` or
+:py:class:`~pysnmp.hlapi.asyncio.Udp6TransportTarget` objects respectively.
 
 .. code-block:: python
 
@@ -132,7 +132,7 @@ or software being managed. This is where SNMP context could
 be used.
 
 To indicate SNMP context at high-level API a properly initialized
-:py:class:`~pysnmp.hlapi.ContextData` object should be used.
+:py:class:`~pysnmp.hlapi.asyncio.ContextData` object should be used.
 For this example we will use the 'empty' context (default).
 
 .. code-block:: python
@@ -384,7 +384,7 @@ SNMP Command Operations
 SNMP allows you to request a MIB object that is "next" to the given
 one. That way you can read MIB objects you are not aware about in
 advance. MIB objects are conceptually sorted by their OIDs.
-This feature is implemented by the :py:func:`~pysnmp.hlapi.nextCmd`
+This feature is implemented by the :py:func:`~pysnmp.hlapi.asyncio.nextCmd`
 function.
 
 .. code-block:: python
@@ -409,7 +409,7 @@ non-repeaters and max-repetitions parameters can be used to influence
 MIB objects batching.
 
 PySNMP hides this *GETBULK* optimization at the protocol level, the
-:py:func:`~pysnmp.hlapi.bulkCmd` function exposes the same generator
+:py:func:`~pysnmp.hlapi.asyncio.bulkCmd` function exposes the same generator
 API as *getNext()* for convenience.
 
 .. code-block:: python
@@ -471,7 +471,7 @@ somewhat demanding (due to locking and transactional behavior
 requirements). So vendors tend to leave it out thus rendering
 managed entity being read-only.
 
-PySNMP supports *SET* uniformly through :py:func:`~pysnmp.hlapi.setCmd`
+PySNMP supports *SET* uniformly through :py:func:`~pysnmp.hlapi.asyncio.setCmd`
 function.
 
 .. code-block:: python

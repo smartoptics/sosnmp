@@ -83,16 +83,16 @@ async def getCmd(
 
     Parameters
     ----------
-    snmpEngine : :py:class:`~pysnmp.hlapi.SnmpEngine`
+    snmpEngine : :py:class:`~pysnmp.hlapi.asyncio.SnmpEngine`
         Class instance representing SNMP engine.
 
-    authData : :py:class:`~pysnmp.hlapi.CommunityData` or :py:class:`~pysnmp.hlapi.UsmUserData`
+    authData : :py:class:`~pysnmp.hlapi.asyncio.CommunityData` or :py:class:`~pysnmp.hlapi.asyncio.UsmUserData`
         Class instance representing SNMP credentials.
 
     transportTarget : :py:class:`~pysnmp.hlapi.asyncio.UdpTransportTarget` or :py:class:`~pysnmp.hlapi.asyncio.Udp6TransportTarget`
         Class instance representing transport type along with SNMP peer address.
 
-    contextData : :py:class:`~pysnmp.hlapi.ContextData`
+    contextData : :py:class:`~pysnmp.hlapi.asyncio.ContextData`
         Class instance representing SNMP ContextEngineId and ContextName values.
 
     \*varBinds : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
@@ -205,16 +205,16 @@ async def setCmd(
 
     Parameters
     ----------
-    snmpEngine : :py:class:`~pysnmp.hlapi.SnmpEngine`
+    snmpEngine : :py:class:`~pysnmp.hlapi.asyncio.SnmpEngine`
         Class instance representing SNMP engine.
 
-    authData : :py:class:`~pysnmp.hlapi.CommunityData` or :py:class:`~pysnmp.hlapi.UsmUserData`
+    authData : :py:class:`~pysnmp.hlapi.asyncio.CommunityData` or :py:class:`~pysnmp.hlapi.asyncio.UsmUserData`
         Class instance representing SNMP credentials.
 
     transportTarget : :py:class:`~pysnmp.hlapi.asyncio.UdpTransportTarget` or :py:class:`~pysnmp.hlapi.asyncio.Udp6TransportTarget`
         Class instance representing transport type along with SNMP peer address.
 
-    contextData : :py:class:`~pysnmp.hlapi.ContextData`
+    contextData : :py:class:`~pysnmp.hlapi.asyncio.ContextData`
         Class instance representing SNMP ContextEngineId and ContextName values.
 
     \*varBinds : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
@@ -327,16 +327,16 @@ async def nextCmd(
 
     Parameters
     ----------
-    snmpEngine : :py:class:`~pysnmp.hlapi.SnmpEngine`
+    snmpEngine : :py:class:`~pysnmp.hlapi.asyncio.SnmpEngine`
         Class instance representing SNMP engine.
 
-    authData : :py:class:`~pysnmp.hlapi.CommunityData` or :py:class:`~pysnmp.hlapi.UsmUserData`
+    authData : :py:class:`~pysnmp.hlapi.asyncio.CommunityData` or :py:class:`~pysnmp.hlapi.asyncio.UsmUserData`
         Class instance representing SNMP credentials.
 
     transportTarget : :py:class:`~pysnmp.hlapi.asyncio.UdpTransportTarget` or :py:class:`~pysnmp.hlapi.asyncio.Udp6TransportTarget`
         Class instance representing transport type along with SNMP peer address.
 
-    contextData : :py:class:`~pysnmp.hlapi.ContextData`
+    contextData : :py:class:`~pysnmp.hlapi.asyncio.ContextData`
         Class instance representing SNMP ContextEngineId and ContextName values.
 
     \*varBinds : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
@@ -466,16 +466,16 @@ async def bulkCmd(
 
     Parameters
     ----------
-    snmpEngine : :py:class:`~pysnmp.hlapi.SnmpEngine`
+    snmpEngine : :py:class:`~pysnmp.hlapi.asyncio.SnmpEngine`
         Class instance representing SNMP engine.
 
-    authData : :py:class:`~pysnmp.hlapi.CommunityData` or :py:class:`~pysnmp.hlapi.UsmUserData`
+    authData : :py:class:`~pysnmp.hlapi.asyncio.CommunityData` or :py:class:`~pysnmp.hlapi.asyncio.UsmUserData`
         Class instance representing SNMP credentials.
 
     transportTarget : :py:class:`~pysnmp.hlapi.asyncio.UdpTransportTarget` or :py:class:`~pysnmp.hlapi.asyncio.Udp6TransportTarget`
         Class instance representing transport type along with SNMP peer address.
 
-    contextData : :py:class:`~pysnmp.hlapi.ContextData`
+    contextData : :py:class:`~pysnmp.hlapi.asyncio.ContextData`
         Class instance representing SNMP ContextEngineId and ContextName values.
 
     nonRepeaters : int
@@ -636,16 +636,16 @@ async def walkCmd(
 
     Parameters
     ----------
-    snmpEngine : :py:class:`~pysnmp.hlapi.SnmpEngine`
+    snmpEngine : :py:class:`~pysnmp.hlapi.asyncio.SnmpEngine`
         Class instance representing SNMP engine.
 
-    authData : :py:class:`~pysnmp.hlapi.CommunityData` or :py:class:`~pysnmp.hlapi.UsmUserData`
+    authData : :py:class:`~pysnmp.hlapi.asyncio.CommunityData` or :py:class:`~pysnmp.hlapi.asyncio.UsmUserData`
         Class instance representing SNMP credentials.
 
-    transportTarget : :py:class:`~pysnmp.hlapi.asyncore.UdpTransportTarget` or :py:class:`~pysnmp.hlapi.asyncore.Udp6TransportTarget`
+    transportTarget : :py:class:`~pysnmp.hlapi.asyncio.UdpTransportTarget` or :py:class:`~pysnmp.hlapi.asyncio.Udp6TransportTarget`
         Class instance representing transport type along with SNMP peer address.
 
-    contextData : :py:class:`~pysnmp.hlapi.ContextData`
+    contextData : :py:class:`~pysnmp.hlapi.asyncio.ContextData`
         Class instance representing SNMP ContextEngineId and ContextName values.
 
     \*varBinds : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
@@ -820,16 +820,16 @@ async def bulkWalkCmd(
 
     Parameters
     ----------
-    snmpEngine : :py:class:`~pysnmp.hlapi.SnmpEngine`
+    snmpEngine : :py:class:`~pysnmp.hlapi.asyncio.SnmpEngine`
         Class instance representing SNMP engine.
 
-    authData : :py:class:`~pysnmp.hlapi.CommunityData` or :py:class:`~pysnmp.hlapi.UsmUserData`
+    authData : :py:class:`~pysnmp.hlapi.asyncio.CommunityData` or :py:class:`~pysnmp.hlapi.asyncio.UsmUserData`
         Class instance representing SNMP credentials.
 
-    transportTarget : :py:class:`~pysnmp.hlapi.asyncore.UdpTransportTarget` or :py:class:`~pysnmp.hlapi.asyncore.Udp6TransportTarget`
+    transportTarget : :py:class:`~pysnmp.hlapi.asyncio.UdpTransportTarget` or :py:class:`~pysnmp.hlapi.asyncio.Udp6TransportTarget`
         Class instance representing transport type along with SNMP peer address.
 
-    contextData : :py:class:`~pysnmp.hlapi.ContextData`
+    contextData : :py:class:`~pysnmp.hlapi.asyncio.ContextData`
         Class instance representing SNMP ContextEngineId and ContextName values.
 
     nonRepeaters : int

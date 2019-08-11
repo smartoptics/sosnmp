@@ -40,7 +40,7 @@ class CommunityData:
     :py:class:`~pysnmp.hlapi.asyncio.AsyncCommandGenerator` or
     :py:class:`~pysnmp.hlapi.asyncio.AsyncNotificationOriginator`
     and their derivatives for adding new entries to Local Configuration
-    Datastore (LCD) managed by :py:class:`~pysnmp.hlapi.SnmpEngine`
+    Datastore (LCD) managed by :py:class:`~pysnmp.hlapi.asyncio.SnmpEngine`
     class instance.
 
     See :RFC:`2576#section-5.3` for more information on the
@@ -91,7 +91,7 @@ class CommunityData:
         refer to :RFC:`3413#section-4.1.1` and :RFC:`2576#section-5.3`
         (e.g. the *snmpCommunityTransportTag* object).
 
-        See also: :py:class:`~pysnmp.hlapi.UdpTransportTarget`
+        See also: :py:class:`~pysnmp.hlapi.asyncio.UdpTransportTarget`
 
     Warnings
     --------
@@ -293,7 +293,7 @@ class UsmUserData:
     :py:class:`~pysnmp.hlapi.asyncio.AsyncCommandGenerator` or
     :py:class:`~pysnmp.hlapi.asyncio.AsyncNotificationOriginator`
     and their derivatives for adding new entries to Local Configuration
-    Datastore (LCD) managed by :py:class:`~pysnmp.hlapi.SnmpEngine`
+    Datastore (LCD) managed by :py:class:`~pysnmp.hlapi.asyncio.SnmpEngine`
     class instance.
 
     See :RFC:`3414#section-5` for more information on the
@@ -308,16 +308,16 @@ class UsmUserData:
     ----------------
     authKey: :py:class:`str`, :py:class:`~pysnmp.proto.rfc1902.OctetString`
         Initial value of the secret authentication key.  If not set,
-        :py:class:`~pysnmp.hlapi.usmNoAuthProtocol`
+        :py:class:`~pysnmp.hlapi.asyncio.USM_AUTH_NONE`
         is implied.  If set and no *authProtocol* is specified,
-        :py:class:`~pysnmp.hlapi.usmHMACMD5AuthProtocol`
+        :py:class:`~pysnmp.hlapi.asyncio.USM_AUTH_HMAC96_MD5`
         takes effect.
 
     privKey: :py:class:`str`, :py:class:`~pysnmp.proto.rfc1902.OctetString`
         Initial value of the secret encryption key.  If not set,
-        :py:class:`~pysnmp.hlapi.usmNoPrivProtocol`
+        :py:class:`~pysnmp.hlapi.asyncio.USM_PRIV_NONE`
         is implied.  If set and no *privProtocol* is specified,
-        :py:class:`~pysnmp.hlapi.usmDESPrivProtocol`
+        :py:class:`~pysnmp.hlapi.asyncio.USM_PRIV_CBC56_DES`
         takes effect.
 
     authProtocol: :py:class:`tuple`, :py:class:`~pysnmp.proto.rfc1902.ObjectIdentifier`
@@ -327,13 +327,13 @@ class UsmUserData:
 
         Supported authentication protocol identifiers are:
 
-        * :py:class:`~pysnmp.hlapi.usmNoAuthProtocol` (default is *authKey* not given)
-        * :py:class:`~pysnmp.hlapi.usmHMACMD5AuthProtocol` (default if *authKey* is given)
-        * :py:class:`~pysnmp.hlapi.usmHMACSHAAuthProtocol`
-        * :py:class:`~pysnmp.hlapi.usmHMAC128SHA224AuthProtocol`
-        * :py:class:`~pysnmp.hlapi.usmHMAC192SHA256AuthProtocol`
-        * :py:class:`~pysnmp.hlapi.usmHMAC256SHA384AuthProtocol`
-        * :py:class:`~pysnmp.hlapi.usmHMAC384SHA512AuthProtocol`
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_AUTH_NONE` (default is *authKey* not given)
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_AUTH_HMAC96_MD5` (default if *authKey* is given)
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_AUTH_HMAC96_SHA`
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_AUTH_HMAC128_SHA224`
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_AUTH_HMAC192_SHA256`
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_AUTH_HMAC256_SHA384`
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_AUTH_HMAC384_SHA512`
 
 
     securityEngineId: :py:class:`~pysnmp.proto.rfc1902.OctetString`
@@ -358,12 +358,12 @@ class UsmUserData:
 
         Supported encryption protocol identifiers are:
 
-        * :py:class:`~pysnmp.hlapi.usmNoPrivProtocol` (default is *privhKey* not given)
-        * :py:class:`~pysnmp.hlapi.usmDESPrivProtocol` (default if *privKey* is given)
-        * :py:class:`~pysnmp.hlapi.usm3DESEDEPrivProtocol`
-        * :py:class:`~pysnmp.hlapi.usmAesCfb128Protocol`
-        * :py:class:`~pysnmp.hlapi.usmAesCfb192Protocol`
-        * :py:class:`~pysnmp.hlapi.usmAesCfb256Protocol`
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_PRIV_NONE` (default is *privKey* not given)
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_PRIV_CBC56_DES` (default if *privKey* is given)
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_PRIV_CBC168_3DES`
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_PRIV_CFB128_AES`
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_PRIV_CFB192_AES`
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_PRIV_CFB256_AES`
 
 
     authKeyType: :py:class:`int`
@@ -372,9 +372,9 @@ class UsmUserData:
 
         Supported key types are:
 
-        * :py:class:`~pysnmp.hlapi.usmKeyTypePassphrase` (default)
-        * :py:class:`~pysnmp.hlapi.usmKeyTypeMaster`
-        * :py:class:`~pysnmp.hlapi.usmKeyTypeLocalized`
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_KEY_TYPE_PASSPHRASE` (default)
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_KEY_TYPE_MASTER`
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_KEY_TYPE_LOCALIZED`
 
     privKeyType: :py:class:`int`
         Type of `privKey` material. See :RFC:`3414#section-2.6` for
@@ -382,13 +382,13 @@ class UsmUserData:
 
         Supported key types are:
 
-        * :py:class:`~pysnmp.hlapi.usmKeyTypePassphrase` (default)
-        * :py:class:`~pysnmp.hlapi.usmKeyTypeMaster`
-        * :py:class:`~pysnmp.hlapi.usmKeyTypeLocalized`
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_KEY_TYPE_PASSPHRASE` (default)
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_KEY_TYPE_MASTER`
+        * :py:class:`~pysnmp.hlapi.asyncio.USM_KEY_TYPE_LOCALIZED`
 
     Notes
     -----
-    If :py:class:`~pysnmp.hlapi.usmKeyTypeLocalized` is used when
+    If :py:class:`~pysnmp.hlapi.asyncio.USM_KEY_TYPE_LOCALIZED` is used when
     running a non-authoritative SNMP engine, USM key localization
     mechanism is not invoked. As a consequence, local SNMP engine
     configuration won't get automatically populated with remote SNMP

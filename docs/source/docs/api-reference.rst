@@ -83,7 +83,7 @@ Engine object on input.
 .. toctree::
    :maxdepth: 2
 
-.. autoclass:: pysnmp.hlapi.SnmpEngine(snmpEngineID=None)
+.. autoclass:: pysnmp.hlapi.asyncio.SnmpEngine(snmpEngineID=None)
 
 Security Parameters
 -------------------
@@ -99,48 +99,48 @@ Community-Based
 +++++++++++++++
 
 Security Parameters object is Security Model specific. The
-:py:class:`~pysnmp.hlapi.CommunityData` class is used for configuring
+:py:class:`~pysnmp.hlapi.asyncio.CommunityData` class is used for configuring
 Community-Based Security Model of SNMPv1/SNMPv2c.
 
 .. toctree::
    :maxdepth: 2
 
-.. autoclass:: pysnmp.hlapi.CommunityData(communityIndex, communityName=None, mpModel=1, contextEngineId=None, contextName='', tag='')
+.. autoclass:: pysnmp.hlapi.asyncio.CommunityData(communityIndex, communityName=None, mpModel=1, contextEngineId=None, contextName='', tag='')
 
 User-Based
 ++++++++++
 
-The :py:class:`~pysnmp.hlapi.UsmUserData` class provides SNMPv3 User-Based
+The :py:class:`~pysnmp.hlapi.asyncio.UsmUserData` class provides SNMPv3 User-Based
 Security Model configuration for SNMP v3 systems.
 
-.. autoclass:: pysnmp.hlapi.UsmUserData(userName, authKey=None, privKey=None, authProtocol=usmNoAuthProtocol, privProtocol=usmNoPrivProtocol, securityEngineId=None, authKeyType=usmKeyTypePassphrase, privKeyType=usmKeyTypePassphrase)
+.. autoclass:: pysnmp.hlapi.asyncio.UsmUserData(userName, authKey=None, privKey=None, authProtocol=usmNoAuthProtocol, privProtocol=usmNoPrivProtocol, securityEngineId=None, authKeyType=usmKeyTypePassphrase, privKeyType=usmKeyTypePassphrase)
 
 **Authentication protocol identifiers**
 
-.. autodata:: pysnmp.hlapi.usmNoAuthProtocol
-.. autodata:: pysnmp.hlapi.usmHMACMD5AuthProtocol
-.. autodata:: pysnmp.hlapi.usmHMACSHAAuthProtocol
-.. autodata:: pysnmp.hlapi.usmHMAC128SHA224AuthProtocol
-.. autodata:: pysnmp.hlapi.usmHMAC192SHA256AuthProtocol
-.. autodata:: pysnmp.hlapi.usmHMAC256SHA384AuthProtocol
-.. autodata:: pysnmp.hlapi.usmHMAC384SHA512AuthProtocol
+.. autodata:: pysnmp.hlapi.asyncio.USM_AUTH_NONE
+.. autodata:: pysnmp.hlapi.asyncio.USM_AUTH_HMAC96_MD5
+.. autodata:: pysnmp.hlapi.asyncio.USM_AUTH_HMAC96_SHA
+.. autodata:: pysnmp.hlapi.asyncio.USM_AUTH_HMAC128_SHA224
+.. autodata:: pysnmp.hlapi.asyncio.USM_AUTH_HMAC192_SHA256
+.. autodata:: pysnmp.hlapi.asyncio.USM_AUTH_HMAC256_SHA384
+.. autodata:: pysnmp.hlapi.asyncio.USM_AUTH_HMAC384_SHA512
 
 **Privacy (encryption) protocol identifiers**
 
-.. autodata:: pysnmp.hlapi.usmNoPrivProtocol
-.. autodata:: pysnmp.hlapi.usmDESPrivProtocol
-.. autodata:: pysnmp.hlapi.usm3DESEDEPrivProtocol
-.. autodata:: pysnmp.hlapi.usmAesCfb128Protocol
-.. autodata:: pysnmp.hlapi.usmAesCfb192Protocol
-.. autodata:: pysnmp.hlapi.usmAesCfb256Protocol
-.. autodata:: pysnmp.hlapi.usmAesBlumenthalCfb192Protocol
-.. autodata:: pysnmp.hlapi.usmAesBlumenthalCfb256Protocol
+.. autodata:: pysnmp.hlapi.asyncio.USM_PRIV_NONE
+.. autodata:: pysnmp.hlapi.asyncio.USM_PRIV_CBC56_DES
+.. autodata:: pysnmp.hlapi.asyncio.USM_PRIV_CBC168_3DES
+.. autodata:: pysnmp.hlapi.asyncio.USM_PRIV_CFB128_AES
+.. autodata:: pysnmp.hlapi.asyncio.USM_PRIV_CFB192_AES
+.. autodata:: pysnmp.hlapi.asyncio.USM_PRIV_CFB256_AES
+.. autodata:: pysnmp.hlapi.asyncio.USM_PRIV_CFB192_AES_BLUMENTHAL
+.. autodata:: pysnmp.hlapi.asyncio.USM_PRIV_CFB256_AES_BLUMENTHAL
 
 **Key material types**
 
-.. autodata:: pysnmp.hlapi.usmKeyTypePassphrase
-.. autodata:: pysnmp.hlapi.usmKeyTypeMaster
-.. autodata:: pysnmp.hlapi.usmKeyTypeLocalized
+.. autodata:: pysnmp.hlapi.asyncio.USM_KEY_TYPE_PASSPHRASE
+.. autodata:: pysnmp.hlapi.asyncio.USM_KEY_TYPE_MASTER
+.. autodata:: pysnmp.hlapi.asyncio.USM_KEY_TYPE_LOCALIZED
 
 .. note::
 
@@ -175,12 +175,12 @@ SNMP engine. See :RFC:`3411#section-3.3.1` for details.
 
    The SNMP context information necessary for this mapping procedure
    to operate is supplied through the
-   :py:class:`~pysnmp.hlapi.CommunityData` object.
+   :py:class:`~pysnmp.hlapi.asyncio.CommunityData` object.
 
 .. toctree::
    :maxdepth: 2
 
-.. autoclass:: pysnmp.hlapi.ContextData
+.. autoclass:: pysnmp.hlapi.asyncio.ContextData
 
 .. _mib-services:
 

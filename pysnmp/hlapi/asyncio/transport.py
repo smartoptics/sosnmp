@@ -18,7 +18,7 @@ class UdpTransportTarget(AbstractTransportTarget):
     """Creates UDP/IPv4 configuration entry and initialize socket API if needed.
 
     This object can be used for adding new entries to Local Configuration
-    Datastore (LCD) managed by :py:class:`~pysnmp.hlapi.SnmpEngine`
+    Datastore (LCD) managed by :py:class:`~pysnmp.hlapi.asyncio.SnmpEngine`
     class instance.
 
     See :RFC:`1906#section-3` for more information on the UDP transport mapping.
@@ -76,7 +76,7 @@ class Udp6TransportTarget(AbstractTransportTarget):
     :py:class:`~pysnmp.hlapi.asyncio.AsyncCommandGenerator` or
     :py:class:`~pysnmp.hlapi.asyncio.AsyncNotificationOriginator`
     and their derevatives for adding new entries to Local Configuration
-    Datastore (LCD) managed by :py:class:`~pysnmp.hlapi.SnmpEngine`
+    Datastore (LCD) managed by :py:class:`~pysnmp.hlapi.asyncio.SnmpEngine`
     class instance.
 
     See :RFC:`1906#section-3`, :RFC:`2851#section-4` for more information

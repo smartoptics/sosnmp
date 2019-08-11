@@ -6,10 +6,10 @@ Advanced Command Generator
 
 .. include:: /../../examples/hlapi/asyncio/manager/cmdgen/usm-master-keys.py
    :start-after: """
-   :end-before: """#
+   :end-before: """  #
 
 .. literalinclude:: /../../examples/hlapi/asyncio/manager/cmdgen/usm-master-keys.py
-   :start-after: """#
+   :start-after: """  #
    :language: python
 
 :download:`Download</../../examples/hlapi/asyncio/manager/cmdgen/usm-master-keys.py>` script.
@@ -17,10 +17,10 @@ Advanced Command Generator
 
 .. include:: /../../examples/hlapi/asyncio/manager/cmdgen/usm-localized-keys.py
    :start-after: """
-   :end-before: """#
+   :end-before: """  #
 
 .. literalinclude:: /../../examples/hlapi/asyncio/manager/cmdgen/usm-localized-keys.py
-   :start-after: """#
+   :start-after: """  #
    :language: python
 
 :download:`Download</../../examples/hlapi/asyncio/manager/cmdgen/usm-localized-keys.py>` script.

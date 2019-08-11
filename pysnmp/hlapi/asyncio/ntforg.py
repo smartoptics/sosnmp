@@ -39,16 +39,16 @@ async def sendNotification(
 
     Parameters
     ----------
-    snmpEngine : :py:class:`~pysnmp.hlapi.SnmpEngine`
+    snmpEngine : :py:class:`~pysnmp.hlapi.asyncio.SnmpEngine`
         Class instance representing SNMP engine.
 
-    authData : :py:class:`~pysnmp.hlapi.CommunityData` or :py:class:`~pysnmp.hlapi.UsmUserData`
+    authData : :py:class:`~pysnmp.hlapi.asyncio.CommunityData` or :py:class:`~pysnmp.hlapi.asyncio.UsmUserData`
         Class instance representing SNMP credentials.
 
     transportTarget : :py:class:`~pysnmp.hlapi.asyncio.UdpTransportTarget` or :py:class:`~pysnmp.hlapi.asyncio.Udp6TransportTarget`
         Class instance representing transport type along with SNMP peer address.
 
-    contextData : :py:class:`~pysnmp.hlapi.ContextData`
+    contextData : :py:class:`~pysnmp.hlapi.asyncio.ContextData`
         Class instance representing SNMP ContextEngineId and ContextName values.
 
     notifyType : str
