@@ -165,6 +165,13 @@ Revision 5.0.18, released 2022-11-13
 - Changed web site to pysnmp.com.
 - Inherited all changes made by Splunk team.
 
+Revision 4.4.13, released 2019-11-XX
+------------------------------------
+
+- Fixed `genErr` handing in Command Responder when mapping MIB instrumentation
+  exception onto SNMP errors. Prior to this fix, `genErr` would never be
+  reported back to SNMP manager.
+
 Revision 4.4.12, released 2019-09-24
 ------------------------------------
 
