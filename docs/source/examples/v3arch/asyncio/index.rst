@@ -29,6 +29,7 @@ Command Responder Applications
 
 .. toctree::
 
+   /examples/v3arch/asyncio/agent/cmdrsp/agent-side-mib-implementations
    /examples/v3arch/asyncio/agent/cmdrsp/snmp-versions
 
 Notification Receiver Applications
