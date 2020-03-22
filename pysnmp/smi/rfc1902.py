@@ -311,6 +311,12 @@ class ObjectIdentity:
         mibViewController : :py:class:`~pysnmp.smi.view.MibViewController`
             class instance representing MIB browsing functionality.
 
+        Other Parameters
+        ----------------
+        ignoreErrors: :py:class:`bool`
+            If `True` (default), ignore MIB object name casting
+            failures if possible.
+
         Returns
         -------
         : :py:class:`~pysnmp.smi.rfc1902.ObjectIdentity`
