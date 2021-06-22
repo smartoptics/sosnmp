@@ -719,7 +719,7 @@ class ObjectType:
 
     Typical MIB variable is defined like this (from *SNMPv2-MIB.txt*):
 
-    .. code-block:: bash
+    .. code-block:: asn1
 
        sysDescr OBJECT-TYPE
            SYNTAX      DisplayString (SIZE (0..255))
@@ -1007,7 +1007,7 @@ class NotificationType:
 
     Typical notification is defined like this (from *IF-MIB.txt*):
 
-    .. code-block:: bash
+    .. code-block:: asn1
 
        linkDown NOTIFICATION-TYPE
            OBJECTS { ifIndex, ifAdminStatus, ifOperStatus }
