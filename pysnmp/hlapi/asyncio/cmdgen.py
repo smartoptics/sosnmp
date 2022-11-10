@@ -2,7 +2,7 @@
 # This file is part of pysnmp software.
 #
 # Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
-# License: http://snmplabs.com/pysnmp/license.html
+# License: https://www.pysnmp.com/pysnmp/license.html
 #
 # Copyright (C) 2014, Zebra Technologies
 # Authors: Matt Hooks <me@matthooks.com>
@@ -116,14 +116,14 @@ def getCmd(snmpEngine, authData, transportTarget, contextData,
     ...     errorIndication, errorStatus, errorIndex, varBinds = yield from getCmd(
     ...         SnmpEngine(),
     ...         CommunityData('public'),
-    ...         UdpTransportTarget(('demo.snmplabs.com', 161)),
+    ...         UdpTransportTarget(('demo.pysnmp.com', 161)),
     ...         ContextData(),
     ...         ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0))
     ...     )
     ...     print(errorIndication, errorStatus, errorIndex, varBinds)
     >>>
     >>> asyncio.get_event_loop().run_until_complete(run())
-    (None, 0, 0, [ObjectType(ObjectIdentity(ObjectName('1.3.6.1.2.1.1.1.0')), DisplayString('SunOS zeus.snmplabs.com 4.1.3_U1 1 sun4m'))])
+    (None, 0, 0, [ObjectType(ObjectIdentity(ObjectName('1.3.6.1.2.1.1.1.0')), DisplayString('SunOS zeus.pysnmp.com 4.1.3_U1 1 sun4m'))])
     >>>
 
     """
@@ -223,7 +223,7 @@ def setCmd(snmpEngine, authData, transportTarget, contextData,
     ...     errorIndication, errorStatus, errorIndex, varBinds = yield from setCmd(
     ...         SnmpEngine(),
     ...         CommunityData('public'),
-    ...         UdpTransportTarget(('demo.snmplabs.com', 161)),
+    ...         UdpTransportTarget(('demo.pysnmp.com', 161)),
     ...         ContextData(),
     ...         ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0), 'Linux i386')
     ...     )
@@ -334,7 +334,7 @@ def nextCmd(snmpEngine, authData, transportTarget, contextData,
     ...     errorIndication, errorStatus, errorIndex, varBinds = yield from nextCmd(
     ...         SnmpEngine(),
     ...         CommunityData('public'),
-    ...         UdpTransportTarget(('demo.snmplabs.com', 161)),
+    ...         UdpTransportTarget(('demo.pysnmp.com', 161)),
     ...         ContextData(),
     ...         ObjectType(ObjectIdentity('SNMPv2-MIB', 'system'))
     ...     )
@@ -475,7 +475,7 @@ def bulkCmd(snmpEngine, authData, transportTarget, contextData,
     ...     errorIndication, errorStatus, errorIndex, varBinds = yield from bulkCmd(
     ...         SnmpEngine(),
     ...         CommunityData('public'),
-    ...         UdpTransportTarget(('demo.snmplabs.com', 161)),
+    ...         UdpTransportTarget(('demo.pysnmp.com', 161)),
     ...         ContextData(),
     ...         0, 2,
     ...         ObjectType(ObjectIdentity('SNMPv2-MIB', 'system'))
@@ -483,7 +483,7 @@ def bulkCmd(snmpEngine, authData, transportTarget, contextData,
     ...     print(errorIndication, errorStatus, errorIndex, varBinds)
     >>>
     >>> asyncio.get_event_loop().run_until_complete(run())
-    (None, 0, 0, [[ObjectType(ObjectIdentity(ObjectName('1.3.6.1.2.1.1.1.0')), DisplayString('SunOS zeus.snmplabs.com 4.1.3_U1 1 sun4m'))], [ObjectType(ObjectIdentity(ObjectName('1.3.6.1.2.1.1.2.0')), ObjectIdentifier('1.3.6.1.4.1.424242.1.1'))]])
+    (None, 0, 0, [[ObjectType(ObjectIdentity(ObjectName('1.3.6.1.2.1.1.1.0')), DisplayString('SunOS zeus.pysnmp.com 4.1.3_U1 1 sun4m'))], [ObjectType(ObjectIdentity(ObjectName('1.3.6.1.2.1.1.2.0')), ObjectIdentifier('1.3.6.1.4.1.424242.1.1'))]])
     >>>
 
     """

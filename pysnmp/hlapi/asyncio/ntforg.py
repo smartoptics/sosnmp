@@ -2,7 +2,7 @@
 # This file is part of pysnmp software.
 #
 # Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
-# License: http://snmplabs.com/pysnmp/license.html
+# License: https://www.pysnmp.com/pysnmp/license.html
 #
 # Copyright (C) 2014, Zebra Technologies
 # Authors: Matt Hooks <me@matthooks.com>
@@ -106,7 +106,7 @@ def sendNotification(snmpEngine, authData, transportTarget, contextData,
     ...     errorIndication, errorStatus, errorIndex, varBinds = yield from sendNotification(
     ...         SnmpEngine(),
     ...         CommunityData('public'),
-    ...         UdpTransportTarget(('demo.snmplabs.com', 162)),
+    ...         UdpTransportTarget(('demo.pysnmp.com', 162)),
     ...         ContextData(),
     ...         'trap',
     ...         NotificationType(ObjectIdentity('IF-MIB', 'linkDown')))

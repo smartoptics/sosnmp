@@ -2,7 +2,7 @@
 # This file is part of pysnmp software.
 #
 # Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
-# License: http://snmplabs.com/pysnmp/license.html
+# License: https://www.pysnmp.com/pysnmp/license.html
 #
 from pysnmp.smi.rfc1902 import *
 from pysnmp.entity.rfc3413 import ntforg
@@ -108,7 +108,7 @@ def sendNotification(snmpEngine, authData, transportTarget, contextData,
     >>> sendNotification(
     ...     snmpEngine,
     ...     CommunityData('public'),
-    ...     UdpTransportTarget(('demo.snmplabs.com', 162)),
+    ...     UdpTransportTarget(('demo.pysnmp.com', 162)),
     ...     ContextData(),
     ...     'trap',
     ...     NotificationType(ObjectIdentity('SNMPv2-MIB', 'coldStart')),

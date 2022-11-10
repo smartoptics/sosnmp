@@ -17,7 +17,7 @@ using the following options:
 
 Functionally similar to:
 
-| $ snmptrap -v1 -c public demo.snmplabs.com 1.3.6.1.4.1.20408.4.1.1.2 0.0.0.0 1 0 0 1.3.6.1.2.1.1.1.0 s "my system"
+| $ snmptrap -v1 -c public demo.pysnmp.com 1.3.6.1.4.1.20408.4.1.1.2 0.0.0.0 1 0 0 1.3.6.1.2.1.1.1.0 s "my system"
 
 """#
 import asyncio
@@ -30,7 +30,7 @@ def run():
     errorIndication, errorStatus, errorIndex, varBinds = yield from sendNotification(
         snmpEngine,
         CommunityData('public', mpModel=0),
-        UdpTransportTarget(('demo.snmplabs.com', 162)),
+        UdpTransportTarget(('demo.pysnmp.com', 162)),
         ContextData(),
         'trap',
         NotificationType(

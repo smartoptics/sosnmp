@@ -6,15 +6,15 @@ Send multiple SNMP GET requests one by one using the following options:
 
 * with SNMPv2c, community 'public'
 * over IPv4/UDP
-* to multiple Agents at demo.snmplabs.com
+* to multiple Agents at demo.pysnmp.com
 * for instance of SNMPv2-MIB::sysDescr.0 MIB object
 * based on asyncio I/O framework
 
 Functionally similar to:
 
-| $ snmpget -v2c -c public demo.snmplabs.com:1161 SNMPv2-MIB::sysDescr.0
-| $ snmpget -v2c -c public demo.snmplabs.com:2161 SNMPv2-MIB::sysDescr.0
-| $ snmpget -v2c -c public demo.snmplabs.com:3161 SNMPv2-MIB::sysDescr.0
+| $ snmpget -v2c -c public demo.pysnmp.com:1161 SNMPv2-MIB::sysDescr.0
+| $ snmpget -v2c -c public demo.pysnmp.com:2161 SNMPv2-MIB::sysDescr.0
+| $ snmpget -v2c -c public demo.pysnmp.com:3161 SNMPv2-MIB::sysDescr.0
 
 """#
 import asyncio
@@ -53,6 +53,6 @@ def getall(snmpEngine, hostnames):
 snmpEngine = SnmpEngine()
 
 loop = asyncio.get_event_loop()
-loop.run_until_complete(getall(snmpEngine, [('demo.snmplabs.com', 1161),
-                                            ('demo.snmplabs.com', 2161),
-                                            ('demo.snmplabs.com', 3161)]))
+loop.run_until_complete(getall(snmpEngine, [('demo.pysnmp.com', 1161),
+                                            ('demo.pysnmp.com', 2161),
+                                            ('demo.pysnmp.com', 3161)]))
