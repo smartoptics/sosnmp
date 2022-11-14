@@ -1,28 +1,11 @@
-name: CI
+name: Manual
 
 on:
   push:
-    branches:
-      - "main"
-      - "develop"
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
-  pull_request:
-    branches: [main, develop]
 
 jobs:
-  pre-commit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: "3.7"
-      - name: Install actionlint
-        run: |
-          bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/v1.6.3/scripts/download-actionlint.bash)
-      - uses: pre-commit/action@v2.0.3
-
   review_secrets:
     name: security-detect-secrets
     runs-on: ubuntu-latest
@@ -37,45 +20,10 @@ jobs:
         with:
           scanArguments: "--max_depth 30 -x .github/workflows/exclude-patterns.txt"
 
-  semgrep:
-    runs-on: ubuntu-latest
-    name: security-sast-semgrep
-    steps:
-      - uses: actions/checkout@v2
-      - name: Semgrep
-        id: semgrep
-        uses: returntocorp/semgrep-action@v1
-        with:
-          publishToken: ${{ secrets.SEMGREP_APP_TOKEN }}
-
-  build:
-    name: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
-      - name: Run image
-        uses: abatilo/actions-poetry@v2.0.0
-        with:
-          poetry-version: "1.1.11"
-      - name: Build
-        run: |
-          poetry install
-          poetry build
-      - uses: actions/upload-artifact@v2.2.4
-        with:
-          name: dist
-          path: dist
-      - uses: actions/upload-artifact@v2.2.4
-        with:
-          name: output
-          path: output
 
   publish:
     name: Build Release
+    uses: ./build-test.yml
     needs:
       #- pre-commit
       #- review_secrets
