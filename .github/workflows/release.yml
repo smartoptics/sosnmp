@@ -23,7 +23,7 @@ jobs:
 
   publish:
     name: Build Release
-    uses: ./build-test.yml@main
+    uses: ./.github/workflows/build-test.yml@main
     needs:
       #- pre-commit
       #- review_secrets
