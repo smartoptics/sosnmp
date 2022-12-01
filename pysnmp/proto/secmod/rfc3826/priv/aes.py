@@ -117,9 +117,6 @@ class Aes(base.AbstractEncryptionService):
         # 3.3.1.3
         aesObj = AES.new(aesKey, AES.MODE_CFB, iv, segment_size=128)
 
-        # PyCrypto seems to require padding
-        dataToEncrypt = dataToEncrypt + univ.OctetString((0,) * (16 - len(dataToEncrypt) % 16)).asOctets()
-
         ciphertext = aesObj.encrypt(dataToEncrypt)
 
         # 3.3.1.4
@@ -146,9 +143,6 @@ class Aes(base.AbstractEncryptionService):
         )
 
         aesObj = AES.new(aesKey, AES.MODE_CFB, iv, segment_size=128)
-
-        # PyCrypto seems to require padding
-        encryptedData = encryptedData + univ.OctetString((0,) * (16 - len(encryptedData) % 16)).asOctets()
 
         # 3.3.2.4-6
         return aesObj.decrypt(encryptedData.asOctets())
