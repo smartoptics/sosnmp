@@ -58,7 +58,7 @@ $ pip install pysnmp-lextudio
 To download and install PySNMP along with its dependencies:
 
 <!-- Need to find an alternate location for the links to pysnmp.com -->
-* [PyASN1](https://www.pysnmp.com/pyasn1/)
+* [PyASN1](https://pyasn1.readthedocs.io)
 * [PyCryptodomex](https://pycryptodome.readthedocs.io) (required only if SNMPv3 encryption is in use)
 * [PySMI](https://www.pysnmp.com/pysmi/) (required for MIB services only)
 
