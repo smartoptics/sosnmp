@@ -53,14 +53,11 @@ async def sendone(snmpEngine, hostname, notifyType):
         for varBind in varBinds:
             print(" = ".join([x.prettyPrint() for x in varBind]))
 
-
-snmpEngine = SnmpEngine()
-
-asyncio.run(
-    asyncio.wait(
-        [
-            sendone(snmpEngine, 'demo.pysnmp.com', 'trap'),
-            sendone(snmpEngine, 'demo.pysnmp.com', 'inform'),
-        ]
+async def main():
+    snmpEngine = SnmpEngine()
+    await asyncio.gather(
+        sendone(snmpEngine, 'demo.pysnmp.com', 'trap'),
+        sendone(snmpEngine, 'demo.pysnmp.com', 'inform'),
     )
-)
+
+asyncio.run(main())
