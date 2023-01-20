@@ -16,39 +16,43 @@ Functionally similar to:
 | $ snmpget -v2c -c public demo.pysnmp.com:2161 SNMPv2-MIB::sysDescr.0
 | $ snmpget -v2c -c public demo.pysnmp.com:3161 SNMPv2-MIB::sysDescr.0
 
-"""#
+"""  #
 import asyncio
 from pysnmp.hlapi.asyncio import *
 
 
-@asyncio.coroutine
-def getone(snmpEngine, hostname):
-    errorIndication, errorStatus, errorIndex, varBinds = yield from getCmd(
+async def getone(snmpEngine, hostname):
+    get_result = await getCmd(
         snmpEngine,
-        CommunityData('public'),
+        CommunityData("public"),
         UdpTransportTarget(hostname),
         ContextData(),
-        ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0))
+        ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
     )
 
+    errorIndication, errorStatus, errorIndex, varBinds = await get_result
     if errorIndication:
         print(errorIndication)
     elif errorStatus:
-        print('{} at {}'.format(
-            errorStatus.prettyPrint(),
-            errorIndex and varBinds[int(errorIndex) - 1][0] or '?'
+        print(
+            "{} at {}".format(
+                errorStatus.prettyPrint(),
+                errorIndex and varBinds[int(errorIndex) - 1][0] or "?",
+            )
         )
-              )
     else:
         for varBind in varBinds:
-            print(' = '.join([x.prettyPrint() for x in varBind]))
+            print(" = ".join([x.prettyPrint() for x in varBind]))
 
 
 snmpEngine = SnmpEngine()
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(
-    asyncio.wait([getone(snmpEngine, ('demo.pysnmp.com', 1161)),
-                  getone(snmpEngine, ('demo.pysnmp.com', 2161)),
-                  getone(snmpEngine, ('demo.pysnmp.com', 3161))])
+asyncio.run(
+    asyncio.wait(
+        [
+            getone(snmpEngine, ('demo.pysnmp.com', 1161)),
+            getone(snmpEngine, ('demo.pysnmp.com', 2161)),
+            getone(snmpEngine, ('demo.pysnmp.com', 3161)),
+        ]
+    )
 )
