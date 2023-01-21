@@ -44,15 +44,12 @@ async def getone(snmpEngine, hostname):
         for varBind in varBinds:
             print(" = ".join([x.prettyPrint() for x in varBind]))
 
-
-snmpEngine = SnmpEngine()
-
-asyncio.run(
-    asyncio.wait(
-        [
-            getone(snmpEngine, ('demo.pysnmp.com', 1161)),
-            getone(snmpEngine, ('demo.pysnmp.com', 2161)),
-            getone(snmpEngine, ('demo.pysnmp.com', 3161)),
-        ]
+async def main():
+    snmpEngine = SnmpEngine()
+    await asyncio.gather(
+        getone(snmpEngine, ('demo.pysnmp.com', 1161)),
+        getone(snmpEngine, ('demo.pysnmp.com', 2161)),
+        getone(snmpEngine, ('demo.pysnmp.com', 3161)),
     )
-)
+
+asyncio.run(main())
