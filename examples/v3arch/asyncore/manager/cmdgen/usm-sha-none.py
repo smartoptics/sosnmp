@@ -6,12 +6,12 @@ Send a SNMP SET request with the following options:
 
 * with SNMPv3 with user 'usr-sha-none', SHA auth and no privacy protocols
 * over IPv4/UDP
-* to an Agent at 104.236.166.95:161
+* to an Agent at 127.0.0.1:161
 * for an OID in tuple form and a string-typed value
 
 This script performs similar to the following Net-SNMP command:
 
-| $ snmpset -v3 -l authNoPriv -u usr-sha-none -a SHA -A authkey1 -ObentU 104.236.166.95:161 1.3.6.1.2.1.1.9.1.3.1 s 'my new value'
+| $ snmpset -v3 -l authNoPriv -u usr-sha-none -a SHA -A authkey1 -ObentU 127.0.0.1:161 1.3.6.1.2.1.1.9.1.3.1 s 'my new value'
 
 """  #
 from pysnmp.entity import engine, config
@@ -40,7 +40,7 @@ config.addTransport(
     snmpEngine, udp.domainName, udp.UdpSocketTransport().openClientMode()
 )
 config.addTargetAddr(
-    snmpEngine, "my-router", udp.domainName, ("104.236.166.95", 161), "my-creds"
+    snmpEngine, "my-router", udp.domainName, ("127.0.0.1", 161), "my-creds"
 )
 
 

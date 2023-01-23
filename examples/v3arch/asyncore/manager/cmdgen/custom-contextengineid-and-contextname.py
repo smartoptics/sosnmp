@@ -9,12 +9,12 @@ Send a SNMP GET request with the following options:
 * contextEngineId: 0x80004fb805636c6f75644dab22cc,
 * contextName: da761cfc8c94d3aceef4f60f049105ba
 * over IPv4/UDP
-* to an Agent at 104.236.166.95:161
+* to an Agent at 127.0.0.1:161
 * for an OID in tuple form
 
 This script performs similar to the following Net-SNMP command:
 
-| $ snmpget -v3 -l authNoPriv -u usr-md5-none -A authkey1 -E 80004fb805636c6f75644dab22cc -n da761cfc8c94d3aceef4f60f049105ba -ObentU 104.236.166.95:161  1.3.6.1.2.1.1.1.0
+| $ snmpget -v3 -l authNoPriv -u usr-md5-none -A authkey1 -E 80004fb805636c6f75644dab22cc -n da761cfc8c94d3aceef4f60f049105ba -ObentU 127.0.0.1:161  1.3.6.1.2.1.1.1.0
 
 """  #
 from pysnmp.entity import engine, config
@@ -43,7 +43,7 @@ config.addTransport(
     snmpEngine, udp.domainName, udp.UdpSocketTransport().openClientMode()
 )
 config.addTargetAddr(
-    snmpEngine, "my-router", udp.domainName, ("104.236.166.95", 161), "my-creds"
+    snmpEngine, "my-router", udp.domainName, ("127.0.0.1", 161), "my-creds"
 )
 
 

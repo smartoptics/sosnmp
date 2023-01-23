@@ -38,7 +38,7 @@ config.addTargetAddr(
     snmpEngine,
     "my-nms",
     udp.domainName,
-    ("104.236.166.95", 162),
+    ("127.0.0.1", 162),
     "my-creds",
     tagList="all-my-managers",
 )
