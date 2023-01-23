@@ -448,7 +448,7 @@ class SnmpUSMSecurityModel(AbstractSecurityModel):
         # 3.1.6a
         snmpEngineBoots = snmpEngineTime = 0
 
-        if securityLevel in (2, 3):
+        if securityLevel in (1, 2, 3):
             pdu = scopedPDU.getComponentByPosition(2).getComponent()
 
             # 3.1.6.b
@@ -892,61 +892,40 @@ class SnmpUSMSecurityModel(AbstractSecurityModel):
                     maxSizeResponseScopedPDU=maxSizeResponseScopedPDU
                 )
 
-        # Modified to be compatible with #SNMP agent
-        if securityLevel == 0:
-            # simply pick up time data
-            debug.logger & debug.flagSM and debug.logger('processIncomingMsg: pick up engine boots and engine time')
-
-            # synchronize time with authed peer
-            self.__timeline[msgAuthoritativeEngineId] = (
-                securityParameters.getComponentByPosition(1),
-                securityParameters.getComponentByPosition(2),
-                securityParameters.getComponentByPosition(2),
-                int(time.time())
-            )
-
-            timerResolution = snmpEngine.transportDispatcher is None and 1.0 or snmpEngine.transportDispatcher.getTimerResolution()
-            expireAt = int(self.__expirationTimer + 300 / timerResolution)
-            if expireAt not in self.__timelineExpQueue:
-                self.__timelineExpQueue[expireAt] = []
-            self.__timelineExpQueue[expireAt].append(msgAuthoritativeEngineId)
-
-            debug.logger & debug.flagSM and debug.logger(
-                f'processIncomingMsg: store timeline for securityEngineID {msgAuthoritativeEngineId!r}')
-
         # 3.2.6
-        if securityLevel == 3 or securityLevel == 2:
-            if usmUserAuthProtocol in self.authServices:
-                authHandler = self.authServices[usmUserAuthProtocol]
-            else:
-                raise error.StatusInformation(
-                    errorIndication=errind.authenticationFailure
-                )
+        if securityLevel in (1, 2, 3):
+            if usmUserName:
+                if usmUserAuthProtocol in self.authServices:
+                    authHandler = self.authServices[usmUserAuthProtocol]
+                else:
+                    raise error.StatusInformation(
+                        errorIndication=errind.authenticationFailure
+                    )
 
-            try:
-                authHandler.authenticateIncomingMsg(
-                    usmUserAuthKeyLocalized,
-                    securityParameters.getComponentByPosition(4),
-                    wholeMsg
-                )
+                try:
+                    authHandler.authenticateIncomingMsg(
+                        usmUserAuthKeyLocalized,
+                        securityParameters.getComponentByPosition(4),
+                        wholeMsg
+                    )
 
-            except error.StatusInformation:
-                usmStatsWrongDigests, = mibBuilder.importSymbols(
-                    '__SNMP-USER-BASED-SM-MIB', 'usmStatsWrongDigests')
-                usmStatsWrongDigests.syntax += 1
-                raise error.StatusInformation(
-                    errorIndication=errind.authenticationFailure,
-                    oid=usmStatsWrongDigests.name,
-                    val=usmStatsWrongDigests.syntax,
-                    securityStateReference=securityStateReference,
-                    securityLevel=securityLevel,
-                    contextEngineId=contextEngineId,
-                    contextName=contextName,
-                    msgUserName=msgUserName,
-                    maxSizeResponseScopedPDU=maxSizeResponseScopedPDU
-                )
+                except error.StatusInformation:
+                    usmStatsWrongDigests, = mibBuilder.importSymbols(
+                        '__SNMP-USER-BASED-SM-MIB', 'usmStatsWrongDigests')
+                    usmStatsWrongDigests.syntax += 1
+                    raise error.StatusInformation(
+                        errorIndication=errind.authenticationFailure,
+                        oid=usmStatsWrongDigests.name,
+                        val=usmStatsWrongDigests.syntax,
+                        securityStateReference=securityStateReference,
+                        securityLevel=securityLevel,
+                        contextEngineId=contextEngineId,
+                        contextName=contextName,
+                        msgUserName=msgUserName,
+                        maxSizeResponseScopedPDU=maxSizeResponseScopedPDU
+                    )
 
-            debug.logger & debug.flagSM and debug.logger('processIncomingMsg: incoming msg authenticated')
+                debug.logger & debug.flagSM and debug.logger('processIncomingMsg: incoming msg authenticated')
 
             # synchronize time with authed peer
             self.__timeline[msgAuthoritativeEngineId] = (
