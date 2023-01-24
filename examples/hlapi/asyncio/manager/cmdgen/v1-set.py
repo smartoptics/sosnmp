@@ -18,16 +18,18 @@ Functionally similar to:
 import asyncio
 from pysnmp.entity.engine import SnmpEngine
 from pysnmp.hlapi.asyncio import slim
+from pysnmp.proto.rfc1902 import OctetString
 from pysnmp.smi.rfc1902 import ObjectIdentity
 
 async def run():
     snmpEngine = SnmpEngine()
-    errorIndication, errorStatus, errorIndex, varBinds = await slim.get(
+    errorIndication, errorStatus, errorIndex, varBinds = await slim.set(
         snmpEngine,
         'public',
         'demo.pysnmp.com',
         161,
-        ObjectIdentity("SNMPv2-MIB", "sysDescr", 0),
+        ObjectIdentity("SNMPv2-MIB", "sysLocation", 0),
+        OctetString("Shanghai")
     )
 
     if errorIndication:
