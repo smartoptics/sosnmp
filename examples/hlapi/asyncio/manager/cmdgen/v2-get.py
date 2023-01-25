@@ -12,23 +12,19 @@ Send SNMP GET request using the following options:
 
 Functionally similar to:
 
-| $ snmpbulkget -v1 -c public demo.pysnmp.com SNMPv2-MIB::sysDescr.0
+| $ snmpget -v2c -c public demo.pysnmp.com SNMPv2-MIB::sysDescr.0
 
 """  #
 import asyncio
-from pysnmp.entity.engine import SnmpEngine
-from pysnmp.hlapi.asyncio import slim
+from pysnmp.hlapi.asyncio.slim import Slim
 from pysnmp.smi.rfc1902 import ObjectIdentity
 
 async def run():
-    snmpEngine = SnmpEngine()
-    errorIndication, errorStatus, errorIndex, varBinds = await slim.bulk(
-        snmpEngine,
+    slim = Slim()
+    errorIndication, errorStatus, errorIndex, varBinds = await slim.get(
         'public',
         'demo.pysnmp.com',
         161,
-        0,
-        50,
         ObjectIdentity("SNMPv2-MIB", "sysDescr", 0),
     )
 
@@ -45,7 +41,7 @@ async def run():
         for varBind in varBinds:
             print(" = ".join([x.prettyPrint() for x in varBind]))
 
-    snmpEngine.transportDispatcher.closeDispatcher()
+    slim.close()
 
 
 asyncio.run(run())

@@ -12,20 +12,22 @@ Send SNMP GET request using the following options:
 
 Functionally similar to:
 
-| $ snmpget -v1 -c public demo.pysnmp.com SNMPv2-MIB::sysDescr.0
+| $ snmpget -v2c -c public demo.pysnmp.com SNMPv2-MIB::sysDescr.0
 
 """  #
 import asyncio
 from pysnmp.hlapi.asyncio.slim import Slim
+from pysnmp.proto.rfc1902 import OctetString
 from pysnmp.smi.rfc1902 import ObjectIdentity
 
 async def run():
-    slim = Slim(1)
-    errorIndication, errorStatus, errorIndex, varBinds = await slim.get(
+    slim = Slim()
+    errorIndication, errorStatus, errorIndex, varBinds = await slim.set(
         'public',
         'demo.pysnmp.com',
         161,
-        ObjectIdentity("SNMPv2-MIB", "sysDescr", 0),
+        ObjectIdentity("SNMPv2-MIB", "sysLocation", 0),
+        OctetString("Shanghai")
     )
 
     if errorIndication:

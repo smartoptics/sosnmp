@@ -16,15 +16,13 @@ Functionally similar to:
 
 """  #
 import asyncio
-from pysnmp.entity.engine import SnmpEngine
-from pysnmp.hlapi.asyncio import slim
+from pysnmp.hlapi.asyncio.slim import Slim
 from pysnmp.proto.rfc1902 import OctetString
 from pysnmp.smi.rfc1902 import ObjectIdentity
 
 async def run():
-    snmpEngine = SnmpEngine()
+    slim = Slim(1)
     errorIndication, errorStatus, errorIndex, varBinds = await slim.set(
-        snmpEngine,
         'public',
         'demo.pysnmp.com',
         161,
@@ -45,7 +43,7 @@ async def run():
         for varBind in varBinds:
             print(" = ".join([x.prettyPrint() for x in varBind]))
 
-    snmpEngine.transportDispatcher.closeDispatcher()
+    slim.close()
 
 
 asyncio.run(run())
