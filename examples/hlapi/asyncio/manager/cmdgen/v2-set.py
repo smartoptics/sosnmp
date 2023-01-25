@@ -17,8 +17,7 @@ Functionally similar to:
 """  #
 import asyncio
 from pysnmp.hlapi.asyncio.slim import Slim
-from pysnmp.proto.rfc1902 import OctetString
-from pysnmp.smi.rfc1902 import ObjectIdentity
+from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
 
 async def run():
     slim = Slim()
@@ -26,8 +25,7 @@ async def run():
         'public',
         'demo.pysnmp.com',
         161,
-        ObjectIdentity("SNMPv2-MIB", "sysLocation", 0),
-        OctetString("Shanghai")
+        ObjectType(ObjectIdentity("SNMPv2-MIB", "sysLocation", 0), "Toronto")
     )
 
     if errorIndication:
