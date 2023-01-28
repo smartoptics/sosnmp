@@ -18,7 +18,7 @@ Either of the following Net-SNMP commands will walk this Agent:
 The Command Receiver below uses two distinct transports for communication 
 with Command Generators - UDP over IPv4 and UDP over IPv6.
 
-"""  #
+"""#
 from pysnmp.carrier.asyncore.dispatch import AsyncoreDispatcher
 from pysnmp.carrier.asyncore.dgram import udp, udp6, unix
 from pyasn1.codec.ber import encoder, decoder

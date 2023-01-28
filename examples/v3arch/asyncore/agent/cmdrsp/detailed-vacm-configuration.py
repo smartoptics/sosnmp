@@ -29,7 +29,7 @@ However this command will fail:
 This command will not reveal `SNMPv2-MIB::sysUpTime.0` among other objects:
 
 | $ snmpwalk -v2c -c public 127.0.0.1 SNMPv2-MIB::system
-"""  #
+"""#
 from pysnmp.entity import engine, config
 from pysnmp.entity.rfc3413 import cmdrsp, context
 from pysnmp.carrier.asyncore.dgram import udp

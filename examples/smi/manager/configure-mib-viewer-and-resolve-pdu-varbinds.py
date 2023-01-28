@@ -7,7 +7,7 @@ variable-bindings into MIB objects or the other way around.
 
 The code that configures MIB compiler is similar to what
 happens inside the pysnmp.hlapi API.
-"""  #
+"""#
 from pysnmp.smi import builder, view, compiler, rfc1902
 
 # Assemble MIB browser

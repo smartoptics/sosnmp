@@ -31,7 +31,7 @@ address field.
 To respond from a non-local (e.g. spoofed) IP address, uncomment the
 .enableTransparent() method call and run this script as root.
 
-"""  #
+"""#
 from pysnmp.entity import engine, config
 from pysnmp.entity.rfc3413 import cmdrsp, context
 from pysnmp.carrier.asyncore.dgram import udp

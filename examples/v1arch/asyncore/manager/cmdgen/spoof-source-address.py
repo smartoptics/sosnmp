@@ -27,7 +27,7 @@ Agent would respond to the IP address you used as a source. So this script
 could only get a response if that source address is somehow routed to the 
 host this script is running on. Otherwise it just times out.
 
-"""  #
+"""#
 from pysnmp.carrier.asyncore.dispatch import AsyncoreDispatcher
 from pysnmp.carrier.asyncore.dgram import udp
 from pysnmp.proto import api

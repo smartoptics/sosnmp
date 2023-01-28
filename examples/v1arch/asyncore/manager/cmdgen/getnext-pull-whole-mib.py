@@ -13,7 +13,7 @@ This script performs similar to the following Net-SNMP command:
 
 | $ snmpwalk -v1 -c public -ObentU demo.pysnmp.com 1.3.6
 
-"""  #
+"""#
 from pysnmp.carrier.asyncore.dispatch import AsyncoreDispatcher
 from pysnmp.carrier.asyncore.dgram import udp
 from pyasn1.codec.ber import encoder, decoder

@@ -22,7 +22,7 @@ Either of the following Net-SNMP commands will walk this Agent:
 
 Requires Python 3.4 and later!
 
-"""  #
+"""#
 from pysnmp.entity import engine, config
 from pysnmp.entity.rfc3413 import cmdrsp, context
 from pysnmp.carrier.asyncio.dgram import udp

@@ -14,7 +14,7 @@ Functionally similar to:
 
 | $ snmpgetnext -v1 -c public demo.pysnmp.com SNMPv2-MIB::sysDescr.0
 
-"""  #
+"""#
 import asyncio
 from pysnmp.hlapi.asyncio.slim import Slim
 from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType

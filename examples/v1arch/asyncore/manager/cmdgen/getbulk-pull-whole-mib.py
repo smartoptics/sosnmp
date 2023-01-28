@@ -14,7 +14,7 @@ This script performs similar to the following Net-SNMP command:
 
 | $ snmpbulkwalk -v2c -c public -ObentU -Cn0 -Cr25 demo.pysnmp.com 1.3.6
 
-"""  #
+"""#
 from pysnmp.carrier.asyncore.dispatch import AsyncoreDispatcher
 from pysnmp.carrier.asyncore.dgram import udp
 from pyasn1.codec.ber import encoder, decoder

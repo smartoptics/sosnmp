@@ -16,7 +16,7 @@ Functionally similar to:
 | $ snmpbulkwalk -v3 -lnoAuthNoPriv -u usr-none-none -Cn0 -Cr50 \
 |                demo.pysnmp.com  SNMPv2-MIB::system
 
-"""  #
+"""#
 import asyncio
 from pysnmp.hlapi.asyncio import *
 

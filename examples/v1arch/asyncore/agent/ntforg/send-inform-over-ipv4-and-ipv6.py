@@ -16,7 +16,7 @@ The following Net-SNMP command will produce similar SNMP notification:
 | $ snmpinform -v2c -c public udp:demo.pysnmp.com 0 1.3.6.1.6.3.1.1.5.1
 | $ snmpinform -v2c -c public udp6:[::1] 0 1.3.6.1.6.3.1.1.5.1
 
-"""  #
+"""#
 from time import time
 from pysnmp.carrier.asynsock.dispatch import AsynsockDispatcher
 from pysnmp.carrier.asynsock.dgram import udp, udp6

@@ -22,7 +22,7 @@ Superuser privileges are only required to send spoofed packets.
 Alternatively, sending from local interface could also be achieved by
 binding to it (via openClientMode() parameter).
 
-"""  #
+"""#
 from pysnmp.entity import engine, config
 from pysnmp.carrier.asyncore.dgram import udp
 from pysnmp.entity.rfc3413 import cmdgen

@@ -9,7 +9,7 @@ or the other way around.
 The code below does not explicitly add MIB compiler - that happens
 behind the scenes. Examples below try to demo different kinds
 of MIB objects to work with.
-"""  #
+"""#
 from pysnmp.smi import builder, view, rfc1902, error
 
 # MIB Builder manages pysnmp MIBs

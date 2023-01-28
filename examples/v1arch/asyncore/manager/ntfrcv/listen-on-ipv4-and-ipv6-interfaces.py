@@ -19,7 +19,7 @@ receiver:
 Notification Receiver below uses two different transports for communication 
 with Notification Originators - UDP over IPv4 and UDP over IPv6.
 
-"""  #
+"""#
 from pysnmp.carrier.asyncore.dispatch import AsyncoreDispatcher
 from pysnmp.carrier.asyncore.dgram import udp, udp6, unix
 from pyasn1.codec.ber import decoder

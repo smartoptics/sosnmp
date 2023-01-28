@@ -16,7 +16,7 @@ Functionally similar to:
 | $ snmpget -v2c -c public demo.pysnmp.com:2161 SNMPv2-MIB::sysDescr.0
 | $ snmpget -v2c -c public demo.pysnmp.com:3161 SNMPv2-MIB::sysDescr.0
 
-"""  #
+"""#
 import asyncio
 from pysnmp.hlapi.asyncio import *
 
