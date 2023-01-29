@@ -21,7 +21,7 @@ application may perform.
 Synchronous SNMP
 ----------------
 
-Most simple and strightforward way to use PySNMP is by employing its
+Most simple and straightforward way to use PySNMP is by employing its
 Synchronous, blocking API. It's also the default API offered by
 users on *pysnmp.hlapi* sub-package import.
 
@@ -59,49 +59,13 @@ saves its configuration for the lifetime of SNMP engine object.
 .. autoclass:: pysnmp.hlapi.Udp6TransportTarget
    :members: setLocalAddress
 
-Asynchronous: asyncore
-----------------------
-
-The :mod:`asyncore` module is in Python standard library since ancient
-times. Main loop is built around :mod:`select` dispatcher, user
-code is invoked through callback callables.
-
-Command Generator
-
-.. toctree::
-   :maxdepth: 2
-
-   /docs/hlapi/asyncio/manager/cmdgen/getcmd
-   /docs/hlapi/asyncio/manager/cmdgen/setcmd
-   /docs/hlapi/asyncio/manager/cmdgen/nextcmd
-   /docs/hlapi/asyncio/manager/cmdgen/bulkcmd
-
-Notification Originator
-
-.. toctree::
-   :maxdepth: 2
-
-   /docs/hlapi/asyncio/agent/ntforg/notification 
-
-Transport configuration
-+++++++++++++++++++++++
-
-.. toctree::
-   :maxdepth: 2
-
-.. autoclass:: pysnmp.hlapi.asyncore.UdpTransportTarget
-   :members: setLocalAddress
-
-.. autoclass:: pysnmp.hlapi.asyncore.Udp6TransportTarget
-   :members: setLocalAddress
-
 Asynchronous: asyncio
 ---------------------
 
 The :mod:`asyncio` module first appeared in standard library since
 Python 3.3 (in provisional basis). Its main design feature is that
-it makes asynchronous code looking like synchronous one. That greately
-simplifies development and maintanence.
+it makes asynchronous code looking like synchronous one. That greatly
+simplifies development and maintenance.
 
 Command Generator
 
@@ -137,7 +101,7 @@ SNMP Engine
 -----------
 
 SNMP Engine is a central, stateful object used by all SNMP v3
-substsems.  Calls to high-level Applications API also consume SNMP
+subsystems.  Calls to high-level Applications API also consume SNMP
 Engine object on input.
 
 .. toctree::
@@ -257,7 +221,7 @@ accompanied by a value belonging to one of SNMP types (:RFC:`1902#section-2`).
 This pair is collectively called a variable-binding in SNMP parlance.
 
 The :py:mod:`~pysnmp.smi.rfc1902` module implements :RFC:`1902#section-2`
-MACRO definiitons.
+MACRO definitions.
 
 .. toctree::
    :maxdepth: 2
@@ -279,7 +243,7 @@ Notification Originator applications refer to MIBs for MIB notifications
 through *NOTIFICATION-TYPE* ASN.1 macro. It conveys a set of MIB variables to 
 be gathered and reported in SNMP Notification. The
 :py:mod:`~pysnmp.smi.rfc1902` module implements :RFC:`1902#section-2`
-macro definiitons.
+macro definitions.
 
 .. toctree::
    :maxdepth: 2

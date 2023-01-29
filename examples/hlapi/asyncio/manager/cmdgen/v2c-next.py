@@ -23,7 +23,7 @@ async def run():
     slim = Slim()
     errorIndication, errorStatus, errorIndex, varBinds = await slim.next(
         'public',
-        'demo.pysnmp.com',
+        'localhost',
         161,
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
     )
