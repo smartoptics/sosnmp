@@ -10,6 +10,7 @@
 # On host grommit.local platform Darwin version 16.4.0 by user ilya
 # Using Python version 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
 #
+import platform
 import time
 try:
     import os
@@ -48,7 +49,7 @@ class SnmpEngineID(TextualConvention, OctetString):
     defaultValue = [128, 0, 79, 184, 5]
     try:
         # Attempt to base engine ID on local system name and properties
-        defaultValue += [ord(x) for x in os.uname()[1][:16]]
+        defaultValue += [ord(x) for x in platform.node()[:16]]
     except Exception:
         pass
     try:
