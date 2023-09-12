@@ -22,7 +22,7 @@ from pysnmp.hlapi.asyncio import *
 
 
 async def getone(snmpEngine, hostname):
-    get_result = await getCmd(
+    errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
         snmpEngine,
         CommunityData("public"),
         UdpTransportTarget(hostname),
@@ -30,7 +30,6 @@ async def getone(snmpEngine, hostname):
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
     )
 
-    errorIndication, errorStatus, errorIndex, varBinds = await get_result
     if errorIndication:
         print(errorIndication)
     elif errorStatus:
