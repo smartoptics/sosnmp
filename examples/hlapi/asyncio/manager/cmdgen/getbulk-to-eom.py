@@ -24,7 +24,7 @@ from pysnmp.hlapi.asyncio import *
 async def run(varBinds):
     snmpEngine = SnmpEngine()
     while True:
-        bulk_task = await bulkCmd(
+        errorIndication, errorStatus, errorIndex, varBindTable = await bulkCmd(
             snmpEngine,
             UsmUserData('usr-none-none'),
             UdpTransportTarget(('demo.pysnmp.com', 161)),
@@ -33,7 +33,7 @@ async def run(varBinds):
             50,
             *varBinds
         )
-        (errorIndication, errorStatus, errorIndex, varBindTable) = await bulk_task
+
         if errorIndication:
             print(errorIndication)
             break
