@@ -28,7 +28,7 @@ from pysnmp.hlapi.asyncio import *
 
 
 async def sendone(snmpEngine, hostname, notifyType):
-    trap_result = await sendNotification(
+    errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
         snmpEngine,
         CommunityData("public", tag=hostname),
         UdpTransportTarget((hostname, 162), tagList=hostname),
@@ -39,7 +39,6 @@ async def sendone(snmpEngine, hostname, notifyType):
         ),
     )
 
-    (errorIndication, errorStatus, errorIndex, varBinds) = await trap_result
     if errorIndication:
         print(errorIndication)
     elif errorStatus:
