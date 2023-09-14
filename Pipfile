@@ -8,8 +8,12 @@ esbonio = "*"
 sphinx-sitemap = "*"
 sphinx-rtd-theme = "*"
 sphinx-copybutton = "*"
+pysnmpcrypto = "*"
 
 [dev-packages]
+pytest = "*"
+pytest-asyncio = "*"
+typing_extensions = "*"
 
 [requires]
 python_version = "3.7"
