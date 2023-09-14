@@ -26,6 +26,9 @@ jobs:
         run: |
           poetry install
           poetry build
+      - name: Test
+        run: |
+          tox
       - uses: actions/upload-artifact@v2.2.4
         with:
           name: dist
