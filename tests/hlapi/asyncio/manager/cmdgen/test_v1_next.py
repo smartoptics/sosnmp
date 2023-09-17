@@ -34,3 +34,5 @@ async def test_v1_next():
     assert errorStatus == 0
     assert errorIndex == 0
     assert len(varBinds) > 0
+
+    slim.close()

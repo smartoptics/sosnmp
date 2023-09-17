@@ -6,8 +6,9 @@ from pysnmp.proto.errind import RequestTimedOut
 
 @pytest.mark.asyncio
 async def test_send_v3_inform_notification():
+    snmpEngine = SnmpEngine()
     errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
-        SnmpEngine(),
+        snmpEngine,
         UsmUserData('usr-md5-des', 'authkey1', 'privkey1'),
         UdpTransportTarget(('demo.pysnmp.com', 162)),
         ContextData(),
@@ -23,3 +24,4 @@ async def test_send_v3_inform_notification():
     assert errorStatus == 0
     assert errorIndex == 0
     assert varBinds == []
+    snmpEngine.transportDispatcher.closeDispatcher()

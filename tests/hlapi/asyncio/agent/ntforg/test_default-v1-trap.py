@@ -19,3 +19,4 @@ async def test_send_notification():
     assert errorStatus == 0
     assert errorIndex == 0
     assert varBinds == []
+    snmpEngine.transportDispatcher.closeDispatcher()
