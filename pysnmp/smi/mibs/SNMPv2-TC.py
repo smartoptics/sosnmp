@@ -200,10 +200,11 @@ class TextualConvention(object):
                                  self.getNamedValues() or
                                  self.__unsigned32.isSuperTypeOf(self, matchConstraints=False) or
                                  self.__timeticks.isSuperTypeOf(self, matchConstraints=False)):
-            value = str(value)
-
             _ = lambda t, f=0: (t, f)
             displayHintType, decimalPrecision = _(*self.displayHint.split('-'))
+            if displayHintType == 'd':
+                return base.prettyIn(self, value)
+            value = str(value)
             if displayHintType == 'x' and (value.startswith('0x') or value.startswith('-0x')):
                 try:
                     if value.startswith('-'):
@@ -213,13 +214,6 @@ class TextualConvention(object):
                 except Exception:
                     raise SmiError(
                         'integer evaluation error: %s' % sys.exc_info()[1]
-                    )
-            elif displayHintType == 'd':
-                try:
-                    return base.prettyIn(self, int(float(value) * 10**int(decimalPrecision)))
-                except Exception:
-                    raise SmiError(
-                        'float evaluation error: %s' % sys.exc_info()[1]
                     )
             elif displayHintType == 'o' and (value.startswith('0') or value.startswith('-0')):
                 try:
