@@ -1,7 +1,6 @@
 import pytest
 from pysnmp.hlapi.asyncio import *
 
-
 @pytest.mark.asyncio
 async def test_usm_sha_aes128():
     snmpEngine = SnmpEngine()
@@ -15,7 +14,7 @@ async def test_usm_sha_aes128():
     errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
         snmpEngine,
         authData,
-        UdpTransportTarget(("demo.pysnmp.com", 161)),
+        UdpTransportTarget(("demo.pysnmp.com", 161), retries=0),
         ContextData(),
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
     )

@@ -3,10 +3,14 @@ from pysnmp.hlapi.asyncio import *
 from pysnmp.proto.errind import UnknownUserName
 
 @pytest.mark.asyncio
-async def test_usm_no_auth_no_priv_wrong_user():
+async def test_usm_sha_aes128_wrong_user():
     snmpEngine = SnmpEngine()
     authData = UsmUserData(
-        "usr-none-none-not-exist"
+        "usr-sha-aes-not-exist",
+        "authkey1",
+        "privkey1",
+        authProtocol=usmHMACSHAAuthProtocol,
+        privProtocol=usmAesCfb128Protocol,
     )
     errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
         snmpEngine,
@@ -18,4 +22,5 @@ async def test_usm_no_auth_no_priv_wrong_user():
 
     assert isinstance(errorIndication, UnknownUserName)
     assert str(errorIndication) == 'Unknown USM user'
+
     snmpEngine.transportDispatcher.closeDispatcher()
