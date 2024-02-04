@@ -20,8 +20,14 @@ async def test_send_v3_inform_notification():
         )
     )
 
-    assert isinstance(errorIndication, RequestTimedOut)
+    assert errorIndication is None
     assert errorStatus == 0
     assert errorIndex == 0
-    assert varBinds == []
+    assert len(varBinds) == 3
+    assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysUpTime.0"
+    assert varBinds[1][0].prettyPrint() == "SNMPv2-MIB::snmpTrapOID.0"
+    assert varBinds[2][0].prettyPrint() == "SNMPv2-MIB::sysDescr.0"
+    isinstance(varBinds[0][1], TimeTicks)
+    isinstance(varBinds[1][1], ObjectIdentifier)
+    isinstance(varBinds[2][1], OctetString)
     snmpEngine.transportDispatcher.closeDispatcher()
