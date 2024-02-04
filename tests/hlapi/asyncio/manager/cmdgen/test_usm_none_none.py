@@ -10,7 +10,7 @@ async def test_usm_no_auth_no_priv():
     errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
         snmpEngine,
         authData,
-        UdpTransportTarget(("demo.pysnmp.com", 161)),
+        UdpTransportTarget(("demo.pysnmp.com", 161), retries=0),
         ContextData(),
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
     )
