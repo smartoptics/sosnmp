@@ -1,6 +1,6 @@
 import pytest
 from pysnmp.hlapi.asyncio import *
-from pysnmp.proto.errind import RequestTimedOut, UnknownUserName
+from pysnmp.proto.errind import DecryptionError, RequestTimedOut, UnknownUserName
 
 @pytest.mark.asyncio
 async def test_usm_sha_aes128():
@@ -46,8 +46,8 @@ async def test_usm_sha_aes128_wrong_auth():
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
     )
 
-    assert isinstance(errorIndication, RequestTimedOut)
-    assert str(errorIndication) == 'No SNMP response received before timeout'
+    assert isinstance(errorIndication, DecryptionError)
+    assert str(errorIndication) == 'Ciphering services not available or ciphertext is broken'
 
     snmpEngine.transportDispatcher.closeDispatcher()
 
@@ -69,8 +69,8 @@ async def test_usm_sha_aes128_wrong_priv():
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
     )
 
-    assert isinstance(errorIndication, RequestTimedOut)
-    assert str(errorIndication) == 'No SNMP response received before timeout'
+    assert isinstance(errorIndication, DecryptionError)
+    assert str(errorIndication) == 'Ciphering services not available or ciphertext is broken'
 
     snmpEngine.transportDispatcher.closeDispatcher()
 
