@@ -5,10 +5,12 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import socket
+from typing import Tuple
 from pysnmp.carrier.base import AbstractTransportAddress
 from pysnmp.carrier.asyncio.dgram.base import DgramAsyncioProtocol
 
-
+domainName: Tuple[int, ...]
+snmpUDP6Domain: Tuple[int, ...]
 domainName = snmpUDP6Domain = (1, 3, 6, 1, 2, 1, 100, 1, 2)
 
 
