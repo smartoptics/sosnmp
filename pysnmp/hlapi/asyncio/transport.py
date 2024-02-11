@@ -6,11 +6,13 @@
 #
 import socket
 import sys
+from typing import Tuple
 from pysnmp.carrier.asyncio.dgram import udp, udp6
-from pysnmp.hlapi.transport import AbstractTransportTarget
+from pysnmp.carrier.base import AbstractTransport, AbstractTransportAddress
 from pysnmp.error import PySnmpError
+from pysnmp.hlapi.transport import AbstractTransportTarget
 
-__all__ = ['Udp6TransportTarget', 'UdpTransportTarget']
+__all__ = ["Udp6TransportTarget", "UdpTransportTarget"]
 
 
 class UdpTransportTarget(AbstractTransportTarget):
@@ -47,19 +49,25 @@ class UdpTransportTarget(AbstractTransportTarget):
     >>>
 
     """
-    transportDomain = udp.domainName
-    protoTransport = udp.UdpAsyncioTransport
 
-    def _resolveAddr(self, transportAddr):
+    transportDomain: Tuple[int, ...] = udp.domainName
+    protoTransport: AbstractTransport = udp.UdpAsyncioTransport
+
+    def _resolveAddr(self, transportAddr: AbstractTransportAddress):
         try:
-            return socket.getaddrinfo(transportAddr[0],
-                                      transportAddr[1],
-                                      socket.AF_INET,
-                                      socket.SOCK_DGRAM,
-                                      socket.IPPROTO_UDP)[0][4][:2]
+            return socket.getaddrinfo(
+                transportAddr[0],
+                transportAddr[1],
+                socket.AF_INET,
+                socket.SOCK_DGRAM,
+                socket.IPPROTO_UDP,
+            )[0][4][:2]
         except socket.gaierror:
-            raise PySnmpError('Bad IPv4/UDP transport address {}: {}'.format(
-                '@'.join([str(x) for x in transportAddr]), sys.exc_info()[1]))
+            raise PySnmpError(
+                "Bad IPv4/UDP transport address {}: {}".format(
+                    "@".join([str(x) for x in transportAddr]), sys.exc_info()[1]
+                )
+            )
 
 
 class Udp6TransportTarget(AbstractTransportTarget):
@@ -108,16 +116,22 @@ class Udp6TransportTarget(AbstractTransportTarget):
     >>>
 
     """
-    transportDomain = udp6.domainName
-    protoTransport = udp6.Udp6AsyncioTransport
 
-    def _resolveAddr(self, transportAddr):
+    transportDomain: Tuple[int, ...] = udp6.domainName
+    protoTransport: AbstractTransport = udp6.Udp6AsyncioTransport
+
+    def _resolveAddr(self, transportAddr: AbstractTransportAddress):
         try:
-            return socket.getaddrinfo(transportAddr[0],
-                                      transportAddr[1],
-                                      socket.AF_INET6,
-                                      socket.SOCK_DGRAM,
-                                      socket.IPPROTO_UDP)[0][4][:2]
+            return socket.getaddrinfo(
+                transportAddr[0],
+                transportAddr[1],
+                socket.AF_INET6,
+                socket.SOCK_DGRAM,
+                socket.IPPROTO_UDP,
+            )[0][4][:2]
         except socket.gaierror:
-            raise PySnmpError('Bad IPv6/UDP transport address {}: {}'.format(
-                '@'.join([str(x) for x in transportAddr]), sys.exc_info()[1]))
+            raise PySnmpError(
+                "Bad IPv6/UDP transport address {}: {}".format(
+                    "@".join([str(x) for x in transportAddr]), sys.exc_info()[1]
+                )
+            )

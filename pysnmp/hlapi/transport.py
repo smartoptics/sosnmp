@@ -5,17 +5,30 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 from pyasn1.compat.octets import null
-from pysnmp.carrier.base import AbstractTransport
+from pysnmp.carrier.base import AbstractTransport, AbstractTransportAddress
 from pysnmp import error
+from pysnmp.entity.engine import SnmpEngine
 
 __all__ = []
 
 
 class AbstractTransportTarget:
+
+    retries: int
+    timeout: float
+    transport: AbstractTransport
+    transportAddr: AbstractTransportAddress
+
     transportDomain = None
     protoTransport = AbstractTransport
 
-    def __init__(self, transportAddr, timeout=1, retries=5, tagList=null):
+    def __init__(
+        self,
+        transportAddr: AbstractTransportAddress,
+        timeout: float = 1,
+        retries: int = 5,
+        tagList=null,
+    ):
         self.transportAddr = self._resolveAddr(transportAddr)
         self.timeout = timeout
         self.retries = retries
@@ -24,9 +37,12 @@ class AbstractTransportTarget:
         self.transport = None
 
     def __repr__(self):
-        return '{}({!r}, timeout={!r}, retries={!r}, tagList={!r})'.format(
-            self.__class__.__name__, self.transportAddr,
-            self.timeout, self.retries, self.tagList
+        return "{}({!r}, timeout={!r}, retries={!r}, tagList={!r})".format(
+            self.__class__.__name__,
+            self.transportAddr,
+            self.timeout,
+            self.retries,
+            self.tagList,
         )
 
     def getTransportInfo(self):
@@ -53,10 +69,15 @@ class AbstractTransportTarget:
         self.transport = self.protoTransport().openClientMode(self.iface)
         return self.transport
 
-    def verifyDispatcherCompatibility(self, snmpEngine):
-        if not self.protoTransport.isCompatibleWithDispatcher(snmpEngine.transportDispatcher):
-            raise error.PySnmpError('Transport {!r} is not compatible with dispatcher {!r}'.format(
-                self.protoTransport, snmpEngine.transportDispatcher))
+    def verifyDispatcherCompatibility(self, snmpEngine: SnmpEngine):
+        if not self.protoTransport.isCompatibleWithDispatcher(
+            snmpEngine.transportDispatcher
+        ):
+            raise error.PySnmpError(
+                "Transport {!r} is not compatible with dispatcher {!r}".format(
+                    self.protoTransport, snmpEngine.transportDispatcher
+                )
+            )
 
-    def _resolveAddr(self, transportAddr):
+    def _resolveAddr(self, transportAddr: AbstractTransportAddress):
         raise NotImplementedError()
