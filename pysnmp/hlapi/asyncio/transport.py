@@ -51,9 +51,9 @@ class UdpTransportTarget(AbstractTransportTarget):
     """
 
     transportDomain: Tuple[int, ...] = udp.domainName
-    protoTransport: AbstractTransport = udp.UdpAsyncioTransport
+    protoTransport = udp.UdpAsyncioTransport
 
-    def _resolveAddr(self, transportAddr: AbstractTransportAddress):
+    def _resolveAddr(self, transportAddr: tuple) -> tuple[str, int]:
         try:
             return socket.getaddrinfo(
                 transportAddr[0],
@@ -118,9 +118,9 @@ class Udp6TransportTarget(AbstractTransportTarget):
     """
 
     transportDomain: Tuple[int, ...] = udp6.domainName
-    protoTransport: AbstractTransport = udp6.Udp6AsyncioTransport
+    protoTransport = udp6.Udp6AsyncioTransport
 
-    def _resolveAddr(self, transportAddr: AbstractTransportAddress):
+    def _resolveAddr(self, transportAddr: tuple):
         try:
             return socket.getaddrinfo(
                 transportAddr[0],

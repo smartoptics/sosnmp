@@ -8,7 +8,7 @@ import os
 import shutil
 import sys
 import tempfile
-from typing import Tuple
+from typing import Any, Dict, Tuple
 from pyasn1.compat.octets import str2octs
 from pysnmp.carrier.base import AbstractTransportAddress, AbstractTransportDispatcher
 from pysnmp.proto.rfc3412 import MsgAndPduDispatcher
@@ -58,7 +58,7 @@ class SnmpEngine:
 
     """
 
-    transportDispatcher: AbstractTransportDispatcher
+    transportDispatcher: AbstractTransportDispatcher | None
 
     def __init__(
         self, snmpEngineID=None, maxMessageSize: int = 65507, msgAndPduDsp=None
@@ -92,7 +92,7 @@ class SnmpEngine:
             raise error.PySnmpError("MIB instrumentation does not yet exist")
         (
             snmpEngineMaxMessageSize,
-        ) = self.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+        ) = self.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(  # type: ignore
             "__SNMP-FRAMEWORK-MIB", "snmpEngineMaxMessageSize"
         )
         snmpEngineMaxMessageSize.syntax = snmpEngineMaxMessageSize.syntax.clone(
@@ -100,13 +100,13 @@ class SnmpEngine:
         )
         (
             snmpEngineBoots,
-        ) = self.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+        ) = self.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(  # type: ignore
             "__SNMP-FRAMEWORK-MIB", "snmpEngineBoots"
         )
         snmpEngineBoots.syntax += 1
         (
             origSnmpEngineID,
-        ) = self.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+        ) = self.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(  # type: ignore
             "__SNMP-FRAMEWORK-MIB", "snmpEngineID"
         )
 
@@ -215,7 +215,7 @@ class SnmpEngine:
     def setUserContext(self, **kwargs):
         self.cache.update({"__%s" % k: kwargs[k] for k in kwargs})
 
-    def getUserContext(self, arg):
+    def getUserContext(self, arg) -> Dict[str, Any] | None:  # TODO: fix this type check
         return self.cache.get("__%s" % arg)
 
     def delUserContext(self, arg):

@@ -16,15 +16,15 @@ class AbstractTransportTarget:
 
     retries: int
     timeout: float
-    transport: AbstractTransport
-    transportAddr: AbstractTransportAddress
+    transport: AbstractTransport | None
+    transportAddr: tuple[str, int]
 
     transportDomain = None
     protoTransport = AbstractTransport
 
     def __init__(
         self,
-        transportAddr: AbstractTransportAddress,
+        transportAddr: tuple,
         timeout: float = 1,
         retries: int = 5,
         tagList=null,
@@ -79,5 +79,5 @@ class AbstractTransportTarget:
                 )
             )
 
-    def _resolveAddr(self, transportAddr: AbstractTransportAddress):
+    def _resolveAddr(self, transportAddr: tuple) -> tuple[str, int]:
         raise NotImplementedError()

@@ -34,17 +34,26 @@ class Slim:
 
     """
 
-    def __init__(self, version=2):
+    def __init__(self, version: int = 2):
         self.snmpEngine = SnmpEngine()
         if version not in (1, 2):
-            raise PySnmpError("Not supported version {}".format(version))
+            raise PySnmpError(f"Not supported version {version}")
         self.version = version
 
     def close(self):
         """Closes the wrapper to release its resources."""
-        self.snmpEngine.transportDispatcher.closeDispatcher()
+        if self.snmpEngine.transportDispatcher is not None:
+            self.snmpEngine.transportDispatcher.closeDispatcher()
 
-    async def get(self, communityName, address, port, *varBinds, timeout=1, retries=5):
+    async def get(
+        self,
+        communityName: str,
+        address: str,
+        port: int,
+        *varBinds,
+        timeout: int = 1,
+        retries: int = 5,
+    ):
         """
         Creates a generator to perform SNMP GET query.
 
@@ -122,7 +131,15 @@ class Slim:
             *varBinds,
         )
 
-    async def next(self, communityName, address, port, *varBinds, timeout=1, retries=5):
+    async def next(
+        self,
+        communityName: str,
+        address: str,
+        port: int,
+        *varBinds,
+        timeout: int = 1,
+        retries: int = 5,
+    ):
         """
         Creates a generator to perform SNMP GETNEXT query.
 
@@ -205,14 +222,14 @@ class Slim:
 
     async def bulk(
         self,
-        communityName,
-        address,
-        port,
-        nonRepeaters,
-        maxRepetitions,
+        communityName: str,
+        address: str,
+        port: int,
+        nonRepeaters: int,
+        maxRepetitions: int,
         *varBinds,
-        timeout=1,
-        retries=5
+        timeout: int = 1,
+        retries: int = 5,
     ):
         r"""Creates a generator to perform SNMP GETBULK query.
 
@@ -327,7 +344,15 @@ class Slim:
             *varBinds,
         )
 
-    async def set(self, communityName, address, port, *varBinds, timeout=1, retries=5):
+    async def set(
+        self,
+        communityName: str,
+        address: str,
+        port: int,
+        *varBinds,
+        timeout: int = 1,
+        retries: int = 5,
+    ):
         """
         Creates a generator to perform SNMP SET query.
 
