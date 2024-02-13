@@ -4,6 +4,7 @@
 # Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+from typing import Tuple
 from pyasn1.compat.octets import null
 from pysnmp.carrier.base import AbstractTransport, AbstractTransportAddress
 from pysnmp import error
@@ -16,15 +17,15 @@ class AbstractTransportTarget:
 
     retries: int
     timeout: float
-    transport: AbstractTransport | None
-    transportAddr: tuple[str, int]
+    transport: "AbstractTransport | None"
+    transportAddr: Tuple[str, int]
 
     transportDomain = None
     protoTransport = AbstractTransport
 
     def __init__(
         self,
-        transportAddr: tuple,
+        transportAddr: Tuple,
         timeout: float = 1,
         retries: int = 5,
         tagList=null,
@@ -79,5 +80,5 @@ class AbstractTransportTarget:
                 )
             )
 
-    def _resolveAddr(self, transportAddr: tuple) -> tuple[str, int]:
+    def _resolveAddr(self, transportAddr: Tuple) -> Tuple[str, int]:
         raise NotImplementedError()

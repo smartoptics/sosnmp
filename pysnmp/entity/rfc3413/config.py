@@ -20,7 +20,7 @@ def getTargetAddr(snmpEngine: SnmpEngine, snmpTargetAddrName):
 
     cache = snmpEngine.getUserContext("getTargetAddr")
     if cache is None:
-        cache: Dict[str, Any] | None = {"id": -1}
+        cache: "Dict[str, Any] | None" = {"id": -1}
         snmpEngine.setUserContext(getTargetAddr=cache)
 
     if cache["id"] != snmpTargetAddrEntry.branchVersionId:
@@ -119,7 +119,7 @@ def getTargetParams(snmpEngine: SnmpEngine, paramsName):
 
     cache = snmpEngine.getUserContext("getTargetParams")
     if cache is None:
-        cache: Dict[str, Any] | None = {"id": -1}
+        cache: "Dict[str, Any] | None" = {"id": -1}
         snmpEngine.setUserContext(getTargetParams=cache)
 
     if cache["id"] != snmpTargetParamsEntry.branchVersionId:
@@ -209,7 +209,7 @@ def getNotificationInfo(snmpEngine: SnmpEngine, notificationTarget):
 
     cache = snmpEngine.getUserContext("getNotificationInfo")
     if cache is None:
-        cache: Dict[str, Any] | None = {"id": -1}
+        cache: "Dict[str, Any] | None" = {"id": -1}
         snmpEngine.setUserContext(getNotificationInfo=cache)
 
     if cache["id"] != snmpNotifyEntry.branchVersionId:
@@ -247,7 +247,7 @@ def getTargetNames(snmpEngine: SnmpEngine, tag):
 
     cache = snmpEngine.getUserContext("getTargetNames")
     if cache is None:
-        cache: Dict[str, Any] | None = {"id": -1}
+        cache: "Dict[str, Any] | None" = {"id": -1}
         snmpEngine.setUserContext(getTargetNames=cache)
 
     if cache["id"] == snmpTargetAddrEntry.branchVersionId:

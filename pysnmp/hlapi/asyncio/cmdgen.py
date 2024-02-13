@@ -57,7 +57,7 @@ isEndOfMib = lambda x: not cmdgen.getNextVarBinds(x)[1]
 
 async def getCmd(
     snmpEngine: SnmpEngine,
-    authData: CommunityData | UsmUserData,
+    authData: "CommunityData | UsmUserData",
     transportTarget: AbstractTransportTarget,
     contextData: ContextData,
     *varBinds,
@@ -177,7 +177,7 @@ async def getCmd(
 
 async def setCmd(
     snmpEngine: SnmpEngine,
-    authData: CommunityData | UsmUserData,
+    authData: "CommunityData | UsmUserData",
     transportTarget: AbstractTransportTarget,
     contextData: ContextData,
     *varBinds,
@@ -297,7 +297,7 @@ async def setCmd(
 
 async def nextCmd(
     snmpEngine: SnmpEngine,
-    authData: CommunityData | UsmUserData,
+    authData: "CommunityData | UsmUserData",
     transportTarget: AbstractTransportTarget,
     contextData: ContextData,
     *varBinds,
@@ -395,8 +395,11 @@ async def nextCmd(
         lookupMib, future = cbCtx
         if future.cancelled():
             return
-        if (options.get('ignoreNonIncreasingOid', False) and
-                errorIndication and isinstance(errorIndication, errind.OidNotIncreasing)):
+        if (
+            options.get("ignoreNonIncreasingOid", False)
+            and errorIndication
+            and isinstance(errorIndication, errind.OidNotIncreasing)
+        ):
             errorIndication = None
         try:
             varBindsUnmade = [
@@ -431,7 +434,7 @@ async def nextCmd(
 
 async def bulkCmd(
     snmpEngine: SnmpEngine,
-    authData: CommunityData | UsmUserData,
+    authData: "CommunityData | UsmUserData",
     transportTarget: AbstractTransportTarget,
     contextData: ContextData,
     nonRepeaters: int,
@@ -560,8 +563,11 @@ async def bulkCmd(
         lookupMib, future = cbCtx
         if future.cancelled():
             return
-        if (options.get('ignoreNonIncreasingOid', False) and
-                errorIndication and isinstance(errorIndication, errind.OidNotIncreasing)):
+        if (
+            options.get("ignoreNonIncreasingOid", False)
+            and errorIndication
+            and isinstance(errorIndication, errind.OidNotIncreasing)
+        ):
             errorIndication = None
         try:
             varBindsUnmade = [

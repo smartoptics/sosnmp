@@ -53,7 +53,7 @@ class UdpTransportTarget(AbstractTransportTarget):
     transportDomain: Tuple[int, ...] = udp.domainName
     protoTransport = udp.UdpAsyncioTransport
 
-    def _resolveAddr(self, transportAddr: tuple) -> tuple[str, int]:
+    def _resolveAddr(self, transportAddr: Tuple) -> Tuple[str, int]:
         try:
             return socket.getaddrinfo(
                 transportAddr[0],

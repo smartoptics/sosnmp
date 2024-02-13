@@ -58,7 +58,7 @@ class SnmpEngine:
 
     """
 
-    transportDispatcher: AbstractTransportDispatcher | None
+    transportDispatcher: "AbstractTransportDispatcher | None"
 
     def __init__(
         self, snmpEngineID=None, maxMessageSize: int = 65507, msgAndPduDsp=None
@@ -215,7 +215,9 @@ class SnmpEngine:
     def setUserContext(self, **kwargs):
         self.cache.update({"__%s" % k: kwargs[k] for k in kwargs})
 
-    def getUserContext(self, arg) -> Dict[str, Any] | None:  # TODO: fix this type check
+    def getUserContext(
+        self, arg
+    ) -> "Dict[str, Any] | None":  # TODO: fix this type check
         return self.cache.get("__%s" % arg)
 
     def delUserContext(self, arg):
