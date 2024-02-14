@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - "main"
-      - "develop"
+      # - "develop"
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 jobs:
   build:
@@ -17,13 +17,14 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+          cache: 'pip'
       - name: Run image
-        uses: abatilo/actions-poetry@v2.0.0
+        uses: abatilo/actions-poetry@v2
         with:
           poetry-version: "1.6.1"
       - name: Build
@@ -33,12 +34,20 @@ jobs:
       - name: Test
         run: |
           poetry run mibdump NET-SNMP-EXAMPLES-MIB
-          poetry run pytest
-      - uses: actions/upload-artifact@v2.2.4
+          poetry add --group dev pytest-cov
+          poetry run pytest --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@v4
         with:
-          name: dist
-          path: dist
-      - uses: actions/upload-artifact@v2.2.4
-        with:
-          name: output
-          path: output
+          name: pytest-results-${{ matrix.python-version }}
+          path: junit/test-results-${{ matrix.python-version }}.xml
+        # Use always() to always run this step to publish test results when there are test failures
+        if: ${{ always() }}          
+      # - uses: actions/upload-artifact@v4
+      #   with:
+      #     name: dist
+      #     path: dist
+      # - uses: actions/upload-artifact@v4
+      #   with:
+      #     name: output
+      #     path: output
