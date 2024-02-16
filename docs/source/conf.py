@@ -54,7 +54,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "SNMP library for Python"
+project = "SNMP Library for Python"
 copyright = "2005-2019, Ilya Etingof. © Copyright 2022-2024, LeXtudio Inc."
 author = "LeXtudio Inc. <support@lextudio.com>"
 

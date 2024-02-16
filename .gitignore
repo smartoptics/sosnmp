@@ -25,3 +25,5 @@ venv*
 .tox/
 .env
 .python-version
+.coverage
+junit/test-results.xml
