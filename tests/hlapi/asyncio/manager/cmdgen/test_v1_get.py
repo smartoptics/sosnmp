@@ -1,7 +1,7 @@
 import pytest
 from pysnmp.hlapi.asyncio import *
 
-from tests.agent_context import AgentContextManager
+from tests.agent_context import AGENT_PORT, AgentContextManager
 
 
 @pytest.mark.asyncio
@@ -11,7 +11,7 @@ async def test_v1_get():
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             CommunityData("public", mpModel=0),
-            UdpTransportTarget(("localhost", 1611)),
+            UdpTransportTarget(("localhost", AGENT_PORT)),
             ContextData(),
             ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         )

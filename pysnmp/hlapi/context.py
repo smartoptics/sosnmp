@@ -6,7 +6,7 @@
 #
 from pyasn1.compat.octets import null
 
-__all__ = ['ContextData']
+__all__ = ["ContextData"]
 
 
 class ContextData:
@@ -15,7 +15,7 @@ class ContextData:
     This object can be used by
     :py:class:`~pysnmp.hlapi.asyncio.AsyncCommandGenerator` or
     :py:class:`~pysnmp.hlapi.asyncio.AsyncNotificationOriginator`
-    and their derevatives for forming SNMP PDU and also adding new entries to
+    and their derivatives for forming SNMP PDU and also adding new entries to
     Local Configuration Datastore (LCD) in order to support SNMPv1/v2c with
     SNMPv3 interoperability.
 
@@ -51,6 +51,6 @@ class ContextData:
         self.contextName = contextName
 
     def __repr__(self):
-        return '{}(contextEngineId={!r}, contextName={!r})'.format(
+        return "{}(contextEngineId={!r}, contextName={!r})".format(
             self.__class__.__name__, self.contextEngineId, self.contextName
         )
