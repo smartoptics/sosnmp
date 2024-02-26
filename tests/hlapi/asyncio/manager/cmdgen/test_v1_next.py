@@ -14,25 +14,28 @@ Functionally similar to:
 
 | $ snmpgetnext -v1 -c public demo.pysnmp.com SNMPv2-MIB::sysDescr.0
 
-"""#
+"""  #
 import asyncio
 import pytest
 from pysnmp.hlapi.asyncio.slim import Slim
 from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
+from tests.agent_context import AGENT_PORT, AgentContextManager
+
 
 @pytest.mark.asyncio
 async def test_v1_next():
-    slim = Slim(1)
-    errorIndication, errorStatus, errorIndex, varBinds = await slim.next(
-        'public',
-        'demo.pysnmp.com',
-        161,
-        ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
-    )
+    async with AgentContextManager():
+        slim = Slim(1)
+        errorIndication, errorStatus, errorIndex, varBinds = await slim.next(
+            "public",
+            "localhost",
+            AGENT_PORT,
+            ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
+        )
 
-    assert errorIndication is None
-    assert errorStatus == 0
-    assert errorIndex == 0
-    assert len(varBinds) > 0
+        assert errorIndication is None
+        assert errorStatus == 0
+        assert errorIndex == 0
+        assert len(varBinds) == 1
 
-    slim.close()
+        slim.close()
