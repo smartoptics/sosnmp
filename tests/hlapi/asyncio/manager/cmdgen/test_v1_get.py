@@ -44,11 +44,15 @@ def test_v1_get_timeout():
             print([str(varBind[0]), varBind[1]])
 
     start = datetime.now()
-    loop.run_until_complete(run_get())
-    snmpEngine.transportDispatcher.closeDispatcher()
-    end = datetime.now()
-    elapsed_time = (end - start).total_seconds()
-    assert elapsed_time >= 2 and elapsed_time <= 3
+    try:
+        loop.run_until_complete(asyncio.wait_for(run_get(), timeout=3))
+        end = datetime.now()
+        elapsed_time = (end - start).total_seconds()
+        assert elapsed_time >= 2 and elapsed_time <= 3
+    except asyncio.TimeoutError:
+        assert False, "Test case timed out"
+    finally:
+        snmpEngine.transportDispatcher.closeDispatcher()
 
 
 @pytest.mark.asyncio
@@ -67,8 +71,12 @@ async def test_v1_get_timeout_async():
             print([str(varBind[0]), varBind[1]])
 
     start = datetime.now()
-    await run_get()
-    snmpEngine.transportDispatcher.closeDispatcher()
-    end = datetime.now()
-    elapsed_time = (end - start).total_seconds()
-    assert elapsed_time >= 2 and elapsed_time <= 3
+    try:
+        await asyncio.wait_for(run_get(), timeout=3)
+        end = datetime.now()
+        elapsed_time = (end - start).total_seconds()
+        assert elapsed_time >= 2 and elapsed_time <= 3
+    except asyncio.TimeoutError:
+        assert False, "Test case timed out"
+    finally:
+        snmpEngine.transportDispatcher.closeDispatcher()
