@@ -34,6 +34,7 @@
 # THE POSSIBILITY OF SUCH DAMAGE.
 #
 import sys
+from time import time
 import traceback
 from typing import Tuple
 from pysnmp.carrier.base import AbstractTransport, AbstractTransportDispatcher
@@ -51,7 +52,15 @@ class AsyncioDispatcher(AbstractTransportDispatcher):
     def __init__(self, *args, **kwargs):
         AbstractTransportDispatcher.__init__(self)
         self.__transportCount = 0
-        self.loop = kwargs.pop('loop', asyncio.get_event_loop())
+        if "timeout" in kwargs:
+            self.setTimerResolution(kwargs["timeout"])
+        self.loopingcall = None
+        self.loop = kwargs.pop("loop", asyncio.get_event_loop())
+
+    async def handle_timeout(self):
+        while True:
+            await asyncio.sleep(self.getTimerResolution())
+            self.handleTimerTick(time())
 
     def runDispatcher(self, timeout: float = 0.0):
         if not self.loop.is_running():
@@ -62,7 +71,7 @@ class AsyncioDispatcher(AbstractTransportDispatcher):
             except KeyboardInterrupt:
                 raise
             except Exception:
-                raise PySnmpError(';'.join(traceback.format_exception(*sys.exc_info())))
+                raise PySnmpError(";".join(traceback.format_exception(*sys.exc_info())))
 
     def __closeDispatcher(self):
         if self.loop.is_running():
@@ -70,9 +79,9 @@ class AsyncioDispatcher(AbstractTransportDispatcher):
         super().closeDispatcher()
 
     def registerTransport(self, tDomain: Tuple[int, ...], transport: AbstractTransport):
-        AbstractTransportDispatcher.registerTransport(
-            self, tDomain, transport
-        )
+        if self.loopingcall is None and self.getTimerResolution() > 0:
+            self.loopingcall = asyncio.ensure_future(self.handle_timeout())
+        AbstractTransportDispatcher.registerTransport(self, tDomain, transport)
         self.__transportCount += 1
 
     def unregisterTransport(self, tDomain: Tuple[int, ...]):
@@ -80,3 +89,8 @@ class AsyncioDispatcher(AbstractTransportDispatcher):
         if t is not None:
             AbstractTransportDispatcher.unregisterTransport(self, tDomain)
             self.__transportCount -= 1
+
+        # The last transport has been removed, stop the timeout
+        if self.__transportCount == 0 and not self.loopingcall.done():
+            self.loopingcall.cancel()
+            self.loopingcall = None
