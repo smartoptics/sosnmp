@@ -1,3 +1,5 @@
+import asyncio
+from datetime import datetime
 import pytest
 from pysnmp.hlapi.asyncio import *
 
@@ -24,3 +26,49 @@ async def test_v1_get():
         assert isinstance(varBinds[0][1], OctetString)
 
         snmpEngine.transportDispatcher.closeDispatcher()
+
+
+def test_v1_get_timeout():
+    loop = asyncio.get_event_loop()
+    snmpEngine = SnmpEngine()
+
+    async def run_get():
+        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+            snmpEngine,
+            CommunityData("community_string"),
+            UdpTransportTarget(("1.2.3.4", 161), timeout=2, retries=0),
+            ContextData(),
+            ObjectType(ObjectIdentity("1.3.6.1.2.1.1.1.0")),
+        )
+        for varBind in varBinds:
+            print([str(varBind[0]), varBind[1]])
+
+    start = datetime.now()
+    loop.run_until_complete(run_get())
+    snmpEngine.transportDispatcher.closeDispatcher()
+    end = datetime.now()
+    elapsed_time = (end - start).total_seconds()
+    assert elapsed_time >= 2 and elapsed_time <= 3
+
+
+@pytest.mark.asyncio
+async def test_v1_get_timeout_async():
+    snmpEngine = SnmpEngine()
+
+    async def run_get():
+        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+            snmpEngine,
+            CommunityData("community_string"),
+            UdpTransportTarget(("1.2.3.4", 161), timeout=2, retries=0),
+            ContextData(),
+            ObjectType(ObjectIdentity("1.3.6.1.2.1.1.1.0")),
+        )
+        for varBind in varBinds:
+            print([str(varBind[0]), varBind[1]])
+
+    start = datetime.now()
+    await run_get()
+    snmpEngine.transportDispatcher.closeDispatcher()
+    end = datetime.now()
+    elapsed_time = (end - start).total_seconds()
+    assert elapsed_time >= 2 and elapsed_time <= 3
