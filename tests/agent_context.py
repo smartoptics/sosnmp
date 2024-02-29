@@ -64,7 +64,7 @@ async def start_agent() -> SnmpEngine:
     class MyStaticMibScalarInstance(MibScalarInstance):
         # noinspection PyUnusedLocal,PyUnusedLocal
         def getValue(self, name, idx):
-            time.sleep(3)  # Add a 2-second sleep
+            time.sleep(2)  # Add a 2-second sleep
             return self.getSyntax().clone(f"Test agent")
 
         def setValue(self, name, idx, value):
