@@ -10,12 +10,12 @@ import sys
 
 class PySnmpError(Exception):
     def __init__(self, *args):
-        msg = args and str(args[0]) or ''
+        msg = args and str(args[0]) or ""
 
         self.cause = sys.exc_info()
 
         if self.cause[0]:
-            msg += f'caused by {self.cause[0]}: {self.cause[1]}'
+            msg += f" caused by {self.cause[0]}: {self.cause[1]}"
 
         if msg:
             args = (msg,) + args[1:]
