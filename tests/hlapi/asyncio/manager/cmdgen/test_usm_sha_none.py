@@ -42,9 +42,7 @@ async def test_usm_sha_none_wrong_auth():
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             authData,
-            UdpTransportTarget(
-                ("demo.pysnmp.com", 161), retries=0
-            ),  # TODO: change to localhost
+            UdpTransportTarget(("localhost", AGENT_PORT), retries=0),
             ContextData(),
             ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         )
@@ -67,9 +65,7 @@ async def test_usm_sha_none_wrong_user():
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             authData,
-            UdpTransportTarget(
-                ("demo.pysnmp.com", 161), retries=0
-            ),  # TODO: change to localhost
+            UdpTransportTarget(("localhost", AGENT_PORT), retries=0),
             ContextData(),
             ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         )
