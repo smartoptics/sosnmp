@@ -27,3 +27,4 @@ venv*
 .python-version
 .coverage
 junit/test-results.xml
+coverage.xml
