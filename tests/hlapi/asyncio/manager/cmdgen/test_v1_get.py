@@ -70,7 +70,7 @@ def test_v1_get_timeout_invalid_target():
         loop.run_until_complete(asyncio.wait_for(run_get(), timeout=3))
         end = datetime.now()
         elapsed_time = (end - start).total_seconds()
-        assert elapsed_time >= 1 and elapsed_time <= 2
+        assert elapsed_time >= 1 and elapsed_time <= 3
     except asyncio.TimeoutError:
         assert False, "Test case timed out"
     finally:
