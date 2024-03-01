@@ -15,23 +15,45 @@ class AbstractMessageProcessingModel:
         self._snmpMsgSpec = self.snmpMsgSpec()  # local copy
         self._cache = cache.Cache()
 
-    def prepareOutgoingMessage(self, snmpEngine, transportDomain,
-                               transportAddress, messageProcessingModel,
-                               securityModel, securityName, securityLevel,
-                               contextEngineId, contextName, pduVersion,
-                               pdu, expectResponse, sendPduHandle):
-        raise error.ProtocolError('method not implemented')
+    def prepareOutgoingMessage(
+        self,
+        snmpEngine,
+        transportDomain,
+        transportAddress,
+        messageProcessingModel,
+        securityModel,
+        securityName,
+        securityLevel,
+        contextEngineId,
+        contextName,
+        pduVersion,
+        pdu,
+        expectResponse,
+        sendPduHandle,
+    ):
+        raise error.ProtocolError("method not implemented")
 
-    def prepareResponseMessage(self, snmpEngine, messageProcessingModel,
-                               securityModel, securityName, securityLevel,
-                               contextEngineId, contextName, pduVersion,
-                               pdu, maxSizeResponseScopedPDU,
-                               stateReference, statusInformation):
-        raise error.ProtocolError('method not implemented')
+    def prepareResponseMessage(
+        self,
+        snmpEngine,
+        messageProcessingModel,
+        securityModel,
+        securityName,
+        securityLevel,
+        contextEngineId,
+        contextName,
+        pduVersion,
+        pdu,
+        maxSizeResponseScopedPDU,
+        stateReference,
+        statusInformation,
+    ):
+        raise error.ProtocolError("method not implemented")
 
-    def prepareDataElements(self, snmpEngine, transportDomain,
-                            transportAddress, wholeMsg):
-        raise error.ProtocolError('method not implemented')
+    def prepareDataElements(
+        self, snmpEngine, transportDomain, transportAddress, wholeMsg
+    ):
+        raise error.ProtocolError("method not implemented")
 
     def releaseStateInformation(self, sendPduHandle):
         try:

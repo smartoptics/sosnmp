@@ -22,10 +22,10 @@ class Integer:
         self.__bank = list(range(e, e + self.__increment))
 
     def __repr__(self):
-        return '%s(%d, %d)' % (
+        return "%s(%d, %d)" % (
             self.__class__.__name__,
             self.__maximum,
-            self.__increment
+            self.__increment,
         )
 
     def __call__(self):

@@ -36,11 +36,12 @@ random.seed()
 
 # 8.2.4
 
+
 class Des(base.AbstractEncryptionService):
     serviceID = (1, 3, 6, 1, 6, 3, 10, 1, 2, 2)  # usmDESPrivProtocol
     keySize = 16
 
-    _localInt = random.randrange(0, 0xffffffff)
+    _localInt = random.randrange(0, 0xFFFFFFFF)
 
     def hashPassphrase(self, authProtocol, privKey):
         if authProtocol == hmacmd5.HmacMd5.serviceID:
@@ -50,9 +51,7 @@ class Des(base.AbstractEncryptionService):
         elif authProtocol in hmacsha2.HmacSha2.hashAlgorithms:
             hashAlgo = hmacsha2.HmacSha2.hashAlgorithms[authProtocol]
         else:
-            raise error.ProtocolError(
-                f'Unknown auth protocol {authProtocol}'
-            )
+            raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
         return localkey.hashPassphrase(privKey, hashAlgo)
 
     def localizeKey(self, authProtocol, privKey, snmpEngineID):
@@ -63,11 +62,9 @@ class Des(base.AbstractEncryptionService):
         elif authProtocol in hmacsha2.HmacSha2.hashAlgorithms:
             hashAlgo = hmacsha2.HmacSha2.hashAlgorithms[authProtocol]
         else:
-            raise error.ProtocolError(
-                f'Unknown auth protocol {authProtocol}'
-            )
+            raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
         localPrivKey = localkey.localizeKey(privKey, snmpEngineID, hashAlgo)
-        return localPrivKey[:self.keySize]
+        return localPrivKey[: self.keySize]
 
     # 8.1.1.1
     def __getEncryptionKey(self, privKey, snmpEngineBoots):
@@ -76,47 +73,56 @@ class Des(base.AbstractEncryptionService):
 
         securityEngineBoots = int(snmpEngineBoots)
 
-        salt = [securityEngineBoots >> 24 & 0xff,
-                securityEngineBoots >> 16 & 0xff,
-                securityEngineBoots >> 8 & 0xff,
-                securityEngineBoots & 0xff,
-                self._localInt >> 24 & 0xff,
-                self._localInt >> 16 & 0xff,
-                self._localInt >> 8 & 0xff,
-                self._localInt & 0xff]
-        if self._localInt == 0xffffffff:
+        salt = [
+            securityEngineBoots >> 24 & 0xFF,
+            securityEngineBoots >> 16 & 0xFF,
+            securityEngineBoots >> 8 & 0xFF,
+            securityEngineBoots & 0xFF,
+            self._localInt >> 24 & 0xFF,
+            self._localInt >> 16 & 0xFF,
+            self._localInt >> 8 & 0xFF,
+            self._localInt & 0xFF,
+        ]
+        if self._localInt == 0xFFFFFFFF:
             self._localInt = 0
         else:
             self._localInt += 1
 
-        return (desKey.asOctets(),
-                univ.OctetString(salt).asOctets(),
-                univ.OctetString(map(lambda x, y: x ^ y, salt, preIV.asNumbers())).asOctets())
+        return (
+            desKey.asOctets(),
+            univ.OctetString(salt).asOctets(),
+            univ.OctetString(
+                map(lambda x, y: x ^ y, salt, preIV.asNumbers())
+            ).asOctets(),
+        )
 
     @staticmethod
     def __getDecryptionKey(privKey, salt):
-        return (privKey[:8].asOctets(),
-                univ.OctetString(map(lambda x, y: x ^ y, salt.asNumbers(), privKey[8:16].asNumbers())).asOctets())
+        return (
+            privKey[:8].asOctets(),
+            univ.OctetString(
+                map(lambda x, y: x ^ y, salt.asNumbers(), privKey[8:16].asNumbers())
+            ).asOctets(),
+        )
 
     # 8.2.4.1
     def encryptData(self, encryptKey, privParameters, dataToEncrypt):
         if des is None:
-            raise error.StatusInformation(
-                errorIndication=errind.encryptionError
-            )
+            raise error.StatusInformation(errorIndication=errind.encryptionError)
 
         snmpEngineBoots, snmpEngineTime, salt = privParameters
 
         # 8.3.1.1
-        desKey, salt, iv = self.__getEncryptionKey(
-            encryptKey, snmpEngineBoots
-        )
+        desKey, salt, iv = self.__getEncryptionKey(encryptKey, snmpEngineBoots)
 
         # 8.3.1.2
         privParameters = univ.OctetString(salt)
 
         # 8.1.1.2
-        plaintext = dataToEncrypt + univ.OctetString((0,) * (8 - len(dataToEncrypt) % 8)).asOctets()
+        plaintext = (
+            dataToEncrypt
+            + univ.OctetString((0,) * (8 - len(dataToEncrypt) % 8)).asOctets()
+        )
 
         try:
             ciphertext = des.encrypt(plaintext, desKey, iv)
@@ -132,17 +138,13 @@ class Des(base.AbstractEncryptionService):
     # 8.2.4.2
     def decryptData(self, decryptKey, privParameters, encryptedData):
         if des is None:
-            raise error.StatusInformation(
-                errorIndication=errind.decryptionError
-            )
+            raise error.StatusInformation(errorIndication=errind.decryptionError)
 
         snmpEngineBoots, snmpEngineTime, salt = privParameters
 
         # 8.3.2.1
         if len(salt) != 8:
-            raise error.StatusInformation(
-                errorIndication=errind.decryptionError
-            )
+            raise error.StatusInformation(errorIndication=errind.decryptionError)
 
         # 8.3.2.2 no-op
 
@@ -151,9 +153,7 @@ class Des(base.AbstractEncryptionService):
 
         # 8.3.2.4 -> 8.1.1.3
         if len(encryptedData) % 8 != 0:
-            raise error.StatusInformation(
-                errorIndication=errind.decryptionError
-            )
+            raise error.StatusInformation(errorIndication=errind.decryptionError)
 
         try:
             # 8.3.2.6

@@ -54,7 +54,7 @@ class OrderedDict(dict):
     def update(self, *args, **kwargs):
         if args:
             iterable = args[0]
-            if hasattr(iterable, 'keys'):
+            if hasattr(iterable, "keys"):
                 for k in iterable:
                     self[k] = iterable[k]
             else:
@@ -110,7 +110,7 @@ class OidOrderedDict(OrderedDict):
             if isinstance(key, tuple):
                 self.__keysCache[key] = key
             else:
-                self.__keysCache[key] = [int(x) for x in key.split('.') if x]
+                self.__keysCache[key] = [int(x) for x in key.split(".") if x]
 
     def __delitem__(self, key):
         OrderedDict.__delitem__(self, key)

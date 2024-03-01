@@ -14,7 +14,6 @@ __all__ = []
 
 
 class AbstractTransportTarget:
-
     retries: int
     timeout: float
     transport: "AbstractTransport | None"

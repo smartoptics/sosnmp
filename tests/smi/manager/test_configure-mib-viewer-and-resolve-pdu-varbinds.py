@@ -1,11 +1,14 @@
 from pysnmp.smi import builder, view, compiler, rfc1902
 
+
 def test_configure_mib_viewer_and_resolve_pdu_varbinds():
     # Assemble MIB browser
     mibBuilder = builder.MibBuilder()
     mibViewController = view.MibViewController(mibBuilder)
-    compiler.addMibCompiler(mibBuilder, sources=['file:///usr/share/snmp/mibs',
-                                                 'https://mibs.pysnmp.com/asn1/@mib@'])
+    compiler.addMibCompiler(
+        mibBuilder,
+        sources=["file:///usr/share/snmp/mibs", "https://mibs.pysnmp.com/asn1/@mib@"],
+    )
 
     # Pre-load MIB modules we expect to work with
     mibBuilder.loadModules("SNMPv2-MIB", "SNMP-COMMUNITY-MIB")
@@ -22,7 +25,7 @@ def test_configure_mib_viewer_and_resolve_pdu_varbinds():
     expected_varbinds = [
         "SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 = ",
         "SNMPv2-MIB::snmpTrapEnterprise.0 = SNMPv2-SMI::enterprises.20408.4.1.1.2",
-        "SNMPv2-MIB::sysDescr.0 = my system"
+        "SNMPv2-MIB::sysDescr.0 = my system",
     ]
 
     # This is what we can get in TRAP PDU

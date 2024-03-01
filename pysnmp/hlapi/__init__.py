@@ -71,4 +71,3 @@ usmKeyTypeMaster = auth.usmKeyTypeMaster
 
 usmKeyTypeLocalized = auth.usmKeyTypeLocalized
 """USM key material type - hashed pass-phrase hashed with Context SNMP Engine ID (:RFC:`3414#section-2.6`)"""
-

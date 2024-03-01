@@ -36,46 +36,53 @@ random.seed()
 
 #
 
+
 class Aes(base.AbstractEncryptionService):
     serviceID = (1, 3, 6, 1, 6, 3, 10, 1, 2, 4)  # usmAesCfb128Protocol
     keySize = 16
-    _localInt = random.randrange(0, 0xffffffffffffffff)
+    _localInt = random.randrange(0, 0xFFFFFFFFFFFFFFFF)
 
     # 3.1.2.1
     def __getEncryptionKey(self, privKey, snmpEngineBoots, snmpEngineTime):
-        salt = [self._localInt >> 56 & 0xff,
-                self._localInt >> 48 & 0xff,
-                self._localInt >> 40 & 0xff,
-                self._localInt >> 32 & 0xff,
-                self._localInt >> 24 & 0xff,
-                self._localInt >> 16 & 0xff,
-                self._localInt >> 8 & 0xff,
-                self._localInt & 0xff]
+        salt = [
+            self._localInt >> 56 & 0xFF,
+            self._localInt >> 48 & 0xFF,
+            self._localInt >> 40 & 0xFF,
+            self._localInt >> 32 & 0xFF,
+            self._localInt >> 24 & 0xFF,
+            self._localInt >> 16 & 0xFF,
+            self._localInt >> 8 & 0xFF,
+            self._localInt & 0xFF,
+        ]
 
-        if self._localInt == 0xffffffffffffffff:
+        if self._localInt == 0xFFFFFFFFFFFFFFFF:
             self._localInt = 0
         else:
             self._localInt += 1
 
-        return self.__getDecryptionKey(privKey, snmpEngineBoots, snmpEngineTime, salt) + (
-        univ.OctetString(salt).asOctets(),)
+        return self.__getDecryptionKey(
+            privKey, snmpEngineBoots, snmpEngineTime, salt
+        ) + (univ.OctetString(salt).asOctets(),)
 
-    def __getDecryptionKey(self, privKey, snmpEngineBoots,
-                           snmpEngineTime, salt):
+    def __getDecryptionKey(self, privKey, snmpEngineBoots, snmpEngineTime, salt):
         snmpEngineBoots, snmpEngineTime, salt = (
-            int(snmpEngineBoots), int(snmpEngineTime), salt
+            int(snmpEngineBoots),
+            int(snmpEngineTime),
+            salt,
         )
 
-        iv = [snmpEngineBoots >> 24 & 0xff,
-              snmpEngineBoots >> 16 & 0xff,
-              snmpEngineBoots >> 8 & 0xff,
-              snmpEngineBoots & 0xff,
-              snmpEngineTime >> 24 & 0xff,
-              snmpEngineTime >> 16 & 0xff,
-              snmpEngineTime >> 8 & 0xff,
-              snmpEngineTime & 0xff] + salt
+        iv = [
+            snmpEngineBoots >> 24 & 0xFF,
+            snmpEngineBoots >> 16 & 0xFF,
+            snmpEngineBoots >> 8 & 0xFF,
+            snmpEngineBoots & 0xFF,
+            snmpEngineTime >> 24 & 0xFF,
+            snmpEngineTime >> 16 & 0xFF,
+            snmpEngineTime >> 8 & 0xFF,
+            snmpEngineTime & 0xFF,
+        ] + salt
 
-        return privKey[:self.keySize].asOctets(), univ.OctetString(iv).asOctets()
+        return privKey[: self.keySize].asOctets(), univ.OctetString(iv).asOctets()
 
     def hashPassphrase(self, authProtocol, privKey):
         if authProtocol == hmacmd5.HmacMd5.serviceID:
@@ -85,9 +92,7 @@ class Aes(base.AbstractEncryptionService):
         elif authProtocol in hmacsha2.HmacSha2.hashAlgorithms:
             hashAlgo = hmacsha2.HmacSha2.hashAlgorithms[authProtocol]
         else:
-            raise error.ProtocolError(
-                f'Unknown auth protocol {authProtocol}'
-            )
+            raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
         return localkey.hashPassphrase(privKey, hashAlgo)
 
     def localizeKey(self, authProtocol, privKey, snmpEngineID):
@@ -98,18 +103,14 @@ class Aes(base.AbstractEncryptionService):
         elif authProtocol in hmacsha2.HmacSha2.hashAlgorithms:
             hashAlgo = hmacsha2.HmacSha2.hashAlgorithms[authProtocol]
         else:
-            raise error.ProtocolError(
-                f'Unknown auth protocol {authProtocol}'
-            )
+            raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
         localPrivKey = localkey.localizeKey(privKey, snmpEngineID, hashAlgo)
-        return localPrivKey[:self.keySize]
+        return localPrivKey[: self.keySize]
 
     # 3.2.4.1
     def encryptData(self, encryptKey, privParameters, dataToEncrypt):
         if aes is None:
-            raise error.StatusInformation(
-                errorIndication=errind.encryptionError
-            )
+            raise error.StatusInformation(errorIndication=errind.encryptionError)
 
         snmpEngineBoots, snmpEngineTime, salt = privParameters
 
@@ -133,17 +134,13 @@ class Aes(base.AbstractEncryptionService):
     # 3.2.4.2
     def decryptData(self, decryptKey, privParameters, encryptedData):
         if aes is None:
-            raise error.StatusInformation(
-                errorIndication=errind.decryptionError
-            )
+            raise error.StatusInformation(errorIndication=errind.decryptionError)
 
         snmpEngineBoots, snmpEngineTime, salt = privParameters
 
         # 3.3.2.1
         if len(salt) != 8:
-            raise error.StatusInformation(
-                errorIndication=errind.decryptionError
-            )
+            raise error.StatusInformation(errorIndication=errind.decryptionError)
 
         # 3.3.2.3
         aesKey, iv = self.__getDecryptionKey(

@@ -21,14 +21,15 @@ from pysnmp.entity.rfc3413 import ntforg
 import asyncio
 
 
-__all__ = ['sendNotification']
+__all__ = ["sendNotification"]
 
 vbProcessor = NotificationOriginatorVarBinds()
 lcd = NotificationOriginatorLcdConfigurator()
 
 
-async def sendNotification(snmpEngine, authData, transportTarget, contextData,
-                     notifyType, varBinds, **options):
+async def sendNotification(
+    snmpEngine, authData, transportTarget, contextData, notifyType, varBinds, **options
+):
     r"""Creates a generator to send SNMP notification.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -116,26 +117,31 @@ async def sendNotification(snmpEngine, authData, transportTarget, contextData,
 
     """
 
-    def __cbFun(snmpEngine, sendRequestHandle,
-                errorIndication, errorStatus, errorIndex,
-                varBinds, cbCtx):
+    def __cbFun(
+        snmpEngine,
+        sendRequestHandle,
+        errorIndication,
+        errorStatus,
+        errorIndex,
+        varBinds,
+        cbCtx,
+    ):
         lookupMib, future = cbCtx
         if future.cancelled():
             return
         try:
-            varBindsUnmade = vbProcessor.unmakeVarBinds(snmpEngine, varBinds,
-                                                        lookupMib)
+            varBindsUnmade = vbProcessor.unmakeVarBinds(snmpEngine, varBinds, lookupMib)
         except Exception:
             ex = sys.exc_info()[1]
             future.set_exception(ex)
         else:
             future.set_result(
-                    (errorIndication, errorStatus, errorIndex, varBindsUnmade)
+                (errorIndication, errorStatus, errorIndex, varBindsUnmade)
             )
 
     notifyName = lcd.configure(
-        snmpEngine, authData, transportTarget, notifyType,
-        contextData.contextName)
+        snmpEngine, authData, transportTarget, notifyType, contextData.contextName
+    )
 
     future = asyncio.get_running_loop().create_future()
 
@@ -146,10 +152,11 @@ async def sendNotification(snmpEngine, authData, transportTarget, contextData,
         contextData.contextName,
         vbProcessor.makeVarBinds(snmpEngine, varBinds),
         __cbFun,
-        (options.get('lookupMib', True), future)
+        (options.get("lookupMib", True), future),
     )
 
-    if notifyType == 'trap':
+    if notifyType == "trap":
+
         def __trapFun(future):
             if future.cancelled():
                 return

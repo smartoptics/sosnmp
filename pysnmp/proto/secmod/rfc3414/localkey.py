@@ -33,7 +33,7 @@ def hashPassphrase(passphrase, hashFunc):
             mark = e
         else:
             hasher.update(
-                ringBuffer[mark:ringBufferLen] + ringBuffer[0:e - ringBufferLen]
+                ringBuffer[mark:ringBufferLen] + ringBuffer[0 : e - ringBufferLen]
             )
             mark = e - ringBufferLen
         count += 1
