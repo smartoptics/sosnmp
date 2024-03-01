@@ -28,30 +28,25 @@ async def test_v1_get():
         snmpEngine.transportDispatcher.closeDispatcher()
 
 
-def test_v1_get_timeout_slow_object():
-    loop = asyncio.get_event_loop()
-    snmpEngine = SnmpEngine()
-
-    async def run_get():
+@pytest.mark.asyncio
+async def test_v1_get_ipv6():
+    async with AgentContextManager(enable_ipv6=True):
+        snmpEngine = SnmpEngine()
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             CommunityData("public", mpModel=0),
-            UdpTransportTarget(("localhost", AGENT_PORT), timeout=1, retries=0),
+            Udp6TransportTarget(("localhost", AGENT_PORT)),
             ContextData(),
-            ObjectType(ObjectIdentity("1.3.6.1.4.1.60069.9.1.0")),
+            ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         )
-        for varBind in varBinds:
-            print([str(varBind[0]), varBind[1]])
 
-    start = datetime.now()
-    try:
-        loop.run_until_complete(asyncio.wait_for(run_get(), timeout=3))
-        end = datetime.now()
-        elapsed_time = (end - start).total_seconds()
-        assert elapsed_time >= 1 and elapsed_time <= 2
-    except asyncio.TimeoutError:
-        assert False, "Test case timed out"
-    finally:
+        assert errorIndication is None
+        assert errorStatus == 0
+        assert len(varBinds) == 1
+        assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysDescr.0"
+        assert varBinds[0][1].prettyPrint().startswith("PySNMP engine version")
+        assert isinstance(varBinds[0][1], OctetString)
+
         snmpEngine.transportDispatcher.closeDispatcher()
 
 
@@ -83,27 +78,28 @@ def test_v1_get_timeout_invalid_target():
 
 
 @pytest.mark.asyncio
-async def test_v1_get_timeout_async():
-    snmpEngine = SnmpEngine()
+async def test_v1_get_timeout_slow_object():
+    async with AgentContextManager(enable_slow_object=True):
+        snmpEngine = SnmpEngine()
 
-    async def run_get():
-        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
-            snmpEngine,
-            CommunityData("public", mpModel=0),
-            UdpTransportTarget(("localhost", AGENT_PORT), timeout=1, retries=0),
-            ContextData(),
-            ObjectType(ObjectIdentity("1.3.6.1.4.1.60069.9.1.0")),
-        )
-        for varBind in varBinds:
-            print([str(varBind[0]), varBind[1]])
+        async def run_get():
+            errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+                snmpEngine,
+                CommunityData("public", mpModel=0),
+                UdpTransportTarget(("localhost", AGENT_PORT), timeout=1, retries=0),
+                ContextData(),
+                ObjectType(ObjectIdentity("1.3.6.1.4.1.60069.9.1.0")),
+            )
+            for varBind in varBinds:
+                print([str(varBind[0]), varBind[1]])
 
-    start = datetime.now()
-    try:
-        await asyncio.wait_for(run_get(), timeout=3)
-        end = datetime.now()
-        elapsed_time = (end - start).total_seconds()
-        assert elapsed_time >= 1 and elapsed_time <= 2
-    except asyncio.TimeoutError:
-        assert False, "Test case timed out"
-    finally:
-        snmpEngine.transportDispatcher.closeDispatcher()
+        start = datetime.now()
+        try:
+            await asyncio.wait_for(run_get(), timeout=3)
+            end = datetime.now()
+            elapsed_time = (end - start).total_seconds()
+            assert elapsed_time >= 1 and elapsed_time <= 3
+        except asyncio.TimeoutError:
+            assert False, "Test case timed out"
+        finally:
+            snmpEngine.transportDispatcher.closeDispatcher()

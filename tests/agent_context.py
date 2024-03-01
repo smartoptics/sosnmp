@@ -1,4 +1,4 @@
-from pysnmp.carrier.asyncio.dgram import udp
+from pysnmp.carrier.asyncio.dgram import udp, udp6
 from pysnmp.entity import config, engine
 from pysnmp.entity.rfc3413 import cmdrsp, context
 from pysnmp.hlapi.asyncio import SnmpEngine
@@ -13,7 +13,9 @@ import time
 AGENT_PORT = 1611
 
 
-async def start_agent() -> SnmpEngine:
+async def start_agent(
+    enable_ipv6: bool = False, enable_slow_object: bool = False
+) -> SnmpEngine:
     # Create SNMP engine
     snmpEngine = engine.SnmpEngine()
 
@@ -23,6 +25,13 @@ async def start_agent() -> SnmpEngine:
         udp.domainName,
         udp.UdpTransport().openServerMode(("localhost", AGENT_PORT)),
     )
+
+    if enable_ipv6:
+        config.addTransport(
+            snmpEngine,
+            udp6.domainName,
+            udp6.Udp6Transport().openServerMode(("localhost", AGENT_PORT)),
+        )
 
     # Set up community data
     config.addV1System(snmpEngine, "public", "public")
@@ -54,36 +63,37 @@ async def start_agent() -> SnmpEngine:
     # Configure SNMP context
     snmpContext = context.SnmpContext(snmpEngine)
 
-    # --- create custom Managed Object Instance ---
-    mibBuilder = snmpContext.getMibInstrum().getMibBuilder()
+    if enable_slow_object:
+        # --- create custom Managed Object Instance ---
+        mibBuilder = snmpContext.getMibInstrum().getMibBuilder()
 
-    MibScalar, MibScalarInstance = mibBuilder.importSymbols(
-        "SNMPv2-SMI", "MibScalar", "MibScalarInstance"
-    )
+        MibScalar, MibScalarInstance = mibBuilder.importSymbols(
+            "SNMPv2-SMI", "MibScalar", "MibScalarInstance"
+        )
 
-    class MyStaticMibScalarInstance(MibScalarInstance):
-        # noinspection PyUnusedLocal,PyUnusedLocal
-        def getValue(self, name, idx):
-            time.sleep(2)  # Add a 2-second sleep
-            return self.getSyntax().clone(f"Test agent")
+        class MyStaticMibScalarInstance(MibScalarInstance):
+            # noinspection PyUnusedLocal,PyUnusedLocal
+            def getValue(self, name, idx):
+                time.sleep(2)  # Add a 2-second sleep
+                return self.getSyntax().clone(f"Test agent")
 
-        def setValue(self, name, idx, value):
-            # Here you can handle the SET operation.
-            # `value` is the new value for the scalar instance.
-            # You should store this value somewhere, and return it in the `getValue` method.
-            # For this example, let's just print it.
-            print(f"SET operation received. New value: {value}")
-            return self.getSyntax().clone(value)
+            def setValue(self, name, idx, value):
+                # Here you can handle the SET operation.
+                # `value` is the new value for the scalar instance.
+                # You should store this value somewhere, and return it in the `getValue` method.
+                # For this example, let's just print it.
+                print(f"SET operation received. New value: {value}")
+                return self.getSyntax().clone(value)
 
-    mibBuilder.exportSymbols(
-        "__MY_MIB",
-        MibScalar((1, 3, 6, 1, 4, 1, 60069, 9, 1), v2c.OctetString()),
-        MyStaticMibScalarInstance(
-            (1, 3, 6, 1, 4, 1, 60069, 9, 1), (0,), v2c.OctetString()
-        ),
-    )
+        mibBuilder.exportSymbols(
+            "__MY_MIB",
+            MibScalar((1, 3, 6, 1, 4, 1, 60069, 9, 1), v2c.OctetString()),
+            MyStaticMibScalarInstance(
+                (1, 3, 6, 1, 4, 1, 60069, 9, 1), (0,), v2c.OctetString()
+            ),
+        )
 
-    # --- end of Managed Object Instance initialization ----
+        # --- end of Managed Object Instance initialization ----
 
     # Register SNMP Applications at the SNMP engine for particular SNMP context
     cmdrsp.GetCommandResponder(snmpEngine, snmpContext)
@@ -117,8 +127,12 @@ class AgentContextManager:
     Note: The `start_agent()` function and the `transportDispatcher` attribute are not defined in this code snippet.
     """
 
+    def __init__(self, enable_ipv6: bool = False, enable_slow_object: bool = False):
+        self.enable_ipv6 = enable_ipv6
+        self.enable_slow_object = enable_slow_object
+
     async def __aenter__(self):
-        self.agent = await start_agent()
+        self.agent = await start_agent(self.enable_ipv6, self.enable_slow_object)
         return self.agent
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
