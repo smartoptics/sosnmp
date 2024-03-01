@@ -561,6 +561,24 @@ class SnmpUSMSecurityModel(AbstractSecurityModel):
             )
 
         # 3.1.2
+        if ctx:
+            if (
+                ctx == errind.authenticationFailure
+                or ctx == errind.unknownSecurityName
+                or ctx == errind.decryptionError
+            ):
+                securityLevel = 1
+                headerData = msg.getComponentByPosition(1)
+
+                # Clear possible auth&priv flags
+                headerData.setComponentByPosition(
+                    2,
+                    univ.OctetString(hexValue="04"),
+                    verifyConstraints=False,
+                    matchTags=False,
+                    matchConstraints=False,
+                )
+
         if securityLevel == 3:
             if (
                 usmUserAuthProtocol == noauth.NoAuth.serviceID
@@ -572,24 +590,10 @@ class SnmpUSMSecurityModel(AbstractSecurityModel):
 
         # 3.1.3
         if securityLevel == 3 or securityLevel == 2:
-            if ctx:  # convert to noauth
-                usmUserAuthProtocol = noauth.NoAuth.serviceID
             if usmUserAuthProtocol == noauth.NoAuth.serviceID:
-                if ctx is None:
-                    raise error.StatusInformation(
-                        errorIndication=errind.unsupportedSecurityLevel
-                    )
-                else:
-                    headerData = msg.getComponentByPosition(1)
-
-                    # Clear possible auth&priv flags
-                    headerData.setComponentByPosition(
-                        2,
-                        univ.OctetString(hexValue="04"),
-                        verifyConstraints=False,
-                        matchTags=False,
-                        matchConstraints=False,
-                    )
+                raise error.StatusInformation(
+                    errorIndication=errind.unsupportedSecurityLevel
+                )
 
         securityParameters = self.__securityParametersSpec
 
@@ -1418,8 +1422,20 @@ class SnmpUSMSecurityModel(AbstractSecurityModel):
                     "processIncomingMsg: scopedPDU decoder failed %s"
                     % sys.exc_info()[0]
                 )
+                (usmStatsDecryptionErrors,) = mibBuilder.importSymbols(
+                    "__SNMP-USER-BASED-SM-MIB", "usmStatsDecryptionErrors"
+                )
+                usmStatsDecryptionErrors.syntax += 1
                 raise error.StatusInformation(
-                    errorIndication=errind.decryptionError, msgUserName=msgUserName
+                    errorIndication=errind.decryptionError,
+                    oid=usmStatsDecryptionErrors.name,
+                    val=usmStatsDecryptionErrors.syntax,
+                    securityStateReference=securityStateReference,
+                    securityLevel=securityLevel,
+                    contextEngineId=contextEngineId,
+                    contextName=contextName,
+                    msgUserName=msgUserName,
+                    maxSizeResponseScopedPDU=maxSizeResponseScopedPDU,
                 )
 
             if eoo.endOfOctets.isSameTypeWith(scopedPDU):
