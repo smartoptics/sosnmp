@@ -25,17 +25,15 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 @pytest.mark.asyncio
 async def test_v1_next():
     async with AgentContextManager():
-        slim = Slim(1)
-        errorIndication, errorStatus, errorIndex, varBinds = await slim.next(
-            "public",
-            "localhost",
-            AGENT_PORT,
-            ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
-        )
+        with Slim(1) as slim:
+            errorIndication, errorStatus, errorIndex, varBinds = await slim.next(
+                "public",
+                "localhost",
+                AGENT_PORT,
+                ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
+            )
 
-        assert errorIndication is None
-        assert errorStatus == 0
-        assert errorIndex == 0
-        assert len(varBinds) == 1
-
-        slim.close()
+            assert errorIndication is None
+            assert errorStatus == 0
+            assert errorIndex == 0
+            assert len(varBinds) == 1

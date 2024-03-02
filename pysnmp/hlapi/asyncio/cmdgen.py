@@ -62,7 +62,7 @@ async def getCmd(
     contextData: ContextData,
     *varBinds,
     **options
-):
+) -> "tuple[errind.ErrorIndication, int, int, tuple[ObjectType]]":
     r"""Creates a generator to perform SNMP GET query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -182,7 +182,7 @@ async def setCmd(
     contextData: ContextData,
     *varBinds,
     **options
-):
+) -> "tuple[errind.ErrorIndication, int, int, tuple[ObjectType]]":
     r"""Creates a generator to perform SNMP SET query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -302,7 +302,7 @@ async def nextCmd(
     contextData: ContextData,
     *varBinds,
     **options
-):
+) -> "tuple[errind.ErrorIndication, int, int, tuple[ObjectType]]":
     r"""Creates a generator to perform SNMP GETNEXT query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -441,7 +441,7 @@ async def bulkCmd(
     maxRepetitions: int,
     *varBinds,
     **options
-):
+) -> "tuple[errind.ErrorIndication, int, int, tuple[ObjectType]]":
     r"""Creates a generator to perform SNMP GETBULK query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
