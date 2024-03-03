@@ -33,9 +33,12 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 # THE POSSIBILITY OF SUCH DAMAGE.
 #
+
 import sys
 import traceback
+from socket import socket
 from pysnmp.carrier.asyncio.base import AbstractAsyncioTransport
+from pysnmp.carrier.base import AbstractTransportAddress
 from pysnmp.carrier import error
 from pysnmp import debug
 
@@ -46,23 +49,26 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
     """Base Asyncio datagram Transport, to be used with AsyncioDispatcher"""
 
     sockFamily: int = 0
-    addressType = lambda x: x
-    transport = None
+    addressType: type
+    transport: "asyncio.DatagramTransport | None" = None
+    loop: asyncio.AbstractEventLoop
 
-    def __init__(self, sock=None, sockMap=None, loop=None):
+    def __init__(
+        self, sock=None, sockMap=None, loop: "asyncio.AbstractEventLoop | None" = None
+    ):
         self._writeQ = []
         self._lport = None
         if loop is None:
             loop = asyncio.get_event_loop()
         self.loop = loop
 
-    def datagram_received(self, datagram, transportAddress):
+    def datagram_received(self, datagram, transportAddress: AbstractTransportAddress):
         if self._cbFun is None:
             raise error.CarrierError("Unable to call cbFun")
         else:
             self.loop.call_soon(self._cbFun, self, transportAddress, datagram)
 
-    def connection_made(self, transport):
+    def connection_made(self, transport: asyncio.DatagramTransport):
         self.transport = transport
         debug.logger & debug.flagIO and debug.logger("connection_made: invoked")
         while self._writeQ:
@@ -73,7 +79,7 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
             )
             try:
                 self.transport.sendto(
-                    outgoingMessage, self.normalizeAddress(transportAddress)
+                    outgoingMessage, self.normalizeAddress(transportAddress)  # type: ignore
                 )
             except Exception:
                 raise error.CarrierError(
@@ -85,7 +91,9 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
 
     # AbstractAsyncioTransport API
 
-    def openClientMode(self, iface=None, allow_broadcast=False):
+    def openClientMode(
+        self, iface: "tuple[str, int] | None" = None, allow_broadcast: bool = False
+    ):
         try:
             c = self.loop.create_datagram_endpoint(
                 lambda: self,
@@ -102,7 +110,9 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
             )
         return self
 
-    def openServerMode(self, iface=None, sock=None):
+    def openServerMode(
+        self, iface: "tuple[str, int] | None" = None, sock: "socket | None" = None
+    ):
         if iface is None and sock is None:
             raise error.CarrierError("either iface or sock is required")
 
@@ -128,7 +138,11 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
             self.transport.close()
         AbstractAsyncioTransport.closeTransport(self)
 
-    def sendMessage(self, outgoingMessage, transportAddress):
+    def sendMessage(
+        self,
+        outgoingMessage,
+        transportAddress: "AbstractTransportAddress | tuple[str, int]",
+    ):
         debug.logger & debug.flagIO and debug.logger(
             "sendMessage: {} transportAddress {!r} outgoingMessage {}".format(
                 (self.transport is None and "queuing" or "sending"),
@@ -141,14 +155,16 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
         else:
             try:
                 self.transport.sendto(
-                    outgoingMessage, self.normalizeAddress(transportAddress)
+                    outgoingMessage, self.normalizeAddress(transportAddress)  # type: ignore
                 )
             except Exception:
                 raise error.CarrierError(
                     ";".join(traceback.format_exception(*sys.exc_info()))
                 )
 
-    def normalizeAddress(self, transportAddress):
+    def normalizeAddress(
+        self, transportAddress: "AbstractTransportAddress | tuple[str, int]"
+    ):
         if not isinstance(transportAddress, self.addressType):
             transportAddress = self.addressType(transportAddress)
         return transportAddress

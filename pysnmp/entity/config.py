@@ -440,14 +440,14 @@ def addTargetParams(snmpEngine, name, securityName, securityLevel, mpModel=3):
     )
 
 
-def delTargetParams(snmpEngine, name):
+def delTargetParams(snmpEngine: SnmpEngine, name: str):
     snmpTargetParamsEntry, tblIdx = __cookTargetParamsInfo(snmpEngine, name)
     snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
         ((snmpTargetParamsEntry.name + (7,) + tblIdx, "destroy"),)
     )
 
 
-def __cookTargetAddrInfo(snmpEngine, addrName):
+def __cookTargetAddrInfo(snmpEngine: SnmpEngine, addrName: str):
     mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
 
     (snmpTargetAddrEntry,) = mibBuilder.importSymbols(
@@ -461,13 +461,13 @@ def __cookTargetAddrInfo(snmpEngine, addrName):
 
 
 def addTargetAddr(
-    snmpEngine,
-    addrName,
-    transportDomain,
-    transportAddress,
-    params,
-    timeout=None,
-    retryCount=None,
+    snmpEngine: SnmpEngine,
+    addrName: str,
+    transportDomain: "tuple[int, ...]",
+    transportAddress: "tuple[str, int]",
+    params: str,
+    timeout: "float | None" = None,
+    retryCount: "int | None" = None,
     tagList=null,
     sourceAddress=None,
 ):
@@ -510,7 +510,7 @@ def addTargetAddr(
     )
 
 
-def delTargetAddr(snmpEngine, addrName):
+def delTargetAddr(snmpEngine: SnmpEngine, addrName: str):
     (snmpTargetAddrEntry, snmpSourceAddrEntry, tblIdx) = __cookTargetAddrInfo(
         snmpEngine, addrName
     )
@@ -530,9 +530,11 @@ def addTransport(
                 f"Transport {transport!r} is not compatible with dispatcher {snmpEngine.transportDispatcher!r}"
             )
     else:
-        snmpEngine.registerTransportDispatcher(transport.protoTransportDispatcher())
-        # here we note that we have created transportDispatcher automatically
-        snmpEngine.setUserContext(automaticTransportDispatcher=0)
+        protoTransportDispatcher = transport.protoTransportDispatcher
+        if protoTransportDispatcher is not None:
+            snmpEngine.registerTransportDispatcher(protoTransportDispatcher())
+            # here we note that we have created transportDispatcher automatically
+            snmpEngine.setUserContext(automaticTransportDispatcher=0)
 
     if snmpEngine.transportDispatcher:
         snmpEngine.transportDispatcher.registerTransport(transportDomain, transport)
@@ -545,7 +547,7 @@ def addTransport(
             )
 
 
-def getTransport(snmpEngine, transportDomain):
+def getTransport(snmpEngine: SnmpEngine, transportDomain: "tuple[int, ...]"):
     if not snmpEngine.transportDispatcher:
         return
     try:
@@ -554,7 +556,7 @@ def getTransport(snmpEngine, transportDomain):
         return
 
 
-def delTransport(snmpEngine, transportDomain):
+def delTransport(snmpEngine: SnmpEngine, transportDomain: "tuple[int, ...]"):
     if not snmpEngine.transportDispatcher:
         return
     transport = getTransport(snmpEngine, transportDomain)
