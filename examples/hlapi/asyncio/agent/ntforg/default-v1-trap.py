@@ -19,7 +19,7 @@ Functionally similar to:
 
 | $ snmptrap -v1 -c public demo.pysnmp.com 1.3.6.1.4.1.20408.4.1.1.2 0.0.0.0 1 0 0 1.3.6.1.2.1.1.1.0 s "my system"
 
-"""#
+"""  #
 import asyncio
 from pysnmp.hlapi.asyncio import *
 
@@ -28,8 +28,8 @@ async def run():
     snmpEngine = SnmpEngine()
     errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
         snmpEngine,
-        CommunityData('public', mpModel=0),
-        UdpTransportTarget(('demo.pysnmp.com', 162)),
+        CommunityData("public", mpModel=0),
+        UdpTransportTarget(("demo.pysnmp.com", 162)),
         ContextData(),
         "trap",
         NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2")).addVarBinds(

@@ -21,7 +21,7 @@ Functionally similar to:
 | $ snmptrap -v2c -c public demo.pysnmp.com 12345 1.3.6.1.6.3.1.1.5.2
 | $ snmpinform -v2c -c public demo.pysnmp.com 12345 1.3.6.1.6.3.1.1.5.2
 
-"""#
+"""  #
 import asyncio
 from pysnmp.hlapi.asyncio import *
 
@@ -51,11 +51,13 @@ async def sendone(snmpEngine, hostname, notifyType):
         for varBind in varBinds:
             print(" = ".join([x.prettyPrint() for x in varBind]))
 
+
 async def main():
     snmpEngine = SnmpEngine()
     await asyncio.gather(
-        sendone(snmpEngine, 'demo.pysnmp.com', 'trap'),
-        sendone(snmpEngine, 'demo.pysnmp.com', 'inform'),
+        sendone(snmpEngine, "demo.pysnmp.com", "trap"),
+        sendone(snmpEngine, "demo.pysnmp.com", "inform"),
     )
+
 
 asyncio.run(main())

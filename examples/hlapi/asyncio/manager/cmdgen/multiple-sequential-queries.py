@@ -16,7 +16,7 @@ Functionally similar to:
 | $ snmpget -v2c -c public demo.pysnmp.com:2161 SNMPv2-MIB::sysDescr.0
 | $ snmpget -v2c -c public demo.pysnmp.com:3161 SNMPv2-MIB::sysDescr.0
 
-"""#
+"""  #
 import asyncio
 from pysnmp.hlapi.asyncio import *
 
@@ -52,5 +52,12 @@ async def getall(snmpEngine, hostnames):
 snmpEngine = SnmpEngine()
 
 asyncio.run(
-    getall(snmpEngine, [('demo.pysnmp.com', 1161), ('demo.pysnmp.com', 2161), ('demo.pysnmp.com', 3161)])
+    getall(
+        snmpEngine,
+        [
+            ("demo.pysnmp.com", 1161),
+            ("demo.pysnmp.com", 2161),
+            ("demo.pysnmp.com", 3161),
+        ],
+    )
 )

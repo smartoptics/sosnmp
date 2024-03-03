@@ -16,7 +16,7 @@ Functionally similar to:
 | $ snmpget -v2c -c public demo.pysnmp.com:2161 SNMPv2-MIB::sysDescr.0
 | $ snmpget -v2c -c public demo.pysnmp.com:3161 SNMPv2-MIB::sysDescr.0
 
-"""#
+"""  #
 import asyncio
 from pysnmp.hlapi.asyncio import *
 
@@ -43,12 +43,14 @@ async def getone(snmpEngine, hostname):
         for varBind in varBinds:
             print(" = ".join([x.prettyPrint() for x in varBind]))
 
+
 async def main():
     snmpEngine = SnmpEngine()
     await asyncio.gather(
-        getone(snmpEngine, ('demo.pysnmp.com', 1161)),
-        getone(snmpEngine, ('demo.pysnmp.com', 2161)),
-        getone(snmpEngine, ('demo.pysnmp.com', 3161)),
+        getone(snmpEngine, ("demo.pysnmp.com", 1161)),
+        getone(snmpEngine, ("demo.pysnmp.com", 2161)),
+        getone(snmpEngine, ("demo.pysnmp.com", 3161)),
     )
+
 
 asyncio.run(main())
