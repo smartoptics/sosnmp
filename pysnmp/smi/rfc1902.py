@@ -217,9 +217,8 @@ class ObjectIdentity:
 
         Notes
         -----
-        Please refer to :py:class:`~pysmi.reader.localfile.FileReader`,
-        :py:class:`~pysmi.reader.httpclient.HttpReader` and
-        :py:class:`~pysmi.reader.ftpclient.FtpReader` classes for
+        Please refer to :py:class:`~pysmi.reader.localfile.FileReader`and
+        :py:class:`~pysmi.reader.httpclient.HttpReader` classes for
         in-depth information on ASN.1 MIB lookup.
 
         Examples
@@ -814,9 +813,8 @@ class ObjectType:
 
         Notes
         -----
-        Please refer to :py:class:`~pysmi.reader.localfile.FileReader`,
-        :py:class:`~pysmi.reader.httpclient.HttpReader` and
-        :py:class:`~pysmi.reader.ftpclient.FtpReader` classes for
+        Please refer to :py:class:`~pysmi.reader.localfile.FileReader` and
+        :py:class:`~pysmi.reader.httpclient.HttpReader` classes for
         in-depth information on ASN.1 MIB lookup.
 
         Examples
@@ -1141,9 +1139,8 @@ class NotificationType:
 
         Notes
         -----
-        Please refer to :py:class:`~pysmi.reader.localfile.FileReader`,
-        :py:class:`~pysmi.reader.httpclient.HttpReader` and
-        :py:class:`~pysmi.reader.ftpclient.FtpReader` classes for
+        Please refer to :py:class:`~pysmi.reader.localfile.FileReader` and
+        :py:class:`~pysmi.reader.httpclient.HttpReader` classes for
         in-depth information on ASN.1 MIB lookup.
 
         Examples
