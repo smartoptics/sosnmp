@@ -42,6 +42,7 @@ from pysnmp.hlapi.lcd import *
 from pysnmp.hlapi.varbinds import *
 from pysnmp.hlapi.asyncio.transport import *
 from pysnmp.entity.rfc3413 import cmdgen
+from pysnmp.proto.rfc1902 import Integer32
 from pysnmp.proto import errind
 
 import asyncio
@@ -62,7 +63,7 @@ async def getCmd(
     contextData: ContextData,
     *varBinds,
     **options
-) -> "tuple[errind.ErrorIndication, int, int, tuple[ObjectType]]":
+) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
     r"""Creates a generator to perform SNMP GET query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -138,9 +139,9 @@ async def getCmd(
     def __cbFun(
         snmpEngine: SnmpEngine,
         sendRequestHandle,
-        errorIndication,
-        errorStatus,
-        errorIndex: int,
+        errorIndication: errind.ErrorIndication,
+        errorStatus: "Integer32 | int",
+        errorIndex: "Integer32 | int",
         varBinds,
         cbCtx,
     ):
@@ -182,7 +183,7 @@ async def setCmd(
     contextData: ContextData,
     *varBinds,
     **options
-) -> "tuple[errind.ErrorIndication, int, int, tuple[ObjectType]]":
+) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
     r"""Creates a generator to perform SNMP SET query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -258,9 +259,9 @@ async def setCmd(
     def __cbFun(
         snmpEngine: SnmpEngine,
         sendRequestHandle,
-        errorIndication,
-        errorStatus,
-        errorIndex: int,
+        errorIndication: errind.ErrorIndication,
+        errorStatus: "Integer32 | int",
+        errorIndex: "Integer32 | int",
         varBinds,
         cbCtx,
     ):
@@ -302,7 +303,7 @@ async def nextCmd(
     contextData: ContextData,
     *varBinds,
     **options
-) -> "tuple[errind.ErrorIndication, int, int, tuple[ObjectType]]":
+) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
     r"""Creates a generator to perform SNMP GETNEXT query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -386,9 +387,9 @@ async def nextCmd(
     def __cbFun(
         snmpEngine: SnmpEngine,
         sendRequestHandle,
-        errorIndication,
-        errorStatus,
-        errorIndex: int,
+        errorIndication: errind.ErrorIndication,
+        errorStatus: "Integer32 | int",
+        errorIndex: "Integer32 | int",
         varBindTable,
         cbCtx,
     ):
@@ -400,7 +401,7 @@ async def nextCmd(
             and errorIndication
             and isinstance(errorIndication, errind.OidNotIncreasing)
         ):
-            errorIndication = None
+            errorIndication = None  # TODO: fix this
         try:
             varBindsUnmade = [
                 vbProcessor.unmakeVarBinds(snmpEngine, varBindTableRow, lookupMib)
@@ -441,7 +442,7 @@ async def bulkCmd(
     maxRepetitions: int,
     *varBinds,
     **options
-) -> "tuple[errind.ErrorIndication, int, int, tuple[ObjectType]]":
+) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
     r"""Creates a generator to perform SNMP GETBULK query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -554,9 +555,9 @@ async def bulkCmd(
     def __cbFun(
         snmpEngine: SnmpEngine,
         sendRequestHandle,
-        errorIndication,
-        errorStatus,
-        errorIndex: int,
+        errorIndication: errind.ErrorIndication,
+        errorStatus: "Integer32 | int",
+        errorIndex: "Integer32 | int",
         varBindTable,
         cbCtx,
     ):
@@ -568,7 +569,7 @@ async def bulkCmd(
             and errorIndication
             and isinstance(errorIndication, errind.OidNotIncreasing)
         ):
-            errorIndication = None
+            errorIndication = None  # TODO: fix here
         try:
             varBindsUnmade = [
                 vbProcessor.unmakeVarBinds(snmpEngine, varBindTableRow, lookupMib)

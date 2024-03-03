@@ -60,7 +60,7 @@ class Slim:
         *varBinds,
         timeout: int = 1,
         retries: int = 5,
-    ) -> "tuple[ErrorIndication, int, int, tuple[ObjectType]]":
+    ) -> "tuple[ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
         """
         Creates a generator to perform SNMP GET query.
 
@@ -149,7 +149,7 @@ class Slim:
         *varBinds,
         timeout: int = 1,
         retries: int = 5,
-    ) -> "tuple[ErrorIndication, int, int, tuple[ObjectType]]":
+    ) -> "tuple[ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
         """
         Creates a generator to perform SNMP GETNEXT query.
 
@@ -243,7 +243,7 @@ class Slim:
         *varBinds,
         timeout: int = 1,
         retries: int = 5,
-    ) -> "tuple[ErrorIndication, int, int, tuple[ObjectType]]":
+    ) -> "tuple[ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
         r"""Creates a generator to perform SNMP GETBULK query.
 
         When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -368,7 +368,7 @@ class Slim:
         *varBinds,
         timeout: int = 1,
         retries: int = 5,
-    ) -> "tuple[ErrorIndication, int, int, tuple[ObjectType]]":
+    ) -> "tuple[ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
         """
         Creates a generator to perform SNMP SET query.
 
