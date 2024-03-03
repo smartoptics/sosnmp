@@ -6,6 +6,7 @@
 #
 from pyasn1.compat.octets import null
 from pysnmp.carrier.asyncio.dgram import udp, udp6, unix
+from pysnmp.carrier.base import AbstractTransport
 from pysnmp.entity.engine import SnmpEngine
 from pysnmp.proto.secmod.rfc3414.auth import hmacmd5, hmacsha, noauth
 from pysnmp.proto.secmod.rfc3414.priv import des, nopriv
@@ -86,7 +87,7 @@ privServices = {
 }
 
 
-def __cookV1SystemInfo(snmpEngine, communityIndex):
+def __cookV1SystemInfo(snmpEngine: SnmpEngine, communityIndex):
     mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
 
     (snmpEngineID,) = mibBuilder.importSymbols("__SNMP-FRAMEWORK-MIB", "snmpEngineID")
@@ -518,7 +519,11 @@ def delTargetAddr(snmpEngine, addrName):
     )
 
 
-def addTransport(snmpEngine, transportDomain, transport):
+def addTransport(
+    snmpEngine: SnmpEngine,
+    transportDomain: "tuple[int, ...]",
+    transport: AbstractTransport,
+):
     if snmpEngine.transportDispatcher:
         if not transport.isCompatibleWithDispatcher(snmpEngine.transportDispatcher):
             raise error.PySnmpError(
@@ -529,14 +534,15 @@ def addTransport(snmpEngine, transportDomain, transport):
         # here we note that we have created transportDispatcher automatically
         snmpEngine.setUserContext(automaticTransportDispatcher=0)
 
-    snmpEngine.transportDispatcher.registerTransport(transportDomain, transport)
-    automaticTransportDispatcher = snmpEngine.getUserContext(
-        "automaticTransportDispatcher"
-    )
-    if automaticTransportDispatcher is not None:
-        snmpEngine.setUserContext(
-            automaticTransportDispatcher=automaticTransportDispatcher + 1
+    if snmpEngine.transportDispatcher:
+        snmpEngine.transportDispatcher.registerTransport(transportDomain, transport)
+        automaticTransportDispatcher = snmpEngine.getUserContext(
+            "automaticTransportDispatcher"
         )
+        if automaticTransportDispatcher is not None:
+            snmpEngine.setUserContext(
+                automaticTransportDispatcher=automaticTransportDispatcher + 1
+            )
 
 
 def getTransport(snmpEngine, transportDomain):

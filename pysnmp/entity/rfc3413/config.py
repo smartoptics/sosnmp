@@ -4,7 +4,7 @@
 # Copyright (c) 2005-2019, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-from typing import Any, Dict
+from typing import Any
 from pysnmp.entity.engine import SnmpEngine
 from pysnmp.error import PySnmpError
 from pysnmp.smi.error import SmiError, NoSuchInstanceError
@@ -18,9 +18,9 @@ def getTargetAddr(snmpEngine: SnmpEngine, snmpTargetAddrName):
         "SNMP-TARGET-MIB", "snmpTargetAddrEntry"
     )
 
-    cache = snmpEngine.getUserContext("getTargetAddr")
+    cache: "dict[str, Any] | None" = snmpEngine.getUserContext("getTargetAddr")
     if cache is None:
-        cache: "Dict[str, Any] | None" = {"id": -1}
+        cache = {"id": -1}
         snmpEngine.setUserContext(getTargetAddr=cache)
 
     if cache["id"] != snmpTargetAddrEntry.branchVersionId:
@@ -117,9 +117,9 @@ def getTargetParams(snmpEngine: SnmpEngine, paramsName):
         "SNMP-TARGET-MIB", "snmpTargetParamsEntry"
     )
 
-    cache = snmpEngine.getUserContext("getTargetParams")
+    cache: "dict[str, Any] | None" = snmpEngine.getUserContext("getTargetParams")
     if cache is None:
-        cache: "Dict[str, Any] | None" = {"id": -1}
+        cache = {"id": -1}
         snmpEngine.setUserContext(getTargetParams=cache)
 
     if cache["id"] != snmpTargetParamsEntry.branchVersionId:
@@ -207,9 +207,9 @@ def getNotificationInfo(snmpEngine: SnmpEngine, notificationTarget):
         "SNMP-NOTIFICATION-MIB", "snmpNotifyEntry"
     )
 
-    cache = snmpEngine.getUserContext("getNotificationInfo")
+    cache: "dict[str, Any] | None" = snmpEngine.getUserContext("getNotificationInfo")
     if cache is None:
-        cache: "Dict[str, Any] | None" = {"id": -1}
+        cache = {"id": -1}
         snmpEngine.setUserContext(getNotificationInfo=cache)
 
     if cache["id"] != snmpNotifyEntry.branchVersionId:
@@ -245,9 +245,9 @@ def getTargetNames(snmpEngine: SnmpEngine, tag):
         "SNMP-TARGET-MIB", "snmpTargetAddrEntry"
     )
 
-    cache = snmpEngine.getUserContext("getTargetNames")
+    cache: "dict[str, Any] | None" = snmpEngine.getUserContext("getTargetNames")
     if cache is None:
-        cache: "Dict[str, Any] | None" = {"id": -1}
+        cache = {"id": -1}
         snmpEngine.setUserContext(getTargetNames=cache)
 
     if cache["id"] == snmpTargetAddrEntry.branchVersionId:

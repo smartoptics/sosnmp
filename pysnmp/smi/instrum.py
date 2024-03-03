@@ -8,6 +8,7 @@ import sys
 import traceback
 from pysnmp.smi import error
 from pysnmp import debug
+from pysnmp.smi.builder import MibBuilder
 
 __all__ = ["AbstractMibInstrumController", "MibInstrumController"]
 
@@ -24,6 +25,8 @@ class AbstractMibInstrumController:
 
 
 class MibInstrumController(AbstractMibInstrumController):
+    mibBuilder: MibBuilder
+
     fsmReadVar = {
         # ( state, status ) -> newState
         ("start", "ok"): "readTest",
@@ -57,7 +60,7 @@ class MibInstrumController(AbstractMibInstrumController):
         ("*", "err"): "stop",
     }
 
-    def __init__(self, mibBuilder):
+    def __init__(self, mibBuilder: MibBuilder):
         self.mibBuilder = mibBuilder
         self.lastBuildId = -1
         self.lastBuildSyms = {}

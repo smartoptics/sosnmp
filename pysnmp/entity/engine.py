@@ -8,9 +8,10 @@ import os
 import shutil
 import sys
 import tempfile
-from typing import Any, Dict, Tuple
+from typing import Any
 from pyasn1.compat.octets import str2octs
 from pysnmp.carrier.base import AbstractTransportAddress, AbstractTransportDispatcher
+from pysnmp.proto.rfc1902 import OctetString
 from pysnmp.proto.rfc3412 import MsgAndPduDispatcher
 from pysnmp.proto.mpmod.rfc2576 import (
     SnmpV1MessageProcessingModel,
@@ -59,9 +60,14 @@ class SnmpEngine:
     """
 
     transportDispatcher: "AbstractTransportDispatcher | None"
+    msgAndPduDsp: MsgAndPduDispatcher
+    snmpEngineId: OctetString
 
     def __init__(
-        self, snmpEngineID=None, maxMessageSize: int = 65507, msgAndPduDsp=None
+        self,
+        snmpEngineID: "OctetString | None" = None,
+        maxMessageSize: int = 65507,
+        msgAndPduDsp: "MsgAndPduDispatcher | None" = None,
     ):
         self.cache = {}
 
@@ -173,7 +179,7 @@ class SnmpEngine:
     def __receiveMessageCbFun(
         self,
         transportDispatcher: AbstractTransportDispatcher,
-        transportDomain: Tuple[int, ...],
+        transportDomain: "tuple[int, ...]",
         transportAddress: AbstractTransportAddress,
         wholeMsg,
     ):
@@ -189,7 +195,9 @@ class SnmpEngine:
             smHandler.receiveTimerTick(self, timeNow)
 
     def registerTransportDispatcher(
-        self, transportDispatcher: AbstractTransportDispatcher, recvId=None
+        self,
+        transportDispatcher: AbstractTransportDispatcher,
+        recvId: "tuple[int, ...] | None" = None,
     ):
         if (
             self.transportDispatcher is not None
@@ -201,7 +209,7 @@ class SnmpEngine:
             transportDispatcher.registerTimerCbFun(self.__receiveTimerTickCbFun)
             self.transportDispatcher = transportDispatcher
 
-    def unregisterTransportDispatcher(self, recvId=None):
+    def unregisterTransportDispatcher(self, recvId: "tuple[int, ...]"):
         if self.transportDispatcher is None:
             raise error.PySnmpError("Transport dispatcher not registered")
         self.transportDispatcher.unregisterRecvCbFun(recvId)
@@ -215,9 +223,7 @@ class SnmpEngine:
     def setUserContext(self, **kwargs):
         self.cache.update({"__%s" % k: kwargs[k] for k in kwargs})
 
-    def getUserContext(
-        self, arg
-    ) -> "Dict[str, Any] | None":  # TODO: fix this type check
+    def getUserContext(self, arg) -> "dict[str, Any] | None":
         return self.cache.get("__%s" % arg)
 
     def delUserContext(self, arg):
