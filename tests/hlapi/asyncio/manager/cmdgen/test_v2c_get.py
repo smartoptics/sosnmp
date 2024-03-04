@@ -5,7 +5,7 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 
 
 @pytest.mark.asyncio
-async def test_v1_get():
+async def test_v2_get():
     async with AgentContextManager():
         with Slim() as slim:
             errorIndication, errorStatus, errorIndex, varBinds = await slim.get(

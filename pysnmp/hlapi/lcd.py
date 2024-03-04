@@ -6,9 +6,12 @@
 #
 from pysnmp.entity import config
 from pysnmp import nextid, error
+from pysnmp.entity.engine import SnmpEngine
 from pysnmp.hlapi.auth import *
 
 from pyasn1.compat.octets import null
+
+from pysnmp.hlapi.transport import AbstractTransportTarget
 
 __all__ = ["CommandGeneratorLcdConfigurator", "NotificationOriginatorLcdConfigurator"]
 
@@ -202,7 +205,13 @@ class NotificationOriginatorLcdConfigurator(AbstractLcdConfigurator):
     _cmdGenLcdCfg = CommandGeneratorLcdConfigurator()
 
     def configure(
-        self, snmpEngine, authData, transportTarget, notifyType, contextName, **options
+        self,
+        snmpEngine: SnmpEngine,
+        authData: "CommunityData | UsmUserData",
+        transportTarget: AbstractTransportTarget,
+        notifyType: str,
+        contextName=None,
+        **options,
     ):
         cache = self._getCache(snmpEngine)
         notifyName = None

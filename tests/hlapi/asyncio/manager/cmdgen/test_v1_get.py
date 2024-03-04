@@ -3,6 +3,8 @@ from datetime import datetime
 import pytest
 from pysnmp.hlapi.asyncio import *
 from pysnmp.hlapi.asyncio.slim import Slim
+from pysnmp.hlapi.asyncio.sync.slim import Slim as SlimSync
+from pysnmp.hlapi.asyncio.sync.cmdgen import getCmd as getCmdSync
 
 from tests.agent_context import AGENT_PORT, AgentContextManager
 
@@ -69,6 +71,43 @@ async def test_v1_get_raw():
         assert isinstance(varBinds[0][1], OctetString)
 
         snmpEngine.transportDispatcher.closeDispatcher()
+
+
+def test_v1_get_sync():
+    with SlimSync(1) as slim:
+        errorIndication, errorStatus, errorIndex, varBinds = slim.get(
+            "public",
+            "demo.pysnmp.com",
+            161,
+            ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
+        )
+
+        assert errorIndication is None
+        assert errorStatus == 0
+        assert len(varBinds) == 1
+        assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysDescr.0"
+        assert varBinds[0][1].prettyPrint() == "#SNMP Agent on .NET Standard"
+        assert isinstance(varBinds[0][1], OctetString)
+
+
+def test_v1_get_raw_sync():
+    snmpEngine = SnmpEngine()
+    errorIndication, errorStatus, errorIndex, varBinds = getCmdSync(
+        snmpEngine,
+        CommunityData("public", mpModel=0),
+        UdpTransportTarget(("demo.pysnmp.com", 161)),
+        ContextData(),
+        ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
+    )
+
+    assert errorIndication is None
+    assert errorStatus == 0
+    assert len(varBinds) == 1
+    assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysDescr.0"
+    assert varBinds[0][1].prettyPrint() == "#SNMP Agent on .NET Standard"
+    assert isinstance(varBinds[0][1], OctetString)
+
+    snmpEngine.transportDispatcher.closeDispatcher()
 
 
 @pytest.mark.asyncio
