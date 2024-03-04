@@ -1,9 +1,7 @@
-import asyncio
 import pytest
 from pysnmp.hlapi import *
 from pysnmp.hlapi.asyncio.ntforg import sendNotification
 from pysnmp.hlapi.asyncio.transport import UdpTransportTarget
-from pysnmp.proto.errind import RequestTimedOut
 from tests.manager_context import MANAGER_PORT, ManagerContextManager
 
 
