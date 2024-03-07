@@ -67,10 +67,7 @@ def cbFun(
         print(errorIndication)
     elif errorStatus:
         print(
-            "{} at {}".format(
-                errorStatus.prettyPrint(),
-                errorIndex and varBinds[int(errorIndex) - 1][0] or "?",
-            )
+            f"{errorStatus.prettyPrint()} at {varBinds[int(errorIndex) - 1][0] if errorIndex else '?'}"
         )
     else:
         for oid, val in varBinds:

@@ -75,10 +75,7 @@ def cbFun(
     # so we ignore noSuchName error here
     if errorStatus and errorStatus != 2:
         print(
-            "{} at {}".format(
-                errorStatus.prettyPrint(),
-                errorIndex and varBindTable[-1][int(errorIndex) - 1][0] or "?",
-            )
+            f"{errorStatus.prettyPrint()} at {varBindTable[-1][int(errorIndex) - 1][0] if errorIndex else '?'}"
         )
         return  # stop on error
     for varBindRow in varBindTable:

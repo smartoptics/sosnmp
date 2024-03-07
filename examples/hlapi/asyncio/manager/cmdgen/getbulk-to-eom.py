@@ -31,7 +31,7 @@ async def run(varBinds):
             ContextData(),
             0,
             50,
-            *varBinds
+            *varBinds,
         )
 
         if errorIndication:
@@ -39,10 +39,7 @@ async def run(varBinds):
             break
         elif errorStatus:
             print(
-                "{} at {}".format(
-                    errorStatus.prettyPrint(),
-                    errorIndex and varBinds[int(errorIndex) - 1][0] or "?",
-                )
+                f"{errorStatus.prettyPrint()} at {varBinds[int(errorIndex) - 1][0] if errorIndex else '?'}"
             )
         else:
             for varBindRow in varBindTable:

@@ -37,9 +37,7 @@ config.addTargetParams(snmpEngine, "my-creds", "my-area", "noAuthNoPriv", 1)
 #
 
 # UDP/IPv4
-config.addTransport(
-    snmpEngine, udp.domainName, udp.UdpAsyncioTransport().openClientMode()
-)
+config.addTransport(snmpEngine, udp.domainName, udp.UdpTransport().openClientMode())
 config.addTargetAddr(
     snmpEngine, "my-router", udp.domainName, ("127.0.0.1", 161), "my-creds"
 )
@@ -60,10 +58,7 @@ def cbFun(
         print(errorIndication)
     elif errorStatus:
         print(
-            "{} at {}".format(
-                errorStatus.prettyPrint(),
-                errorIndex and varBinds[int(errorIndex) - 1][0] or "?",
-            )
+            f"{errorStatus.prettyPrint()} at {varBinds[int(errorIndex) - 1][0] if errorIndex else '?'}"
         )
     else:
         for oid, val in varBinds:

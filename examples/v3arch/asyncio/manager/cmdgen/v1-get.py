@@ -60,10 +60,7 @@ def cbFun(
     # so we ignore noSuchName error here
     elif errorStatus and errorStatus != 2:
         print(
-            "{} at {}".format(
-                errorStatus.prettyPrint(),
-                errorIndex and varBinds[int(errorIndex) - 1][0] or "?",
-            )
+            f"{errorStatus.prettyPrint()} at {varBinds[int(errorIndex) - 1][0] if errorIndex else '?'}"
         )
     else:
         for oid, val in varBinds:
