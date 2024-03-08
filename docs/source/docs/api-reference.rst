@@ -22,9 +22,28 @@ other tasks your application may perform.
 Synchronous SNMP
 ----------------
 
-Most simple and strightforward way to use PySNMP is by employing its
+Most simple and straightforward way to use PySNMP is by employing its
 Synchronous, blocking API. It's also the default API offered by
 users on *pysnmp.hlapi* sub-package import.
+
+Command Generator
+
+.. toctree::
+   :maxdepth: 2
+
+   /docs/hlapi/asyncio/sync/manager/cmdgen/getcmd
+   /docs/hlapi/asyncio/sync/manager/cmdgen/setcmd
+   /docs/hlapi/asyncio/sync/manager/cmdgen/nextcmd
+   /docs/hlapi/asyncio/sync/manager/cmdgen/bulkcmd
+   /docs/hlapi/asyncio/sync/manager/cmdgen/walkcmd
+   /docs/hlapi/asyncio/sync/manager/cmdgen/bulkwalkcmd
+
+Notification Originator
+
+.. toctree::
+   :maxdepth: 2
+
+   /docs/hlapi/asyncio/sync/agent/ntforg/notification
 
 Transport configuration
 +++++++++++++++++++++++
@@ -60,6 +79,8 @@ Command Generator
    /docs/hlapi/asyncio/manager/cmdgen/setcmd
    /docs/hlapi/asyncio/manager/cmdgen/nextcmd
    /docs/hlapi/asyncio/manager/cmdgen/bulkcmd
+   /docs/hlapi/asyncio/manager/cmdgen/walkcmd
+   /docs/hlapi/asyncio/manager/cmdgen/bulkwalkcmd
 
 Notification Originator
 
