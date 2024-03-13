@@ -5,11 +5,22 @@ from pysnmp.hlapi.auth import CommunityData
 from pysnmp.hlapi.context import ContextData
 from pysnmp.proto.rfc1155 import TimeTicks
 from pysnmp.proto.rfc1902 import OctetString
+from pysnmp.smi import compiler
 from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
 
 
 def test_v1_get_table():
     snmpEngine = SnmpEngine()
+
+    builder = snmpEngine.getMibBuilder()
+    # Attach MIB compiler to SNMP Engine (MIB Builder)
+    # This call will fail if PySMI is not present on the system
+    compiler.addMibCompiler(builder)
+    # ... alternatively, this call will not complain on missing PySMI
+    # compiler.addMibCompiler(snmpEngine.getMibBuilder(), ifAvailable=True)
+
+    builder.loadModules("IF-MIB")
+
     objects = walkCmd(
         snmpEngine,
         CommunityData("public", mpModel=0),
@@ -37,5 +48,8 @@ def test_v1_get_table():
 
     objects_list = list(objects)
     assert len(objects_list), 50
+
+    errorIndication, errorStatus, errorIndex, varBinds = objects_list[-1]
+    assert varBinds[0][0].prettyPrint() == "IF-MIB::ifSpecific.2"
 
     snmpEngine.transportDispatcher.closeDispatcher()
