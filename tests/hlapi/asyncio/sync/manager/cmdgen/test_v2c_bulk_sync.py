@@ -5,6 +5,7 @@ from pysnmp.hlapi.auth import CommunityData
 from pysnmp.hlapi.context import ContextData
 from pysnmp.smi import compiler
 from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
+import pytest
 
 
 def test_v2c_bulk_sync():
@@ -29,7 +30,8 @@ def test_v2c_bulk_sync():
     snmpEngine.transportDispatcher.closeDispatcher()
 
 
-def test_v2c_get_table_bulk_sync():
+@pytest.mark.parametrize("num_objects", [1, 2, 3, 5, 7, 11])
+def test_v2c_get_table_bulk_sync(num_objects):
     snmpEngine = SnmpEngine()
 
     builder = snmpEngine.getMibBuilder()
@@ -47,7 +49,7 @@ def test_v2c_get_table_bulk_sync():
         UdpTransportTarget(("demo.pysnmp.com", 161)),
         ContextData(),
         0,
-        4,
+        num_objects,
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
     )
 
