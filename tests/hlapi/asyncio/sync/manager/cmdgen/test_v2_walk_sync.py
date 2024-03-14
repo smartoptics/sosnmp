@@ -1,37 +1,15 @@
 from pysnmp.entity.engine import SnmpEngine
-from pysnmp.hlapi.asyncio.sync.cmdgen import bulkCmd, bulkWalkCmd
+from pysnmp.hlapi.asyncio.sync.cmdgen import walkCmd
 from pysnmp.hlapi.asyncio.transport import UdpTransportTarget
 from pysnmp.hlapi.auth import CommunityData
 from pysnmp.hlapi.context import ContextData
+from pysnmp.proto.rfc1155 import TimeTicks
+from pysnmp.proto.rfc1902 import OctetString
 from pysnmp.smi import compiler
 from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
-import pytest
 
 
-def test_v2c_bulk_sync():
-    snmpEngine = SnmpEngine()
-    errorIndication, errorStatus, errorIndex, varBinds = bulkCmd(
-        snmpEngine,
-        CommunityData("public"),
-        UdpTransportTarget(("demo.pysnmp.com", 161)),
-        ContextData(),
-        0,
-        50,
-        ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
-    )
-
-    assert errorIndication is None
-    assert errorStatus == 0
-    assert len(varBinds) == 50
-    assert varBinds[0][0][0].prettyPrint() == "SNMPv2-MIB::sysObjectID.0"
-    assert varBinds[0][0][1].prettyPrint() == "SNMPv2-SMI::internet"
-    # assert isinstance(varBinds[0][0][1], ObjectIdentifier)
-
-    snmpEngine.transportDispatcher.closeDispatcher()
-
-
-@pytest.mark.parametrize("num_objects", [1, 2, 3, 5, 7, 11])
-def test_v2c_get_table_bulk_sync(num_objects):
+def test_v2_walk():
     snmpEngine = SnmpEngine()
 
     builder = snmpEngine.getMibBuilder()
@@ -43,13 +21,11 @@ def test_v2c_get_table_bulk_sync(num_objects):
 
     builder.loadModules("IF-MIB")
 
-    objects = bulkWalkCmd(
+    objects = walkCmd(
         snmpEngine,
         CommunityData("public"),
         UdpTransportTarget(("demo.pysnmp.com", 161)),
         ContextData(),
-        0,
-        num_objects,
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
     )
 

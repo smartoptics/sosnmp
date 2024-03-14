@@ -9,7 +9,7 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 
 
 @pytest.mark.asyncio
-async def test_v1_get_table():
+async def test_v1_walk():
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
         objects = walkCmd(

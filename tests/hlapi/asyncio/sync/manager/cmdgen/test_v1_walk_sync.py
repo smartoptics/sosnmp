@@ -9,7 +9,7 @@ from pysnmp.smi import compiler
 from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
 
 
-def test_v1_get_table():
+def test_v1_walk():
     snmpEngine = SnmpEngine()
 
     builder = snmpEngine.getMibBuilder()
