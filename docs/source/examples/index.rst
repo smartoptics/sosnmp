@@ -156,8 +156,8 @@ public MIB repository `mibs.pysnmp.com`_. Alternatively,
 you can configure PySNMP to fetch and cache required MIBs from there
 automatically.
 
-References
-----------
+Related Resources
+-----------------
 
 - :doc:`/quick-start`
 - :doc:`/troubleshooting`
