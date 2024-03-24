@@ -53,7 +53,7 @@ see ``pysnmp-lextudio`` version 5.0+ there.
    It is highly recommended that you use a Python virtual environment, as it
    makes dependency management and troubleshooting much easier.
 
-Fetch SNMP variable
+Fetch SNMP Variable
 -------------------
 
 Next, let's write some test script and play with PySNMP manager side operations.

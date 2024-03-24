@@ -96,6 +96,13 @@ following page.
 
    /download
 
+We fanatically document all fixes, changes and new features in changelog.
+
+.. toctree::
+   :maxdepth: 1
+
+   /changelog
+
 License
 -------
 
@@ -115,16 +122,6 @@ We have a collection of frequently asked questions.
    :maxdepth: 2
 
    /faq
-
-Further Development
--------------------
-
-We fanatically document all fixes, changes and new features in changelog.
-
-.. toctree::
-   :maxdepth: 1
-
-   /changelog
 
 Contact
 -------
