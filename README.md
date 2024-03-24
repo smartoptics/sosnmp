@@ -168,6 +168,6 @@ post your question [on Stack Overflow](http://stackoverflow.com/questions/ask).
 
 Bug reports and PRs are appreciated! ;-)
 
-Copyright (c) 2005-2019, [Ilya Etingof](https://lists.openstack.org/pipermail/openstack-discuss/2022-August/030062.html).
+Copyright (c) 2005-2020, [Ilya Etingof](https://lists.openstack.org/pipermail/openstack-discuss/2022-August/030062.html).
 Copyright (c) 2022-2024, [LeXtudio Inc](mailto:support@lextudio.com).
 All rights reserved.
