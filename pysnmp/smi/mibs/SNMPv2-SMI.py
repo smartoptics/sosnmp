@@ -452,9 +452,9 @@ class MibTree(ObjectType):
         if name == self.name:
             if acFun:
                 if self.maxAccess not in (
-                    "readonly",
+                    "read-only",
                     "read-write",
-                    "readcreate",
+                    "read-create",
                 ) or acFun(name, self.syntax, idx, "read", acCtx):
                     raise error.NoAccessError(idx=idx, name=name)
         else:
@@ -550,7 +550,7 @@ class MibTree(ObjectType):
         if name == self.name:
             # Make sure variable is writable
             if acFun:
-                if self.maxAccess not in ("read-write", "readcreate") or acFun(
+                if self.maxAccess not in ("read-write", "read-create") or acFun(
                     name, self.syntax, idx, "write", acCtx
                 ):
                     raise error.NotWritableError(idx=idx, name=name)
@@ -572,7 +572,7 @@ class MibTree(ObjectType):
 class MibScalar(MibTree):
     """Scalar MIB variable. Implements access control checking."""
 
-    maxAccess = "readonly"
+    maxAccess = "read-only"
 
     #
     # Subtree traversal
@@ -613,9 +613,11 @@ class MibScalar(MibTree):
         if name == self.name:
             raise error.NoAccessError(idx=idx, name=name)
         if acFun:
-            if self.maxAccess not in ("readonly", "read-write", "readcreate") or acFun(
-                name, self.syntax, idx, "read", acCtx
-            ):
+            if self.maxAccess not in (
+                "read-only",
+                "read-write",
+                "read-create",
+            ) or acFun(name, self.syntax, idx, "read", acCtx):
                 raise error.NoAccessError(idx=idx, name=name)
         MibTree.readTest(self, name, val, idx, acInfo)
 
@@ -630,9 +632,11 @@ class MibScalar(MibTree):
     def readTestNext(self, name, val, idx, acInfo, oName=None):
         (acFun, acCtx) = acInfo
         if acFun:
-            if self.maxAccess not in ("readonly", "read-write", "readcreate") or acFun(
-                name, self.syntax, idx, "read", acCtx
-            ):
+            if self.maxAccess not in (
+                "read-only",
+                "read-write",
+                "read-create",
+            ) or acFun(name, self.syntax, idx, "read", acCtx):
                 raise error.NoAccessError(idx=idx, name=name)
         MibTree.readTestNext(self, name, val, idx, acInfo, oName)
 
@@ -642,9 +646,11 @@ class MibScalar(MibTree):
         # noAccess as a noSuchObject at the Test stage, goes on
         # to Reading
         if acFun:
-            if self.maxAccess not in ("readonly", "read-write", "readcreate") or acFun(
-                name, self.syntax, idx, "read", acCtx
-            ):
+            if self.maxAccess not in (
+                "read-only",
+                "read-write",
+                "read-create",
+            ) or acFun(name, self.syntax, idx, "read", acCtx):
                 raise error.NoAccessError(idx=idx, name=name)
         return MibTree.readGetNext(self, name, val, idx, acInfo, oName)
 
@@ -655,7 +661,7 @@ class MibScalar(MibTree):
         if name == self.name:
             raise error.NoAccessError(idx=idx, name=name)
         if acFun:
-            if self.maxAccess not in ("read-write", "readcreate") or acFun(
+            if self.maxAccess not in ("read-write", "read-create") or acFun(
                 name, self.syntax, idx, "write", acCtx
             ):
                 raise error.NotWritableError(idx=idx, name=name)
@@ -903,7 +909,7 @@ class MibTableColumn(MibScalar):
         if acFun:
             if (
                 val is not None
-                and self.maxAccess != "readcreate"
+                and self.maxAccess != "read-create"
                 or acFun(name, self.syntax, idx, "write", acCtx)
             ):
                 debug.logger & debug.flagACL and debug.logger(
@@ -970,7 +976,7 @@ class MibTableColumn(MibScalar):
         if acFun:
             if (
                 val is not None
-                and self.maxAccess != "readcreate"
+                and self.maxAccess != "read-create"
                 or acFun(name, self.syntax, idx, "write", acCtx)
             ):
                 raise error.NoAccessError(idx=idx, name=name)
