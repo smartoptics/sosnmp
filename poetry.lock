@@ -839,17 +839,16 @@ windows-terminal = ["colorama (>=0.4.6)"]
 
 [[package]]
 name = "pysmi-lextudio"
-version = "1.4.1"
+version = "1.2.0"
 description = "A pure-Python implementation of SNMP/SMI MIB parsing and conversion library."
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "pysmi_lextudio-1.4.1-py3-none-any.whl", hash = "sha256:d985825ca40951d0b52d2196060331647af396f28a87f37ed53705488973191c"},
-    {file = "pysmi_lextudio-1.4.1.tar.gz", hash = "sha256:e131ada78a2f7f661ca1b23f186021c7a2a8a3b40d99c7229a113899689d4254"},
+    {file = "pysmi_lextudio-1.2.0-py3-none-any.whl", hash = "sha256:92572103367bef4fd6467361667b3da1eb6af43f8b743ec99a6235b6b322ee62"},
+    {file = "pysmi_lextudio-1.2.0.tar.gz", hash = "sha256:08aea0144e3f1f292fb633793cc4ac668ad2d28063ad55923ccfa56dff47f6d7"},
 ]
 
 [package.dependencies]
-Jinja2 = ">=3.1.3,<4.0.0"
 ply = ">=3.11,<4.0"
 requests = ">=2.26.0,<3.0.0"
 
@@ -1378,4 +1377,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7,<4.0"
-content-hash = "babd4ea293daccfe8666e287997f32d408548b21b241f18acea57178567dc9e4"
+content-hash = "5a8068f36e77dfeed585cad93e19b2f71aefa917204303c94a529492dbcf062b"
