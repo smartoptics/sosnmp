@@ -41,6 +41,7 @@ async def test_v2_get_no_access_object():
 
         assert errorIndication is None
         assert errorStatus.prettyPrint() == "noAccess"  # v2c and v3 use noAccess
+        snmpEngine.transportDispatcher.closeDispatcher()
 
 
 @pytest.mark.asyncio
@@ -59,3 +60,4 @@ async def test_v2_get_legacy_object():
         assert (
             errorStatus.prettyPrint() == "noAccess"
         )  # PySMI <1.3.0 generates such objects
+        snmpEngine.transportDispatcher.closeDispatcher()

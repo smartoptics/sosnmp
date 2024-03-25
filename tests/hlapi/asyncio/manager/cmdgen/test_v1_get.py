@@ -161,3 +161,4 @@ async def test_v1_get_no_access_object():
         )
         assert errorIndication is None
         assert errorStatus.prettyPrint() == "noSuchName"  # v1 does not have noAccess
+        snmpEngine.transportDispatcher.closeDispatcher()
