@@ -24,4 +24,4 @@ async def test_custom_asn1_mib_search_path():
         assert len(varBinds) == 1
         assert varBinds[0][0].prettyPrint() == "IF-MIB::ifInOctets.1"
 
-        snmpEngine.transportDispatcher.closeDispatcher()
+        snmpEngine.closeDispatcher()

@@ -174,6 +174,28 @@ class SnmpEngine:
     def __repr__(self):
         return f"{self.__class__.__name__}(snmpEngineID={self.snmpEngineID!r})"
 
+    def openDispatcher(self, timeout: float = 0):
+        """
+        Open the dispatcher used by SNMP engine.
+
+        This method is called when SNMP engine is ready to process SNMP
+        messages. It opens the dispatcher and starts processing incoming
+        messages.
+        """
+        if self.transportDispatcher:
+            self.transportDispatcher.runDispatcher(timeout)
+
+    def closeDispatcher(self):
+        """
+        Close the dispatcher used by SNMP engine.
+
+        This method is called when SNMP engine is no longer needed. It
+        releases all resources allocated by the engine.
+        """
+        if self.transportDispatcher:
+            self.transportDispatcher.closeDispatcher()
+            self.unregisterTransportDispatcher()
+
     # Transport dispatcher bindings
 
     def __receiveMessageCbFun(

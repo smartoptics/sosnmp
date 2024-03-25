@@ -65,4 +65,4 @@ async def test_v2c_get_table_bulk():
 
         assert len(objects_list), 50
 
-        snmpEngine.transportDispatcher.closeDispatcher()
+        snmpEngine.closeDispatcher()

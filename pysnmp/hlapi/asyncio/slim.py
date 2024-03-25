@@ -43,8 +43,7 @@ class Slim:
 
     def close(self):
         """Closes the wrapper to release its resources."""
-        if self.snmpEngine.transportDispatcher is not None:
-            self.snmpEngine.transportDispatcher.closeDispatcher()
+        self.snmpEngine.closeDispatcher()
 
     def __enter__(self):
         return self

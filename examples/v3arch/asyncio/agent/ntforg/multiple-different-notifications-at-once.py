@@ -127,4 +127,4 @@ sendRequestHandle = ntfOrg.sendVarBinds(
 print("Notifications %s are scheduled to be sent" % sendRequestHandle)
 
 # Run I/O dispatcher which would send pending message and process response
-snmpEngine.transportDispatcher.runDispatcher()
+snmpEngine.openDispatcher()

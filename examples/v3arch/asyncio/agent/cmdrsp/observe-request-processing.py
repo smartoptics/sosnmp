@@ -96,8 +96,8 @@ snmpEngine.transportDispatcher.jobStarted(1)
 
 # Run I/O dispatcher which would receive queries and send responses
 try:
-    snmpEngine.transportDispatcher.runDispatcher()
+    snmpEngine.openDispatcher()
 except:
     snmpEngine.observer.unregisterObserver()
-    snmpEngine.transportDispatcher.closeDispatcher()
+    snmpEngine.closeDispatcher()
     raise

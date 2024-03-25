@@ -104,4 +104,4 @@ ntfOrg.sendVarBinds(
 print("Notification is scheduled to be sent")
 
 # Run I/O dispatcher which would send pending message and process response
-snmpEngine.transportDispatcher.runDispatcher()
+snmpEngine.openDispatcher()

@@ -42,4 +42,4 @@ def test_v1_get_raw():
     assert varBinds[0][1].prettyPrint() == "#SNMP Agent on .NET Standard"
     assert isinstance(varBinds[0][1], OctetString)
 
-    snmpEngine.transportDispatcher.closeDispatcher()
+    snmpEngine.closeDispatcher()

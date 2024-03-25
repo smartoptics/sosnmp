@@ -64,4 +64,4 @@ def test_v1_next_sync():
     assert varBinds[0][0][1].prettyPrint() == "SNMPv2-SMI::internet"
     # assert isinstance(varBinds[0][0][1], ObjectIdentifier) # TODO: fix this
 
-    snmpEngine.transportDispatcher.closeDispatcher()
+    snmpEngine.closeDispatcher()

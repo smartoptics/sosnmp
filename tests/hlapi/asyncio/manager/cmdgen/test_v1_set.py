@@ -46,4 +46,4 @@ def test_v1_set_sync():
     assert varBinds[0][1].prettyPrint() == "Shanghai"
     assert isinstance(varBinds[0][1], OctetString)
 
-    snmpEngine.transportDispatcher.closeDispatcher()
+    snmpEngine.closeDispatcher()

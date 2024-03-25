@@ -114,7 +114,7 @@ async def start_agent(
     # Start the event loop
     snmpEngine.transportDispatcher.jobStarted(1)
 
-    snmpEngine.transportDispatcher.runDispatcher()
+    snmpEngine.openDispatcher()
 
     # Wait for the agent to start
     await asyncio.sleep(1)
@@ -147,4 +147,4 @@ class AgentContextManager:
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         self.agent.transportDispatcher.jobFinished(1)
-        self.agent.transportDispatcher.closeDispatcher()
+        self.agent.closeDispatcher()

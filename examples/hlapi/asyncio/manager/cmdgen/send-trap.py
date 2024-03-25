@@ -28,7 +28,7 @@ async def run():
     if errorIndication:
         print(errorIndication)
 
-    snmpEngine.transportDispatcher.closeDispatcher()
+    snmpEngine.closeDispatcher()
 
 
 asyncio.run(run())

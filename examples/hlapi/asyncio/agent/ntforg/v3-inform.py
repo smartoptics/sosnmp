@@ -19,8 +19,9 @@ from pysnmp.hlapi.asyncio.transport import UdpTransportTarget
 
 
 async def run():
+    snmpEngine = SnmpEngine()
     errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
-        SnmpEngine(),
+        snmpEngine,
         UsmUserData("usr-md5-des", "authkey1", "privkey1"),
         UdpTransportTarget(("demo.pysnmp.com", 162)),
         ContextData(),
@@ -44,6 +45,8 @@ async def run():
     else:
         for varBind in varBinds:
             print(" = ".join([x.prettyPrint() for x in varBind]))
+
+    snmpEngine.closeDispatcher()
 
 
 asyncio.run(run())

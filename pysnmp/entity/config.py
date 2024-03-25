@@ -571,8 +571,7 @@ def delTransport(snmpEngine: SnmpEngine, transportDomain: "tuple[int, ...]"):
             automaticTransportDispatcher=automaticTransportDispatcher
         )
         if not automaticTransportDispatcher:
-            snmpEngine.transportDispatcher.closeDispatcher()
-            snmpEngine.unregisterTransportDispatcher()
+            snmpEngine.closeDispatcher()
             snmpEngine.delUserContext(automaticTransportDispatcher)
     return transport
 

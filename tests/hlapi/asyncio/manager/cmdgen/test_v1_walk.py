@@ -41,4 +41,4 @@ async def test_v1_walk():
 
         assert len(objects_list), 50
 
-        snmpEngine.transportDispatcher.closeDispatcher()
+        snmpEngine.closeDispatcher()

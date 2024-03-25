@@ -40,4 +40,4 @@ async def test_usm_no_auth_no_priv_wrong_user():
 
         assert isinstance(errorIndication, UnknownUserName)
         assert str(errorIndication) == "Unknown USM user"
-        snmpEngine.transportDispatcher.closeDispatcher()
+        snmpEngine.closeDispatcher()

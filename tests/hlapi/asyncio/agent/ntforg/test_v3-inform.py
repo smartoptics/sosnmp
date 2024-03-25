@@ -31,7 +31,7 @@ async def test_send_v3_inform():
         isinstance(varBinds[0][1], TimeTicks)
         isinstance(varBinds[1][1], ObjectIdentifier)
         isinstance(varBinds[2][1], OctetString)
-        snmpEngine.transportDispatcher.closeDispatcher()
+        snmpEngine.closeDispatcher()
 
 
 def test_send_v3_inform_sync():
@@ -57,4 +57,4 @@ def test_send_v3_inform_sync():
     isinstance(varBinds[0][1], TimeTicks)
     isinstance(varBinds[1][1], ObjectIdentifier)
     isinstance(varBinds[2][1], OctetString)
-    snmpEngine.transportDispatcher.closeDispatcher()
+    snmpEngine.closeDispatcher()

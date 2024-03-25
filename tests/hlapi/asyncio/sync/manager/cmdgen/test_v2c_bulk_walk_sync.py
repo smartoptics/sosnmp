@@ -27,7 +27,7 @@ def test_v2c_bulk_sync():
     assert varBinds[0][0][1].prettyPrint() == "SNMPv2-SMI::internet"
     # assert isinstance(varBinds[0][0][1], ObjectIdentifier)
 
-    snmpEngine.transportDispatcher.closeDispatcher()
+    snmpEngine.closeDispatcher()
 
 
 @pytest.mark.parametrize("num_objects", [1, 2, 3, 5, 7, 11])
@@ -76,4 +76,4 @@ def test_v2c_bulk_walk_sync(num_objects):
     errorIndication, errorStatus, errorIndex, varBinds = objects_list[-1]
     assert varBinds[0][0].prettyPrint() == "IF-MIB::ifSpecific.2"
 
-    snmpEngine.transportDispatcher.closeDispatcher()
+    snmpEngine.closeDispatcher()

@@ -30,6 +30,12 @@ SNMP engine has unique identifier that can be assigned automatically
 or administratively. This identifier is used in SNMP protocol
 operations.
 
+.. warning::
+
+   ``SnmpEngine`` object allocates many resources under the hood, so make
+   sure to call its :py:meth:`~pysnmp.hlapi.SnmpEngine.closeDispatcher`
+   method when you are done with it.
+
 Making SNMP Query
 -----------------
 

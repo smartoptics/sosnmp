@@ -68,7 +68,7 @@ async def test_v1_get_raw():
         assert varBinds[0][1].prettyPrint().startswith("PySNMP engine version")
         assert isinstance(varBinds[0][1], OctetString)
 
-        snmpEngine.transportDispatcher.closeDispatcher()
+        snmpEngine.closeDispatcher()
 
 
 @pytest.mark.asyncio
@@ -90,7 +90,7 @@ async def test_v1_get_ipv6():
         assert varBinds[0][1].prettyPrint().startswith("PySNMP engine version")
         assert isinstance(varBinds[0][1], OctetString)
 
-        snmpEngine.transportDispatcher.closeDispatcher()
+        snmpEngine.closeDispatcher()
 
 
 def test_v1_get_timeout_invalid_target():
@@ -117,7 +117,7 @@ def test_v1_get_timeout_invalid_target():
     except asyncio.TimeoutError:
         assert False, "Test case timed out"
     finally:
-        snmpEngine.transportDispatcher.closeDispatcher()
+        snmpEngine.closeDispatcher()
 
 
 @pytest.mark.asyncio
@@ -145,7 +145,7 @@ async def test_v1_get_timeout_slow_object():
         except asyncio.TimeoutError:
             assert False, "Test case timed out"
         finally:
-            snmpEngine.transportDispatcher.closeDispatcher()
+            snmpEngine.closeDispatcher()
 
 
 @pytest.mark.asyncio
@@ -161,4 +161,4 @@ async def test_v1_get_no_access_object():
         )
         assert errorIndication is None
         assert errorStatus.prettyPrint() == "noSuchName"  # v1 does not have noAccess
-        snmpEngine.transportDispatcher.closeDispatcher()
+        snmpEngine.closeDispatcher()

@@ -12,8 +12,8 @@ A. The Agent you are talking to seems to be broken. The
    OIDs from the Agent, Manager receives an OID that is not greater than those
    passed in request.
    Due to the nature of GETNEXT/GETBULK algorithm, passing the same or
-   lesser OID to Manager would result in fetching the same set of OIDs over 
-   and over again effectively creating an infinite loop between Manager 
+   lesser OID to Manager would result in fetching the same set of OIDs over
+   and over again effectively creating an infinite loop between Manager
    and Agent so they may never reach the end of MIB. To prevent this the
    Manager tries to intervene and prevent such loop from happening.
 
@@ -24,10 +24,11 @@ A. The Agent you are talking to seems to be broken. The
 
 .. code-block:: python
 
+    snmpEngine = SnmpEngine()
     for (errorIndication,
          errorStatus,
          errorIndex,
-         varBinds) in nextCmd(SnmpEngine(),
+         varBinds) in nextCmd(snmpEngine,
                               CommunityData('public'),
                               UdpTransportTarget(('demo.pysnmp.com', 161)),
                               ContextData(),
@@ -44,3 +45,5 @@ A. The Agent you are talking to seems to be broken. The
         else:
             for varBind in varBinds:
                 print(' = '.join([x.prettyPrint() for x in varBind])
+
+    snmpEngine.closeDispatcher()

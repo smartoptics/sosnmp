@@ -133,7 +133,7 @@ errorIndication, errorStatus, errorIndex, varBinds = sendNotification(
 if errorIndication:
     print(errorIndication)
 
-snmpEngine.transportDispatcher.closeDispatcher()
+snmpEngine.closeDispatcher()
 ```
 
 > We maintain publicly available SNMP Agent and TRAP sink at

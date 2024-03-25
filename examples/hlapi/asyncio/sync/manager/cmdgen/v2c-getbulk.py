@@ -18,8 +18,9 @@ Functionally similar to:
 """  #
 from pysnmp.hlapi import *
 
-for errorIndication, errorStatus, errorIndex, varBinds in bulkCmd(
-    SnmpEngine(),
+snmpEngine = SnmpEngine()
+for errorIndication, errorStatus, errorIndex, varBinds in bulkWalkCmd(
+    snmpEngine,
     CommunityData("public"),
     UdpTransportTarget(("demo.pysnmp.com", 161)),
     ContextData(),
@@ -43,3 +44,5 @@ for errorIndication, errorStatus, errorIndex, varBinds in bulkCmd(
     else:
         for varBind in varBinds:
             print(" = ".join([x.prettyPrint() for x in varBind]))
+
+snmpEngine.closeDispatcher()

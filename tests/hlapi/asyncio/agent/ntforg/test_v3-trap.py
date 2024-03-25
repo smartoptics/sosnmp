@@ -19,4 +19,4 @@ async def test_send_v3_trap_notification():
             NotificationType(ObjectIdentity("IF-MIB", "linkDown")),
         )
 
-        snmpEngine.transportDispatcher.closeDispatcher()
+        snmpEngine.closeDispatcher()

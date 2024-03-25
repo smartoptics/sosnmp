@@ -52,4 +52,4 @@ def test_v1_walk():
     errorIndication, errorStatus, errorIndex, varBinds = objects_list[-1]
     assert varBinds[0][0].prettyPrint() == "IF-MIB::ifSpecific.2"
 
-    snmpEngine.transportDispatcher.closeDispatcher()
+    snmpEngine.closeDispatcher()

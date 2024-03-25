@@ -29,4 +29,4 @@ async def test_send_trap():
     assert errorStatus == 0
     assert len(varBinds) == 0
 
-    snmpEngine.transportDispatcher.closeDispatcher()
+    snmpEngine.closeDispatcher()

@@ -27,7 +27,7 @@ async def test_send_trap_enterprise_specific():
         assert errorStatus == 0
         assert errorIndex == 0
         assert varBinds == []
-        snmpEngine.transportDispatcher.closeDispatcher()
+        snmpEngine.closeDispatcher()
 
 
 @pytest.mark.asyncio
@@ -50,4 +50,4 @@ async def test_send_trap_generic():
         assert errorStatus == 0
         assert errorIndex == 0
         assert varBinds == []
-        snmpEngine.transportDispatcher.closeDispatcher()
+        snmpEngine.closeDispatcher()

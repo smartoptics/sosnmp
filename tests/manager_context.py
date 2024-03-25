@@ -73,7 +73,7 @@ async def start_manager() -> SnmpEngine:
     # Run I/O dispatcher which would receive queries and send confirmations
     snmpEngine.transportDispatcher.jobStarted(1)  # this job would never finish
 
-    snmpEngine.transportDispatcher.runDispatcher()
+    snmpEngine.openDispatcher()
 
     # Wait for the manager to start
     await asyncio.sleep(1)
@@ -102,4 +102,4 @@ class ManagerContextManager:
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         self.manager.transportDispatcher.jobFinished(1)
-        self.manager.transportDispatcher.closeDispatcher()
+        self.manager.closeDispatcher()

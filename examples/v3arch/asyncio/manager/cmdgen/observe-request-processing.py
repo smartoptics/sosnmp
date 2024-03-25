@@ -122,8 +122,8 @@ cmdgen.GetCommandGenerator().sendVarBinds(
 )
 
 # Run I/O dispatcher which would send pending queries and process responses
-snmpEngine.transportDispatcher.runDispatcher(3)
+snmpEngine.openDispatcher(3)
 
 snmpEngine.observer.unregisterObserver()
 
-snmpEngine.transportDispatcher.closeDispatcher()
+snmpEngine.closeDispatcher()
