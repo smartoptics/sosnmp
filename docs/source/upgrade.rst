@@ -1,7 +1,7 @@
 .. include:: /includes/_links.rst
 
-Upgrade to 6.0 Release
-======================
+Upgrade to 6.x Releases
+=======================
 
 .. toctree::
    :maxdepth: 2
@@ -20,17 +20,27 @@ modern software development,
 1. Many legacy code existed to keep compatibility with very old Python
    versions like 2.x. That added unnecessary complexity to the project and
    made it hard to maintain and develop new features.
-1. The core library was not well covered by unit test cases. So when
+1. The core library was not well covered by simple unit test cases. So when
    certain features were added or patched, and listed in release notes, not
    enough information is available on why the changes were needed. And even
    if we wanted to clean up or refactor the code, we couldn't do it easily
-   without breaking the existing functionality.
+   without breaking the existing functionality. Later we found out that
+   more test cases were on unstable branches, but they were more like
+   end to end tests rather than unit tests and you couldn't run them easily
+   with debuggers.
+
+Ilya wasn't able to produce the 4.4.13 release, so the last stable release
+was 4.4.12.
 
 Issues in 5.0 Release
 ---------------------
 
-It took the Splunk team and LeXtudio Inc. several months to get familiar
-with the code base and applied various ways to advance the project. In
+While working 4.x releases, Ilya actually kept a master branch with some
+experimental changes and planned to release 5.0. However, this plan wasn't
+what you see today in the 5.0 release.
+
+It took the Splunk team and LeXtudio team several months to get familiar
+with the code base and each applied own ways to advance the project. In
 short,
 
 * The build system was migrated to poetry, which is a modern Python
@@ -45,7 +55,10 @@ short,
 * The API surface was kept compatible with the 4.x releases in most cases.
 * Documentation was updated to reflect the changes.
 
-Upgrade to 6.0
+The Splunk team built its own 5.0.x releases from 4.4.12 branch. This was
+then followed by LeXtudio.
+
+Upgrade to 6.x
 --------------
 
 The 6.0 release is the first major release upgrade by LeXtudio Inc., after
@@ -59,10 +72,14 @@ the code base. So far, this release introduces the following changes:
 * Documentation is significantly improved to cover the new features and
   changes.
 
+PySMI 1.3 and 1.4 releases introduced some changes that are not fully
+compatible with PySMI 1.2 and PySNMP 6.0. So, you need to upgrade to PySNMP
+6.1 release, which works better with latest PySMI bits.
+
 Important Changes
 -----------------
 
-The following changes are important to note when upgrading to 6.0:
+The following changes are important to note when upgrading to 6.x:
 
 Async API based on asyncore
 +++++++++++++++++++++++++++
