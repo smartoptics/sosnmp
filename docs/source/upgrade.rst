@@ -17,10 +17,10 @@ maintained since 2019. While Ilya kept the project alive, the project was
 not living up to its potential nor following the best practices of the
 modern software development,
 
-1. Many legacy code existed to keep compatibility with very old Python
+#. Many legacy code existed to keep compatibility with very old Python
    versions like 2.x. That added unnecessary complexity to the project and
    made it hard to maintain and develop new features.
-1. The core library was not well covered by simple unit test cases. So when
+#. The core library was not well covered by simple unit test cases. So when
    certain features were added or patched, and listed in release notes, not
    enough information is available on why the changes were needed. And even
    if we wanted to clean up or refactor the code, we couldn't do it easily
