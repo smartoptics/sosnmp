@@ -32,6 +32,11 @@ modern software development,
 Ilya wasn't able to produce the 4.4.13 release, so the last stable release
 was 4.4.12.
 
+.. note::
+
+   We were able to cherry pick the changes on 4.4.13 branch and merge them
+   into the 6.1 release.
+
 .. warning::
 
    You can see there are tons of known issues with 4.x releases, and they
@@ -44,6 +49,16 @@ Issues in 5.x Releases
 While working 4.x releases, Ilya actually kept a master branch with some
 experimental changes and planned to release 5.0. However, this plan wasn't
 what you see today in the 5.0 release.
+
+.. note::
+
+   We called Ilya's changes experimental because they were not well tested
+   and when we added more test cases to thoroughly analyze the changes, we
+   found out that some of them (like the revised MIB implementation) were
+   poorly designed and not working as expected.
+
+   We are still evaluating the changes Ilya made and will decide whether to
+   keep them or not in the future releases.
 
 It took the Splunk team and LeXtudio team several months to get familiar
 with the code base and each applied own ways to advance the project. In
