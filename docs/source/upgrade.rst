@@ -32,8 +32,14 @@ modern software development,
 Ilya wasn't able to produce the 4.4.13 release, so the last stable release
 was 4.4.12.
 
-Issues in 5.0 Release
----------------------
+.. warning::
+
+   You can see there are tons of known issues with 4.x releases, and they
+   also work badly with the latest Python versions, so please don't stay
+   with them for long.
+
+Issues in 5.x Releases
+----------------------
 
 While working 4.x releases, Ilya actually kept a master branch with some
 experimental changes and planned to release 5.0. However, this plan wasn't
@@ -58,8 +64,13 @@ short,
 The Splunk team built its own 5.0.x releases from 4.4.12 branch. This was
 then followed by LeXtudio.
 
-Upgrade to 6.x
---------------
+.. warning::
+
+   We consider the 5.0.x release as a stepping stone to the 6.x releases,
+   so please don't stay with them for long.
+
+Upgrade to 6.x Releases
+-----------------------
 
 The 6.0 release is the first major release upgrade by LeXtudio Inc., after
 the team took over the project and attempted twice internally to modernize
