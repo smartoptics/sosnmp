@@ -6,14 +6,14 @@ Upgrade to 6.x Releases
 .. toctree::
    :maxdepth: 2
 
-This article provides information on how to upgrade to the latest 6.0
-release from earlier releases such as 4.x and 5.x.
+This article provides information on how to upgrade to the latest 6.x
+releases from old releases such as 4.x and 5.x.
 
 Issues in 4.x Releases
 ----------------------
 
 The old releases were finished before 2020 by Ilya Etingof and wasn't well
-maintained since 2019. While Ilya kept the project alive, the project was
+maintained after 2019. While Ilya kept the project alive, the project was
 not living up to its potential nor following the best practices of the
 modern software development,
 
@@ -30,7 +30,7 @@ modern software development,
    with debuggers.
 
 Ilya wasn't able to produce the 4.4.13 release, so the last stable release
-was 4.4.12.
+from him was 4.4.12.
 
 .. note::
 
@@ -46,38 +46,59 @@ was 4.4.12.
 Issues in 5.x Releases
 ----------------------
 
-While working 4.x releases, Ilya actually kept a master branch with some
-experimental changes and planned to release 5.0. However, this plan wasn't
-what you see today in the 5.0 release.
+While working on 4.x releases, Ilya actually kept a master branch with some
+experimental changes and planned to release as 5.0. However, this plan
+wasn't finished and irrelevant to what you see today the 5.x releases from
+other maintainers and their forks.
 
 .. note::
 
    We called Ilya's changes experimental because they were not well tested
-   and when we added more test cases to thoroughly analyze the changes, we
-   found out that some of them (like the revised MIB implementation) were
-   poorly designed and not working as expected.
+   and when we used our test suite to thoroughly play with the changes, we
+   found out that some of them were poorly designed and not really working
+   as expected.
 
-   We are still evaluating the changes Ilya made and will decide whether to
-   keep them or not in the future releases.
+   For example, the revised MIB implementation used hard-to-understand
+   callbacks everywhere and deep recursion, which might work if you have
+   only simple operations to execute. But when you have to deal with some
+   real-world scenarios, the recursion depth was easily reached and the
+   whole operation was failed.
 
-It took the Splunk team and LeXtudio team several months to get familiar
-with the code base and each applied own ways to advance the project. In
-short,
+   We are still evaluating all the changes Ilya made and will decide
+   whether to keep them or not in the future releases.
+
+It took the Splunk team and LeXtudio team each several months to get
+familiar with the code base and they chose different ways to advance the
+project.
+
+In short, the following were done by the Splunk team,
 
 * The build system was migrated to poetry, which is a modern Python
   packaging tool that simplifies the process of packaging and distributing
   Python packages. Testing the bits on Python 3.8-3.12 couldn't be easier.
-* Legacy code for Python 2.x was removed, while changes required by Python
-  3.11/3.12 was applied.
-* Patches created by the community between 2019 and 2022 were gradually
-  merged into the code base.
-* Testing started to become a top priority, either through integration
-  tests or unit tests.
+* Legacy code for Python 2.x was removed, while many changes required by
+  newer Python versions (3.8 to 3.11) was applied.
+* Some patches created by the community between 2019 and 2022 were merged
+  into the code base.
+* Testing started to become a top priority, but mainly through integration
+  tests with Splunk components.
 * The API surface was kept compatible with the 4.x releases in most cases.
-* Documentation was updated to reflect the changes.
 
-The Splunk team built its own 5.0.x releases from 4.4.12 branch. This was
-then followed by LeXtudio.
+From there, the Splunk team built its own 5.0.x releases from Ilya's 4.4.12
+branch.
+
+This was then followed by the LeXtudio team, but they added more changes to
+the code base,
+
+* New changes required by Python 3.12 were applied, such as completely free
+  of asyncore.
+* A relatively complete unit test suite was added to the code base, so that
+  from there bugfixes and refactoring could be done with confidence.
+* Many more community patches were tested and merged.
+* Collaboration with downstream projects like OpenStack and Home Assistant
+  was started so that compatibility with their projects could be reviewed
+  and improved.
+* Documentation was updated to reflect the changes.
 
 .. warning::
 
@@ -91,16 +112,20 @@ The 6.0 release is the first major release upgrade by LeXtudio Inc., after
 the team took over the project and attempted twice internally to modernize
 the code base. So far, this release introduces the following changes:
 
-* Unit test coverage is significantly improved.
+* Unit test coverage is further improved.
 * Legacy API based on asyncore has been completely removed.
 * New sync API based on asyncio is added to enable synchronous I/O
   operations and easy migration from 4.x/5.0 releases.
+* The API surface was adjusted slightly to make it more aligned with other
+  SNMP implementations.
 * Documentation is significantly improved to cover the new features and
   changes.
+* Continuous collaboration with downstream projects.
 
 PySMI 1.3 and 1.4 releases introduced some changes that are not fully
-compatible with PySMI 1.2 and PySNMP 6.0. So, you need to upgrade to PySNMP
-6.1 release, which works better with latest PySMI bits.
+compatible with PySMI 1.2. So we decided to keep PySNMP 6.0 with PySMI 1.2,
+and release PySNMP 6.1 release to support users who prefer PySMI 1.3 and
+above.
 
 Important Changes
 -----------------
@@ -111,24 +136,24 @@ Async API based on asyncore
 +++++++++++++++++++++++++++
 
 All such APIs are removed, so you can no longer import types from the
-relevant modules. This includes sync API based on asyncore.
+relevant modules. This includes the old sync API (based on asyncore).
 
 Sync API based on asyncio
 +++++++++++++++++++++++++
 
 The new sync API is added to enable synchronous I/O operations and easy
-migration from 4.x/5.0 releases. The new API is based on asyncio and is
+migration from 4.x/5.x releases. The new API is based on asyncio and is
 compatible with Python 3.8 and later.
 
-However, the new sync API is not a drop-in replacement for the old sync
-API. For example,
+However, we intentionally didn't design the new sync API to be a drop-in
+replacement for the old sync API. For example,
 
 * The old sync API returns a ``Generator`` object where you can iterate
   through the ``tuple`` of response data, while the new sync API simply
   returns the ``tuple`` so you know you are doing a single SNMP request.
 
-  So if the following code is used for a single request operation, where
-  ``next()`` iterates over the ``Generator`` object,
+  So if the following code is used for a single request operation with the
+  old sync API, where ``next()`` iterates over the ``Generator`` object,
 
   .. code:: python
 
@@ -158,7 +183,7 @@ API. For example,
   aligned with other SNMP implementations, and the method signatures are
   intentionally different from single request methods like ``getCmd``.
 
-  ``walkCmd`` works more similar to ``nextCmd`` in 4.x/5.0 releases, while
+  ``walkCmd`` works more similar to ``nextCmd`` in 4.x/5.x releases, while
   ``bulkWalkCmd`` works more similar to ``bulkCmd``.
 
 RFC3414 Compliance
