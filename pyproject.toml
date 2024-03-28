@@ -41,7 +41,7 @@ pytest-asyncio = "^0.21.1"
 Sphinx = "^5.0.0"
 sphinx-copybutton = "^0.5.2"
 furo = "^2023.1.1"
-sphinx-sitemap = "^2.5.1"
+sphinx-sitemap-lextudio = "^2.5.2"
 black = "23.1.0"
 pre-commit = "2.21.0"
 
