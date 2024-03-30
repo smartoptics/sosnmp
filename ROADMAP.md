@@ -14,7 +14,7 @@ Now the Python landscape has changed a lot due to frequent Python releases
 and breaking changes in each of them. The PySNMP project needs to adapt to
 the new reality and provide a better user experience.
 
-Thus, the 6.0 release is planned to address the most critical issues.
+Thus, the 6.x release is planned to address the most critical issues.
 
 ## Goals
 
@@ -33,6 +33,6 @@ Thus, the 6.0 release is planned to address the most critical issues.
 
 ## Breaking Changes
 
-- Removed asyncore related API from `pysnmp.hlapi` module. This is expected to break existing code that uses `pysnmp.hlapi` module with asyncore. Users can stay on 5.0 release but are encouraged to migrate to asyncio and our 6.0 release.
+- Removed asyncore related API from `pysnmp.hlapi` module. This is expected to break existing code that uses `pysnmp.hlapi` module with asyncore. Users can stay on 5.0 release but are encouraged to migrate to asyncio and our 6.0+ release.
 - Switched to `asyncio` in many type implementation in `pysnmp.hlapi` module. This is expected to break existing code that uses `pysnmp.hlapi` module if it assumes the relevant API is implemented upon asyncore. Users are encouraged to test their code thoroughly and make necessary changes.
 - Stopped supporting Python 3.7 and below. Users are encouraged to upgrade their Python to 3.8+ (ideally 3.11+).

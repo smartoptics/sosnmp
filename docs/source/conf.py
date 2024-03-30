@@ -53,7 +53,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "SNMP Library for Python 6.0"
+project = "SNMP Library for Python 6.1"
 copyright = "2005-2020, Ilya Etingof. © Copyright 2022-2024, LeXtudio Inc."
 author = "LeXtudio Inc. <support@lextudio.com>"
 
@@ -62,7 +62,7 @@ author = "LeXtudio Inc. <support@lextudio.com>"
 # built documents.
 #
 # The short X.Y version.
-version = "6.0"
+version = "6.1"
 # The full version, including alpha/beta/rc tags.
 release = "6.1.2"
 
@@ -146,7 +146,7 @@ html_css_files = [
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = "PySNMP 6.0 Documentation"
+html_title = "PySNMP 6.1 Documentation"
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 # html_short_title = None
@@ -248,7 +248,7 @@ latex_documents = [
     (
         master_doc,
         "PySNMP.tex",
-        "PySNMP 6.0 Documentation",
+        "PySNMP Documentation",
         "Ilya Etingof \\textless{}etingof@gmail.com\\textgreater{}",
         "manual",
     ),
@@ -279,7 +279,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "pysnmp", "PySNMP 6.0 Documentation", [author], 1)]
+man_pages = [(master_doc, "pysnmp", "PySNMP Documentation", [author], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -294,7 +294,7 @@ texinfo_documents = [
     (
         master_doc,
         "PySNMP",
-        "PySNMP 6.0 Documentation",
+        "PySNMP Documentation",
         author,
         "PySNMP",
         "One line description of project.",
