@@ -1,125 +1,127 @@
-Revision 6.1.2, released 2024-3-25
------------------------------------
+Revision 6.1.2, released on Mar 25, 2024
+----------------------------------------
 
 - Merged changes from 4.4.13.
 
-Revision 6.1.1, released 2024-3-23
------------------------------------
+Revision 6.1.1, released on Mar 23, 2024
+----------------------------------------
 
 - Fixed more access descriptors.
 
-Revision 6.1.0, released 2024-3-23
------------------------------------
+Revision 6.1.0, released on Mar 23, 2024
+----------------------------------------
 
 - Initial work to support pysmi-lextudio 1.3.0 and above.
 
-Revision 6.0.12, released 2024-3-23
------------------------------------
+Revision 6.0.12, released on Mar 23, 2024
+-----------------------------------------
 
 - Restricted pysmi-lextudio version to 1.2.0 to avoid breaking changes.
 
-Revision 6.0.11, released 2024-3-14
------------------------------------
+Revision 6.0.11, released on Mar 14, 2024
+-----------------------------------------
 
 - Fixed walkCmd bug.
 
-Revision 6.0.10, released 2024-3-13
------------------------------------
+Revision 6.0.10, released on Mar 13, 2024
+-----------------------------------------
 
 - Fixed bulkWalkCmd bug.
 
-Revision 6.0.9, released 2024-3-8
----------------------------------
+Revision 6.0.9, released on Mar 08, 2024
+----------------------------------------
 
 - Added sync oneliner back.
 
-Revision 6.0.8, released 2024-3-7
----------------------------------
+Revision 6.0.8, released on Mar 07, 2024
+----------------------------------------
 
 - Fix annotations.
 
-Revision 6.0.7, released 2024-3-7
----------------------------------
+Revision 6.0.7, released on Mar 07, 2024
+----------------------------------------
 
 - Added walkCmd() and bulkWalkCmd() to hlapi.
 
-Revision 6.0.6, released 2024-3-4
----------------------------------
+Revision 6.0.6, released on Mar 04, 2024
+----------------------------------------
 
 - Improved Slim class to support IPv6.
 - Added some sync API based on asyncio.
 
-Revision 6.0.5, released 2024-3-1
----------------------------------
+Revision 6.0.5, released on Mar 01, 2024
+----------------------------------------
 
 - Added custom socket support in openServerMode.
 - Fixed various bugs in RFC3414 error handling.
 
-Revision 6.0.4, released 2024-2-28
-----------------------------------
+Revision 6.0.4, released on Feb 28, 2024
+----------------------------------------
 
 - Reverted some changes in 6.0.2 on asyncio dispatch.
 
-Revision 6.0.3, released 2024-2-26
-----------------------------------
+Revision 6.0.3, released on Feb 26, 2024
+----------------------------------------
 
 - Deleted asyncore related bits.
 
-Revision 6.0.2, released 2024-2-13
-----------------------------------
+Revision 6.0.2, released on Feb 13, 2024
+----------------------------------------
 
 - Simplified asyncio dispatch.
 - Added ignoreNonIncreasingOid option to nextCmd and bulkCmd.
 
-Revision 6.0.1, released 2024-2-10
------------------------------------
+Revision 6.0.1, released on Feb 10, 2024
+----------------------------------------
 
 - Fixed a dispatch bug related to "Slim.close".
 
-Revision 6.0.0, released 2024-2-10
------------------------------------
+Revision 6.0.0, released on Feb 10, 2024
+----------------------------------------
 
 - Improved asyncio "runDispatcher" method to support timeout.
 - Changed internal defaults to asyncio.
 - Converted asyncore samples to asyncio.
 
-Revision 5.0.34, released 2024-2-4
-----------------------------------
+Revision 5.0.34, released on Feb 04, 2024
+-----------------------------------------
 
 - Fixed a v3 authentication issue when wrong user name is used.
 
-Revision 5.0.33, released 2024-1-12
------------------------------------
+Revision 5.0.33, released on Jan 12, 2024
+-----------------------------------------
 
 - Fixed an import error with Python 3.12.
 
-Revision 5.0.32, released 2023-12-25
-------------------------------------
+Revision 5.0.32, released on Dec 25, 2023
+-----------------------------------------
 
 - Added timeout and retries to Slim class.
 
-Revision 5.0.31, released 2023-12-09
-------------------------------------
+Revision 5.0.31, released on Dec 09, 2023
+-----------------------------------------
 
-- Added experimental Python 3.12 support based on pyasyncore. But all asyncore based API is deprecated and will be removed in the next major release.
+- Added experimental Python 3.12 support based on pyasyncore. But all
+  asyncore based API is deprecated and will be removed in the next major
+  release.
 
-Revision 5.0.30, released 2023-11-20
-------------------------------------
+Revision 5.0.30, released on Nov 20, 2023
+-----------------------------------------
 
 - Added pyasn1 0.5.1 support.
 
-Revision 5.0.29, released 2023-09-12
-------------------------------------
+Revision 5.0.29, released on Sep 12, 2023
+-----------------------------------------
 
 - Fix asyncio hlapi double awaitable returns.
 
-Revision 5.0.28, released 2023-05-08
-------------------------------------
+Revision 5.0.28, released on May 08, 2023
+-----------------------------------------
 
 - Fixed SNMP engine ID generation on Windows.
 
-Revision 5.0.27, released 2023-04-28
-------------------------------------
+Revision 5.0.27, released on Apr 28, 2023
+-----------------------------------------
 
 - SNMPv3 crypto operations that require external dependencies
   made dependent on the optional external
@@ -128,72 +130,72 @@ Revision 5.0.27, released 2023-04-28
   PyCryptodomex to pyca/cryptography whenever available on the
   platform.
 
-Revision 5.0.26, released 2023-04-21
-------------------------------------
+Revision 5.0.26, released on Apr 21, 2023
+-----------------------------------------
 
 - Blocked pyasn1 new release due to its breaking changes.
 
-Revision 5.0.25, released 2023-01-26
-------------------------------------
+Revision 5.0.25, released on Jan 26, 2023
+-----------------------------------------
 
 - Added Slim class and simplified some examples.
 
-Revision 5.0.24, released 2023-01-22
-------------------------------------
+Revision 5.0.24, released on Jan 22, 2023
+-----------------------------------------
 
 - Fixed a #SNMP demo compatibility issue.
 
-Revision 5.0.23, released 2023-01-21
-------------------------------------
+Revision 5.0.23, released on Jan 21, 2023
+-----------------------------------------
 
 - Fixed a #SNMP demo compatibility issue.
 - Fixed passwordToKeySHA.
 
-Revision 5.0.22, released 2023-01-20
-------------------------------------
+Revision 5.0.22, released on Jan 20, 2023
+-----------------------------------------
 
 - Enabled Python 3.11 support.
 
-Revision 5.0.21, released 2022-12-26
-------------------------------------
+Revision 5.0.21, released on Dec 26, 2022
+-----------------------------------------
 
 - Switched to pyasn1/pyasn1 package.
 
-Revision 5.0.20, released 2022-12-01
-------------------------------------
+Revision 5.0.20, released on Dec 01, 2022
+-----------------------------------------
 
 - Removed legacy paddings in v3 packets.
 
-Revision 5.0.18, released 2022-11-13
-------------------------------------
+Revision 5.0.18, released on Nov 13, 2022
+-----------------------------------------
 
 - Changed web site to pysnmp.com.
 - Inherited all changes made by Splunk team.
 
-Revision 4.4.13, released 2019-11-XX
-------------------------------------
+Revision 4.4.13, released on 2019-11-XX
+-----------------------------------------
 
 - Fixed `genErr` handing in Command Responder when mapping MIB instrumentation
   exception onto SNMP errors. Prior to this fix, `genErr` would never be
   reported back to SNMP manager.
 
-Revision 4.4.12, released 2019-09-24
-------------------------------------
+Revision 4.4.12, released on Sep 24, 2019
+-----------------------------------------
 
 - Fixed broken SNMPv3 `msgFlag` initialization on authoritative SNMP
   engine ID discovery. This bug causes secure communication with peer
   SNMP engines to stall at SNMP engine ID discovery procedure.
 
-Revision 4.4.11, released 2019-08-10
-------------------------------------
+Revision 4.4.11, released on Aug 10, 2019
+-----------------------------------------
 
 - Added SNMPv3 USM master and localized keys support to LCD configuration
 - Improved initial and runtime USM debugging
 - Fixed a bug in USM configuration which did not allow the same user names
   to be added under different security names
 
-Revision 4.4.10, released 2019-07-29
-------------------------------------
+Revision 4.4.10, released on Jul 29, 2019
+-----------------------------------------
 
 - Reworked VACM access control function. Most important changes include:
 
@@ -221,8 +223,8 @@ Revision 4.4.10, released 2019-07-29
 - Fixed crash on uninitialized component serialization left out in
   SNMP v1 TRAP PDU to SNMPv2/3 TRAP PDU proxy translation routine.
 
-Revision 4.4.9, released 2019-02-09
------------------------------------
+Revision 4.4.9, released on Feb 09, 2019
+-----------------------------------------
 
 - Made MIB loader ignoring file and directory access errors
 - Added missing SNMP PDU error classes and their handling in Command Responder
@@ -230,14 +232,14 @@ Revision 4.4.9, released 2019-02-09
 - Fixed socket transparency option (IPV6_TRANSPARENT) to make IPv6
   transparent operation functional
 
-Revision 4.4.8, released 2018-12-30
------------------------------------
+Revision 4.4.8, released on Dec 30, 2018
+----------------------------------------
 
 - Fixed Pythonized MIB load (in the source form) - made sure to turn
   it into a code object prior to its execution
 
-Revision 4.4.7, released 2018-12-29
------------------------------------
+Revision 4.4.7, released on Dec 29, 2018
+----------------------------------------
 
 - Copyright notice extended to the year 2019
 - Exposed ASN.1 `Null` type through `rfc1902` module for convenience.
@@ -252,8 +254,8 @@ Revision 4.4.7, released 2018-12-29
 - Fixed undefined name references in `inet_pton`/`inet_ntop` substitute
   routines for IPv6 in `TRANSPORT-ADDRESS-MIB.py`
 
-Revision 4.4.6, released 2018-09-13
------------------------------------
+Revision 4.4.6, released on Sep 13, 2018
+----------------------------------------
 
 - Improved package build and dependency tracking
 - Fixed missing LICENSE from the tarball distribution
@@ -267,8 +269,8 @@ Revision 4.4.6, released 2018-09-13
   SNMP v1/v2c operations failed. The fix ignores incomplete SNMP community
   table entries in the course of building indices.
 
-Revision 4.4.5, released 2018-08-05
------------------------------------
+Revision 4.4.5, released on Aug 05, 2018
+----------------------------------------
 
 - Added PySnmpError.cause attribute holding parent exception tuple
 - Fixed broken InetAddressType rendering caused by a pyasn1 regression
@@ -281,15 +283,15 @@ Revision 4.4.5, released 2018-08-05
 - Fixed out-of-scope OIDs leaking at the end of SNMP table at hlapi
   `nextCmd` and `bulkCmd` calls when `lexicographicMode = False`
 
-Revision 4.4.4, released 2018-01-03
------------------------------------
+Revision 4.4.4, released on Jan 03, 2018
+----------------------------------------
 
 - Copyright notice extended to the year 2018
 - Fixed short local key expansion at 3DES key localization
   implementation.
 
-Revision 4.4.3, released 2017-12-22
------------------------------------
+Revision 4.4.3, released on Dec 22, 2017
+----------------------------------------
 
 - Migrated references from SourceForge
 - Added missing SHA2 support for Blumenthal key localization
@@ -299,8 +301,8 @@ Revision 4.4.3, released 2017-12-22
   from v1 PDU get copied over to v2c PDU in addition to the exception
   sentinels being set
 
-Revision 4.4.2, released 2017-11-11
------------------------------------
+Revision 4.4.2, released on Nov 11, 2017
+----------------------------------------
 
 - The pysnmp version being used gets exposed to the MIB modules
   via the `MibBuilder` instance
@@ -316,8 +318,8 @@ Revision 4.4.2, released 2017-11-11
 - Fixed non-implied-OID encoding in SNMP table indices
 - Fixed inconsistent SNMPv3 discovery and retrying algorithm
 
-Revision 4.4.1, released 2017-10-23
------------------------------------
+Revision 4.4.1, released on Oct 23, 2017
+----------------------------------------
 
 - HMAC-SHA-2 Authentication Protocols support added (RFC-7860)
 - The pycryptodome dependency replaced with pycryptodomex as
@@ -334,8 +336,8 @@ Revision 4.4.1, released 2017-10-23
   leads to wrong PDU version being sent and even a crash on
   incompatible PDU/SNMP message combination
 
-Revision 4.3.10, released 2017-10-06
-------------------------------------
+Revision 4.3.10, released on Oct 06, 2017
+-----------------------------------------
 
 - Refactored partial SNMP message decoding to make it less dependent
   on unpublished pyasn1 API features.
@@ -351,28 +353,29 @@ Revision 4.3.10, released 2017-10-06
 - Fixed crashing Bits.clone()/subtype() implementation
 - Fixed leaking exceptions bubbling up from the asyncio and Twisted adapters
 
-Revision 4.3.9, released 2017-07-26
------------------------------------
+Revision 4.3.9, released on Jul 26, 2017
+----------------------------------------
 
-- Deprecated UsmUserData initializaton parameters removed
+- Deprecated UsmUserData initialization parameters removed
 - Adapted to pyasn1 API changes introduced by release 0.3.1
-- Fix to a crash happening on inbound SNMP message having non-initialized fields
+- Fix to a crash happening on inbound SNMP message having non-initialized
+  fields
 - Fix to (persistent SNMP engine ID) file writing on Windows
 
-Revision 4.3.8, released 2017-06-15
------------------------------------
+Revision 4.3.8, released on Jun 15, 2017
+----------------------------------------
 
 - Security fix to the bug introduced in 4.3.6: msgAuthoritativeEngineTime
   stopped changing over time and was returning the same timestamp (process
   start time). This fix makes it growing as it should.
 
-Revision 4.3.7, released 2017-05-29
------------------------------------
+Revision 4.3.7, released on May 29, 2017
+----------------------------------------
 
 * Fixed import error in legacy NotificationOriginator implementation
 
-Revision 4.3.6, released 2017-05-28
------------------------------------
+Revision 4.3.6, released on May 28, 2017
+----------------------------------------
 
 - More instrumentation hooks added addressing security failures
   auditing needs.
@@ -393,8 +396,8 @@ Revision 4.3.6, released 2017-05-28
 - Fixed potential SNMP engine crash on handling incoming message
   at unsupported security level
 
-Revision 4.3.5, released 2017-03-24
------------------------------------
+Revision 4.3.5, released on Mar 24, 2017
+----------------------------------------
 
 - The getNext() and getBulk() calls of Twisted interface.
   now support ignoreNonIncreasingOid option.
@@ -405,8 +408,8 @@ Revision 4.3.5, released 2017-03-24
 - Fixed crash when attempting to report unsupported request/notification
   PDU back to sender.
 
-Revision 4.3.4, released 2017-03-01
------------------------------------
+Revision 4.3.4, released on Mar 01, 2017
+----------------------------------------
 
 - Fix to low-level SNMP API example to accommodate changed pyasn1
   SEQUENCE supporting iterator protocol.
@@ -415,8 +418,8 @@ Revision 4.3.4, released 2017-03-01
   of .setComponentBy*() kw flags).
 - Fixed crash on SNMP engine's invalid message counter increment.
 
-Revision 4.3.3, released 2017-02-04
------------------------------------
+Revision 4.3.3, released on Feb 04, 2017
+----------------------------------------
 
 - Switched from now unmaintained PyCrypto to PyCryptodome.
 - Switched to new-style classes.
@@ -443,11 +446,12 @@ Revision 4.3.3, released 2017-02-04
 - Updated IP address for demo.snmplabs.com in examples.
 - Missing index added to bundled RFC1213::atEntry MIB table.
 - Twisted integration made Python3 compatible.
-- Accommodated ASN.1 SEQUENCE iteration rules change in upcoming pyasn1 version.
+- Accommodated ASN.1 SEQUENCE iteration rules change in upcoming pyasn1
+  version.
 - Author's email changed, copyright extended to 2017.
 
-Revision 4.3.2, released 2016-02-12
------------------------------------
+Revision 4.3.2, released on Feb 12, 2016
+----------------------------------------
 
 - Copyright notice added to non-trivial source code files.
 - SNMP table row consistency check added. This change may break
@@ -458,10 +462,10 @@ Revision 4.3.2, released 2016-02-12
 - Notification originator examples re-pointed to Notification Receiver
   at demo.snmplabs.com.
 - Two more execution observer points added: rfc2576.processIncomingMsg
-  and rfc3414.processIncomingMsg to give an insignt on security modules
+  and rfc3414.processIncomingMsg to give an insight on security modules
   internals.
 - TEXTUAL-CONVENTION's DISPLAY-HINT text formatting reworked for better
-  performance and encoding accurancy of 'a' and 't' formats.
+  performance and encoding accuracy of 'a' and 't' formats.
 - WARNING: security fix to USM - extra user entry clone removed on
   incoming message processing. It made USM accepting SNMPv3 TRAPs
   from unknown SNMP engine IDs.
@@ -473,8 +477,8 @@ Revision 4.3.2, released 2016-02-12
 - Fix to better pysmi import errors handling.
 - Fix to missing next() in Python 2.5 at pysnmp.hlapi
 
-Revision 4.3.1, released 2015-11-12
------------------------------------
+Revision 4.3.1, released on Nov 12, 2015
+----------------------------------------
 
 - Added recursive resolution of ObjectIdentifier values at ObjectType
   by converting it to ObjectIdentity.
@@ -492,8 +496,8 @@ Revision 4.3.1, released 2015-11-12
 - Fix to docs distribution -- now the are Sphinx-buildable out-of-the-box.
 - Source code re-linted
 
-Revision 4.3.0, released 2015-09-28
------------------------------------
+Revision 4.3.0, released on Sep 28, 2015
+----------------------------------------
 
 - Critical error fixed in key localization procedure for AES192/AES256/3DES
   cyphers. Previous versions might never worked properly in this respect.
@@ -565,7 +569,7 @@ Revision 4.3.0, released 2015-09-28
   Integer32, OctetString, Bits). That formally constitutes ASN.1 sub-typing.
 - Built-in debugging is now based on Python logging module.
 - Examples on a single Transport Dispatcher use with multiple SnmpEngine
-  instances applicatons added.
+  instances applications added.
 - Example script on transport timeout & retries manipulation added.
 - Example script explaining incoming message's communityName re-mapping added.
 - Broadcast socket option can now be enabled with the .enableBroadcast()
@@ -624,7 +628,7 @@ Revision 4.3.0, released 2015-09-28
   respond with notInTimeWindows rather then with unsupportedSecurityLevel
   at time synchronization phase.
 - Fix to rfc1902.Bits type to make it accepting hex and binary initializers,
-  cope with missing bits identifieirs at prettyPrint().
+  cope with missing bits identifiers at prettyPrint().
 - Memory leak fixed in CommandForwarder examples.
 - Fix to BULK CommandGenerator to use the same nonRepeaters OIDs across
   multiple GETBULK iterations so returned table for nonRepeaters columns
@@ -663,8 +667,8 @@ Revision 4.3.0, released 2015-09-28
   failure.
 - Fix to infinite loop at config.delV3User().
 
-Revision 4.2.5, released 2013-10-02
------------------------------------
+Revision 4.2.5, released on Oct 02, 2013
+----------------------------------------
 
 - License updated to vanilla BSD 2-Clause to ease package use
   (http://opensource.org/licenses/BSD-2-Clause).
@@ -733,7 +737,7 @@ Revision 4.2.5, released 2013-10-02
   can be used for fine usmUserTable configuration.
 - AsynNotificationOriginator.cfgCmdGen() does not take into account
   securityModel & securityLevel when reducing LCD access via addTrapUser().
-  This improves LCD consistency on sparse add/del operatons but also
+  This improves LCD consistency on sparse add/del operations but also
   does not let you to configure different securityModels per securityname
   at VACM though the cfgCmdGen() wrapper.
 - MIB builder traceback formatting and reporting improved.
@@ -786,8 +790,8 @@ Revision 4.2.5, released 2013-10-02
 - Missing import added to oneliner auth module.
 - Cosmetic changes to v3arch example scripts.
 
-Revision 4.2.4, released 2013-01-30
------------------------------------
+Revision 4.2.4, released on Jan 30, 2013
+----------------------------------------
 
 - SNMPv3 high-level and native API examples reworked and extended to cover
   many use cases.
@@ -852,8 +856,8 @@ Revision 4.2.4, released 2013-01-30
   SNMP working again. Wrong method (instumClone) was probed at terminal
   MIB nodes values instead of the right one (setValue).
 
-Revision 4.2.3, released 2012-09-06
------------------------------------
+Revision 4.2.3, released on Sep 06, 2012
+----------------------------------------
 
 - SECURITY FIX: USM subsystem did not verify securityLevel of a request
   to an authoritative SNMP engine against auth/priv protocols
@@ -969,8 +973,8 @@ Revision 4.2.3, released 2012-09-06
 - Typo fix to snmpInASNParseErrs MIB instance object.
 - Typo fix to errind.EngineIdMismatch class and its instance.
 
-Revision 4.2.2, released 2012-04-21
------------------------------------
+Revision 4.2.2, released on Apr 21, 2012
+----------------------------------------
 
 - Oneliner CommandGenerator can now limit the number of SNMP table
   rows returned by nextCmd()/bulkCmd() methods.
@@ -1031,8 +1035,8 @@ Revision 4.2.2, released 2012-04-21
   params.
 - Fix to libsmi2pysnmp to support inheritance of MIB types.
 
-Revision 4.2.1, released 2011-11-07
------------------------------------
+Revision 4.2.1, released on Nov 07, 2011
+----------------------------------------
 
 - Support string OIDs at one-liner API.
 - Code quality of libsmi2pysnmp tool improved, MIBs re-built.
@@ -1054,18 +1058,18 @@ Revision 4.2.1, released 2011-11-07
   + tuple function arguments resolved to scalars to become py3k compatible
   + BER octetstream is now of type bytes (Py3k) or still string (Py2k)
 
-Revision 4.1.16d, released 2011-09-22
--------------------------------------
+Revision 4.1.16d, released on Sep 22, 2011
+------------------------------------------
 
 - Fix to SNMPv1 Trap PDU agentAddress setter shortcut method.
 
-Revision 4.1.16c, released 2011-08-14
--------------------------------------
+Revision 4.1.16c, released on Aug 14, 2011
+------------------------------------------
 
 - Missing module import fixed in privacy subsystem
 
-Revision 4.1.16b, released 2011-08-13
--------------------------------------
+Revision 4.1.16b, released on Aug 13, 2011
+------------------------------------------
 
 - Oneliner CommandGenerator can now optionally ignore non-increasing OIDs.
 - Default CommandResponder now skips non-compliant (Counter64) values
@@ -1074,8 +1078,8 @@ Revision 4.1.16b, released 2011-08-13
 - Fix to Twisted reactor shutdown condition.
 - Fix to distutils dependencies syntax.
 
-Revision 4.1.16a, released 2011-03-17
--------------------------------------
+Revision 4.1.16a, released on Mar 17, 2011
+------------------------------------------
 
 - Extended Security Options (3DESEDE, AES192, AES256) privacy
   protocols implemented.
@@ -1109,8 +1113,8 @@ Revision 4.1.16a, released 2011-03-17
   + cache MIB columnar objects instance ID <-> symbolic index representation
     mapping
 
-Revision 4.1.15a, released 2010-12-13
--------------------------------------
+Revision 4.1.15a, released on Dec 13, 2010
+------------------------------------------
 
 - SNMP Proxy example added.
 - End-of-MIB condition detection reworked what caused backward
@@ -1169,8 +1173,8 @@ Revision 4.1.15a, released 2010-12-13
 - Fix to oneliner GETBULK table collection code to make it stripping
   uneven rows off table tail.
 
-Revision 4.1.14a, released 2010-07-15
--------------------------------------
+Revision 4.1.14a, released on Jul 15, 2010
+------------------------------------------
 
 - Fix to maxSizeResponseScopedPDU calculation at USM security module: now
   more precise and robust against screwed values on input.
@@ -1206,8 +1210,8 @@ Revision 4.1.14a, released 2010-07-15
   now send up to two packets, not just one as it used to be.
 - Debugging printout now escapes non-printable characters.
 
-Revision 4.1.13a, released 2010-02-09
--------------------------------------
+Revision 4.1.13a, released on Feb 09, 2010
+------------------------------------------
 
 - UDP over IPv6 transport implemented.
 - Fix to MIB tree walking code that used to fail on table columns where
@@ -1215,8 +1219,8 @@ Revision 4.1.13a, released 2010-02-09
 - SNMPv1/v2c snmpCommunityTransportTag-based imcoming message filtering
   implemented (rfc2576).
 
-Revision 4.1.12a, released 2009-12-03
--------------------------------------
+Revision 4.1.12a, released on Dec 03, 2009
+------------------------------------------
 
 - API versioning retired (pysnmp.v4 -> pysnmp).
 - MIB loading mechanics re-designed to allow ZIP import.
@@ -1228,8 +1232,8 @@ Revision 4.1.12a, released 2009-12-03
   code reworked.
 - Fix to sysUpTime OID at SNMPv2 TRAP PDU.
 
-Revision 4.1.11a, released 2009-08-21
--------------------------------------
+Revision 4.1.11a, released on Aug 21, 2009
+------------------------------------------
 
 - Twisted integration implemented.
 - Attempt to use hashlib whenever available.
@@ -1258,8 +1262,8 @@ Revision 4.1.11a, released 2009-08-21
 - Minor usability improvements to tools/build-pysnmp-mib.
 - Made MIB objects unexport feature operational.
 
-Revision 4.1.10a, released 2008-05-25
--------------------------------------
+Revision 4.1.10a, released on May 25, 2008
+------------------------------------------
 
 - Internal MIB indexing method __indexMib() unmangled to facilitate
   setting up mutex there for sharing MIB stuff between threads.
@@ -1280,8 +1284,8 @@ Revision 4.1.10a, released 2008-05-25
   request IDs and handlers.
 - Built-in MIBs re-generated to include text fields.
 
-Revision 4.1.9a, released 2007-11-28
-------------------------------------
+Revision 4.1.9a, released on Nov 28, 2007
+-----------------------------------------
 
 - UNSTABLE ALPHA RELEASE.
 - At onliner CommandGenerator, close transport on destruction to
@@ -1308,8 +1312,8 @@ Revision 4.1.9a, released 2007-11-28
   This might fix a significant memory leak.
 - Typo fix to rfc3411 confirmed class PDU members.
 
-Revision 4.1.8a, released 2007-08-14
-------------------------------------
+Revision 4.1.8a, released on Aug 14, 2007
+-----------------------------------------
 
 - UNSTABLE ALPHA RELEASE.
 - SMI/dispatcher timeout conversion multiplier is actually 100 (1/100 sec)
@@ -1352,8 +1356,8 @@ Revision 4.1.8a, released 2007-08-14
 - Fix to errorIndex generation at CommandResponder application, the value
   should be a one-based.
 
-Revision 4.1.7a, released 2007-02-19
-------------------------------------
+Revision 4.1.7a, released on Feb 19, 2007
+-----------------------------------------
 
 - UNSTABLE ALPHA RELEASE.
 - Low-level debugging facility implemented.
@@ -1416,8 +1420,8 @@ Revision 4.1.7a, released 2007-02-19
   #1537600, #1537659, #1548208, #1560939, #1563715, #1575697, #1599220,
   #1615077, #1615365, #1616579).
 
-Revision 4.1.6a, released 2006-05-25
-------------------------------------
+Revision 4.1.6a, released on May 25, 2006
+-----------------------------------------
 
 - UNSTABLE ALPHA RELEASE.
 - pysnmpUsmSecretAuthKey and pysnmpUsmSecretPrivKey length increased
@@ -1444,8 +1448,8 @@ Revision 4.1.6a, released 2006-05-25
 - Documentation improved
 - Minor fixes towards Python 1.5 compatibility
 
-Revision 4.1.5a, released 2005-11-04
-------------------------------------
+Revision 4.1.5a, released on Nov 04, 2005
+-----------------------------------------
 
 - UNSTABLE ALPHA RELEASE.
 - Multi-lingual SNMP Trap/Inform Applications completed; examples added
@@ -1455,8 +1459,8 @@ Revision 4.1.5a, released 2005-11-04
 - Minor, though backward incompatible, changes to one-liner API
 - Many bugfixes
 
-Revision 4.1.4a, released 2005-08-16
-------------------------------------
+Revision 4.1.4a, released on Aug 16, 2005
+-----------------------------------------
 
 - UNSTABLE ALPHA RELEASE.
 - SHA-based authentication fixed and privacy implemented
@@ -1464,8 +1468,8 @@ Revision 4.1.4a, released 2005-08-16
   authProtocol and privProtocol parameters in a backward incompatible
   manner.
 
-Revision 4.1.3a, released 2005-07-28
-------------------------------------
+Revision 4.1.3a, released on Jul 28, 2005
+-----------------------------------------
 
 - UNSTABLE ALPHA RELEASE.
 - rfc3413 applications API changes (related to callback function
@@ -1474,8 +1478,8 @@ Revision 4.1.3a, released 2005-07-28
   for better control of dispatcher's execution.
 - Many minor fixes.
 
-Revision 4.1.2a, released 2005-07-12
-------------------------------------
+Revision 4.1.2a, released on Jul 12, 2005
+-----------------------------------------
 
 - UNSTABLE ALPHA RELEASE.
 - Top-level application classes renamed into longer, self descripting names
@@ -1484,26 +1488,26 @@ Revision 4.1.2a, released 2005-07-12
   stand-alone SnmpContext for application registration.
 - Many minor fixes (inspired by testing on WinXP)
 
-Revision 4.1.1a, released 2005-06-29
-------------------------------------
+Revision 4.1.1a, released on Jun 29, 2005
+-----------------------------------------
 
 - UNSTABLE ALPHA RELEASE.
 - SNMPv3 code first published
 - SNMP engine and applications implemented on library level
 - Major re-design towards SNMPv3-style API.
 
-Revision 4.0.2a, released 2005-03-01
-------------------------------------
+Revision 4.0.2a, released on Mar 01, 2005
+-----------------------------------------
 
 - Adopted to slightly changed asyncore API (as shipped with python 2,4)
 
-Revision 4.0.1a, released 2004-11-18
-------------------------------------
+Revision 4.0.1a, released on Nov 18, 2004
+-----------------------------------------
 
 - Minor bug/typo fixes, mostly in example/ scripts.
 
-Revision 4.0.0a, released 2004-11-15
-------------------------------------
+Revision 4.0.0a, released on Nov 15, 2004
+-----------------------------------------
 
 - UNSTABLE EARLY ALPHA RELEASE.
 - Major re-design and re-implementation.
