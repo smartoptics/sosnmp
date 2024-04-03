@@ -4,7 +4,9 @@ SNMP Library for Python 6.1
 ===========================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+
+   Return to PySNMP Homepage <https://pysnmp.com>
 
 PySNMP is a cross-platform, pure-`Python`_ `SNMP`_
 engine implementation. It features fully-functional SNMP engine capable
@@ -45,7 +47,6 @@ this implementation? Try out quick start page!
 .. toctree::
    :maxdepth: 1
 
-   Return to PySNMP Homepage <https://pysnmp.com>
    /quick-start
 
 Documentation
