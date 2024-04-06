@@ -3,6 +3,14 @@
 Samples
 =======
 
+.. warning::
+
+   Many of the examples were written a few years ago by the previous
+   maintainers of PySNMP. They might still be valid and useful, but they
+   might also be outdated and not reflect the best practices. If you find
+   any issues with the examples, please report them to the current PySNMP
+   maintainers. Visit `Support Options`_ for more information.
+
 .. toctree::
    :maxdepth: 2
 
