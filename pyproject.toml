@@ -45,6 +45,7 @@ sphinx-sitemap-lextudio = "^2.5.2"
 black = "23.1.0"
 pre-commit = "2.21.0"
 doc8 = "^1.0.0"
+sphinx-notfound-page = "^1.0.0"
 
 [tool.poetry_bumpversion.file."pysnmp/__init__.py"]
 
@@ -55,3 +56,6 @@ replace = "release = \"{new_version}\""
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.esbonio.sphinx]
+buildCommand = ["sphinx-build", "-M", "html", "./docs/source", "./docs/build"]

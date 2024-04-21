@@ -1,4 +1,4 @@
-# Release 6.0 Roadmap
+# Release 6.x Roadmap
 
 ## Background
 
