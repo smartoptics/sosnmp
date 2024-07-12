@@ -1,3 +1,8 @@
+Revision 6.2.0, released on Jul 12, 2024
+----------------------------------------
+
+- Retired temporary sync API.
+
 Revision 6.1.2, released on Mar 25, 2024
 ----------------------------------------
 
