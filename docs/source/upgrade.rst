@@ -125,7 +125,8 @@ the code base. So far, this release introduces the following changes:
 PySMI 1.3 and 1.4 releases introduced some changes that are not fully
 compatible with PySMI 1.2. So we decided to keep PySNMP 6.0 with PySMI 1.2,
 and release PySNMP 6.1 release to support users who prefer PySMI 1.3 and
-above.
+above. As the quality of asyncio-based sync API is not as good as we expect,
+we decided to remove it from 6.2 release.
 
 Important Changes
 -----------------
@@ -145,46 +146,9 @@ The new sync API is added to enable synchronous I/O operations and easy
 migration from 4.x/5.x releases. The new API is based on asyncio and is
 compatible with Python 3.8 and later.
 
-However, we intentionally didn't design the new sync API to be a drop-in
-replacement for the old sync API. For example,
-
-* The old sync API returns a ``Generator`` object where you can iterate
-  through the ``tuple`` of response data, while the new sync API simply
-  returns the ``tuple`` so you know you are doing a single SNMP request.
-
-  So if the following code is used for a single request operation with the
-  old sync API, where ``next()`` iterates over the ``Generator`` object,
-
-  .. code:: python
-
-     errorIndication, errorStatus, errorIndex, varBinds = next(getCmd(
-            snmpEngine,
-            CommunityData("public", mpModel=0),
-            UdpTransportTarget(("demo.pysnmp.com", 161)),
-            ContextData(),
-            ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
-        )
-     )
-
-  now with the new sync API, you can simply do,
-
-  .. code:: python
-
-        errorIndication, errorStatus, errorIndex, varBinds = getCmd(
-            snmpEngine,
-            CommunityData("public", mpModel=0),
-            UdpTransportTarget(("demo.pysnmp.com", 161)),
-            ContextData(),
-            ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
-        )
-
-* To keep supporting composite operations such as WALK, new methods like
-  ``walkCmd`` and ``bulkWalkCmd`` are added. The method names are more
-  aligned with other SNMP implementations, and the method signatures are
-  intentionally different from single request methods like ``getCmd``.
-
-  ``walkCmd`` works more similar to ``nextCmd`` in 4.x/5.x releases, while
-  ``bulkWalkCmd`` works more similar to ``bulkCmd``.
+We were hoping the new sync API would be stable enough to meet the quality
+expectation, but it turned out to be the opposite. So we decided to remove it
+from 6.2 release.
 
 RFC3414 Compliance
 ++++++++++++++++++
