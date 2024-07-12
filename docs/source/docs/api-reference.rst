@@ -26,41 +26,7 @@ Most simple and straightforward way to use PySNMP is by employing its
 Synchronous, blocking API. It's also the default API offered by
 users on *pysnmp.hlapi* sub-package import.
 
-Command Generator
-
-.. toctree::
-   :maxdepth: 2
-
-   /docs/hlapi/asyncio/sync/manager/cmdgen/getcmd
-   /docs/hlapi/asyncio/sync/manager/cmdgen/setcmd
-   /docs/hlapi/asyncio/sync/manager/cmdgen/nextcmd
-   /docs/hlapi/asyncio/sync/manager/cmdgen/bulkcmd
-   /docs/hlapi/asyncio/sync/manager/cmdgen/walkcmd
-   /docs/hlapi/asyncio/sync/manager/cmdgen/bulkwalkcmd
-
-Notification Originator
-
-.. toctree::
-   :maxdepth: 2
-
-   /docs/hlapi/asyncio/sync/agent/ntforg/notification
-
-Transport configuration
-+++++++++++++++++++++++
-
-The following shortcut classes convey configuration information to
-SNMP engine's Local Configuration Datastore (:RFC:`2271#section-3.4.2`)
-as well as to underlying socket API. Once committed to LCD, SNMP engine
-saves its configuration for the lifetime of SNMP engine object.
-
-.. toctree::
-   :maxdepth: 2
-
-.. autoclass:: pysnmp.hlapi.UdpTransportTarget
-   :members: setLocalAddress
-
-.. autoclass:: pysnmp.hlapi.Udp6TransportTarget
-   :members: setLocalAddress
+.. warning:: Completely deprecated in PySNMP 6.2 release.
 
 Asynchronous: asyncio
 ---------------------
