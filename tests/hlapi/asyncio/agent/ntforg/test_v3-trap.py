@@ -1,8 +1,5 @@
 import pytest
-from pysnmp.hlapi import *
-from pysnmp.hlapi.asyncio.ntforg import sendNotification
-from pysnmp.hlapi.asyncio.transport import UdpTransportTarget
-from pysnmp.proto.api import v2c
+from pysnmp.hlapi.asyncio import *
 from tests.manager_context import MANAGER_PORT, ManagerContextManager
 
 

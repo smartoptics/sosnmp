@@ -13,9 +13,7 @@ Functionally similar to:
 """  #
 
 import asyncio
-from pysnmp.hlapi import *
-from pysnmp.hlapi.asyncio.ntforg import sendNotification
-from pysnmp.hlapi.asyncio.transport import UdpTransportTarget
+from pysnmp.hlapi.asyncio import *
 
 
 async def run():

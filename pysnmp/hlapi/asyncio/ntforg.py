@@ -11,10 +11,10 @@
 import sys
 
 from pysnmp.smi.rfc1902 import *
-from pysnmp.hlapi.auth import *
-from pysnmp.hlapi.context import *
-from pysnmp.hlapi.lcd import *
-from pysnmp.hlapi.varbinds import *
+from pysnmp.hlapi.asyncio.auth import *
+from pysnmp.hlapi.asyncio.context import *
+from pysnmp.hlapi.asyncio.lcd import *
+from pysnmp.hlapi.asyncio.varbinds import *
 from pysnmp.hlapi.asyncio.transport import *
 from pysnmp.entity.rfc3413 import ntforg
 

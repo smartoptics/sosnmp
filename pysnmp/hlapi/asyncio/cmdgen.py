@@ -32,16 +32,16 @@
 # THE POSSIBILITY OF SUCH DAMAGE.
 #
 import sys
-from typing import AsyncGenerator, Generator
+from typing import AsyncGenerator
 from pysnmp.entity.engine import SnmpEngine
-from pysnmp.hlapi.transport import AbstractTransportTarget
+from pysnmp.hlapi.asyncio.transport import AbstractTransportTarget
 from pysnmp.proto.rfc1905 import EndOfMibView, endOfMibView
 
 from pysnmp.smi.rfc1902 import *
-from pysnmp.hlapi.auth import *
-from pysnmp.hlapi.context import *
-from pysnmp.hlapi.lcd import *
-from pysnmp.hlapi.varbinds import *
+from pysnmp.hlapi.asyncio.auth import *
+from pysnmp.hlapi.asyncio.context import *
+from pysnmp.hlapi.asyncio.lcd import *
+from pysnmp.hlapi.asyncio.varbinds import *
 from pysnmp.hlapi.asyncio.transport import *
 from pysnmp.entity.rfc3413 import cmdgen
 from pysnmp.proto.rfc1902 import Integer32, Null
@@ -706,8 +706,8 @@ async def walkCmd(
 
     Examples
     --------
-    >>> from pysnmp.hlapi import *
-    >>> g = walkCmd(SnmpEngine(),
+    >>> from pysnmp.hlapi.asyncio import *
+    >>> g = await walkCmd(SnmpEngine(),
     ...             CommunityData('public'),
     ...             UdpTransportTarget(('demo.pysnmp.com', 161)),
     ...             ContextData(),
@@ -905,8 +905,8 @@ async def bulkWalkCmd(
 
     Examples
     --------
-    >>> from pysnmp.hlapi import *
-    >>> g = bulkWalkCmd(SnmpEngine(),
+    >>> from pysnmp.hlapi.asyncio import *
+    >>> g = await bulkWalkCmd(SnmpEngine(),
     ...             CommunityData('public'),
     ...             UdpTransportTarget(('demo.pysnmp.com', 161)),
     ...             ContextData(),

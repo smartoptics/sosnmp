@@ -16,13 +16,7 @@ Functionally similar to:
 
 """  #
 import pytest
-from pysnmp.entity.engine import SnmpEngine
-from pysnmp.hlapi.asyncio.slim import Slim
-from pysnmp.hlapi.asyncio.transport import UdpTransportTarget
-from pysnmp.hlapi.auth import CommunityData
-from pysnmp.hlapi.context import ContextData
-from pysnmp.proto.rfc1902 import ObjectIdentifier
-from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
+from pysnmp.hlapi.asyncio import *
 from tests.agent_context import AGENT_PORT, AgentContextManager
 
 

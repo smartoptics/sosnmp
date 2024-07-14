@@ -4,9 +4,15 @@
 # Copyright (c) 2023-2024, LeXtudio Inc. <support@lextudio.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+from pysnmp.entity.engine import SnmpEngine
 from pysnmp.error import PySnmpError
-from pysnmp.hlapi.asyncio import *
+from pysnmp.hlapi.asyncio.auth import CommunityData
+from pysnmp.hlapi.asyncio.cmdgen import bulkCmd, getCmd, nextCmd, setCmd
+from pysnmp.hlapi.asyncio.context import ContextData
+from pysnmp.hlapi.asyncio.transport import Udp6TransportTarget, UdpTransportTarget
 from pysnmp.proto.errind import ErrorIndication
+from pysnmp.proto.rfc1902 import Integer32
+from pysnmp.smi.rfc1902 import ObjectType
 
 __all__ = ["Slim"]
 

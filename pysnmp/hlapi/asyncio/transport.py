@@ -8,7 +8,6 @@ import socket
 import sys
 from typing import Tuple
 from pysnmp.carrier.asyncio.dgram import udp, udp6
-from pysnmp.carrier.base import AbstractTransport, AbstractTransportAddress
 from pysnmp.error import PySnmpError
 from pysnmp.hlapi.transport import AbstractTransportTarget
 

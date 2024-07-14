@@ -7,11 +7,11 @@
 from pysnmp.entity import config
 from pysnmp import nextid, error
 from pysnmp.entity.engine import SnmpEngine
-from pysnmp.hlapi.auth import *
+from pysnmp.hlapi.asyncio.auth import *
 
 from pyasn1.compat.octets import null
 
-from pysnmp.hlapi.transport import AbstractTransportTarget
+from pysnmp.hlapi.asyncio.transport import AbstractTransportTarget
 
 __all__ = ["CommandGeneratorLcdConfigurator", "NotificationOriginatorLcdConfigurator"]
 

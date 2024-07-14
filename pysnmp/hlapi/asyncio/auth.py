@@ -101,7 +101,7 @@ class CommunityData:
 
     Examples
     --------
-    >>> from pysnmp.hlapi import CommunityData
+    >>> from pysnmp.hlapi.asyncio import CommunityData
     >>> CommunityData('public')
     CommunityData(communityIndex='s1410706889', communityName=<COMMUNITY>, mpModel=1, contextEngineId=None, contextName='', tag='')
     >>> CommunityData('public', 'public')
@@ -366,7 +366,7 @@ class UsmUserData:
 
     Examples
     --------
-    >>> from pysnmp.hlapi import UsmUserData
+    >>> from pysnmp.hlapi.asyncio import UsmUserData
     >>> UsmUserData('testuser', authKey='authenticationkey')
     UsmUserData(userName='testuser', authKey=<AUTHKEY>, privKey=<PRIVKEY>, authProtocol=(1,3,6,1,6,3,10,1,1,2), privProtocol=(1,3,6,1,6,3,10,1,2,1))
     >>> UsmUserData('testuser', authKey='authenticationkey', privKey='encryptionkey')

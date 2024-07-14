@@ -2,7 +2,6 @@ import asyncio
 from datetime import datetime
 import pytest
 from pysnmp.hlapi.asyncio import *
-from pysnmp.hlapi.asyncio.slim import Slim
 
 from tests.agent_context import AGENT_PORT, AgentContextManager
 

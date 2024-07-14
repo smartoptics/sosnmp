@@ -36,7 +36,7 @@ class ContextData:
 
     Examples
     --------
-    >>> from pysnmp.hlapi import ContextData
+    >>> from pysnmp.hlapi.asyncio import ContextData
     >>> ContextData()
     ContextData(contextEngineId=None, contextName='')
     >>> ContextData(OctetString(hexValue='01020ABBA0'))
