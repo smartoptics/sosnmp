@@ -9,6 +9,16 @@ Upgrade to 6.x Releases
 This article provides information on how to upgrade to the latest 6.x
 releases from old releases such as 4.x and 5.x.
 
+.. note::
+
+   If you have been using PySNMP packages with ``-lextudio`` postfix, now
+   is the time to remove them and switch to the official PySNMP packages,
+   which are maintained by LeXtudio Inc. as well.
+
+   We will keep the ``-lextudio`` packages for a while to ensure a smooth
+   transition for users who are still using them.
+
+
 Issues in 4.x Releases
 ----------------------
 
@@ -26,11 +36,16 @@ modern software development,
    if we wanted to clean up or refactor the code, we couldn't do it easily
    without breaking the existing functionality. Later we found out that
    more test cases were on unstable branches, but they were more like
-   end to end tests rather than unit tests and you couldn't run them easily
+   end-to-end tests rather than unit tests and you couldn't run them easily
    with debuggers.
 
 Ilya wasn't able to produce the 4.4.13 release, so the last stable release
 from him was 4.4.12.
+
+.. important::
+
+   You should first attempt to upgrade to 5.1.0 release and see if things
+   work as expected.
 
 .. note::
 
@@ -100,12 +115,19 @@ the code base,
   and improved.
 * Documentation was updated to reflect the changes.
 
-.. warning::
+.. important::
 
-   We consider the 5.0.x release as a stepping stone to the 6.x releases,
+   We only published 5.1.0 release, and we are not planning to publish any
+   more 5.x releases. The 5.1.0 release was published to ensure a smooth
+   transition for users who are still using the 4.x releases.
+
+   We consider the 5.1.0 release as a stepping stone to the 6.x releases,
    so please don't stay with them for long.
 
-Upgrade to 6.x Releases
+   You should first attempt to upgrade to 6.0.13 release and see if things
+   work as expected.
+
+Upgrade to 6.0 Releases
 -----------------------
 
 The 6.0 release is the first major release upgrade by LeXtudio Inc., after
@@ -123,10 +145,46 @@ the code base. So far, this release introduces the following changes:
 * Continuous collaboration with downstream projects.
 
 PySMI 1.3 and 1.4 releases introduced some changes that are not fully
-compatible with PySMI 1.2. So we decided to keep PySNMP 6.0 with PySMI 1.2,
-and release PySNMP 6.1 release to support users who prefer PySMI 1.3 and
-above. As the quality of asyncio-based sync API is not as good as we expect,
+compatible with PySMI 1.2. So we decided to keep PySNMP 6.0 with PySMI 1.2.
+
+.. important::
+
+   We only published 6.0.13 release, and we are not planning to publish any
+   more 6.0 releases. The 6.0.13 release was published to ensure a smooth
+   transition for users who are still using the 4.x/5.x releases.
+
+   We consider the 6.0.13 release as a stepping stone to the 6.1 releases,
+   so please don't stay with them for long.
+
+   You should first attempt to upgrade to 6.1.3 release and see if things
+   work as expected.
+
+Upgrade to 6.1 Releases
+-----------------------
+
+We released PySNMP 6.1 release to support users who prefer PySMI 1.3 and
+above.
+
+.. important::
+
+   We only published 6.1.3 release, and we are not planning to publish any
+   more 6.1 releases. The 6.1.3 release was published to ensure a smooth
+   transition for users who are still using the 4.x/5.x/6.0 releases.
+
+   We consider the 6.1.3 release as a stepping stone to the 6.2 releases,
+   so please don't stay with them for long.
+
+Upgrade to 6.2 Releases
+-----------------------
+
+As the quality of asyncio-based sync API is not as good as we expect,
 we decided to remove it from 6.2 release.
+
+.. important::
+
+   We only published 6.2.2 release, and we are not planning to publish any
+   older 6.2 releases. The 6.2.2 release was published to ensure a smooth
+   transition for users who are still using the 4.x/5.x/6.0/6.1 releases.
 
 Important Changes
 -----------------
@@ -137,7 +195,13 @@ Async API based on asyncore
 +++++++++++++++++++++++++++
 
 All such APIs are removed, so you can no longer import types from the
-relevant modules. This includes the old sync API (based on asyncore).
+relevant modules.
+
+Sync API based on asyncore
+++++++++++++++++++++++++++
+
+The old sync API is removed, so you can no longer import types from the
+relevant modules.
 
 Sync API based on asyncio
 +++++++++++++++++++++++++
@@ -147,8 +211,8 @@ migration from 4.x/5.x releases. The new API is based on asyncio and is
 compatible with Python 3.8 and later.
 
 We were hoping the new sync API would be stable enough to meet the quality
-expectation, but it turned out to be the opposite. So we decided to remove it
-from 6.2 release.
+expectation, but it turned out to be the opposite. So we decided to remove
+it from 6.2 release.
 
 RFC3414 Compliance
 ++++++++++++++++++
