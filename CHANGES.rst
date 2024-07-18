@@ -1,3 +1,8 @@
+Revision 6.2.3, released on July 17, 2024
+-----------------------------------------
+
+- Removed unused dependencies.
+
 Revision 6.2.2, released on July 16, 2024
 -----------------------------------------
 

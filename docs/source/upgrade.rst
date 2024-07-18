@@ -118,7 +118,7 @@ the code base,
 .. important::
 
    We only published 5.1.0 release, and we are not planning to publish any
-   more 5.x releases. The 5.1.0 release was published to ensure a smooth
+   more 5.x releases. The 5.1.0 release was published to ensure smooth
    transition for users who are still using the 4.x releases.
 
    We consider the 5.1.0 release as a stepping stone to the 6.x releases,
@@ -150,7 +150,7 @@ compatible with PySMI 1.2. So we decided to keep PySNMP 6.0 with PySMI 1.2.
 .. important::
 
    We only published 6.0.13 release, and we are not planning to publish any
-   more 6.0 releases. The 6.0.13 release was published to ensure a smooth
+   more 6.0 releases. The 6.0.13 release was published to ensure smooth
    transition for users who are still using the 4.x/5.x releases.
 
    We consider the 6.0.13 release as a stepping stone to the 6.1 releases,
@@ -168,7 +168,7 @@ above.
 .. important::
 
    We only published 6.1.3 release, and we are not planning to publish any
-   more 6.1 releases. The 6.1.3 release was published to ensure a smooth
+   more 6.1 releases. The 6.1.3 release was published to ensure smooth
    transition for users who are still using the 4.x/5.x/6.0 releases.
 
    We consider the 6.1.3 release as a stepping stone to the 6.2 releases,
@@ -182,8 +182,8 @@ we decided to remove it from 6.2 release.
 
 .. important::
 
-   We only published 6.2.2 release, and we are not planning to publish any
-   older 6.2 releases. The 6.2.2 release was published to ensure a smooth
+   We published release >=6.2.2, and we are not planning to publish any
+   older 6.2 releases. The new 6.2 releases were published to ensure smooth
    transition for users who are still using the 4.x/5.x/6.0/6.1 releases.
 
 Important Changes
