@@ -105,8 +105,6 @@ branch.
 This was then followed by the LeXtudio team, but they added more changes to
 the code base,
 
-* New changes required by Python 3.12 were applied, such as completely free
-  of asyncore.
 * A relatively complete unit test suite was added to the code base, so that
   from there bugfixes and refactoring could be done with confidence.
 * Many more community patches were tested and merged.
@@ -127,6 +125,9 @@ the code base,
    You should first attempt to upgrade to 6.0.13 release and see if things
    work as expected.
 
+   Note that you must use Python <3.12, as release 5.1.0 is not compatible
+   with Python 3.12.
+
 Upgrade to 6.0 Releases
 -----------------------
 
@@ -134,8 +135,9 @@ The 6.0 release is the first major release upgrade by LeXtudio Inc., after
 the team took over the project and attempted twice internally to modernize
 the code base. So far, this release introduces the following changes:
 
+* New changes required by Python 3.12 were applied, such as completely free
+  of asyncore.
 * Unit test coverage is further improved.
-* Legacy API based on asyncore has been completely removed.
 * New sync API based on asyncio is added to enable synchronous I/O
   operations and easy migration from 4.x/5.0 releases.
 * The API surface was adjusted slightly to make it more aligned with other

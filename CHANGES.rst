@@ -1,9 +1,14 @@
-Revision 6.2.3, released on July 17, 2024
+Revision 6.2.4, released on Jul 20, 2024
+-----------------------------------------
+
+- Deleted more obsolete items.
+
+Revision 6.2.3, released on Jul 17, 2024
 -----------------------------------------
 
 - Removed unused dependencies.
 
-Revision 6.2.2, released on July 16, 2024
+Revision 6.2.2, released on Jul 16, 2024
 -----------------------------------------
 
 - Removed package postfix. A helper release to enable migration.
