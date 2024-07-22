@@ -1,6 +1,5 @@
 name: Bug Report
 description: Create a report to help us improve
-title: "[Bug]: "
 labels: [bug, triage]
 body:
   - type: markdown
@@ -78,5 +77,5 @@ body:
     id: logs
     attributes:
       label: Relevant log output
-      description: Please copy and paste any relevant log output (for example, the error messages showed in the console). This will be automatically formatted into code, so no need for backticks.
+      description: Please copy and paste any relevant log output (for example, the error messages showed in the console). This will be automatically formatted into code, so no need for backticks. If the log is very long, attach the contents as text files.
       render: shell
