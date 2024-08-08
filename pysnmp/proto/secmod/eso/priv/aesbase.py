@@ -4,21 +4,13 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+from hashlib import md5, sha1
 from pysnmp.proto.secmod.rfc3826.priv import aes
 from pysnmp.proto.secmod.rfc3414.auth import hmacmd5, hmacsha
 from pysnmp.proto.secmod.rfc7860.auth import hmacsha2
 from pysnmp.proto.secmod.rfc3414 import localkey
 from pysnmp.proto import error
 from math import ceil
-
-try:
-    from hashlib import md5, sha1
-except ImportError:
-    import md5
-    import sha
-
-    md5 = md5.new
-    sha1 = sha.new
 
 
 class AbstractAesBlumenthal(aes.Aes):

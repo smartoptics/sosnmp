@@ -4,16 +4,8 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+from hashlib import md5, sha1
 import random
-
-try:
-    from hashlib import md5, sha1
-except ImportError:
-    import md5
-    import sha
-
-    md5 = md5.new
-    sha1 = sha.new
 
 try:
     from pysnmpcrypto import des3, PysnmpCryptoError
