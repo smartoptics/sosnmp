@@ -452,7 +452,7 @@ async def bulkCmd(
     maxRepetitions: int,
     *varBinds,
     **options
-) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
+) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[tuple[ObjectType, ...], ...]]":
     r"""Creates a generator to perform SNMP GETBULK query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
