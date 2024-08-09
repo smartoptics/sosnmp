@@ -655,7 +655,6 @@ async def walkCmd(
 
             * `lookupMib` - load MIB and resolve response MIB variables at
               the cost of slightly reduced performance. Default is `True`.
-              Default is `True`.
             * `lexicographicMode` - walk SNMP agent's MIB till the end (if `True`),
               otherwise (if `False`) stop iteration when all response MIB
               variables leave the scope of initial MIB variables in
@@ -850,7 +849,6 @@ async def bulkWalkCmd(
 
             * `lookupMib` - load MIB and resolve response MIB variables at
               the cost of slightly reduced performance. Default is `True`.
-              Default is `True`.
             * `lexicographicMode` - walk SNMP agent's MIB till the end (if `True`),
               otherwise (if `False`) stop iteration when all response MIB
               variables leave the scope of initial MIB variables in
