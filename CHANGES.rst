@@ -1,3 +1,10 @@
+Revision 6.2.5, released on Aug 10, 2024
+-----------------------------------------
+
+- Improved OrderedDict performance.
+- User credentials changes are now reflected in the LCD.
+- Other cleanup.
+
 Revision 6.2.4, released on Jul 20, 2024
 -----------------------------------------
 
