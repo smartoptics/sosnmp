@@ -46,7 +46,7 @@ config.addV3User(
 )
 # user: usr-sha-none, auth: SHA, priv NONE
 config.addV3User(snmpEngine, "usr-sha-none", config.usmHMACSHAAuthProtocol, "authkey1")
-# user: usr-sha-none, auth: SHA, priv AES
+# user: usr-sha-aes128, auth: SHA, priv AES
 config.addV3User(
     snmpEngine,
     "usr-sha-aes128",
