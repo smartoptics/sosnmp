@@ -42,13 +42,13 @@ snmpEngine = engine.SnmpEngine()
 
 # UDP over IPv6
 config.addTransport(
-    snmpEngine, udp6.domainName, udp6.Udp6Transport().openServerMode(("::1", 161))
+    snmpEngine, udp6.DOMAIN_NAME, udp6.Udp6Transport().openServerMode(("::1", 161))
 )
 
 # Manager section
 
 # UDP over IPv4
-config.addTransport(snmpEngine, udp.domainName, udp.UdpTransport().openClientMode())
+config.addTransport(snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().openClientMode())
 
 #
 # SNMPv1/2c setup (Agent role)
@@ -76,7 +76,7 @@ config.addTargetParams(
 config.addTargetAddr(
     snmpEngine,
     "distant-agent",
-    udp.domainName,
+    udp.DOMAIN_NAME,
     ("127.0.0.1", 161),
     "distant-agent-auth",
     retryCount=0,
@@ -94,7 +94,7 @@ class CommandResponder(cmdrsp.CommandResponderBase):
         v2c.GetNextRequestPDU.tagSet: cmdgen.NextCommandGeneratorSingleRun(),
         v2c.GetBulkRequestPDU.tagSet: cmdgen.BulkCommandGeneratorSingleRun(),
     }
-    pduTypes = cmdGenMap.keys()  # This app will handle these PDUs
+    SUPPORTED_PDU_TYPES = cmdGenMap.keys()  # This app will handle these PDUs
 
     # SNMP request relay
     def handleMgmtOperation(self, snmpEngine, stateReference, contextName, PDU, acInfo):

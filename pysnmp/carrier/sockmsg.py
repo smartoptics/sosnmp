@@ -15,15 +15,12 @@
 # Parts of the code below is taken from:
 # http://carnivore.it/2012/10/12/python3.3_sendmsg_and_recvmsg
 #
-import sys
-
 from pysnmp import debug
 
 import ctypes
 import ipaddress
 import socket
-from pysnmp.carrier import sockfix
-from pysnmp.carrier import error
+
 
 uint32_t = ctypes.c_uint32
 in_addr_t = uint32_t
@@ -81,7 +78,7 @@ def getRecvFrom(addressType):
                 _to = (str(addr), s.getsockname()[1])
                 break
 
-        debug.logger & debug.flagIO and debug.logger(
+        debug.logger & debug.FLAG_IO and debug.logger(
             "recvfrom: received %d octets from %s to %s; "
             "iov blob %r" % (len(data), _from, _to, ancdata)
         )
@@ -110,7 +107,7 @@ def getSendTo(addressType):
             _f.ipi6_addr = in6_addr.from_buffer_copy(addr.packed)
             ancdata = [(socket.SOL_IPV6, socket.IPV6_PKTINFO, memoryview(_f).tobytes())]
 
-        debug.logger & debug.flagIO and debug.logger(
+        debug.logger & debug.FLAG_IO and debug.logger(
             "sendto: sending %d octets to %s; address %r; "
             "iov blob %r" % (len(_data), _to, addr, ancdata)
         )

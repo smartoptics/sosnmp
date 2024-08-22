@@ -95,7 +95,7 @@ class CommandGenerator:
 
         # 3.1.3
         if statusInformation:
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 f"processResponsePdu: sendPduHandle {sendPduHandle}, statusInformation {statusInformation}"
             )
 
@@ -112,7 +112,7 @@ class CommandGenerator:
                 origRetries > origRetryCount
                 or origDiscoveryRetries > self.__options.get("discoveryRetries", 4)
             ):
-                debug.logger & debug.flagApp and debug.logger(
+                debug.logger & debug.FLAG_APP and debug.logger(
                     "processResponsePdu: sendPduHandle %s, retry count %d exceeded"
                     % (sendPduHandle, origRetries)
                 )
@@ -168,7 +168,7 @@ class CommandGenerator:
 
             except StatusInformation:
                 statusInformation = sys.exc_info()[1]
-                debug.logger & debug.flagApp and debug.logger(
+                debug.logger & debug.FLAG_APP and debug.logger(
                     "processResponsePdu: origSendRequestHandle {}, _sendPdu() failed with {!r}".format(
                         sendPduHandle, statusInformation
                     )
@@ -192,7 +192,7 @@ class CommandGenerator:
             and origContextName != contextName
             or origPduVersion != pduVersion
         ):
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 "processResponsePdu: sendPduHandle %s, request/response data mismatch"
                 % sendPduHandle
             )
@@ -206,7 +206,7 @@ class CommandGenerator:
 
         # 3.1.2
         if v2c.apiPDU.getRequestID(PDU) != v2c.apiPDU.getRequestID(origPdu):
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 "processResponsePdu: sendPduHandle %s, request-id/response-id mismatch"
                 % sendPduHandle
             )
@@ -301,7 +301,7 @@ class CommandGenerator:
             0,
         )
 
-        debug.logger & debug.flagApp and debug.logger(
+        debug.logger & debug.FLAG_APP and debug.logger(
             "sendPdu: sendPduHandle %s, timeout %d*10 ms/%d ticks, retry 0 of %d"
             % (sendPduHandle, timeout, timeoutInTicks, retryCount)
         )
@@ -469,7 +469,7 @@ class NextCommandGenerator(NextCommandGeneratorSingleRun):
             varBindTable,
             cbCtx,
         ):
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 "processResponseVarBinds: sendRequestHandle %s, app says to stop walking"
                 % sendRequestHandle
             )
@@ -494,7 +494,7 @@ class NextCommandGenerator(NextCommandGeneratorSingleRun):
 
         except StatusInformation:
             statusInformation = sys.exc_info()[1]
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 f"sendVarBinds: sendPduHandle {sendRequestHandle}: sendPdu() failed with {statusInformation!r}"
             )
             cbFun(
@@ -618,7 +618,7 @@ class BulkCommandGenerator(BulkCommandGeneratorSingleRun):
             varBindTable,
             cbCtx,
         ):
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 "processResponseVarBinds: sendRequestHandle %s, app says to stop walking"
                 % sendRequestHandle
             )
@@ -652,7 +652,7 @@ class BulkCommandGenerator(BulkCommandGeneratorSingleRun):
 
         except StatusInformation:
             statusInformation = sys.exc_info()[1]
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 "processResponseVarBinds: sendPduHandle {}: _sendPdu() failed with {!r}".format(
                     sendRequestHandle, statusInformation
                 )

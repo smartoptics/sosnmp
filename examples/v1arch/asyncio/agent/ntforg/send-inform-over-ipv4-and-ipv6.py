@@ -60,10 +60,10 @@ transportDispatcher.registerRecvCbFun(cbRecvFun)
 
 # UDP/IPv4
 transportDispatcher.registerTransport(
-    udp.domainName, udp.UdpAsyncioTransport().openClientMode()
+    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
 )
 transportDispatcher.sendMessage(
-    encoder.encode(trapMsg), udp.domainName, ("demo.pysnmp.com", 162)
+    encoder.encode(trapMsg), udp.DOMAIN_NAME, ("demo.pysnmp.com", 162)
 )
 transportDispatcher.jobStarted(1)
 

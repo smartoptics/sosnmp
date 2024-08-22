@@ -35,8 +35,7 @@ PySNMP software is free and open-source. Source code is hosted in
 the `PySNMP Github repository`_.
 The library is being distributed under 2-clause BSD-style license.
 
-PySNMP library development has been initially sponsored
-by a `PSF`_ grant.
+PySNMP library development has been initially sponsored by a `PSF`_ grant.
 
 Quick Start
 -----------

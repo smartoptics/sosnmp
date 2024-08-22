@@ -19,8 +19,8 @@ class AbstractTransportTarget:
     transport: "AbstractTransport | None"
     transportAddr: Tuple[str, int]
 
-    transportDomain = None
-    protoTransport = AbstractTransport
+    TRANSPORT_DOMAIN = None
+    PROTO_TRANSPORT = AbstractTransport
 
     def __init__(
         self,
@@ -46,7 +46,7 @@ class AbstractTransportTarget:
         )
 
     def getTransportInfo(self):
-        return self.transportDomain, self.transportAddr
+        return self.TRANSPORT_DOMAIN, self.transportAddr
 
     def setLocalAddress(self, iface):
         """Set source address.
@@ -66,16 +66,16 @@ class AbstractTransportTarget:
         return self
 
     def openClientMode(self):
-        self.transport = self.protoTransport().openClientMode(self.iface)
+        self.transport = self.PROTO_TRANSPORT().openClientMode(self.iface)
         return self.transport
 
     def verifyDispatcherCompatibility(self, snmpEngine: SnmpEngine):
-        if not self.protoTransport.isCompatibleWithDispatcher(
+        if not self.PROTO_TRANSPORT.isCompatibleWithDispatcher(
             snmpEngine.transportDispatcher
         ):
             raise error.PySnmpError(
                 "Transport {!r} is not compatible with dispatcher {!r}".format(
-                    self.protoTransport, snmpEngine.transportDispatcher
+                    self.PROTO_TRANSPORT, snmpEngine.transportDispatcher
                 )
             )
 

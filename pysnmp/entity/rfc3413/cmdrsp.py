@@ -14,10 +14,10 @@ from pysnmp import debug
 
 # 3.2
 class CommandResponderBase:
-    acmID = 3  # default MIB access control method to use
-    pduTypes = ()
+    ACM_ID = 3  # default MIB access control method to use
+    SUPPORTED_PDU_TYPES = ()
 
-    smiToSnmpErrorMap = {
+    SMI_ERROR_MAP = {
         pysnmp.smi.error.TooBigError: "tooBig",
         pysnmp.smi.error.NoSuchNameError: "noSuchName",
         pysnmp.smi.error.BadValueError: "badValue",
@@ -40,7 +40,7 @@ class CommandResponderBase:
 
     def __init__(self, snmpEngine, snmpContext):
         snmpEngine.msgAndPduDsp.registerContextEngineId(
-            snmpContext.contextEngineId, self.pduTypes, self.processPdu
+            snmpContext.contextEngineId, self.SUPPORTED_PDU_TYPES, self.processPdu
         )
         self.snmpContext = snmpContext
         self.__pendingReqs = {}
@@ -50,7 +50,7 @@ class CommandResponderBase:
 
     def close(self, snmpEngine):
         snmpEngine.msgAndPduDsp.unregisterContextEngineId(
-            self.snmpContext.contextEngineId, self.pduTypes
+            self.snmpContext.contextEngineId, self.SUPPORTED_PDU_TYPES
         )
         self.snmpContext = self.__pendingReqs = None
 
@@ -75,7 +75,7 @@ class CommandResponderBase:
         v2c.apiPDU.setErrorIndex(PDU, errorIndex)
         v2c.apiPDU.setVarBinds(PDU, varBinds)
 
-        debug.logger & debug.flagApp and debug.logger(
+        debug.logger & debug.FLAG_APP and debug.logger(
             "sendVarBinds: stateReference {}, errorStatus {}, errorIndex {}, varBinds {}".format(
                 stateReference, errorStatus, errorIndex, varBinds
             )
@@ -123,7 +123,7 @@ class CommandResponderBase:
             )
 
         except error.StatusInformation:
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 f"sendPdu: stateReference {stateReference}, statusInformation {sys.exc_info()[1]}"
             )
             (
@@ -165,8 +165,8 @@ class CommandResponderBase:
 
         # 3.2.1
         if (
-            PDU.tagSet not in rfc3411.readClassPDUs
-            and PDU.tagSet not in rfc3411.writeClassPDUs
+            PDU.tagSet not in rfc3411.READ_CLASS_PDUS
+            and PDU.tagSet not in rfc3411.WRITE_CLASS_PDUS
         ):
             raise error.ProtocolError("Unexpected PDU class %s" % PDU.tagSet)
 
@@ -194,7 +194,7 @@ class CommandResponderBase:
         # 3.2.5
         varBinds = v2c.apiPDU.getVarBinds(PDU)
 
-        debug.logger & debug.flagApp and debug.logger(
+        debug.logger & debug.FLAG_APP and debug.logger(
             f"processPdu: stateReference {stateReference}, varBinds {varBinds}"
         )
 
@@ -213,7 +213,7 @@ class CommandResponderBase:
         except pysnmp.smi.error.SmiError:
             errorIndication = sys.exc_info()[1]
 
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 f"processPdu: stateReference {stateReference}, errorIndication {errorIndication}"
             )
             if "oid" in errorIndication:
@@ -221,9 +221,7 @@ class CommandResponderBase:
                 statusInformation["oid"] = errorIndication["oid"]
                 statusInformation["val"] = errorIndication["val"]
 
-            errorStatus = self.smiToSnmpErrorMap.get(
-                errorIndication.__class__, "genErr"
-            )
+            errorStatus = self.SMI_ERROR_MAP.get(errorIndication.__class__, "genErr")
 
             try:
                 errorIndex = errorIndication["idx"] + 1
@@ -245,7 +243,7 @@ class CommandResponderBase:
             )
 
         except pysnmp.error.PySnmpError:
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 "processPdu: stateReference %s, error "
                 "%s" % (stateReference, sys.exc_info()[1])
             )
@@ -265,7 +263,7 @@ class CommandResponderBase:
             execCtx["pdu"].getTagSet(),
         )
         try:
-            snmpEngine.accessControlModel[self.acmID].isAccessAllowed(
+            snmpEngine.accessControlModel[self.ACM_ID].isAccessAllowed(
                 snmpEngine,
                 securityModel,
                 securityName,
@@ -277,7 +275,7 @@ class CommandResponderBase:
         # Map ACM errors onto SMI ones
         except error.StatusInformation:
             statusInformation = sys.exc_info()[1]
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 f"__verifyAccess: name {name}, statusInformation {statusInformation}"
             )
             errorIndication = statusInformation["errorIndication"]
@@ -321,7 +319,7 @@ class CommandResponderBase:
 
 
 class GetCommandResponder(CommandResponderBase):
-    pduTypes = (rfc1905.GetRequestPDU.tagSet,)
+    SUPPORTED_PDU_TYPES = (rfc1905.GetRequestPDU.tagSet,)
 
     # rfc1905: 4.2.1
     def handleMgmtOperation(self, snmpEngine, stateReference, contextName, PDU, acInfo):
@@ -339,7 +337,7 @@ class GetCommandResponder(CommandResponderBase):
 
 
 class NextCommandResponder(CommandResponderBase):
-    pduTypes = (rfc1905.GetNextRequestPDU.tagSet,)
+    SUPPORTED_PDU_TYPES = (rfc1905.GetNextRequestPDU.tagSet,)
 
     # rfc1905: 4.2.2
     def handleMgmtOperation(self, snmpEngine, stateReference, contextName, PDU, acInfo):
@@ -360,7 +358,7 @@ class NextCommandResponder(CommandResponderBase):
 
 
 class BulkCommandResponder(CommandResponderBase):
-    pduTypes = (rfc1905.GetBulkRequestPDU.tagSet,)
+    SUPPORTED_PDU_TYPES = (rfc1905.GetBulkRequestPDU.tagSet,)
     maxVarBinds = 64
 
     # rfc1905: 4.2.3
@@ -382,7 +380,7 @@ class BulkCommandResponder(CommandResponderBase):
         if R:
             M = min(M, self.maxVarBinds // R)
 
-        debug.logger & debug.flagApp and debug.logger(
+        debug.logger & debug.FLAG_APP and debug.logger(
             "handleMgmtOperation: N %d, M %d, R %d" % (N, M, R)
         )
 
@@ -407,7 +405,7 @@ class BulkCommandResponder(CommandResponderBase):
 
 
 class SetCommandResponder(CommandResponderBase):
-    pduTypes = (rfc1905.SetRequestPDU.tagSet,)
+    SUPPORTED_PDU_TYPES = (rfc1905.SetRequestPDU.tagSet,)
 
     # rfc1905: 4.2.5
     def handleMgmtOperation(self, snmpEngine, stateReference, contextName, PDU, acInfo):

@@ -31,10 +31,14 @@
 # THE POSSIBILITY OF SUCH DAMAGE.
 #
 import socket
+from typing import Tuple
+import warnings
 from pysnmp.carrier.base import AbstractTransportAddress
 from pysnmp.carrier.asyncio.dgram.base import DgramAsyncioProtocol
 
-domainName = snmpUDPDomain = (1, 3, 6, 1, 6, 1, 1)
+DOMAIN_NAME: Tuple[int, ...]
+SNMP_UDP6_DOMAIN: Tuple[int, ...]
+DOMAIN_NAME = SNMP_UDP_DOMAIN = (1, 3, 6, 1, 6, 1, 1)
 
 
 class UdpTransportAddress(tuple, AbstractTransportAddress):
@@ -42,8 +46,25 @@ class UdpTransportAddress(tuple, AbstractTransportAddress):
 
 
 class UdpAsyncioTransport(DgramAsyncioProtocol):
-    sockFamily = socket.AF_INET
-    addressType = UdpTransportAddress
+    SOCK_FAMILY = socket.AF_INET
+    ADDRESS_TYPE = UdpTransportAddress
 
 
 UdpTransport = UdpAsyncioTransport
+
+# Old to new attribute mapping
+deprecated_attributes = {
+    "domainName": "DOMAIN_NAME",
+    "snmpUDPDomain": "SNMP_UDP_DOMAIN",
+}
+
+
+def __getattr__(attr: str):
+    if new_attr := deprecated_attributes.get(attr):
+        warnings.warn(
+            f"{attr} is deprecated. Please use {new_attr} instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return globals()[new_attr]
+    raise AttributeError(f"module '{__name__}' has no attribute '{attr}'")

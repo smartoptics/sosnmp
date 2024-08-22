@@ -21,7 +21,7 @@ async def start_manager() -> SnmpEngine:
     # UDP over IPv4
     config.addTransport(
         snmpEngine,
-        udp.domainName,
+        udp.DOMAIN_NAME,
         udp.UdpTransport().openServerMode(("localhost", MANAGER_PORT)),
     )
 
@@ -36,9 +36,9 @@ async def start_manager() -> SnmpEngine:
     config.addV3User(
         snmpEngine,
         "usr-md5-des",
-        config.usmHMACMD5AuthProtocol,
+        config.USM_AUTH_HMAC96_MD5,
         "authkey1",
-        config.usmDESPrivProtocol,
+        config.USM_PRIV_CBC56_DES,
         "privkey1",
     )
 
@@ -47,9 +47,9 @@ async def start_manager() -> SnmpEngine:
     config.addV3User(
         snmpEngine,
         "usr-md5-des",
-        config.usmHMACMD5AuthProtocol,
+        config.USM_AUTH_HMAC96_MD5,
         "authkey1",
-        config.usmDESPrivProtocol,
+        config.USM_PRIV_CBC56_DES,
         "privkey1",
         securityEngineId=v2c.OctetString(hexValue="8000000001020304"),
     )

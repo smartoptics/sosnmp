@@ -33,9 +33,9 @@ snmpEngine = engine.SnmpEngine(
 config.addV3User(
     snmpEngine,
     "usr-md5-des",
-    config.usmHMACMD5AuthProtocol,
+    config.USM_AUTH_HMAC96_MD5,
     "authkey1",
-    config.usmDESPrivProtocol,
+    config.USM_PRIV_CBC56_DES,
     "privkey1",
 )
 config.addTargetParams(snmpEngine, "my-creds", "usr-md5-des", "authPriv")
@@ -43,12 +43,12 @@ config.addTargetParams(snmpEngine, "my-creds", "usr-md5-des", "authPriv")
 # Setup transport endpoint and bind it with security settings yielding
 # a target name
 config.addTransport(
-    snmpEngine, udp.domainName, udp.UdpAsyncioTransport().openClientMode()
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
 )
 config.addTargetAddr(
     snmpEngine,
     "my-nms",
-    udp.domainName,
+    udp.DOMAIN_NAME,
     ("127.0.0.1", 162),
     "my-creds",
     tagList="all-my-managers",

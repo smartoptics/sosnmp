@@ -34,40 +34,40 @@ class Des3(base.AbstractEncryptionService):
     https://tools.ietf.org/html/draft-reeder-snmpv3-usm-3desede-00
     """
 
-    serviceID = (1, 3, 6, 1, 6, 3, 10, 1, 2, 3)  # usm3DESEDEPrivProtocol
-    keySize = 32
-    _localInt = random.randrange(0, 0xFFFFFFFF)
+    SERVICE_ID = (1, 3, 6, 1, 6, 3, 10, 1, 2, 3)  # usm3DESEDEPrivProtocol
+    KEY_SIZE = 32
+    local_int = random.randrange(0, 0xFFFFFFFF)
 
     def hashPassphrase(self, authProtocol, privKey):
-        if authProtocol == hmacmd5.HmacMd5.serviceID:
+        if authProtocol == hmacmd5.HmacMd5.SERVICE_ID:
             hashAlgo = md5
-        elif authProtocol == hmacsha.HmacSha.serviceID:
+        elif authProtocol == hmacsha.HmacSha.SERVICE_ID:
             hashAlgo = sha1
-        elif authProtocol in hmacsha2.HmacSha2.hashAlgorithms:
-            hashAlgo = hmacsha2.HmacSha2.hashAlgorithms[authProtocol]
+        elif authProtocol in hmacsha2.HmacSha2.HASH_ALGORITHM:
+            hashAlgo = hmacsha2.HmacSha2.HASH_ALGORITHM[authProtocol]
         else:
             raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
         return localkey.hashPassphrase(privKey, hashAlgo)
 
     # 2.1
     def localizeKey(self, authProtocol, privKey, snmpEngineID):
-        if authProtocol == hmacmd5.HmacMd5.serviceID:
+        if authProtocol == hmacmd5.HmacMd5.SERVICE_ID:
             hashAlgo = md5
-        elif authProtocol == hmacsha.HmacSha.serviceID:
+        elif authProtocol == hmacsha.HmacSha.SERVICE_ID:
             hashAlgo = sha1
-        elif authProtocol in hmacsha2.HmacSha2.hashAlgorithms:
-            hashAlgo = hmacsha2.HmacSha2.hashAlgorithms[authProtocol]
+        elif authProtocol in hmacsha2.HmacSha2.HASH_ALGORITHM:
+            hashAlgo = hmacsha2.HmacSha2.HASH_ALGORITHM[authProtocol]
         else:
             raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
         localPrivKey = localkey.localizeKey(privKey, snmpEngineID, hashAlgo)
 
         # now extend this key if too short by repeating steps that includes the hashPassphrase step
-        while len(localPrivKey) < self.keySize:
+        while len(localPrivKey) < self.KEY_SIZE:
             # this is the difference between reeder and bluementhal
             newKey = localkey.hashPassphrase(localPrivKey, hashAlgo)
             localPrivKey += localkey.localizeKey(newKey, snmpEngineID, hashAlgo)
 
-        return localPrivKey[: self.keySize]
+        return localPrivKey[: self.KEY_SIZE]
 
     # 5.1.1.1
     def __getEncryptionKey(self, privKey, snmpEngineBoots):
@@ -82,15 +82,15 @@ class Des3(base.AbstractEncryptionService):
             securityEngineBoots >> 16 & 0xFF,
             securityEngineBoots >> 8 & 0xFF,
             securityEngineBoots & 0xFF,
-            self._localInt >> 24 & 0xFF,
-            self._localInt >> 16 & 0xFF,
-            self._localInt >> 8 & 0xFF,
-            self._localInt & 0xFF,
+            self.local_int >> 24 & 0xFF,
+            self.local_int >> 16 & 0xFF,
+            self.local_int >> 8 & 0xFF,
+            self.local_int & 0xFF,
         ]
-        if self._localInt == 0xFFFFFFFF:
-            self._localInt = 0
+        if self.local_int == 0xFFFFFFFF:
+            self.local_int = 0
         else:
-            self._localInt += 1
+            self.local_int += 1
 
         # salt not yet hashed XXX
 

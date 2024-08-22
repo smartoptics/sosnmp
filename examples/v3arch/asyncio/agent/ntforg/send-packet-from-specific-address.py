@@ -36,13 +36,13 @@ config.addTargetParams(snmpEngine, "my-creds", "my-area", "noAuthNoPriv", 0)
 # used to originate packets from particular local IP:port
 config.addTransport(
     snmpEngine,
-    udp.domainName,
+    udp.DOMAIN_NAME,
     udp.UdpAsyncioTransport().openClientMode(iface=("0.0.0.0", 61024)),
 )
 config.addTargetAddr(
     snmpEngine,
     "my-nms",
-    udp.domainName,
+    udp.DOMAIN_NAME,
     ("127.0.0.1", 162),
     "my-creds",
     tagList="all-my-managers",

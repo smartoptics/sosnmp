@@ -11,7 +11,7 @@ async def test_usm_sha_none():
         authData = UsmUserData(
             "usr-sha-none",
             "authkey1",
-            authProtocol=usmHMACSHAAuthProtocol,
+            authProtocol=USM_AUTH_HMAC96_SHA,
         )
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
@@ -37,7 +37,7 @@ async def test_usm_sha_none_wrong_auth():
         authData = UsmUserData(
             "usr-sha-none",
             "authkey1",
-            authProtocol=usmHMACMD5AuthProtocol,  # wrongly use usmHMACMD5AuthProtocol
+            authProtocol=USM_AUTH_HMAC96_MD5,  # wrongly use usmHMACMD5AuthProtocol
         )
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
@@ -60,7 +60,7 @@ async def test_usm_sha_none_wrong_user():
         authData = UsmUserData(
             "usr-sha-none-not-exist",
             "authkey1",
-            authProtocol=usmHMACSHAAuthProtocol,
+            authProtocol=USM_AUTH_HMAC96_SHA,
         )
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,

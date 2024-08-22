@@ -15,7 +15,7 @@ from pysnmp import debug
 
 
 class SnmpV1SecurityModel(base.AbstractSecurityModel):
-    securityModelID = 1
+    SECURITY_MODEL_ID = 1
 
     # According to rfc2576, community name <-> contextEngineId/contextName
     # mapping is up to MP module for notifications but belongs to secmod
@@ -68,7 +68,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
                     self.__nameToModelMap[nextMibNode.syntax].add(mibNode.syntax)
 
                 except PyAsn1Error:
-                    debug.logger & debug.flagSM and debug.logger(
+                    debug.logger & debug.FLAG_SM and debug.logger(
                         "_sec2com: table entries {!r}/{!r} hashing failed".format(
                             nextMibNode.syntax, mibNode.syntax
                         )
@@ -128,7 +128,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
                     ] = nextMibNode.syntax
 
                 except PyAsn1Error:
-                    debug.logger & debug.flagSM and debug.logger(
+                    debug.logger & debug.FLAG_SM and debug.logger(
                         "_sec2com: table entries {!r}/{!r}/{!r} hashing failed".format(
                             _securityName, _contextEngineId, _contextName
                         )
@@ -137,7 +137,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
 
             self.__securityBranchId = snmpCommunityName.branchVersionId
 
-            debug.logger & debug.flagSM and debug.logger(
+            debug.logger & debug.FLAG_SM and debug.logger(
                 "_sec2com: built securityName to communityName map, version {}: {}".format(
                     self.__securityBranchId, self.__securityMap
                 )
@@ -190,7 +190,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
 
                 targetAddrTDomain = tuple(targetAddrTDomain)
 
-                if targetAddrTDomain[: len(udp.snmpUDPDomain)] == udp.snmpUDPDomain:
+                if targetAddrTDomain[: len(udp.SNMP_UDP_DOMAIN)] == udp.SNMP_UDP_DOMAIN:
                     (
                         SnmpUDPAddress,
                     ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
@@ -198,7 +198,8 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
                     )
                     targetAddrTAddress = tuple(SnmpUDPAddress(targetAddrTAddress))
                 elif (
-                    targetAddrTDomain[: len(udp6.snmpUDP6Domain)] == udp6.snmpUDP6Domain
+                    targetAddrTDomain[: len(udp6.SNMP_UDP6_DOMAIN)]
+                    == udp6.SNMP_UDP6_DOMAIN
                 ):
                     (
                         TransportAddressIPv6,
@@ -207,8 +208,8 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
                     )
                     targetAddrTAddress = tuple(TransportAddressIPv6(targetAddrTAddress))
                 elif (
-                    targetAddrTDomain[: len(unix.snmpLocalDomain)]
-                    == unix.snmpLocalDomain
+                    targetAddrTDomain[: len(unix.SNMP_LOCAL_DOMAIN)]
+                    == unix.SNMP_LOCAL_DOMAIN
                 ):
                     targetAddrTAddress = str(targetAddrTAddress)
 
@@ -233,7 +234,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
                         self.__transportToTagMap[targetAddr].add(self.__emptyTag)
 
                 except PyAsn1Error:
-                    debug.logger & debug.flagSM and debug.logger(
+                    debug.logger & debug.FLAG_SM and debug.logger(
                         "_com2sec: table entries {!r}/{!r} hashing failed".format(
                             targetAddr, targetAddrTagList
                         )
@@ -242,7 +243,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
 
             self.__transportBranchId = snmpTargetAddrTAddress.branchVersionId
 
-            debug.logger & debug.flagSM and debug.logger(
+            debug.logger & debug.FLAG_SM and debug.logger(
                 "_com2sec: built transport-to-tag map version {}: {}".format(
                     self.__transportBranchId, self.__transportToTagMap
                 )
@@ -287,7 +288,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
                     self.__nameToModelMap[nextMibNode.syntax].add(mibNode.syntax)
 
                 except PyAsn1Error:
-                    debug.logger & debug.flagSM and debug.logger(
+                    debug.logger & debug.FLAG_SM and debug.logger(
                         "_com2sec: table entries {!r}/{!r} hashing failed".format(
                             nextMibNode.syntax, mibNode.syntax
                         )
@@ -299,7 +300,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
             # invalidate next map as it include this one
             self.__communityBranchId = -1
 
-            debug.logger & debug.flagSM and debug.logger(
+            debug.logger & debug.FLAG_SM and debug.logger(
                 "_com2sec: built securityName to securityModel map, version {}: {}".format(
                     self.__paramsBranchId, self.__nameToModelMap
                 )
@@ -370,7 +371,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
                     self.__communityToTagMap[nextMibNode.syntax].add(transportTag)
 
                 except PyAsn1Error:
-                    debug.logger & debug.flagSM and debug.logger(
+                    debug.logger & debug.FLAG_SM and debug.logger(
                         "_com2sec: table entries {!r}/{!r} hashing failed".format(
                             _tagAndCommunity, nextMibNode.syntax
                         )
@@ -379,17 +380,17 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
 
             self.__communityBranchId = snmpCommunityName.branchVersionId
 
-            debug.logger & debug.flagSM and debug.logger(
+            debug.logger & debug.FLAG_SM and debug.logger(
                 "_com2sec: built communityName to tag map (securityModel {}), version {}: {}".format(
-                    self.securityModelID,
+                    self.SECURITY_MODEL_ID,
                     self.__communityBranchId,
                     self.__communityToTagMap,
                 )
             )
 
-            debug.logger & debug.flagSM and debug.logger(
+            debug.logger & debug.FLAG_SM and debug.logger(
                 "_com2sec: built tag & community to securityName map (securityModel {}), version {}: {}".format(
-                    self.securityModelID,
+                    self.SECURITY_MODEL_ID,
                     self.__communityBranchId,
                     self.__tagAndCommunityToSecurityMap,
                 )
@@ -418,13 +419,13 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
             # Picks first match but favors entries already in targets table
             if candidateSecurityNames:
                 candidateSecurityNames.sort(
-                    key=lambda x, m=self.__nameToModelMap, v=self.securityModelID: (
+                    key=lambda x, m=self.__nameToModelMap, v=self.SECURITY_MODEL_ID: (
                         not int(x[0] in m and v in m[x[0]]),
                         str(x[0]),
                     )
                 )
                 chosenSecurityName = candidateSecurityNames[0]  # min()
-                debug.logger & debug.flagSM and debug.logger(
+                debug.logger & debug.FLAG_SM and debug.logger(
                     "_com2sec: securityName candidates for communityName '{}' are {}; choosing securityName '{}'".format(
                         communityName, candidateSecurityNames, chosenSecurityName[0]
                     )
@@ -453,7 +454,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
             snmpEngine, securityName, contextEngineId, contextName
         )
 
-        debug.logger & debug.flagSM and debug.logger(
+        debug.logger & debug.FLAG_SM and debug.logger(
             "generateRequestMsg: using community {!r} for securityModel {!r}, securityName {!r}, contextEngineId {!r} contextName {!r}".format(
                 communityName, securityModel, securityName, contextEngineId, contextName
             )
@@ -471,7 +472,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
             matchConstraints=False,
         )
 
-        debug.logger & debug.flagMP and debug.logger(
+        debug.logger & debug.FLAG_MP and debug.logger(
             f"generateRequestMsg: {msg.prettyPrint()}"
         )
 
@@ -479,7 +480,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
             return securityParameters, encoder.encode(msg)
 
         except PyAsn1Error:
-            debug.logger & debug.flagMP and debug.logger(
+            debug.logger & debug.FLAG_MP and debug.logger(
                 "generateRequestMsg: serialization failure: %s" % sys.exc_info()[1]
             )
             raise error.StatusInformation(errorIndication=errind.serializationError)
@@ -504,7 +505,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
         cachedSecurityData = self._cache.pop(securityStateReference)
         communityName = cachedSecurityData["communityName"]
 
-        debug.logger & debug.flagSM and debug.logger(
+        debug.logger & debug.FLAG_SM and debug.logger(
             "generateResponseMsg: recovered community {!r} by securityStateReference {}".format(
                 communityName, securityStateReference
             )
@@ -520,7 +521,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
             matchConstraints=False,
         )
 
-        debug.logger & debug.flagMP and debug.logger(
+        debug.logger & debug.FLAG_MP and debug.logger(
             f"generateResponseMsg: {msg.prettyPrint()}"
         )
 
@@ -528,7 +529,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
             return communityName, encoder.encode(msg)
 
         except PyAsn1Error:
-            debug.logger & debug.flagMP and debug.logger(
+            debug.logger & debug.FLAG_MP and debug.logger(
                 "generateResponseMsg: serialization failure: %s" % sys.exc_info()[1]
             )
             raise error.StatusInformation(errorIndication=errind.serializationError)
@@ -600,10 +601,10 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
             snmpEngine, "rfc2576.processIncomingMsg"
         )
 
-        debug.logger & debug.flagSM and debug.logger(
+        debug.logger & debug.FLAG_SM and debug.logger(
             "processIncomingMsg: looked up securityName {!r} securityModel {!r} contextEngineId {!r} contextName {!r} by communityName {!r} AND transportInformation {!r}".format(
                 securityName,
-                self.securityModelID,
+                self.SECURITY_MODEL_ID,
                 contextEngineId,
                 contextName,
                 communityName,
@@ -621,7 +622,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
         maxSizeResponseScopedPDU = maxMessageSize - 128
         securityStateReference = stateReference
 
-        debug.logger & debug.flagSM and debug.logger(
+        debug.logger & debug.FLAG_SM and debug.logger(
             "processIncomingMsg: generated maxSizeResponseScopedPDU {} securityStateReference {}".format(
                 maxSizeResponseScopedPDU, securityStateReference
             )
@@ -637,7 +638,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
 
 
 class SnmpV2cSecurityModel(SnmpV1SecurityModel):
-    securityModelID = 2
+    SECURITY_MODEL_ID = 2
 
 
 # XXX

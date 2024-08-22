@@ -12,8 +12,8 @@ async def test_usm_sha_aes128():
             "usr-sha-aes",
             "authkey1",
             "privkey1",
-            authProtocol=usmHMACSHAAuthProtocol,
-            privProtocol=usmAesCfb128Protocol,
+            authProtocol=USM_AUTH_HMAC96_SHA,
+            privProtocol=USM_PRIV_CFB128_AES,
         )
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
@@ -40,8 +40,8 @@ async def test_usm_sha_aes128_wrong_auth():
             "usr-sha-aes",
             "authkey1",
             "privkey1",
-            authProtocol=usmHMACMD5AuthProtocol,  # wrongly use usmHMACMD5AuthProtocol
-            privProtocol=usmAesCfb128Protocol,
+            authProtocol=USM_AUTH_HMAC96_MD5,  # wrongly use usmHMACMD5AuthProtocol
+            privProtocol=USM_PRIV_CFB128_AES,
         )
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
@@ -65,8 +65,8 @@ async def test_usm_sha_aes128_wrong_priv():
             "usr-sha-aes",
             "authkey1",
             "privkey1",
-            authProtocol=usmHMACSHAAuthProtocol,
-            privProtocol=usmDESPrivProtocol,  # wrongly use usmDESPrivProtocol
+            authProtocol=USM_AUTH_HMAC96_SHA,
+            privProtocol=USM_PRIV_CBC56_DES,  # wrongly use usmDESPrivProtocol
         )
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
@@ -93,8 +93,8 @@ async def test_usm_sha_aes128_wrong_user():
             "usr-sha-aes-not-exist",
             "authkey1",
             "privkey1",
-            authProtocol=usmHMACSHAAuthProtocol,
-            privProtocol=usmAesCfb128Protocol,
+            authProtocol=USM_AUTH_HMAC96_SHA,
+            privProtocol=USM_PRIV_CFB128_AES,
         )
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,

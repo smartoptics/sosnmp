@@ -22,7 +22,7 @@ class SnmpContext:
             self.contextEngineId = snmpEngineId.syntax
         else:
             self.contextEngineId = snmpEngineId.syntax.clone(contextEngineId)
-        debug.logger & debug.flagIns and debug.logger(
+        debug.logger & debug.FLAG_INS and debug.logger(
             f'SnmpContext: contextEngineId "{self.contextEngineId!r}"'
         )
         self.contextNames = {
@@ -33,7 +33,7 @@ class SnmpContext:
         contextName = univ.OctetString(contextName).asOctets()
         if contextName in self.contextNames:
             raise error.PySnmpError("Duplicate contextName %s" % contextName)
-        debug.logger & debug.flagIns and debug.logger(
+        debug.logger & debug.FLAG_INS and debug.logger(
             f"registerContextName: registered contextName {contextName!r}, mibInstrum {mibInstrum!r}"
         )
         if mibInstrum is None:
@@ -44,7 +44,7 @@ class SnmpContext:
     def unregisterContextName(self, contextName):
         contextName = univ.OctetString(contextName).asOctets()
         if contextName in self.contextNames:
-            debug.logger & debug.flagIns and debug.logger(
+            debug.logger & debug.FLAG_INS and debug.logger(
                 "unregisterContextName: unregistered contextName %r" % contextName
             )
             del self.contextNames[contextName]
@@ -52,12 +52,12 @@ class SnmpContext:
     def getMibInstrum(self, contextName=null):
         contextName = univ.OctetString(contextName).asOctets()
         if contextName not in self.contextNames:
-            debug.logger & debug.flagIns and debug.logger(
+            debug.logger & debug.FLAG_INS and debug.logger(
                 "getMibInstrum: contextName %r not registered" % contextName
             )
             raise error.PySnmpError("Missing contextName %s" % contextName)
         else:
-            debug.logger & debug.flagIns and debug.logger(
+            debug.logger & debug.FLAG_INS and debug.logger(
                 f"getMibInstrum: contextName {contextName!r}, mibInstum {self.contextNames[contextName]!r}"
             )
             return self.contextNames[contextName]

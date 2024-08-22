@@ -19,7 +19,7 @@ getNextHandle = nextid.Integer(0x7FFFFFFF)
 
 
 class NotificationOriginator:
-    acmID = 3  # default MIB access control method to use
+    ACM_ID = 3  # default MIB access control method to use
 
     def __init__(self, **options):
         self.__pendingReqs = {}
@@ -67,7 +67,7 @@ class NotificationOriginator:
         snmpEngine.transportDispatcher.jobFinished(id(self))
 
         if statusInformation:
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 "processResponsePdu: sendRequestHandle {}, sendPduHandle {} statusInformation {}".format(
                     sendRequestHandle, sendPduHandle, statusInformation
                 )
@@ -86,7 +86,7 @@ class NotificationOriginator:
                 origRetries > origRetryCount
                 or origDiscoveryRetries > self.__options.get("discoveryRetries", 4)
             ):
-                debug.logger & debug.flagApp and debug.logger(
+                debug.logger & debug.FLAG_APP and debug.logger(
                     "processResponsePdu: sendRequestHandle %s, sendPduHandle %s retry count %d exceeded"
                     % (sendRequestHandle, sendPduHandle, origRetries)
                 )
@@ -129,7 +129,7 @@ class NotificationOriginator:
                 )
             except error.StatusInformation:
                 statusInformation = sys.exc_info()[1]
-                debug.logger & debug.flagApp and debug.logger(
+                debug.logger & debug.FLAG_APP and debug.logger(
                     "processResponsePdu: sendRequestHandle {}: sendPdu() failed with {!r} ".format(
                         sendRequestHandle, statusInformation
                     )
@@ -145,7 +145,7 @@ class NotificationOriginator:
 
             snmpEngine.transportDispatcher.jobStarted(id(self))
 
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 "processResponsePdu: sendRequestHandle %s, sendPduHandle %s, timeout %d, retry %d of %d"
                 % (
                     sendRequestHandle,
@@ -215,7 +215,7 @@ class NotificationOriginator:
             pduVersion = 1
 
         # 3.3.5
-        if reqPDU.tagSet in rfc3411.confirmedClassPDUs:
+        if reqPDU.tagSet in rfc3411.CONFIRMED_CLASS_PDUS:
             # Convert timeout in seconds into timeout in timer ticks
             timeoutInTicks = (
                 float(timeout)
@@ -244,7 +244,7 @@ class NotificationOriginator:
                 (sendRequestHandle, cbFun, cbCtx),
             )
 
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 "sendPdu: sendPduHandle %s, timeout %d" % (sendPduHandle, timeout)
             )
 
@@ -283,7 +283,7 @@ class NotificationOriginator:
 
             sendRequestHandle = None
 
-            debug.logger & debug.flagApp and debug.logger("sendPdu: message sent")
+            debug.logger & debug.FLAG_APP and debug.logger("sendPdu: message sent")
 
         return sendRequestHandle
 
@@ -294,7 +294,7 @@ class NotificationOriginator:
 
         self.__pendingNotifications[notificationHandle].remove(sendRequestHandle)
 
-        debug.logger & debug.flagApp and debug.logger(
+        debug.logger & debug.FLAG_APP and debug.logger(
             "processResponseVarBinds: notificationHandle {}, sendRequestHandle {}, errorIndication {}, pending requests {}".format(
                 notificationHandle,
                 sendRequestHandle,
@@ -304,7 +304,7 @@ class NotificationOriginator:
         )
 
         if not self.__pendingNotifications[notificationHandle]:
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 "processResponseVarBinds: notificationHandle {}, sendRequestHandle {} -- completed".format(
                     notificationHandle, sendRequestHandle
                 )
@@ -334,7 +334,7 @@ class NotificationOriginator:
         cbFun=None,
         cbCtx=None,
     ):
-        debug.logger & debug.flagApp and debug.logger(
+        debug.logger & debug.FLAG_APP and debug.logger(
             'sendVarBinds: notificationTarget {}, contextEngineId {}, contextName "{}", varBinds {}'.format(
                 notificationTarget,
                 contextEngineId or "<default>",
@@ -358,7 +358,7 @@ class NotificationOriginator:
 
         notificationHandle = getNextHandle()
 
-        debug.logger & debug.flagApp and debug.logger(
+        debug.logger & debug.FLAG_APP and debug.logger(
             "sendVarBinds: notificationHandle {}, notifyTag {}, notifyType {}".format(
                 notificationHandle, notifyTag, notifyType
             )
@@ -399,7 +399,7 @@ class NotificationOriginator:
 
         sendRequestHandle = -1
 
-        debug.logger & debug.flagApp and debug.logger(
+        debug.logger & debug.FLAG_APP and debug.logger(
             f"sendVarBinds: final varBinds {varBinds}"
         )
 
@@ -425,7 +425,7 @@ class NotificationOriginator:
             #             (filterSubtree, filterMask,
             #              filterType) = config.getNotifyFilter(filterProfileName)
 
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 "sendVarBinds: notificationHandle {}, notifyTag {} yields: transportDomain {}, transportAddress {!r}, securityModel {}, securityName {}, securityLevel {}".format(
                     notificationHandle,
                     notifyTag,
@@ -441,7 +441,7 @@ class NotificationOriginator:
                 if varName in (sysUpTime.name, snmpTrapOID.name):
                     continue
                 try:
-                    snmpEngine.accessControlModel[self.acmID].isAccessAllowed(
+                    snmpEngine.accessControlModel[self.ACM_ID].isAccessAllowed(
                         snmpEngine,
                         securityModel,
                         securityName,
@@ -451,12 +451,12 @@ class NotificationOriginator:
                         varName,
                     )
 
-                    debug.logger & debug.flagApp and debug.logger(
+                    debug.logger & debug.FLAG_APP and debug.logger(
                         f"sendVarBinds: ACL succeeded for OID {varName} securityName {securityName}"
                     )
 
                 except error.StatusInformation:
-                    debug.logger & debug.flagApp and debug.logger(
+                    debug.logger & debug.FLAG_APP and debug.logger(
                         "sendVarBinds: ACL denied access for OID {} securityName {}, droppping notification".format(
                             varName, securityName
                         )
@@ -488,7 +488,7 @@ class NotificationOriginator:
 
             except error.StatusInformation:
                 statusInformation = sys.exc_info()[1]
-                debug.logger & debug.flagApp and debug.logger(
+                debug.logger & debug.FLAG_APP and debug.logger(
                     "sendVarBinds: sendRequestHandle {}: sendPdu() failed with {!r}".format(
                         sendRequestHandle, statusInformation
                     )
@@ -511,7 +511,7 @@ class NotificationOriginator:
                         )
                 return notificationHandle
 
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 "sendVarBinds: notificationHandle %s, sendRequestHandle %s, timeout %d"
                 % (notificationHandle, sendRequestHandle, timeout)
             )
@@ -521,7 +521,7 @@ class NotificationOriginator:
                     self.__pendingNotifications[notificationHandle] = set()
                 self.__pendingNotifications[notificationHandle].add(sendRequestHandle)
 
-        debug.logger & debug.flagApp and debug.logger(
+        debug.logger & debug.FLAG_APP and debug.logger(
             "sendVarBinds: notificationHandle {}, sendRequestHandle {}, notification(s) sent".format(
                 notificationHandle, sendRequestHandle
             )

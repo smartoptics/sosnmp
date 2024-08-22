@@ -1,6 +1,7 @@
 import asyncio
 from datetime import datetime
 import pytest
+from pysnmp import debug
 from pysnmp.hlapi.asyncio import *
 
 from tests.agent_context import AGENT_PORT, AgentContextManager
@@ -15,6 +16,7 @@ async def test_v1_get():
                 "localhost",
                 AGENT_PORT,
                 ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
+                retries=0,
             )
 
             assert errorIndication is None

@@ -60,7 +60,7 @@ snmpEngine.observer.registerObserver(
 
 # UDP over IPv4
 config.addTransport(
-    snmpEngine, udp.domainName, udp.UdpTransport().openServerMode(("127.0.0.1", 162))
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().openServerMode(("127.0.0.1", 162))
 )
 
 # SNMPv1/2c setup

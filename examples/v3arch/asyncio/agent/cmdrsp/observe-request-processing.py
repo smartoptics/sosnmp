@@ -62,7 +62,7 @@ snmpEngine.observer.registerObserver(
 
 # UDP over IPv4
 config.addTransport(
-    snmpEngine, udp.domainName, udp.UdpTransport().openServerMode(("127.0.0.1", 161))
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().openServerMode(("127.0.0.1", 161))
 )
 
 # SNMPv3/USM setup
@@ -71,9 +71,9 @@ config.addTransport(
 config.addV3User(
     snmpEngine,
     "usr-md5-des",
-    config.usmHMACMD5AuthProtocol,
+    config.USM_AUTH_HMAC96_MD5,
     "authkey1",
-    config.usmDESPrivProtocol,
+    config.USM_PRIV_CBC56_DES,
     "privkey1",
 )
 

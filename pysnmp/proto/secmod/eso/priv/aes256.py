@@ -13,8 +13,8 @@ class AesBlumenthal256(aesbase.AbstractAesBlumenthal):
     http://tools.ietf.org/html/draft-blumenthal-aes-usm-04
     """
 
-    serviceID = (1, 3, 6, 1, 4, 1, 9, 12, 6, 1, 2)  # cusmAESCfb256PrivProtocol
-    keySize = 32
+    SERVICE_ID = (1, 3, 6, 1, 4, 1, 9, 12, 6, 1, 2)  # cusmAESCfb256PrivProtocol
+    KEY_SIZE = 32
 
 
 class Aes256(aesbase.AbstractAesReeder):
@@ -29,7 +29,7 @@ class Aes256(aesbase.AbstractAesReeder):
     Known to be used by many vendors including Cisco and others.
     """
 
-    serviceID = (
+    SERVICE_ID = (
         1,
         3,
         6,
@@ -42,4 +42,4 @@ class Aes256(aesbase.AbstractAesReeder):
         1,
         102,
     )  # cusmAESCfb256PrivProtocol (non-standard OID)
-    keySize = 32
+    KEY_SIZE = 32

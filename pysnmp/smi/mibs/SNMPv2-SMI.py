@@ -683,7 +683,7 @@ class MibScalarInstance(MibTree):
 
     # noinspection PyUnusedLocal
     def getValue(self, name, idx):
-        debug.logger & debug.flagIns and debug.logger(
+        debug.logger & debug.FLAG_INS and debug.logger(
             f"getValue: returning {self.syntax!r} for {self.name}"
         )
         return self.syntax.clone()
@@ -698,7 +698,7 @@ class MibScalarInstance(MibTree):
                 return self.syntax.clone(value)
         except PyAsn1Error:
             exc_t, exc_v, exc_tb = sys.exc_info()
-            debug.logger & debug.flagIns and debug.logger(
+            debug.logger & debug.FLAG_INS and debug.logger(
                 "setValue: {}={!r} failed with traceback {}".format(
                     self.name, value, traceback.format_exception(exc_t, exc_v, exc_tb)
                 )
@@ -746,7 +746,7 @@ class MibScalarInstance(MibTree):
     def readGet(self, name, val, idx, acInfo):
         # Return current variable (name, value)
         if name == self.name:
-            debug.logger & debug.flagIns and debug.logger(
+            debug.logger & debug.FLAG_INS and debug.logger(
                 f"readGet: {self.name}={self.syntax!r}"
             )
             return self.name, self.getValue(name, idx)
@@ -759,7 +759,7 @@ class MibScalarInstance(MibTree):
 
     def readGetNext(self, name, val, idx, acInfo, oName=None):
         if name == self.name and name > oName:
-            debug.logger & debug.flagIns and debug.logger(
+            debug.logger & debug.FLAG_INS and debug.logger(
                 f"readGetNext: {self.name}={self.syntax!r}"
             )
             return self.readGet(name, val, idx, acInfo)
@@ -797,7 +797,7 @@ class MibScalarInstance(MibTree):
     # noinspection PyAttributeOutsideInit
     def writeCleanup(self, name, val, idx, acInfo):
         self.branchVersionId += 1
-        debug.logger & debug.flagIns and debug.logger(f"writeCleanup: {name}={val!r}")
+        debug.logger & debug.FLAG_INS and debug.logger(f"writeCleanup: {name}={val!r}")
         # Drop previous value
         self.__newSyntax = self.__oldSyntax = None
 
@@ -834,7 +834,7 @@ class MibScalarInstance(MibTree):
 
     def createCleanup(self, name, val, idx, acInfo):
         self.branchVersionId += 1
-        debug.logger & debug.flagIns and debug.logger(f"createCleanup: {name}={val!r}")
+        debug.logger & debug.FLAG_INS and debug.logger(f"createCleanup: {name}={val!r}")
         if val is not None:
             self.writeCleanup(name, val, idx, acInfo)
 
@@ -912,7 +912,7 @@ class MibTableColumn(MibScalar):
                 and self.maxAccess != "read-create"
                 or acFun(name, self.syntax, idx, "write", acCtx)
             ):
-                debug.logger & debug.flagACL and debug.logger(
+                debug.logger & debug.FLAG_ACL and debug.logger(
                     f"createTest: {name}={val!r} {self.maxAccess} at {self.name}"
                 )
                 raise error.NoCreationError(idx=idx, name=name)
@@ -994,7 +994,7 @@ class MibTableColumn(MibScalar):
         self.branchVersionId += 1
         if name in self.__destroyedInstances:
             self.__destroyedInstances[name].destroyCleanup(name, val, idx, acInfo)
-            debug.logger & debug.flagIns and debug.logger(
+            debug.logger & debug.FLAG_INS and debug.logger(
                 f"destroyCleanup: {name}={val!r}"
             )
             del self.__destroyedInstances[name]
@@ -1025,7 +1025,7 @@ class MibTableColumn(MibScalar):
             self.__rowOpWanted[name] = error.RowDestructionWanted()
             self.destroyTest(name, val, idx, acInfo)
         if name in self.__rowOpWanted:
-            debug.logger & debug.flagIns and debug.logger(
+            debug.logger & debug.FLAG_INS and debug.logger(
                 f"{self.__rowOpWanted[name]} flagged by {name}={val!r}, exception {sys.exc_info()[1]}"
             )
             raise self.__rowOpWanted[name]
@@ -1050,7 +1050,7 @@ class MibTableColumn(MibScalar):
         if name in self.__rowOpWanted:
             e = self.__rowOpWanted[name]
             del self.__rowOpWanted[name]
-            debug.logger & debug.flagIns and debug.logger(
+            debug.logger & debug.FLAG_INS and debug.logger(
                 f"{e} dropped by {name}={val!r}"
             )
             raise e
@@ -1062,7 +1062,7 @@ class MibTableColumn(MibScalar):
         if name in self.__rowOpWanted:
             e = self.__rowOpWanted[name]
             del self.__rowOpWanted[name]
-            debug.logger & debug.flagIns and debug.logger(
+            debug.logger & debug.FLAG_INS and debug.logger(
                 f"{e} dropped by {name}={val!r}"
             )
             raise e
@@ -1179,7 +1179,7 @@ class MibTableRow(MibTree):
 
         for modName, mibSym in self.augmentingRows.keys():
             (mibObj,) = mibBuilder.importSymbols(modName, mibSym)
-            debug.logger & debug.flagIns and debug.logger(
+            debug.logger & debug.FLAG_INS and debug.logger(
                 f"announceManagementEvent {action} to {mibObj}"
             )
             mibObj.receiveManagementEvent(action, baseIndices, val, idx, acInfo)
@@ -1197,7 +1197,7 @@ class MibTableRow(MibTree):
                 parentIndices.append(syntax)
 
         if newSuffix:
-            debug.logger & debug.flagIns and debug.logger(
+            debug.logger & debug.FLAG_INS and debug.logger(
                 f"receiveManagementEvent {action} for suffix {newSuffix}"
             )
             self.__manageColumns(action, (), newSuffix, val, idx, acInfo)
@@ -1243,7 +1243,7 @@ class MibTableRow(MibTree):
             else:
                 getattr(var, action)(name + nameSuffix, val, idx, acInfo)
 
-            debug.logger & debug.flagIns and debug.logger(
+            debug.logger & debug.FLAG_INS and debug.logger(
                 "__manageColumns: action {} name {} suffix {} {}value {!r}".format(
                     action,
                     name,
@@ -1332,7 +1332,7 @@ class MibTableRow(MibTree):
                     mibObj.syntax, instId, impliedFlag, indices
                 )
             except PyAsn1Error:
-                debug.logger & debug.flagIns and debug.logger(
+                debug.logger & debug.FLAG_INS and debug.logger(
                     f"error resolving table indices at {self.__class__.__name__}, {instId}: {sys.exc_info()[1]}"
                 )
                 indices = [instId]

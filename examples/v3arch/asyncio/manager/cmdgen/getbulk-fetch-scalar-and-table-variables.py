@@ -31,9 +31,9 @@ snmpEngine = engine.SnmpEngine()
 config.addV3User(
     snmpEngine,
     "usr-md5-des",
-    config.usmHMACMD5AuthProtocol,
+    config.USM_AUTH_HMAC96_MD5,
     "authkey1",
-    config.usmDESPrivProtocol,
+    config.USM_PRIV_CBC56_DES,
     "privkey1",
 )
 config.addTargetParams(snmpEngine, "my-creds", "usr-md5-des", "authPriv")
@@ -45,10 +45,10 @@ config.addTargetParams(snmpEngine, "my-creds", "usr-md5-des", "authPriv")
 
 # UDP/IPv4
 config.addTransport(
-    snmpEngine, udp.domainName, udp.UdpAsyncioTransport().openClientMode()
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
 )
 config.addTargetAddr(
-    snmpEngine, "my-router", udp.domainName, ("127.0.0.1", 161), "my-creds"
+    snmpEngine, "my-router", udp.DOMAIN_NAME, ("127.0.0.1", 161), "my-creds"
 )
 
 

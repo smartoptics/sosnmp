@@ -9,31 +9,57 @@ from pyasn1.compat.octets import octs2ints
 from pysnmp import error
 from pysnmp import __version__
 
-flagNone = 0x0000
-flagIO = 0x0001
-flagDsp = 0x0002
-flagMP = 0x0004
-flagSM = 0x0008
-flagBld = 0x0010
-flagMIB = 0x0020
-flagIns = 0x0040
-flagACL = 0x0080
-flagPrx = 0x0100
-flagApp = 0x0200
-flagAll = 0xFFFF
+import warnings
 
-flagMap = {
-    "io": flagIO,
-    "dsp": flagDsp,
-    "msgproc": flagMP,
-    "secmod": flagSM,
-    "mibbuild": flagBld,
-    "mibview": flagMIB,
-    "mibinstrum": flagIns,
-    "acl": flagACL,
-    "proxy": flagPrx,
-    "app": flagApp,
-    "all": flagAll,
+
+def __getattr__(attr: str):
+    if newAttr := {
+        "flagMap": "FLAG_MAP",
+        "flagNone": "FLAG_NONE",
+        "flagIO": "FLAG_IO",
+        "flagDSP": "FLAG_DSP",
+        "flagMP": "FLAG_MP",
+        "flagSM": "FLAG_SM",
+        "flagBLD": "FLAG_BLD",
+        "flagMIB": "FLAG_MIB",
+        "flagINS": "FLAG_INS",
+        "flagACL": "FLAG_ACL",
+        "flagPRX": "FLAG_PRX",
+        "flagAPP": "FLAG_APP",
+        "flagALL": "FLAG_ALL",
+    }.get(attr):
+        warnings.warn(
+            f"{attr} is deprecated. Please use {newAttr} instead.", DeprecationWarning
+        )
+        return globals()[newAttr]
+    raise AttributeError(attr)
+
+
+FLAG_NONE = 0x0000
+FLAG_IO = 0x0001
+FLAG_DSP = 0x0002
+FLAG_MP = 0x0004
+FLAG_SM = 0x0008
+FLAG_BLD = 0x0010
+FLAG_MIB = 0x0020
+FLAG_INS = 0x0040
+FLAG_ACL = 0x0080
+FLAG_PRX = 0x0100
+FLAG_APP = 0x0200
+FLAG_ALL = 0xFFFF
+
+FLAG_MAP = {
+    "io": FLAG_IO,
+    "dsp": FLAG_DSP,
+    "msgproc": FLAG_MP,
+    "secmod": FLAG_SM,
+    "mibbuild": FLAG_BLD,
+    "mibview": FLAG_MIB,
+    "mibinstrum": FLAG_INS,
+    "acl": FLAG_ACL,
+    "proxy": FLAG_PRX,
+    "app": FLAG_APP,
+    "all": FLAG_ALL,
 }
 
 
@@ -58,24 +84,18 @@ class Printer:
         return "<python built-in logging>"
 
 
-if hasattr(logging, "NullHandler"):
-    NullHandler = logging.NullHandler
-else:
-    # Python 2.6 and older
-    class NullHandler(logging.Handler):
-        def emit(self, record):
-            pass
+NullHandler = logging.NullHandler
 
 
 class Debug:
-    defaultPrinter = None
+    DEFAULT_PRINTER = None
 
     def __init__(self, *flags, **options):
-        self._flags = flagNone
+        self._flags = FLAG_NONE
         if options.get("printer") is not None:
             self._printer = options.get("printer")
-        elif self.defaultPrinter is not None:
-            self._printer = self.defaultPrinter
+        elif self.DEFAULT_PRINTER is not None:
+            self._printer = self.DEFAULT_PRINTER
         else:
             if "loggerName" in options:
                 # route our logs to parent logger
@@ -92,9 +112,9 @@ class Debug:
                 f = f[1:]
             try:
                 if inverse:
-                    self._flags &= ~flagMap[f]
+                    self._flags &= ~FLAG_MAP[f]
                 else:
-                    self._flags |= flagMap[f]
+                    self._flags |= FLAG_MAP[f]
             except KeyError:
                 raise error.PySnmpError("bad debug flag %s" % f)
 
@@ -120,9 +140,9 @@ class Debug:
 logger = 0
 
 
-def setLogger(l):
+def setLogger(value):
     global logger
-    logger = l
+    logger = value
 
 
 def hexdump(octets):

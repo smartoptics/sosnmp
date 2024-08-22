@@ -33,7 +33,7 @@ sock.bind(("::1", 161))
 # This option is not available on many scenarios
 sock.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, socket.IPV6_V6ONLY)
 config.addTransport(
-    snmpEngine, udp6.domainName, udp6.Udp6Transport().openServerMode(sock=sock)
+    snmpEngine, udp6.DOMAIN_NAME, udp6.Udp6Transport().openServerMode(sock=sock)
 )
 
 # SNMPv2c setup

@@ -4,6 +4,7 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+import warnings
 from pyasn1.compat.octets import null
 from pysnmp.carrier.asyncio.dgram import udp, udp6, unix
 from pysnmp.carrier.base import AbstractTransport
@@ -18,72 +19,111 @@ from pysnmp.proto import rfc1905
 from pysnmp import error
 from pysnmp import debug
 
+# Old to new attribute mapping
+deprecated_attributes = {
+    "snmpUDPDomain": "SNMP_UDP_DOMAIN",
+    "snmpUDP6Domain": "SNMP_UDP6_DOMAIN",
+    "snmpLocalDomain": "SNMP_LOCAL_DOMAIN",
+    "usmHMACMD5AuthProtocol": "USM_AUTH_HMAC96_MD5",
+    "usmHMACSHAAuthProtocol": "USM_AUTH_HMAC96_SHA",
+    "usmHMAC128SHA224AuthProtocol": "USM_AUTH_HMAC128_SHA224",
+    "usmHMAC192SHA256AuthProtocol": "USM_AUTH_HMAC192_SHA256",
+    "usmHMAC256SHA384AuthProtocol": "USM_AUTH_HMAC256_SHA384",
+    "usmHMAC384SHA512AuthProtocol": "USM_AUTH_HMAC384_SHA512",
+    "usmNoAuthProtocol": "USM_AUTH_NONE",
+    "usmDESPrivProtocol": "USM_PRIV_CBC56_DES",
+    "usm3DESEDEPrivProtocol": "USM_PRIV_CBC168_3DES",
+    "usmAesCfb128Protocol": "USM_PRIV_CFB128_AES",
+    "usmAesBlumenthalCfb192Protocol": "USM_PRIV_CFB192_AES_BLUMENTHAL",
+    "usmAesBlumenthalCfb256Protocol": "USM_PRIV_CFB256_AES_BLUMENTHAL",
+    "usmAesCfb192Protocol": "USM_PRIV_CFB192_AES",
+    "usmAesCfb256Protocol": "USM_PRIV_CFB256_AES",
+    "usmNoPrivProtocol": "USM_PRIV_NONE",
+    "usmKeyTypePassphrase": "USM_KEY_TYPE_PASSPHRASE",
+    "usmKeyTypeMaster": "USM_KEY_TYPE_MASTER",
+    "usmKeyTypeLocalized": "USM_KEY_TYPE_LOCALIZED",
+    "authServices": "AUTH_SERVICES",
+    "privServices": "PRIV_SERVICES",
+}
+
+
+def __getattr__(attr: str):
+    if new_attr := deprecated_attributes.get(attr):
+        warnings.warn(
+            f"{attr} is deprecated. Please use {new_attr} instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return globals()[new_attr]
+    raise AttributeError(f"module '{__name__}' has no attribute '{attr}'")
+
+
 # A shortcut to popular constants
 
 # Transports
-snmpUDPDomain = udp.snmpUDPDomain
-snmpUDP6Domain = udp6.snmpUDP6Domain
-snmpLocalDomain = unix.snmpLocalDomain
+snmpUDPDomain = udp.SNMP_UDP_DOMAIN
+snmpUDP6Domain = udp6.SNMP_UDP6_DOMAIN
+snmpLocalDomain = unix.SNMP_LOCAL_DOMAIN
 
 # Auth protocol
-usmHMACMD5AuthProtocol = hmacmd5.HmacMd5.serviceID
-usmHMACSHAAuthProtocol = hmacsha.HmacSha.serviceID
-usmHMAC128SHA224AuthProtocol = hmacsha2.HmacSha2.sha224ServiceID
-usmHMAC192SHA256AuthProtocol = hmacsha2.HmacSha2.sha256ServiceID
-usmHMAC256SHA384AuthProtocol = hmacsha2.HmacSha2.sha384ServiceID
-usmHMAC384SHA512AuthProtocol = hmacsha2.HmacSha2.sha512ServiceID
+USM_AUTH_HMAC96_MD5 = hmacmd5.HmacMd5.SERVICE_ID
+USM_AUTH_HMAC96_SHA = hmacsha.HmacSha.SERVICE_ID
+USM_AUTH_HMAC128_SHA224 = hmacsha2.HmacSha2.SHA224_SERVICE_ID
+USM_AUTH_HMAC192_SHA256 = hmacsha2.HmacSha2.SHA256_SERVICE_ID
+USM_AUTH_HMAC256_SHA384 = hmacsha2.HmacSha2.SAH384_SERVICE_ID
+USM_AUTH_HMAC384_SHA512 = hmacsha2.HmacSha2.SHA512_SERVICE_ID
 
-usmNoAuthProtocol = noauth.NoAuth.serviceID
+USM_AUTH_NONE = noauth.NoAuth.SERVICE_ID
 """No authentication service"""
 
 # Privacy protocol
-usmDESPrivProtocol = des.Des.serviceID
-usm3DESEDEPrivProtocol = des3.Des3.serviceID
-usmAesCfb128Protocol = aes.Aes.serviceID
-usmAesBlumenthalCfb192Protocol = (
-    aes192.AesBlumenthal192.serviceID
+USM_PRIV_CBC56_DES = des.Des.SERVICE_ID
+USM_PRIV_CBC168_3DES = des3.Des3.SERVICE_ID
+USM_PRIV_CFB128_AES = aes.Aes.SERVICE_ID
+USM_PRIV_CFB192_AES_BLUMENTHAL = (
+    aes192.AesBlumenthal192.SERVICE_ID
 )  # semi-standard but not widely used
-usmAesBlumenthalCfb256Protocol = (
-    aes256.AesBlumenthal256.serviceID
+USM_PRIV_CFB256_AES_BLUMENTHAL = (
+    aes256.AesBlumenthal256.SERVICE_ID
 )  # semi-standard but not widely used
-usmAesCfb192Protocol = aes192.Aes192.serviceID  # non-standard but used by many vendors
-usmAesCfb256Protocol = aes256.Aes256.serviceID  # non-standard but used by many vendors
-usmNoPrivProtocol = nopriv.NoPriv.serviceID
+USM_PRIV_CFB192_AES = aes192.Aes192.SERVICE_ID  # non-standard but used by many vendors
+USM_PRIV_CFB256_AES = aes256.Aes256.SERVICE_ID  # non-standard but used by many vendors
+USM_PRIV_NONE = nopriv.NoPriv.SERVICE_ID
 
 # USM key types (PYSNMP-USM-MIB::pysnmpUsmKeyType)
-usmKeyTypePassphrase = 0
-usmKeyTypeMaster = 1
-usmKeyTypeLocalized = 2
+USM_KEY_TYPE_PASSPHRASE = 0
+USM_KEY_TYPE_MASTER = 1
+USM_KEY_TYPE_LOCALIZED = 2
 
 # Auth services
-authServices = {
-    hmacmd5.HmacMd5.serviceID: hmacmd5.HmacMd5(),
-    hmacsha.HmacSha.serviceID: hmacsha.HmacSha(),
-    hmacsha2.HmacSha2.sha224ServiceID: hmacsha2.HmacSha2(
-        hmacsha2.HmacSha2.sha224ServiceID
+AUTH_SERVICES = {
+    hmacmd5.HmacMd5.SERVICE_ID: hmacmd5.HmacMd5(),
+    hmacsha.HmacSha.SERVICE_ID: hmacsha.HmacSha(),
+    hmacsha2.HmacSha2.SHA224_SERVICE_ID: hmacsha2.HmacSha2(
+        hmacsha2.HmacSha2.SHA224_SERVICE_ID
     ),
-    hmacsha2.HmacSha2.sha256ServiceID: hmacsha2.HmacSha2(
-        hmacsha2.HmacSha2.sha256ServiceID
+    hmacsha2.HmacSha2.SHA256_SERVICE_ID: hmacsha2.HmacSha2(
+        hmacsha2.HmacSha2.SHA256_SERVICE_ID
     ),
-    hmacsha2.HmacSha2.sha384ServiceID: hmacsha2.HmacSha2(
-        hmacsha2.HmacSha2.sha384ServiceID
+    hmacsha2.HmacSha2.SAH384_SERVICE_ID: hmacsha2.HmacSha2(
+        hmacsha2.HmacSha2.SAH384_SERVICE_ID
     ),
-    hmacsha2.HmacSha2.sha512ServiceID: hmacsha2.HmacSha2(
-        hmacsha2.HmacSha2.sha512ServiceID
+    hmacsha2.HmacSha2.SHA512_SERVICE_ID: hmacsha2.HmacSha2(
+        hmacsha2.HmacSha2.SHA512_SERVICE_ID
     ),
-    noauth.NoAuth.serviceID: noauth.NoAuth(),
+    noauth.NoAuth.SERVICE_ID: noauth.NoAuth(),
 }
 
 # Privacy services
-privServices = {
-    des.Des.serviceID: des.Des(),
-    des3.Des3.serviceID: des3.Des3(),
-    aes.Aes.serviceID: aes.Aes(),
-    aes192.AesBlumenthal192.serviceID: aes192.AesBlumenthal192(),
-    aes256.AesBlumenthal256.serviceID: aes256.AesBlumenthal256(),
-    aes192.Aes192.serviceID: aes192.Aes192(),  # non-standard
-    aes256.Aes256.serviceID: aes256.Aes256(),  # non-standard
-    nopriv.NoPriv.serviceID: nopriv.NoPriv(),
+PRIV_SERVICES = {
+    des.Des.SERVICE_ID: des.Des(),
+    des3.Des3.SERVICE_ID: des3.Des3(),
+    aes.Aes.SERVICE_ID: aes.Aes(),
+    aes192.AesBlumenthal192.SERVICE_ID: aes192.AesBlumenthal192(),
+    aes256.AesBlumenthal256.SERVICE_ID: aes256.AesBlumenthal256(),
+    aes192.Aes192.SERVICE_ID: aes192.Aes192(),  # non-standard
+    aes256.Aes256.SERVICE_ID: aes256.Aes256(),  # non-standard
+    nopriv.NoPriv.SERVICE_ID: nopriv.NoPriv(),
 }
 
 
@@ -137,7 +177,7 @@ def addV1System(
         )
     )
 
-    debug.logger & debug.flagSM and debug.logger(
+    debug.logger & debug.FLAG_SM and debug.logger(
         "addV1System: added new table entry "
         'communityIndex "%s" communityName "%s" securityName "%s" '
         'contextEngineId "%s" contextName "%s" transportTag '
@@ -161,7 +201,7 @@ def delV1System(snmpEngine, communityIndex):
         ((snmpCommunityEntry.name + (8,) + tblIdx, "destroy"),)
     )
 
-    debug.logger & debug.flagSM and debug.logger(
+    debug.logger & debug.FLAG_SM and debug.logger(
         "delV1System: deleted table entry by communityIndex " '"%s"' % (communityIndex,)
     )
 
@@ -190,14 +230,14 @@ def __cookV3UserInfo(snmpEngine, securityName, securityEngineId):
 def addV3User(
     snmpEngine,
     userName,
-    authProtocol=usmNoAuthProtocol,
+    authProtocol=USM_AUTH_NONE,
     authKey=None,
-    privProtocol=usmNoPrivProtocol,
+    privProtocol=USM_PRIV_NONE,
     privKey=None,
     securityEngineId=None,
     securityName=None,
-    authKeyType=usmKeyTypePassphrase,
-    privKeyType=usmKeyTypePassphrase,
+    authKeyType=USM_KEY_TYPE_PASSPHRASE,
+    privKeyType=USM_KEY_TYPE_PASSPHRASE,
     # deprecated parameter
     contextEngineId=None,
 ):
@@ -239,10 +279,10 @@ def addV3User(
         )
     )
 
-    if authProtocol not in authServices:
+    if authProtocol not in AUTH_SERVICES:
         raise error.PySnmpError(f"Unknown auth protocol {authProtocol}")
 
-    if privProtocol not in privServices:
+    if privProtocol not in PRIV_SERVICES:
         raise error.PySnmpError(f"Unknown privacy protocol {privProtocol}")
 
     (pysnmpUsmKeyType,) = mibBuilder.importSymbols(
@@ -257,11 +297,11 @@ def addV3User(
 
     masterAuthKey = localAuthKey = authKey
 
-    if authKeyType < usmKeyTypeMaster:  # pass phrase is given
-        masterAuthKey = authServices[authProtocol].hashPassphrase(authKey or null)
+    if authKeyType < USM_KEY_TYPE_MASTER:  # pass phrase is given
+        masterAuthKey = AUTH_SERVICES[authProtocol].hashPassphrase(authKey or null)
 
-    if authKeyType < usmKeyTypeLocalized:  # pass phrase or master key is given
-        localAuthKey = authServices[authProtocol].localizeKey(
+    if authKeyType < USM_KEY_TYPE_LOCALIZED:  # pass phrase or master key is given
+        localAuthKey = AUTH_SERVICES[authProtocol].localizeKey(
             masterAuthKey, securityEngineId
         )
 
@@ -273,13 +313,13 @@ def addV3User(
 
     masterPrivKey = localPrivKey = privKey
 
-    if privKeyType < usmKeyTypeMaster:  # pass phrase is given
-        masterPrivKey = privServices[privProtocol].hashPassphrase(
+    if privKeyType < USM_KEY_TYPE_MASTER:  # pass phrase is given
+        masterPrivKey = PRIV_SERVICES[privProtocol].hashPassphrase(
             authProtocol, privKey or null
         )
 
-    if privKeyType < usmKeyTypeLocalized:  # pass phrase or master key is given
-        localPrivKey = privServices[privProtocol].localizeKey(
+    if privKeyType < USM_KEY_TYPE_LOCALIZED:  # pass phrase or master key is given
+        localPrivKey = PRIV_SERVICES[privProtocol].localizeKey(
             authProtocol, masterPrivKey, securityEngineId
         )
 
@@ -293,12 +333,12 @@ def addV3User(
         ((pysnmpUsmKeyEntry.name + (2,) + tblIdx1, localPrivKey),)
     )
 
-    if authKeyType < usmKeyTypeLocalized:
+    if authKeyType < USM_KEY_TYPE_LOCALIZED:
         snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
             ((pysnmpUsmKeyEntry.name + (3,) + tblIdx1, masterAuthKey),)
         )
 
-    if privKeyType < usmKeyTypeLocalized:
+    if privKeyType < USM_KEY_TYPE_LOCALIZED:
         snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
             ((pysnmpUsmKeyEntry.name + (4,) + tblIdx1, masterPrivKey),)
         )
@@ -313,7 +353,7 @@ def addV3User(
         ((pysnmpUsmSecretEntry.name + (4,) + tblIdx2, "createAndGo"),)
     )
 
-    if authKeyType < usmKeyTypeMaster:
+    if authKeyType < USM_KEY_TYPE_MASTER:
         snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
             (
                 (pysnmpUsmSecretEntry.name + (1,) + tblIdx2, userName),
@@ -321,7 +361,7 @@ def addV3User(
             )
         )
 
-    if privKeyType < usmKeyTypeMaster:
+    if privKeyType < USM_KEY_TYPE_MASTER:
         snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
             (
                 (pysnmpUsmSecretEntry.name + (1,) + tblIdx2, userName),
@@ -329,7 +369,7 @@ def addV3User(
             )
         )
 
-    debug.logger & debug.flagSM and debug.logger(
+    debug.logger & debug.FLAG_SM and debug.logger(
         "addV3User: added new table entries "
         'userName "%s" securityName "%s" authProtocol %s '
         'privProtocol %s localAuthKey "%s" localPrivKey "%s" '
@@ -378,7 +418,7 @@ def delV3User(
         ((pysnmpUsmSecretEntry.name + (4,) + tblIdx2, "destroy"),)
     )
 
-    debug.logger & debug.flagSM and debug.logger(
+    debug.logger & debug.FLAG_SM and debug.logger(
         "delV3User: deleted table entries by index "
         'userName "%s" securityEngineId '
         '"%s"' % (userName, securityEngineId.prettyPrint())
@@ -530,7 +570,7 @@ def addTransport(
                 f"Transport {transport!r} is not compatible with dispatcher {snmpEngine.transportDispatcher!r}"
             )
     else:
-        protoTransportDispatcher = transport.protoTransportDispatcher
+        protoTransportDispatcher = transport.PROTO_TRANSPORT_DISPATCHER
         if protoTransportDispatcher is not None:
             snmpEngine.registerTransportDispatcher(protoTransportDispatcher())
             # here we note that we have created transportDispatcher automatically

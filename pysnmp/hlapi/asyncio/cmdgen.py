@@ -60,8 +60,8 @@ __all__ = [
     "bulkWalkCmd",
 ]
 
-vbProcessor = CommandGeneratorVarBinds()
-lcd = CommandGeneratorLcdConfigurator()
+VB_PROCESSOR = CommandGeneratorVarBinds()
+LCD = CommandGeneratorLcdConfigurator()
 
 isEndOfMib = lambda x: not cmdgen.getNextVarBinds(x)[1]
 
@@ -159,7 +159,9 @@ async def getCmd(
         if future.cancelled():
             return
         try:
-            varBindsUnmade = vbProcessor.unmakeVarBinds(snmpEngine, varBinds, lookupMib)
+            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+                snmpEngine, varBinds, lookupMib
+            )
         except Exception:
             ex = sys.exc_info()[1]
             future.set_exception(ex)
@@ -168,7 +170,7 @@ async def getCmd(
                 (errorIndication, errorStatus, errorIndex, varBindsUnmade)
             )
 
-    addrName, paramsName = lcd.configure(
+    addrName, paramsName = LCD.configure(
         snmpEngine, authData, transportTarget, contextData.contextName
     )
 
@@ -179,7 +181,7 @@ async def getCmd(
         addrName,
         contextData.contextEngineId,
         contextData.contextName,
-        vbProcessor.makeVarBinds(snmpEngine, varBinds),
+        VB_PROCESSOR.makeVarBinds(snmpEngine, varBinds),
         __cbFun,
         (options.get("lookupMib", True), future),
     )
@@ -279,7 +281,9 @@ async def setCmd(
         if future.cancelled():
             return
         try:
-            varBindsUnmade = vbProcessor.unmakeVarBinds(snmpEngine, varBinds, lookupMib)
+            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+                snmpEngine, varBinds, lookupMib
+            )
         except Exception:
             ex = sys.exc_info()[1]
             future.set_exception(ex)
@@ -288,7 +292,7 @@ async def setCmd(
                 (errorIndication, errorStatus, errorIndex, varBindsUnmade)
             )
 
-    addrName, paramsName = lcd.configure(
+    addrName, paramsName = LCD.configure(
         snmpEngine, authData, transportTarget, contextData.contextName
     )
 
@@ -299,7 +303,7 @@ async def setCmd(
         addrName,
         contextData.contextEngineId,
         contextData.contextName,
-        vbProcessor.makeVarBinds(snmpEngine, varBinds),
+        VB_PROCESSOR.makeVarBinds(snmpEngine, varBinds),
         __cbFun,
         (options.get("lookupMib", True), future),
     )
@@ -414,7 +418,7 @@ async def nextCmd(
             errorIndication = None  # TODO: fix this
         try:
             varBindsUnmade = [
-                vbProcessor.unmakeVarBinds(snmpEngine, varBindTableRow, lookupMib)
+                VB_PROCESSOR.unmakeVarBinds(snmpEngine, varBindTableRow, lookupMib)
                 for varBindTableRow in varBindTable
             ]
         except Exception:
@@ -425,7 +429,7 @@ async def nextCmd(
                 (errorIndication, errorStatus, errorIndex, varBindsUnmade)
             )
 
-    addrName, paramsName = lcd.configure(
+    addrName, paramsName = LCD.configure(
         snmpEngine, authData, transportTarget, contextData.contextName
     )
 
@@ -436,7 +440,7 @@ async def nextCmd(
         addrName,
         contextData.contextEngineId,
         contextData.contextName,
-        vbProcessor.makeVarBinds(snmpEngine, varBinds),
+        VB_PROCESSOR.makeVarBinds(snmpEngine, varBinds),
         __cbFun,
         (options.get("lookupMib", True), future),
     )
@@ -582,7 +586,7 @@ async def bulkCmd(
             errorIndication = None  # TODO: fix here
         try:
             varBindsUnmade = [
-                vbProcessor.unmakeVarBinds(snmpEngine, varBindTableRow, lookupMib)
+                VB_PROCESSOR.unmakeVarBinds(snmpEngine, varBindTableRow, lookupMib)
                 for varBindTableRow in varBindTable
             ]
         except Exception:
@@ -593,7 +597,7 @@ async def bulkCmd(
                 (errorIndication, errorStatus, errorIndex, varBindsUnmade)
             )
 
-    addrName, paramsName = lcd.configure(
+    addrName, paramsName = LCD.configure(
         snmpEngine, authData, transportTarget, contextData.contextName
     )
 
@@ -606,7 +610,7 @@ async def bulkCmd(
         contextData.contextName,
         nonRepeaters,
         maxRepetitions,
-        vbProcessor.makeVarBinds(snmpEngine, varBinds),
+        VB_PROCESSOR.makeVarBinds(snmpEngine, varBinds),
         __cbFun,
         (options.get("lookupMib", True), future),
     )

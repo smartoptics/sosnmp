@@ -30,27 +30,27 @@ random.seed()
 
 
 class Aes(base.AbstractEncryptionService):
-    serviceID = (1, 3, 6, 1, 6, 3, 10, 1, 2, 4)  # usmAesCfb128Protocol
-    keySize = 16
-    _localInt = random.randrange(0, 0xFFFFFFFFFFFFFFFF)
+    SERVICE_ID = (1, 3, 6, 1, 6, 3, 10, 1, 2, 4)  # usmAesCfb128Protocol
+    KEY_SIZE = 16
+    local_int = random.randrange(0, 0xFFFFFFFFFFFFFFFF)
 
     # 3.1.2.1
     def __getEncryptionKey(self, privKey, snmpEngineBoots, snmpEngineTime):
         salt = [
-            self._localInt >> 56 & 0xFF,
-            self._localInt >> 48 & 0xFF,
-            self._localInt >> 40 & 0xFF,
-            self._localInt >> 32 & 0xFF,
-            self._localInt >> 24 & 0xFF,
-            self._localInt >> 16 & 0xFF,
-            self._localInt >> 8 & 0xFF,
-            self._localInt & 0xFF,
+            self.local_int >> 56 & 0xFF,
+            self.local_int >> 48 & 0xFF,
+            self.local_int >> 40 & 0xFF,
+            self.local_int >> 32 & 0xFF,
+            self.local_int >> 24 & 0xFF,
+            self.local_int >> 16 & 0xFF,
+            self.local_int >> 8 & 0xFF,
+            self.local_int & 0xFF,
         ]
 
-        if self._localInt == 0xFFFFFFFFFFFFFFFF:
-            self._localInt = 0
+        if self.local_int == 0xFFFFFFFFFFFFFFFF:
+            self.local_int = 0
         else:
-            self._localInt += 1
+            self.local_int += 1
 
         return self.__getDecryptionKey(
             privKey, snmpEngineBoots, snmpEngineTime, salt
@@ -74,30 +74,30 @@ class Aes(base.AbstractEncryptionService):
             snmpEngineTime & 0xFF,
         ] + salt
 
-        return privKey[: self.keySize].asOctets(), univ.OctetString(iv).asOctets()
+        return privKey[: self.KEY_SIZE].asOctets(), univ.OctetString(iv).asOctets()
 
     def hashPassphrase(self, authProtocol, privKey):
-        if authProtocol == hmacmd5.HmacMd5.serviceID:
+        if authProtocol == hmacmd5.HmacMd5.SERVICE_ID:
             hashAlgo = md5
-        elif authProtocol == hmacsha.HmacSha.serviceID:
+        elif authProtocol == hmacsha.HmacSha.SERVICE_ID:
             hashAlgo = sha1
-        elif authProtocol in hmacsha2.HmacSha2.hashAlgorithms:
-            hashAlgo = hmacsha2.HmacSha2.hashAlgorithms[authProtocol]
+        elif authProtocol in hmacsha2.HmacSha2.HASH_ALGORITHM:
+            hashAlgo = hmacsha2.HmacSha2.HASH_ALGORITHM[authProtocol]
         else:
             raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
         return localkey.hashPassphrase(privKey, hashAlgo)
 
     def localizeKey(self, authProtocol, privKey, snmpEngineID):
-        if authProtocol == hmacmd5.HmacMd5.serviceID:
+        if authProtocol == hmacmd5.HmacMd5.SERVICE_ID:
             hashAlgo = md5
-        elif authProtocol == hmacsha.HmacSha.serviceID:
+        elif authProtocol == hmacsha.HmacSha.SERVICE_ID:
             hashAlgo = sha1
-        elif authProtocol in hmacsha2.HmacSha2.hashAlgorithms:
-            hashAlgo = hmacsha2.HmacSha2.hashAlgorithms[authProtocol]
+        elif authProtocol in hmacsha2.HmacSha2.HASH_ALGORITHM:
+            hashAlgo = hmacsha2.HmacSha2.HASH_ALGORITHM[authProtocol]
         else:
             raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
         localPrivKey = localkey.localizeKey(privKey, snmpEngineID, hashAlgo)
-        return localPrivKey[: self.keySize]
+        return localPrivKey[: self.KEY_SIZE]
 
     # 3.2.4.1
     def encryptData(self, encryptKey, privParameters, dataToEncrypt):

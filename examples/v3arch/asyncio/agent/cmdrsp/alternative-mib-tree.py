@@ -31,13 +31,13 @@ snmpEngine = engine.SnmpEngine()
 
 # UDP over IPv4
 config.addTransport(
-    snmpEngine, udp.domainName, udp.UdpTransport().openServerMode(("127.0.0.1", 161))
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().openServerMode(("127.0.0.1", 161))
 )
 
 # SNMPv3/USM setup
 
 # user: usr-md5-none, auth: MD5, priv NONE
-config.addV3User(snmpEngine, "usr-md5-none", config.usmHMACMD5AuthProtocol, "authkey1")
+config.addV3User(snmpEngine, "usr-md5-none", config.USM_AUTH_HMAC96_MD5, "authkey1")
 
 # Allow full MIB access for each user at VACM
 config.addVacmUser(

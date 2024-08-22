@@ -35,12 +35,12 @@ config.addTargetParams(snmpEngine, "my-creds", "my-area", "noAuthNoPriv", 1)
 # Setup transport endpoint and bind it with security settings yielding
 # a target name
 config.addTransport(
-    snmpEngine, udp.domainName, udp.UdpAsyncioTransport().openClientMode()
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
 )
 
 # Create named target
 config.addTargetAddr(
-    snmpEngine, "my-nms", udp.domainName, ("127.0.0.1", 162), "my-creds"
+    snmpEngine, "my-nms", udp.DOMAIN_NAME, ("127.0.0.1", 162), "my-creds"
 )
 
 # *** SNMP engine configuration is complete by this line ***

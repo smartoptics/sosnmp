@@ -7,4 +7,4 @@ main_version = __version__
 if "beta" in __version__:
     main_version = __version__.split("-beta")[0]
 version = tuple(int(x) for x in main_version.split("."))
-majorVersionId = version[0]
+major_version_id = version[0]

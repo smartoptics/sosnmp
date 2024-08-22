@@ -13,7 +13,7 @@ from pysnmp import debug
 class Vacm:
     """Void Access Control Model"""
 
-    accessModelID = 0
+    ACCESS_MODEL_ID = 0
 
     def isAccessAllowed(
         self,
@@ -25,7 +25,7 @@ class Vacm:
         contextName,
         variableName,
     ):
-        debug.logger & debug.flagACL and debug.logger(
+        debug.logger & debug.FLAG_ACL and debug.logger(
             f"isAccessAllowed: viewType {viewType} for variableName {variableName} - OK"
         )
 

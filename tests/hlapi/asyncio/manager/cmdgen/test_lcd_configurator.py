@@ -16,9 +16,9 @@ def test_usm_auth_cache_cleared(delV3User, addV3User):
     authDataValues = {
         "userName": "username",
         "authKey": "authkey1",
-        "authProtocol": usmHMACMD5AuthProtocol,
+        "authProtocol": USM_AUTH_HMAC96_MD5,
         "privKey": "privkey1",
-        "privProtocol": usmAesCfb128Protocol,
+        "privProtocol": USM_PRIV_CFB128_AES,
     }
 
     lcd = CommandGeneratorLcdConfigurator()
@@ -45,8 +45,8 @@ def test_usm_auth_cache_cleared(delV3User, addV3User):
 
     changeAuthValues = {
         "authKey": "authKey2",
-        "privProtocol": usmDESPrivProtocol,
-        "authProtocol": usmHMACSHAAuthProtocol,
+        "privProtocol": USM_PRIV_CBC56_DES,
+        "authProtocol": USM_AUTH_HMAC96_SHA,
         "privKey": "privKey2",
     }
 

@@ -13,10 +13,15 @@ try:
     from socket import AF_UNIX
 except ImportError:
     AF_UNIX = None
+
+from typing import Tuple
+import warnings
 from pysnmp.carrier.base import AbstractTransportAddress
 from pysnmp.carrier.asyncio.dgram.base import DgramAsyncioProtocol
 
-domainName = snmpLocalDomain = (1, 3, 6, 1, 2, 1, 100, 1, 13)
+DOMAIN_NAME: Tuple[int, ...]
+SNMP_UDP6_DOMAIN: Tuple[int, ...]
+DOMAIN_NAME = SNMP_LOCAL_DOMAIN = (1, 3, 6, 1, 2, 1, 100, 1, 13)
 
 random.seed()
 
@@ -26,8 +31,8 @@ class UnixTransportAddress(str, AbstractTransportAddress):
 
 
 class UnixAsyncioTransport(DgramAsyncioProtocol):
-    sockFamily = AF_UNIX
-    addressType = UnixTransportAddress
+    SOCK_FAMILY: "int|None" = AF_UNIX
+    ADDRESS_TYPE = UnixTransportAddress
     _iface = ""
 
     def openClientMode(self, iface=None):
@@ -58,3 +63,20 @@ class UnixAsyncioTransport(DgramAsyncioProtocol):
 
 
 UnixTransport = UnixAsyncioTransport
+
+# Old to new attribute mapping
+deprecated_attributes = {
+    "domainName": "DOMAIN_NAME",
+    "snmpLocalDomain": "SNMP_LOCAL_DOMAIN",
+}
+
+
+def __getattr__(attr: str):
+    if new_attr := deprecated_attributes.get(attr):
+        warnings.warn(
+            f"{attr} is deprecated. Please use {new_attr} instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return globals()[new_attr]
+    raise AttributeError(f"module '{__name__}' has no attribute '{attr}'")

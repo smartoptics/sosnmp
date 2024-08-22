@@ -48,8 +48,8 @@ import asyncio
 class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
     """Base Asyncio datagram Transport, to be used with AsyncioDispatcher"""
 
-    sockFamily: int = 0
-    addressType: type
+    SOCK_FAMILY: int = 0
+    ADDRESS_TYPE: type
     transport: "asyncio.DatagramTransport | None" = None
     loop: asyncio.AbstractEventLoop
 
@@ -70,10 +70,10 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
 
     def connection_made(self, transport: asyncio.DatagramTransport):
         self.transport = transport
-        debug.logger & debug.flagIO and debug.logger("connection_made: invoked")
+        debug.logger & debug.FLAG_IO and debug.logger("connection_made: invoked")
         while self._writeQ:
             outgoingMessage, transportAddress = self._writeQ.pop(0)
-            debug.logger & debug.flagIO and debug.logger(
+            debug.logger & debug.FLAG_IO and debug.logger(
                 "connection_made: transportAddress %r outgoingMessage %s"
                 % (transportAddress, debug.hexdump(outgoingMessage))
             )
@@ -87,7 +87,7 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
                 )
 
     def connection_lost(self, exc):
-        debug.logger & debug.flagIO and debug.logger("connection_lost: invoked")
+        debug.logger & debug.FLAG_IO and debug.logger("connection_lost: invoked")
 
     # AbstractAsyncioTransport API
 
@@ -98,7 +98,7 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
             c = self.loop.create_datagram_endpoint(
                 lambda: self,
                 local_addr=iface,
-                family=self.sockFamily,
+                family=self.SOCK_FAMILY,
                 allow_broadcast=allow_broadcast,
             )
             # Avoid deprecation warning for asyncio.async()
@@ -121,7 +121,7 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
                 c = self.loop.create_datagram_endpoint(lambda: self, sock=sock)
             else:
                 c = self.loop.create_datagram_endpoint(
-                    lambda: self, local_addr=iface, family=self.sockFamily
+                    lambda: self, local_addr=iface, family=self.SOCK_FAMILY
                 )
             # Avoid deprecation warning for asyncio.async()
             self._lport = asyncio.ensure_future(c)
@@ -143,7 +143,7 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
         outgoingMessage,
         transportAddress: "AbstractTransportAddress | tuple[str, int]",
     ):
-        debug.logger & debug.flagIO and debug.logger(
+        debug.logger & debug.FLAG_IO and debug.logger(
             "sendMessage: {} transportAddress {!r} outgoingMessage {}".format(
                 (self.transport is None and "queuing" or "sending"),
                 transportAddress,
@@ -165,6 +165,6 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
     def normalizeAddress(
         self, transportAddress: "AbstractTransportAddress | tuple[str, int]"
     ):
-        if not isinstance(transportAddress, self.addressType):
-            transportAddress = self.addressType(transportAddress)
+        if not isinstance(transportAddress, self.ADDRESS_TYPE):
+            transportAddress = self.ADDRESS_TYPE(transportAddress)
         return transportAddress

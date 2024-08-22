@@ -14,7 +14,7 @@ from pysnmp import debug
 
 # 3.4
 class NotificationReceiver:
-    pduTypes = (
+    SUPPORTED_PDU_TYPES = (
         v1.TrapPDU.tagSet,
         v2c.SNMPv2TrapPDU.tagSet,
         v2c.InformRequestPDU.tagSet,
@@ -22,7 +22,7 @@ class NotificationReceiver:
 
     def __init__(self, snmpEngine, cbFun, cbCtx=None):
         snmpEngine.msgAndPduDsp.registerContextEngineId(
-            null, self.pduTypes, self.processPdu  # '' is a wildcard
+            null, self.SUPPORTED_PDU_TYPES, self.processPdu  # '' is a wildcard
         )
 
         self.__snmpTrapCommunity = ""
@@ -38,7 +38,9 @@ class NotificationReceiver:
         )
 
     def close(self, snmpEngine):
-        snmpEngine.msgAndPduDsp.unregisterContextEngineId(null, self.pduTypes)
+        snmpEngine.msgAndPduDsp.unregisterContextEngineId(
+            null, self.SUPPORTED_PDU_TYPES
+        )
         self.__cbFun = self.__cbCtx = None
 
     def processPdu(
@@ -66,12 +68,12 @@ class NotificationReceiver:
         errorIndex = 0
         varBinds = v2c.apiPDU.getVarBinds(PDU)
 
-        debug.logger & debug.flagApp and debug.logger(
+        debug.logger & debug.FLAG_APP and debug.logger(
             f"processPdu: stateReference {stateReference}, varBinds {varBinds}"
         )
 
         # 3.4
-        if PDU.tagSet in rfc3411.confirmedClassPDUs:
+        if PDU.tagSet in rfc3411.CONFIRMED_CLASS_PDUS:
             # 3.4.1 --> no-op
 
             rspPDU = v2c.apiPDU.getResponse(PDU)
@@ -81,7 +83,7 @@ class NotificationReceiver:
             v2c.apiPDU.setErrorIndex(rspPDU, errorIndex)
             v2c.apiPDU.setVarBinds(rspPDU, varBinds)
 
-            debug.logger & debug.flagApp and debug.logger(
+            debug.logger & debug.FLAG_APP and debug.logger(
                 f"processPdu: stateReference {stateReference}, confirm PDU {rspPDU.prettyPrint()}"
             )
 
@@ -109,7 +111,7 @@ class NotificationReceiver:
                 )
 
             except error.StatusInformation:
-                debug.logger & debug.flagApp and debug.logger(
+                debug.logger & debug.FLAG_APP and debug.logger(
                     f"processPdu: stateReference {stateReference}, statusInformation {sys.exc_info()[1]}"
                 )
                 (
@@ -119,12 +121,12 @@ class NotificationReceiver:
                 )
                 snmpSilentDrops.syntax += 1
 
-        elif PDU.tagSet in rfc3411.unconfirmedClassPDUs:
+        elif PDU.tagSet in rfc3411.UNCONFIRMED_CLASS_PDUS:
             pass
         else:
             raise error.ProtocolError("Unexpected PDU class %s" % PDU.tagSet)
 
-        debug.logger & debug.flagApp and debug.logger(
+        debug.logger & debug.FLAG_APP and debug.logger(
             "processPdu: stateReference {}, user cbFun {}, cbCtx {}, varBinds {}".format(
                 stateReference, self.__cbFun, self.__cbCtx, varBinds
             )

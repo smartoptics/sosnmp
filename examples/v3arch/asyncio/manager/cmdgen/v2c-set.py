@@ -37,9 +37,9 @@ config.addTargetParams(snmpEngine, "my-creds", "my-area", "noAuthNoPriv", 1)
 #
 
 # UDP/IPv4
-config.addTransport(snmpEngine, udp.domainName, udp.UdpTransport().openClientMode())
+config.addTransport(snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().openClientMode())
 config.addTargetAddr(
-    snmpEngine, "my-router", udp.domainName, ("127.0.0.1", 161), "my-creds"
+    snmpEngine, "my-router", udp.DOMAIN_NAME, ("127.0.0.1", 161), "my-creds"
 )
 
 

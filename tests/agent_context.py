@@ -22,14 +22,14 @@ async def start_agent(
     # Set up transport endpoint
     config.addTransport(
         snmpEngine,
-        udp.domainName,
+        udp.DOMAIN_NAME,
         udp.UdpTransport().openServerMode(("localhost", AGENT_PORT)),
     )
 
     if enable_ipv6:
         config.addTransport(
             snmpEngine,
-            udp6.domainName,
+            udp6.DOMAIN_NAME,
             udp6.Udp6Transport().openServerMode(("localhost", AGENT_PORT)),
         )
 
@@ -37,21 +37,19 @@ async def start_agent(
     config.addV1System(snmpEngine, "public", "public")
     # Add SNMP v3 user
     config.addV3User(
-        snmpEngine, "usr-none-none", config.usmNoAuthProtocol, config.usmNoPrivProtocol
+        snmpEngine, "usr-none-none", config.USM_AUTH_NONE, config.USM_PRIV_NONE
     )
 
     config.addV3User(
         snmpEngine,
         "usr-sha-aes",
-        config.usmHMACSHAAuthProtocol,
+        config.USM_AUTH_HMAC96_SHA,
         "authkey1",
-        config.usmAesCfb128Protocol,
+        config.USM_PRIV_CFB128_AES,
         "privkey1",
     )
 
-    config.addV3User(
-        snmpEngine, "usr-sha-none", config.usmHMACSHAAuthProtocol, "authkey1"
-    )
+    config.addV3User(snmpEngine, "usr-sha-none", config.USM_AUTH_HMAC96_SHA, "authkey1")
 
     # Allow read MIB access for this user / securityModels at VACM
     config.addVacmUser(snmpEngine, 1, "public", "noAuthNoPriv", (1, 3, 6), (1, 3, 6))

@@ -106,11 +106,11 @@ transportDispatcher = AsyncioDispatcher()
 transportDispatcher.registerRecvCbFun(cbRecvFun)
 
 transportDispatcher.registerTransport(
-    udp.domainName, udp.UdpAsyncioTransport().openClientMode()
+    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
 )
 
 transportDispatcher.sendMessage(
-    encoder.encode(reqMsg), udp.domainName, ("demo.pysnmp.com", 161)
+    encoder.encode(reqMsg), udp.DOMAIN_NAME, ("demo.pysnmp.com", 161)
 )
 
 transportDispatcher.jobStarted(1)

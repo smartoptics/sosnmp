@@ -76,7 +76,7 @@ class MsgAndPduDispatcher:
             # 4.3.4
             self.__appsRegistration[k] = processPdu
 
-        debug.logger & debug.flagDsp and debug.logger(
+        debug.logger & debug.FLAG_DSP and debug.logger(
             f"registerContextEngineId: contextEngineId {contextEngineId!r} pduTypes {pduTypes}"
         )
 
@@ -95,7 +95,7 @@ class MsgAndPduDispatcher:
             if k in self.__appsRegistration:
                 del self.__appsRegistration[k]
 
-        debug.logger & debug.flagDsp and debug.logger(
+        debug.logger & debug.FLAG_DSP and debug.logger(
             f"unregisterContextEngineId: contextEngineId {contextEngineId!r} pduTypes {pduTypes}"
         )
 
@@ -139,7 +139,7 @@ class MsgAndPduDispatcher:
                 errorIndication=errind.unsupportedMsgProcessingModel
             )
 
-        debug.logger & debug.flagDsp and debug.logger(
+        debug.logger & debug.FLAG_DSP and debug.logger(
             f"sendPdu: securityName {securityName}, PDU\n{PDU.prettyPrint()}"
         )
 
@@ -155,7 +155,7 @@ class MsgAndPduDispatcher:
                 cbCtx=cbCtx,
             )
 
-            debug.logger & debug.flagDsp and debug.logger(
+            debug.logger & debug.FLAG_DSP and debug.logger(
                 "sendPdu: current time %d ticks, one tick is %s seconds"
                 % (
                     snmpEngine.transportDispatcher.getTimerTicks(),
@@ -163,7 +163,7 @@ class MsgAndPduDispatcher:
                 )
             )
 
-        debug.logger & debug.flagDsp and debug.logger(
+        debug.logger & debug.FLAG_DSP and debug.logger(
             f"sendPdu: new sendPduHandle {sendPduHandle}, timeout {timeout} ticks, cbFun {cbFun}"
         )
 
@@ -192,7 +192,7 @@ class MsgAndPduDispatcher:
                 sendPduHandle,
             )
 
-            debug.logger & debug.flagDsp and debug.logger("sendPdu: MP succeeded")
+            debug.logger & debug.FLAG_DSP and debug.logger("sendPdu: MP succeeded")
         except PySnmpError:
             if expectResponse:
                 self.__cache.pop(sendPduHandle)
@@ -278,7 +278,7 @@ class MsgAndPduDispatcher:
                 errorIndication=errind.unsupportedMsgProcessingModel
             )
 
-        debug.logger & debug.flagDsp and debug.logger(
+        debug.logger & debug.FLAG_DSP and debug.logger(
             "returnResponsePdu: PDU {}".format(PDU and PDU.prettyPrint() or "<empty>")
         )
 
@@ -303,7 +303,7 @@ class MsgAndPduDispatcher:
                 statusInformation,
             )
 
-            debug.logger & debug.flagDsp and debug.logger(
+            debug.logger & debug.FLAG_DSP and debug.logger(
                 "returnResponsePdu: MP suceeded"
             )
 
@@ -372,7 +372,7 @@ class MsgAndPduDispatcher:
             snmpInASNParseErrs.syntax += 1
             return null  # n.b the whole buffer gets dropped
 
-        debug.logger & debug.flagDsp and debug.logger(
+        debug.logger & debug.FLAG_DSP and debug.logger(
             "receiveMessage: msgVersion %s, msg decoded" % msgVersion
         )
 
@@ -410,14 +410,16 @@ class MsgAndPduDispatcher:
                 snmpEngine, transportDomain, transportAddress, wholeMsg
             )
 
-            debug.logger & debug.flagDsp and debug.logger("receiveMessage: MP succeded")
+            debug.logger & debug.FLAG_DSP and debug.logger(
+                "receiveMessage: MP succeded"
+            )
 
         except error.StatusInformation:
             statusInformation = sys.exc_info()[1]
             if "sendPduHandle" in statusInformation:  # type: ignore
                 # Dropped REPORT -- re-run pending reqs queue as some
                 # of them may be waiting for this REPORT
-                debug.logger & debug.flagDsp and debug.logger(
+                debug.logger & debug.FLAG_DSP and debug.logger(
                     "receiveMessage: MP failed, statusInformation %s, forcing a retry"
                     % statusInformation
                 )
@@ -430,7 +432,7 @@ class MsgAndPduDispatcher:
             return restOfWholeMsg
 
         except PyAsn1Error:
-            debug.logger & debug.flagMP and debug.logger(
+            debug.logger & debug.FLAG_MP and debug.logger(
                 f"receiveMessage: {sys.exc_info()[1]}"
             )
             (
@@ -442,7 +444,7 @@ class MsgAndPduDispatcher:
 
             return restOfWholeMsg
 
-        debug.logger & debug.flagDsp and debug.logger(
+        debug.logger & debug.FLAG_DSP and debug.logger(
             "receiveMessage: PDU %s" % PDU.prettyPrint()
         )
 
@@ -450,7 +452,7 @@ class MsgAndPduDispatcher:
         if sendPduHandle is None:
             # 4.2.2.1 (request or notification)
 
-            debug.logger & debug.flagDsp and debug.logger(
+            debug.logger & debug.FLAG_DSP and debug.logger(
                 "receiveMessage: pduType %s" % pduType
             )
             # 4.2.2.1.1
@@ -473,7 +475,7 @@ class MsgAndPduDispatcher:
                     "val": snmpUnknownPDUHandlers.syntax,
                 }
 
-                debug.logger & debug.flagDsp and debug.logger(
+                debug.logger & debug.FLAG_DSP and debug.logger(
                     "receiveMessage: unhandled PDU type"
                 )
 
@@ -503,13 +505,13 @@ class MsgAndPduDispatcher:
                     )
 
                 except PySnmpError:
-                    debug.logger & debug.flagDsp and debug.logger(
+                    debug.logger & debug.FLAG_DSP and debug.logger(
                         "receiveMessage: report failed, statusInformation %s"
                         % sys.exc_info()[1]
                     )
 
                 else:
-                    debug.logger & debug.flagDsp and debug.logger(
+                    debug.logger & debug.FLAG_DSP and debug.logger(
                         "receiveMessage: reporting succeeded"
                     )
 
@@ -564,7 +566,7 @@ class MsgAndPduDispatcher:
                 if stateReference is not None:
                     del self.__transportInfo[stateReference]
 
-                debug.logger & debug.flagDsp and debug.logger(
+                debug.logger & debug.FLAG_DSP and debug.logger(
                     "receiveMessage: processPdu succeeded"
                 )
                 return restOfWholeMsg
@@ -584,7 +586,7 @@ class MsgAndPduDispatcher:
                 snmpUnknownPDUHandlers.syntax += 1
                 return restOfWholeMsg
 
-            debug.logger & debug.flagDsp and debug.logger(
+            debug.logger & debug.FLAG_DSP and debug.logger(
                 "receiveMessage: cache read by sendPduHandle %s" % sendPduHandle
             )
 
@@ -630,7 +632,7 @@ class MsgAndPduDispatcher:
                 snmpEngine, "rfc3412.receiveMessage:response"
             )
 
-            debug.logger & debug.flagDsp and debug.logger(
+            debug.logger & debug.FLAG_DSP and debug.logger(
                 "receiveMessage: processResponsePdu succeeded"
             )
 
@@ -660,7 +662,7 @@ class MsgAndPduDispatcher:
 
         processResponsePdu = cachedParams["cbFun"]
 
-        debug.logger & debug.flagDsp and debug.logger(
+        debug.logger & debug.FLAG_DSP and debug.logger(
             "__expireRequest: req cachedParams %s" % cachedParams
         )
 

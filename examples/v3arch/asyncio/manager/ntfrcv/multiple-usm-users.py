@@ -35,7 +35,7 @@ snmpEngine = engine.SnmpEngine()
 
 # UDP over IPv4
 config.addTransport(
-    snmpEngine, udp.domainName, udp.UdpTransport().openServerMode(("127.0.0.1", 162))
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().openServerMode(("127.0.0.1", 162))
 )
 
 # SNMPv3/USM setup
@@ -44,9 +44,9 @@ config.addTransport(
 config.addV3User(
     snmpEngine,
     "usr-md5-des",
-    config.usmHMACMD5AuthProtocol,
+    config.USM_AUTH_HMAC96_MD5,
     "authkey1",
-    config.usmDESPrivProtocol,
+    config.USM_PRIV_CBC56_DES,
     "privkey1",
 )
 
@@ -55,22 +55,22 @@ config.addV3User(
 config.addV3User(
     snmpEngine,
     "usr-md5-des",
-    config.usmHMACMD5AuthProtocol,
+    config.USM_AUTH_HMAC96_MD5,
     "authkey1",
-    config.usmDESPrivProtocol,
+    config.USM_PRIV_CBC56_DES,
     "privkey1",
     securityEngineId=v2c.OctetString(hexValue="8000000001020304"),
 )
 
 # user: usr-md5-none, auth: MD5, priv NONE
-config.addV3User(snmpEngine, "usr-md5-none", config.usmHMACMD5AuthProtocol, "authkey1")
+config.addV3User(snmpEngine, "usr-md5-none", config.USM_AUTH_HMAC96_MD5, "authkey1")
 
 # user: usr-md5-none, auth: MD5, priv NONE, securityEngineId: 8000000001020304
 # this USM entry is used for TRAP receiving purposes
 config.addV3User(
     snmpEngine,
     "usr-md5-none",
-    config.usmHMACMD5AuthProtocol,
+    config.USM_AUTH_HMAC96_MD5,
     "authkey1",
     securityEngineId=v2c.OctetString(hexValue="8000000001020304"),
 )
@@ -79,9 +79,9 @@ config.addV3User(
 config.addV3User(
     snmpEngine,
     "usr-sha-aes128",
-    config.usmHMACSHAAuthProtocol,
+    config.USM_AUTH_HMAC96_SHA,
     "authkey1",
-    config.usmAesCfb128Protocol,
+    config.USM_PRIV_CFB128_AES,
     "privkey1",
 )
 # user: usr-sha-aes128, auth: SHA, priv AES, securityEngineId: 8000000001020304
@@ -89,9 +89,9 @@ config.addV3User(
 config.addV3User(
     snmpEngine,
     "usr-sha-aes128",
-    config.usmHMACSHAAuthProtocol,
+    config.USM_AUTH_HMAC96_SHA,
     "authkey1",
-    config.usmAesCfb128Protocol,
+    config.USM_PRIV_CFB128_AES,
     "privkey1",
     securityEngineId=v2c.OctetString(hexValue="8000000001020304"),
 )

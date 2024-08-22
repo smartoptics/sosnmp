@@ -187,13 +187,13 @@ class MibInstrumController(AbstractMibInstrumController):
 
         self.lastBuildId = self.mibBuilder.lastBuildId
 
-        debug.logger & debug.flagIns and debug.logger("__indexMib: rebuilt")
+        debug.logger & debug.FLAG_INS and debug.logger("__indexMib: rebuilt")
 
     # MIB instrumentation
 
     def flipFlopFsm(self, fsmTable, inputVarBinds, acInfo):
         self.__indexMib()
-        debug.logger & debug.flagIns and debug.logger(
+        debug.logger & debug.FLAG_INS and debug.logger(
             f"flipFlopFsm: input var-binds {inputVarBinds!r}"
         )
         (mibTree,) = self.mibBuilder.importSymbols("SNMPv2-SMI", "iso")
@@ -210,7 +210,7 @@ class MibInstrumController(AbstractMibInstrumController):
                     fsmState = fsmTable[k]
                 else:
                     raise error.SmiError(f"Unresolved FSM state {state}, {status}")
-            debug.logger & debug.flagIns and debug.logger(
+            debug.logger & debug.FLAG_INS and debug.logger(
                 f"flipFlopFsm: state {state} status {status} -> fsmState {fsmState}"
             )
             state = fsmState
@@ -228,7 +228,7 @@ class MibInstrumController(AbstractMibInstrumController):
                     rval = f(tuple(name), val, idx, acInfo)
                 except error.SmiError:
                     exc_t, exc_v, exc_tb = sys.exc_info()
-                    debug.logger & debug.flagIns and debug.logger(
+                    debug.logger & debug.FLAG_INS and debug.logger(
                         "flipFlopFsm: fun {} exception {} for {}={!r} with traceback: {}".format(
                             f,
                             exc_t,
@@ -242,7 +242,7 @@ class MibInstrumController(AbstractMibInstrumController):
                     status = "err"
                     break
                 else:
-                    debug.logger & debug.flagIns and debug.logger(
+                    debug.logger & debug.FLAG_INS and debug.logger(
                         f"flipFlopFsm: fun {f} suceeded for {name}={val!r}"
                     )
                     if rval is not None:

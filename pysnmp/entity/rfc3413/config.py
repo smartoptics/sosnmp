@@ -79,7 +79,7 @@ def getTargetAddr(snmpEngine: SnmpEngine, snmpTargetAddrName):
             ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(  # type: ignore
                 "SNMPv2-TM", "SnmpUDPAddress"
             )
-            addr = transport.addressType(  # type: ignore
+            addr = transport.ADDRESS_TYPE(  # type: ignore
                 SnmpUDPAddress(snmpTargetAddrTAddress)
             ).setLocalAddress(SnmpUDPAddress(snmpSourceAddrTAddress))
         elif (
@@ -88,14 +88,14 @@ def getTargetAddr(snmpEngine: SnmpEngine, snmpTargetAddrName):
             (TransportAddressIPv6,) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(  # type: ignore
                 "TRANSPORT-ADDRESS-MIB", "TransportAddressIPv6"
             )
-            addr = transport.addressType(  # type: ignore
+            addr = transport.ADDRESS_TYPE(  # type: ignore
                 TransportAddressIPv6(snmpTargetAddrTAddress)
             ).setLocalAddress(TransportAddressIPv6(snmpSourceAddrTAddress))
         elif (
             snmpTargetAddrTDomain[: len(config.snmpLocalDomain)]
             == config.snmpLocalDomain
         ):
-            addr = transport.addressType(snmpTargetAddrTAddress)  # type: ignore
+            addr = transport.ADDRESS_TYPE(snmpTargetAddrTAddress)  # type: ignore
 
         nameToTargetMap[snmpTargetAddrName] = (
             snmpTargetAddrTDomain,

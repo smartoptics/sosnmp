@@ -20,7 +20,7 @@ from pyasn1.codec.ber import encoder, decoder
 from pysnmp.proto import api
 
 # Protocol version to use
-pMod = api.protoModules[api.protoVersion1]
+pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_1]
 # pMod = api.protoModules[api.protoVersion2c]
 
 # Build PDU
@@ -67,12 +67,12 @@ transportDispatcher.registerRecvCbFun(cbRecvFun)
 
 # UDP/IPv4
 transportDispatcher.registerTransport(
-    udp.domainName, udp.UdpAsyncioTransport().openClientMode()
+    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
 )
 
 # Pass message to dispatcher
 transportDispatcher.sendMessage(
-    encoder.encode(reqMsg), udp.domainName, ("demo.pysnmp.com", 161)
+    encoder.encode(reqMsg), udp.DOMAIN_NAME, ("demo.pysnmp.com", 161)
 )
 transportDispatcher.jobStarted(1)
 

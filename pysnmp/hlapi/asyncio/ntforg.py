@@ -23,8 +23,8 @@ import asyncio
 
 __all__ = ["sendNotification"]
 
-vbProcessor = NotificationOriginatorVarBinds()
-lcd = NotificationOriginatorLcdConfigurator()
+VB_PROCESSOR = NotificationOriginatorVarBinds()
+LCD = NotificationOriginatorLcdConfigurator()
 
 
 async def sendNotification(
@@ -130,7 +130,9 @@ async def sendNotification(
         if future.cancelled():
             return
         try:
-            varBindsUnmade = vbProcessor.unmakeVarBinds(snmpEngine, varBinds, lookupMib)
+            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+                snmpEngine, varBinds, lookupMib
+            )
         except Exception:
             ex = sys.exc_info()[1]
             future.set_exception(ex)
@@ -139,7 +141,7 @@ async def sendNotification(
                 (errorIndication, errorStatus, errorIndex, varBindsUnmade)
             )
 
-    notifyName = lcd.configure(
+    notifyName = LCD.configure(
         snmpEngine, authData, transportTarget, notifyType, contextData.contextName
     )
 
@@ -150,7 +152,7 @@ async def sendNotification(
         notifyName,
         contextData.contextEngineId,
         contextData.contextName,
-        vbProcessor.makeVarBinds(snmpEngine, varBinds),
+        VB_PROCESSOR.makeVarBinds(snmpEngine, varBinds),
         __cbFun,
         (options.get("lookupMib", True), future),
     )

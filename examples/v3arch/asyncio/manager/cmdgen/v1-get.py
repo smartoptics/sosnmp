@@ -36,10 +36,10 @@ config.addTargetParams(snmpEngine, "my-creds", "my-area", "noAuthNoPriv", 0)
 
 # UDP/IPv4
 config.addTransport(
-    snmpEngine, udp.domainName, udp.UdpAsyncioTransport().openClientMode()
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
 )
 config.addTargetAddr(
-    snmpEngine, "my-router", udp.domainName, ("127.0.0.1", 161), "my-creds"
+    snmpEngine, "my-router", udp.DOMAIN_NAME, ("127.0.0.1", 161), "my-creds"
 )
 
 

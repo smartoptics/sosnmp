@@ -42,7 +42,7 @@ snmpEngine = engine.SnmpEngine()
 # UDP over IPv4
 config.addTransport(
     snmpEngine,
-    udp.domainName + (1,),
+    udp.DOMAIN_NAME + (1,),
     udp.UdpTransport().openServerMode(("127.0.0.1", 161)),
 )
 
@@ -50,7 +50,7 @@ config.addTransport(
 
 # UDP over IPv4
 config.addTransport(
-    snmpEngine, udp.domainName + (2,), udp.UdpTransport().openClientMode()
+    snmpEngine, udp.DOMAIN_NAME + (2,), udp.UdpTransport().openClientMode()
 )
 
 #
@@ -61,9 +61,9 @@ config.addTransport(
 config.addV3User(
     snmpEngine,
     "usr-md5-des",
-    config.usmHMACMD5AuthProtocol,
+    config.USM_AUTH_HMAC96_MD5,
     "authkey1",
-    config.usmDESPrivProtocol,
+    config.USM_PRIV_CBC56_DES,
     "privkey1",
 )
 
@@ -84,7 +84,7 @@ config.addTargetParams(snmpEngine, "distant-agent-auth", "my-area", "noAuthNoPri
 config.addTargetAddr(
     snmpEngine,
     "distant-agent",
-    udp.domainName + (2,),
+    udp.DOMAIN_NAME + (2,),
     ("127.0.0.1", 161),
     "distant-agent-auth",
     retryCount=0,
@@ -101,7 +101,7 @@ class CommandResponder(cmdrsp.CommandResponderBase):
         v2c.GetNextRequestPDU.tagSet: cmdgen.NextCommandGeneratorSingleRun(),
         v2c.GetBulkRequestPDU.tagSet: cmdgen.BulkCommandGeneratorSingleRun(),
     }
-    pduTypes = cmdGenMap.keys()  # This app will handle these PDUs
+    SUPPORTED_PDU_TYPES = cmdGenMap.keys()  # This app will handle these PDUs
 
     # SNMP request relay
     def handleMgmtOperation(self, snmpEngine, stateReference, contextName, PDU, acInfo):
