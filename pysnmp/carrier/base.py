@@ -144,7 +144,7 @@ class AbstractTransportDispatcher:
             )
         else:
             raise error.CarrierError(
-                f'No callback for "{recvId!r}" found - loosing incoming event'
+                f'No callback for "{recvId!r}" found - losing incoming event'
             )
 
     # Dispatcher API
