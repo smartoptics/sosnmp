@@ -1,7 +1,7 @@
 .. include:: /includes/_links.rst
 
-SNMP Library for Python 6.2
-===========================
+SNMP Library for Python 7
+=========================
 
 .. toctree::
    :maxdepth: 1
@@ -19,7 +19,7 @@ multilingual capabilities, remote configuration and other features.
 PySNMP implementation closely follows intricate system details and features
 bringing most possible power and flexibility to its users.
 
-Current PySNMP stable version is 6.2. It runs with Python 3.8+
+Current PySNMP stable version is 7.0. It runs with Python 3.8+
 and is recommended for new applications as well as for migration from
 older, now obsolete, PySNMP releases. All site documentation and
 examples are written for the 6.0 and later versions in mind.

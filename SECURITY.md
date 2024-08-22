@@ -2,10 +2,11 @@
 
 ## Supported Versions
 
-Only 5.0/6.x releases are currently being supported with security updates.
+Only 6.x/7.x releases are currently being supported with security updates.
 
 | Version | Supported          |
 | ------- | ------------------ |
+| 7.0.x   | :white_check_mark: |
 | 6.2.x   | :white_check_mark: |
 | 6.1.x   | :white_check_mark: |
 | 6.0.x   | :white_check_mark: |
@@ -17,4 +18,5 @@ Only 5.0/6.x releases are currently being supported with security updates.
 
 ## Reporting a Vulnerability
 
-Please contact [LeXtudio Inc.](https://lextudio.com) directly to report a vulnerability.
+Please contact [LeXtudio Inc.](https://lextudio.com) directly to report a
+vulnerability.

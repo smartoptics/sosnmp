@@ -1,12 +1,12 @@
 .. include:: /includes/_links.rst
 
-Upgrade to 6.x Releases
-=======================
+Upgrade to 6.x/7.x Releases
+===========================
 
 .. toctree::
    :maxdepth: 2
 
-This article provides information on how to upgrade to the latest 6.x
+This article provides information on how to upgrade to the latest 6.x/7.0
 releases from old releases such as 4.x and 5.x.
 
 .. note::
@@ -187,6 +187,19 @@ we decided to remove it from 6.2 release.
    We published release >=6.2.2, and we are not planning to publish any
    older 6.2 releases. The new 6.2 releases were published to ensure smooth
    transition for users who are still using the 4.x/5.x/6.0/6.1 releases.
+
+Upgrade to 7.0 Releases
+-----------------------
+
+The code base wasn't compliant to many Python standards, such as PEP8. So,
+we decided to clean up the code base and make it more compliant to the
+standards in 7.0 release.
+
+.. important::
+
+   Since API surface changes are significant, users who upgrade from 6.x
+   releases should carefully review the changes and adjust their code
+   accordingly.
 
 Important Changes
 -----------------
