@@ -1,3 +1,8 @@
+Revision 7.0.0, released on Aug 22, 2024
+-----------------------------------------
+
+- Applied PEP8 recommended names. This breaks backward compatibility.
+
 Revision 6.2.5, released on Aug 10, 2024
 -----------------------------------------
 
