@@ -14,7 +14,9 @@ AGENT_PORT = 1611
 
 
 async def start_agent(
-    enable_ipv6: bool = False, enable_custom_objects: bool = False
+    enable_ipv6: bool = False,
+    enable_custom_objects: bool = False,
+    enable_table_creation: bool = False,
 ) -> SnmpEngine:
     # Create SNMP engine
     snmpEngine = engine.SnmpEngine()
@@ -103,6 +105,76 @@ async def start_agent(
 
         # --- end of Managed Object Instance initialization ----
 
+    if enable_table_creation:
+        # --- define custom SNMP Table within a newly defined EXAMPLE-MIB ---
+
+        mibBuilder = snmpContext.getMibInstrum().getMibBuilder()
+
+        (
+            MibTable,
+            MibTableRow,
+            MibTableColumn,
+            MibScalarInstance,
+        ) = mibBuilder.importSymbols(
+            "SNMPv2-SMI",
+            "MibTable",
+            "MibTableRow",
+            "MibTableColumn",
+            "MibScalarInstance",
+        )
+
+        (RowStatus,) = mibBuilder.importSymbols("SNMPv2-TC", "RowStatus")
+
+        mibBuilder.exportSymbols(
+            "__EXAMPLE-MIB",
+            # table object
+            exampleTable=MibTable((1, 3, 6, 6, 1)).setMaxAccess("read-create"),
+            # table row object, also carries references to table indices
+            exampleTableEntry=MibTableRow((1, 3, 6, 6, 1, 5))
+            .setMaxAccess("read-create")
+            .setIndexNames((0, "__EXAMPLE-MIB", "exampleTableColumn1")),
+            # table column: string index
+            exampleTableColumn1=MibTableColumn(
+                (1, 3, 6, 6, 1, 5, 1), v2c.OctetString()
+            ).setMaxAccess("read-create"),
+            # table column: string value
+            exampleTableColumn2=MibTableColumn(
+                (1, 3, 6, 6, 1, 5, 2), v2c.OctetString()
+            ).setMaxAccess("read-create"),
+            # table column: integer value with default
+            exampleTableColumn3=MibTableColumn(
+                (1, 3, 6, 6, 1, 5, 3), v2c.Integer32(123)
+            ).setMaxAccess("read-create"),
+            # table column: row status
+            exampleTableStatus=MibTableColumn(
+                (1, 3, 6, 6, 1, 5, 4), RowStatus("notExists")
+            ).setMaxAccess("read-create"),
+        )
+
+        # --- end of custom SNMP table definition, empty table now exists ---
+
+        # --- populate custom SNMP table with one row ---
+
+        (
+            exampleTableEntry,
+            exampleTableColumn2,
+            exampleTableColumn3,
+            exampleTableStatus,
+        ) = mibBuilder.importSymbols(
+            "__EXAMPLE-MIB",
+            "exampleTableEntry",
+            "exampleTableColumn2",
+            "exampleTableColumn3",
+            "exampleTableStatus",
+        )
+        rowInstanceId = exampleTableEntry.getInstIdFromIndices("example record one")
+        mibInstrumentation = snmpContext.getMibInstrum()
+        mibInstrumentation.writeVars(
+            (exampleTableColumn2.name + rowInstanceId, "my string value"),
+            (exampleTableColumn3.name + rowInstanceId, 123456),
+            (exampleTableStatus.name + rowInstanceId, "createAndGo"),
+        )
+
     # Register SNMP Applications at the SNMP engine for particular SNMP context
     cmdrsp.GetCommandResponder(snmpEngine, snmpContext)
     cmdrsp.NextCommandResponder(snmpEngine, snmpContext)
@@ -135,12 +207,20 @@ class AgentContextManager:
     Note: The `start_agent()` function and the `transportDispatcher` attribute are not defined in this code snippet.
     """
 
-    def __init__(self, enable_ipv6: bool = False, enable_custom_objects: bool = False):
+    def __init__(
+        self,
+        enable_ipv6: bool = False,
+        enable_custom_objects: bool = False,
+        enable_table_creation: bool = False,
+    ):
         self.enable_ipv6 = enable_ipv6
         self.enable_custom_objects = enable_custom_objects
+        self.enable_table_creation = enable_table_creation
 
     async def __aenter__(self):
-        self.agent = await start_agent(self.enable_ipv6, self.enable_custom_objects)
+        self.agent = await start_agent(
+            self.enable_ipv6, self.enable_custom_objects, self.enable_table_creation
+        )
         return self.agent
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
