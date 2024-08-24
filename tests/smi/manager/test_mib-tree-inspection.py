@@ -3,9 +3,7 @@ from pysnmp.smi import builder, view
 
 mibBuilder = builder.MibBuilder()
 mibBuilder.addMibSources(builder.DirMibSource("/opt/pysnmp_mibs"))
-mibBuilder.loadModules(
-    "SNMPv2-MIB", "SNMP-FRAMEWORK-MIB", "SNMP-COMMUNITY-MIB", "IP-MIB"
-)
+mibBuilder.loadModules("SNMPv2-MIB", "SNMP-FRAMEWORK-MIB", "SNMP-COMMUNITY-MIB")
 mibView = view.MibViewController(mibBuilder)
 
 

@@ -327,7 +327,7 @@ class ObjectIdentity:
         Raises
         ------
         SmiError
-           In case of fatal MIB hanling errora
+           In case of fatal MIB handling error
 
         Notes
         -----

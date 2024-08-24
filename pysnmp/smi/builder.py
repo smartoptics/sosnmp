@@ -234,7 +234,8 @@ class DirMibSource(__AbstractMibSource):
                 fp = open(p, mode)
                 data = fp.read()
                 fp.close()
-                return data, p
+                root, extension = os.path.splitext(p)
+                return data, extension
 
         except OSError:
             why = sys.exc_info()
