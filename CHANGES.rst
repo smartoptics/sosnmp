@@ -1,5 +1,10 @@
+Revision 7.0.2, released on Aug 25, 2024
+----------------------------------------
+
+- Fixed a duplicate item issue in bulkWalkCmd.
+
 Revision 7.0.1, released on Aug 24, 2024
------------------------------------------
+----------------------------------------
 
 - Applied PEP8 recommended names. This breaks backward compatibility.
 
@@ -22,24 +27,24 @@ Revision 7.0.1, released on Aug 24, 2024
 - Cherry-picked many minor fixes from etingof/master branch.
 
 Revision 6.2.5, released on Aug 10, 2024
------------------------------------------
+----------------------------------------
 
 - Improved OrderedDict performance.
 - User credentials changes are now reflected in the LCD.
 - Other cleanup.
 
 Revision 6.2.4, released on Jul 20, 2024
------------------------------------------
+----------------------------------------
 
 - Deleted more obsolete items.
 
 Revision 6.2.3, released on Jul 17, 2024
------------------------------------------
+----------------------------------------
 
 - Removed unused dependencies.
 
 Revision 6.2.2, released on Jul 16, 2024
------------------------------------------
+----------------------------------------
 
 - Removed package postfix. A helper release to enable migration.
 
