@@ -9,6 +9,7 @@ Receive SNMP TRAP/INFORM messages with the following options:
 
   * 'usr-md5-des', auth: MD5, priv DES, ContextEngineId: 8000000001020304
   * 'usr-md5-none', auth: MD5, priv NONE, ContextEngineId: 8000000001020304
+  * 'usr-md5-aes256', auth: MD5, priv AES-256, ContextEngineId: 8000000001020304
   * 'usr-sha-aes128', auth: SHA, priv AES, ContextEngineId: 8000000001020304
 
 * over IPv4/UDP, listening at 127.0.0.1:162
@@ -19,7 +20,10 @@ receiver:
 
 | $ snmptrap -v3 -u usr-md5-des -l authPriv -A authkey1 -X privkey1 -e 8000000001020304 127.0.0.1 123 1.3.6.1.6.3.1.1.5.1
 | $ snmptrap -v3 -u usr-md5-none -l authNoPriv -A authkey1 -e 8000000001020304 127.0.0.1 123 1.3.6.1.6.3.1.1.5.1
+| $ snmptrap -v3 -u usr-md5-aes256 -l authPriv -A authkey1 -x AES-256 -X privkey1 -e 8000000001020304 127.0.0.1 123 1.3.6.1.6.3.1.1.5.1
 | $ snmpinform -v3 -u usr-sha-aes128 -l authPriv -a SHA -A authkey1 -x AES -X privkey1 127.0.0.1 123 1.3.6.1.6.3.1.1.5.1
+
+Note that AES-256 is not supported by Net-SNMP. You have to use PySNMP command line tools or other SNMP software that supports AES-256.
 
 """  #
 from pysnmp.entity import engine, config
@@ -59,6 +63,18 @@ config.addV3User(
     "usr-md5-none",
     config.USM_AUTH_HMAC96_MD5,
     "authkey1",
+    securityEngineId=v2c.OctetString(hexValue="8000000001020304"),
+)
+
+# user: usr-md5-aes256, auth: MD5, priv AES-256, securityEngineId: 8000000001020304
+# this USM entry is configured for TRAP receiving purposes
+config.addV3User(
+    snmpEngine,
+    "usr-md5-aes256",
+    config.USM_AUTH_HMAC96_MD5,
+    "authkey1",
+    config.USM_PRIV_CFB256_AES,
+    "privkey1",
     securityEngineId=v2c.OctetString(hexValue="8000000001020304"),
 )
 
