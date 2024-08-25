@@ -71,7 +71,6 @@ config.addV3User(
     "authkey1",
     config.USM_PRIV_CFB128_AES,
     "privkey1",
-    securityEngineId=v2c.OctetString(hexValue="8000000001020304"),
 )
 
 
