@@ -734,9 +734,7 @@ async def walkCmd(
     maxRows = options.get("maxRows", 0)
     maxCalls = options.get("maxCalls", 0)
 
-    vbProcessor = CommandGeneratorVarBinds()
-
-    initialVars = [x[0] for x in vbProcessor.makeVarBinds(snmpEngine, varBinds)]
+    initialVars = [x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine, varBinds)]
 
     totalRows = totalCalls = 0
 
@@ -798,7 +796,9 @@ async def walkCmd(
 
         if initialVarBinds:
             varBinds = initialVarBinds
-            initialVars = [x[0] for x in vbProcessor.makeVarBinds(snmpEngine, varBinds)]
+            initialVars = [
+                x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine, varBinds)
+            ]
 
         if maxRows and totalRows >= maxRows:
             return
@@ -932,9 +932,7 @@ async def bulkWalkCmd(
     maxRows = options.get("maxRows", 0)
     maxCalls = options.get("maxCalls", 0)
 
-    vbProcessor = CommandGeneratorVarBinds()
-
-    initialVars = [x[0] for x in vbProcessor.makeVarBinds(snmpEngine, varBinds)]
+    initialVars = [x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine, varBinds)]
     nullVarBinds = [False] * len(initialVars)
 
     totalRows = totalCalls = 0
@@ -1005,7 +1003,11 @@ async def bulkWalkCmd(
                         nullVarBinds[col] = True
                     if not lexicographicMode and not initialVars[col].isPrefixOf(name):
                         varBindTable[row][col] = previousVarBinds[col][0], endOfMibView
-                        nullVarBinds[col] = True
+                        if len(varBindTable) == 1:
+                            stopFlag = True
+                            break
+                        else:
+                            nullVarBinds[col] = True
                 if stopFlag:
                     varBindTable = row and varBindTable[: row - 1] or []
                     break
@@ -1034,6 +1036,6 @@ async def bulkWalkCmd(
                 if initialVarBinds:
                     varBinds = initialVarBinds
                     initialVars = [
-                        x[0] for x in vbProcessor.makeVarBinds(snmpEngine, varBinds)
+                        x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine, varBinds)
                     ]
                     nullVarBinds = [False] * len(initialVars)
