@@ -3,6 +3,7 @@ from datetime import datetime
 import pytest
 from pysnmp import debug
 from pysnmp.hlapi.asyncio import *
+from pysnmp.proto.rfc1905 import errorStatus as pysnmp_errorStatus
 
 from tests.agent_context import AGENT_PORT, AgentContextManager
 
@@ -26,6 +27,9 @@ async def test_v1_get():
             assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysDescr.0"
             assert varBinds[0][1].prettyPrint().startswith("PySNMP engine version")
             assert isinstance(varBinds[0][1], OctetString)
+
+            name = pysnmp_errorStatus.namedValues.getName(errorStatus)
+            assert name == "noError"
 
 
 @pytest.mark.asyncio
