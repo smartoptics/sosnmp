@@ -1,6 +1,6 @@
 
 SNMP Library for Python
------------------------
+=======================
 
 [![Become a Sponsor](https://img.shields.io/badge/Become%20a%20Sponsor-lextudio-orange.svg?style=for-readme)](https://github.com/sponsors/lextudio)
 [![PyPI](https://img.shields.io/pypi/v/pysnmp.svg)](https://pypi.python.org/pypi/pysnmp)
@@ -160,14 +160,13 @@ at PySNMP web site.
 Documentation
 -------------
 
-Library documentation and examples can be found at the [PySNMP docs site](https://www.pysnmp.com/pysnmp/).
+Library documentation can be found at the [PySNMP docs site](https://www.pysnmp.com/pysnmp/).
 
-If something does not work as expected, please
-[open an issue](https://github.com/lextudio/pysnmp/issues) at GitHub or
-post your question [on Stack Overflow](http://stackoverflow.com/questions/ask).
+If something does not work as expected, please [learn the support options](https://www.pysnmp.com/support).
 
-Bug reports and PRs are appreciated! ;-)
+Pull requests are appreciated! ;-)
 
-Copyright (c) 2005-2020, [Ilya Etingof](https://lists.openstack.org/pipermail/openstack-discuss/2022-August/030062.html).
+Copyright (c) 1999-2020, [Ilya Etingof](https://lists.openstack.org/pipermail/openstack-discuss/2022-August/030062.html).
 Copyright (c) 2022-2024, [LeXtudio Inc](mailto:support@lextudio.com).
+Copyright (c) 1999-2024, [Other PySNMP contributors](https://github.com/lextudio/pysnmp/THANKS.txt).
 All rights reserved.

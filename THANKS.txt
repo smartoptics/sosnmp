@@ -1,5 +1,5 @@
-Many people contributed to pysnmp by reporting problems, suggesting
-various improvements or submitting actual code. The list goes
+Many people/companies contributed to pysnmp by reporting problems,
+suggesting various improvements or submitting actual code. The list goes
 in a more-or-less chronological order:
 
 Cameron Laird
@@ -31,5 +31,8 @@ Robert Reese
 Olivier Verriest
 Eugene M. Kim
 Matt Bullock
-Thanks to Python Software Foundation for granting financial support 
+Splunk Inc.
+inexio GmbH
+
+Thanks to Python Software Foundation for granting financial support
 for the project.
