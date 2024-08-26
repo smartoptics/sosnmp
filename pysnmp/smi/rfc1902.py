@@ -924,7 +924,7 @@ class ObjectType:
         Examples
         --------
         >>> from pysmi.hlapi.asyncio import varbinds
-        >>> mibViewController = varbinds.AbstractVarBinds.getMibViewController( engine )
+        >>> mibViewController = varbinds.MibViewControllerManager.getMibViewController(engine.cache)
         >>> objectType = ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr'), 'Linux i386')
         >>> objectType.resolveWithMib(mibViewController)
         ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr'), DisplayString('Linux i386'))

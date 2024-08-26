@@ -47,7 +47,9 @@ class CommandGeneratorVarBinds(MibViewControllerManager):
             else:
                 varBind = ObjectType(ObjectIdentity(varBind[0]), varBind[1])
 
-            resolvedVarBinds.append(varBind.resolveWithMib(mibViewController))
+            resolvedVarBinds.append(
+                varBind.resolveWithMib(mibViewController, ignoreErrors=False)
+            )
 
         return resolvedVarBinds
 
