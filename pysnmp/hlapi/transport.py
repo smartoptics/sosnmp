@@ -26,17 +26,28 @@ class AbstractTransportTarget:
 
     def __init__(
         self,
-        transportAddr: Tuple,
         timeout: float = 1,
         retries: int = 5,
         tagList=null,
     ):
-        self.transportAddr = self._resolveAddr(transportAddr)
         self.timeout = timeout
         self.retries = retries
         self.tagList = tagList
         self.iface = None
         self.transport = None
+
+        if not hasattr(self, "transportAddr"):
+            raise Exception(
+                f"Please call .create() to construct {self.__class__.__name__} object"
+            )
+
+    @classmethod
+    async def create(cls, *args, **kwargs):
+        self = cls.__new__(cls)
+        transportAddr = args[0]
+        self.transportAddr = await self._resolveAddr(transportAddr)
+        self.__init__(*args[1:], **kwargs)
+        return self
 
     def __repr__(self):
         return "{}({!r}, timeout={!r}, retries={!r}, tagList={!r})".format(
@@ -81,5 +92,5 @@ class AbstractTransportTarget:
                 )
             )
 
-    def _resolveAddr(self, transportAddr: Tuple) -> Tuple[str, int]:
+    async def _resolveAddr(self, transportAddr: Tuple) -> Tuple[str, int]:
         raise NotImplementedError()

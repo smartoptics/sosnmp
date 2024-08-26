@@ -39,7 +39,7 @@ async def test_v1_set_table_creation():
             objects = walkCmd(
                 snmpEngine,
                 CommunityData("public", mpModel=0),
-                UdpTransportTarget(("localhost", AGENT_PORT)),
+                await UdpTransportTarget.create(("localhost", AGENT_PORT)),
                 ContextData(),
                 ObjectType(ObjectIdentity("1.3.6")),
             )
@@ -83,7 +83,7 @@ async def test_v1_set_table_creation():
             objects = walkCmd(
                 snmpEngine,
                 CommunityData("public", mpModel=0),
-                UdpTransportTarget(("localhost", AGENT_PORT)),
+                await UdpTransportTarget.create(("localhost", AGENT_PORT)),
                 ContextData(),
                 ObjectType(ObjectIdentity("1.3.6")),
             )

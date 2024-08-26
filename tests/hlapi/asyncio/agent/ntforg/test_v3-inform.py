@@ -11,7 +11,7 @@ async def test_send_v3_inform():
         errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
             snmpEngine,
             UsmUserData("usr-md5-des", "authkey1", "privkey1"),
-            UdpTransportTarget(("localhost", MANAGER_PORT)),
+            await UdpTransportTarget.create(("localhost", MANAGER_PORT)),
             ContextData(),
             "inform",
             NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2"))

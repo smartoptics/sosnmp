@@ -25,7 +25,7 @@ async def getone(snmpEngine, hostname):
     errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
         snmpEngine,
         CommunityData("public"),
-        UdpTransportTarget(hostname),
+        await UdpTransportTarget.create(hostname),
         ContextData(),
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
     )

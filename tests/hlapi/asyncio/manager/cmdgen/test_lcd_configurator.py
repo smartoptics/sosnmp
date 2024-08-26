@@ -1,17 +1,20 @@
 from unittest import mock
 
+import pytest
+
 from pysnmp.hlapi.v3arch.asyncio import *
 from pysnmp.hlapi.v3arch.asyncio.lcd import CommandGeneratorLcdConfigurator
 
 
 @mock.patch("pysnmp.entity.config.addV3User")
 @mock.patch("pysnmp.entity.config.delV3User")
-def test_usm_auth_cache_cleared(delV3User, addV3User):
+@pytest.mark.asyncio
+async def test_usm_auth_cache_cleared(delV3User, addV3User):
     """
     Ensure auth cache is cleared when auth data is changed.
     """
     snmpEngine = SnmpEngine()
-    transportTarget = UdpTransportTarget(("198.51.100.1", 161))
+    transportTarget = await UdpTransportTarget.create(("198.51.100.1", 161))
 
     authDataValues = {
         "userName": "username",

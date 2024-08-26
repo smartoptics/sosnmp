@@ -116,7 +116,7 @@ async def sendNotification(
     ...     errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
     ...         SnmpEngine(),
     ...         CommunityData('public'),
-    ...         UdpTransportTarget(('demo.pysnmp.com', 162)),
+    ...         await UdpTransportTarget.create(('demo.pysnmp.com', 162)),
     ...         ContextData(),
     ...         'trap',
     ...         NotificationType(ObjectIdentity('IF-MIB', 'linkDown')))

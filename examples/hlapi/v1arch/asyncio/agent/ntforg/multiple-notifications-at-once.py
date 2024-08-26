@@ -25,7 +25,7 @@ async def sendone(snmpDispatcher, hostname, notifyType):
     iterator = await sendNotification(
         snmpDispatcher,
         CommunityData("public"),
-        UdpTransportTarget((hostname, 162)),
+        await UdpTransportTarget.create((hostname, 162)),
         notifyType,
         NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2"))
         .loadMibs("SNMPv2-MIB")

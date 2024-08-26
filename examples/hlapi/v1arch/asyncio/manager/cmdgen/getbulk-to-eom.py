@@ -28,7 +28,7 @@ async def run(varBinds):
         iterator = await bulkCmd(
             snmpDispatcher,
             CommunityData("public"),
-            UdpTransportTarget(("demo.pysnmp.com", 161)),
+            await UdpTransportTarget.create(("demo.pysnmp.com", 161)),
             0,
             50,
             *varBinds

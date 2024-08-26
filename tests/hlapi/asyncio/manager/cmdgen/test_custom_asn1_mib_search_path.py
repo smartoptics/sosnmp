@@ -10,7 +10,7 @@ async def test_custom_asn1_mib_search_path():
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             CommunityData("public"),
-            UdpTransportTarget(("localhost", AGENT_PORT)),
+            await UdpTransportTarget.create(("localhost", AGENT_PORT)),
             ContextData(),
             ObjectType(
                 ObjectIdentity("IF-MIB", "ifInOctets", 1).addAsn1MibSource(

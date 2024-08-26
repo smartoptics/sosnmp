@@ -12,7 +12,7 @@ async def test_usm_no_auth_no_priv():
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             authData,
-            UdpTransportTarget(("localhost", AGENT_PORT), retries=0),
+            await UdpTransportTarget.create(("localhost", AGENT_PORT), retries=0),
             ContextData(),
             ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         )
@@ -33,7 +33,7 @@ async def test_usm_no_auth_no_priv_wrong_user():
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             authData,
-            UdpTransportTarget(("localhost", AGENT_PORT), retries=0),
+            await UdpTransportTarget.create(("localhost", AGENT_PORT), retries=0),
             ContextData(),
             ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         )

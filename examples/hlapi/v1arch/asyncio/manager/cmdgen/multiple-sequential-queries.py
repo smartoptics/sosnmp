@@ -25,7 +25,7 @@ async def getone(snmpDispatcher, hostname):
     iterator = await getCmd(
         snmpDispatcher,
         CommunityData("public"),
-        UdpTransportTarget(hostname),
+        await UdpTransportTarget.create(hostname),
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
     )
 

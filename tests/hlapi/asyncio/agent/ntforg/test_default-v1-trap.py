@@ -11,8 +11,8 @@ async def test_send_trap_enterprise_specific():
         errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
             snmpEngine,
             CommunityData("public", mpModel=0),
-            # UdpTransportTarget(("localhost", MANAGER_PORT)), # TODO: Fix this
-            UdpTransportTarget(("demo.pysnmp.com", 162)),
+            # await UdpTransportTarget.create(("localhost", MANAGER_PORT)), # TODO: Fix this
+            await UdpTransportTarget.create(("demo.pysnmp.com", 162)),
             ContextData(),
             "trap",
             NotificationType(
@@ -41,8 +41,8 @@ async def test_send_trap_generic():
         errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
             snmpEngine,
             CommunityData("public", mpModel=0),
-            # UdpTransportTarget(("localhost", MANAGER_PORT)), # TODO: Fix this
-            UdpTransportTarget(("demo.pysnmp.com", 162)),
+            # await UdpTransportTarget.create(("localhost", MANAGER_PORT)), # TODO: Fix this
+            await UdpTransportTarget.create(("demo.pysnmp.com", 162)),
             ContextData(),
             "trap",
             NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2"))

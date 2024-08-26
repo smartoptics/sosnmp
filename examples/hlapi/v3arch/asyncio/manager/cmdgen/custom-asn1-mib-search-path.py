@@ -24,7 +24,7 @@ async def run():
     errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
         snmpEngine,
         CommunityData("public"),
-        UdpTransportTarget(("demo.pysnmp.com", 161)),
+        await UdpTransportTarget.create(("demo.pysnmp.com", 161)),
         ContextData(),
         ObjectType(
             ObjectIdentity("IF-MIB", "ifInOctets", 1).addAsn1MibSource(

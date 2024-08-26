@@ -25,7 +25,7 @@ async def run():
     iterator = await getCmd(
         snmpDispatcher,
         CommunityData("public", mpModel=0),
-        UdpTransportTarget(("demo.pysnmp.com", 161)),
+        await UdpTransportTarget.create(("demo.pysnmp.com", 161)),
         ("1.3.6.1.2.1.1.1.0", None),
     )
 

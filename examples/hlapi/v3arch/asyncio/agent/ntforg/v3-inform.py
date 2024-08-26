@@ -21,7 +21,7 @@ async def run():
     errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
         snmpEngine,
         UsmUserData("usr-md5-des", "authkey1", "privkey1"),
-        UdpTransportTarget(("demo.pysnmp.com", 162)),
+        await UdpTransportTarget.create(("demo.pysnmp.com", 162)),
         ContextData(),
         "inform",
         NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2"))

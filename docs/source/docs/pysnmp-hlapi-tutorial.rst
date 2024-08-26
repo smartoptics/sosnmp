@@ -118,7 +118,7 @@ SNMP LCD in form of properly initialized
    >>>
    >>> g = await getCmd(SnmpEngine(),
    ...            CommunityData('public'),
-   ...            UdpTransportTarget(('demo.pysnmp.com', 161)),
+   ...            await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...
 
 Addressing SNMP Context
@@ -141,7 +141,7 @@ For this example we will use the 'empty' context (default).
    >>>
    >>> g = await getCmd(SnmpEngine(),
    ...            CommunityData('public'),
-   ...            UdpTransportTarget(('demo.pysnmp.com', 161)),
+   ...            await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...            ContextData(),
    ...
 
@@ -240,7 +240,7 @@ in `RFC3418`_ ``SNMPv2-MIB`` module.
    >>> from pysnmp.hlapi.v3arch.asyncio import *
    >>> g = await getCmd(SnmpEngine(),
    ...            CommunityData('public'),
-   ...            UdpTransportTarget(('demo.pysnmp.com', 161)),
+   ...            await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...            ContextData(),
    ...            ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0)))
 
@@ -274,7 +274,7 @@ out, response is awaited, received and parsed.
    >>>
    >>> g = await getCmd(SnmpEngine(),
    ...            CommunityData('public'),
-   ...            UdpTransportTarget(('demo.pysnmp.com', 161)),
+   ...            await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...            ContextData(),
    ...            ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysUpTime', 0)))
    >>> g
@@ -370,7 +370,7 @@ Let's read TCP-MIB::tcpConnectionState object for a TCP connection:
    >>>
    >>> g = await getCmd(SnmpEngine(),
    ...            CommunityData('public'),
-   ...            UdpTransportTarget(('demo.pysnmp.com', 161)),
+   ...            await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...            ContextData(),
    ...            ObjectType(ObjectIdentity('TCP-MIB', 'tcpConnectionState',
    ...                                      'ipv4', '195.218.254.105', 41511,
@@ -392,7 +392,7 @@ function.
    >>> from pysnmp.hlapi.v3arch.asyncio import *
    >>> g =  await nextCmd(SnmpEngine(),
    ...             CommunityData('public'),
-   ...             UdpTransportTarget(('demo.pysnmp.com', 161)),
+   ...             await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...             ContextData(),
    ...             ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr')))
    >>> g
@@ -419,7 +419,7 @@ API as *getNext()* for convenience.
    >>> N, R = 0, 25
    >>> g = await bulkCmd(SnmpEngine(),
    ...             CommunityData('public'),
-   ...             UdpTransportTarget(('demo.pysnmp.com', 161)),
+   ...             await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...             ContextData(),
    ...             N, R,
    ...             ObjectType(ObjectIdentity('1.3.6')))
@@ -440,7 +440,7 @@ of MIB objects.
    >>>
    >>> g = await nextCmd(SnmpEngine(),
    ...             CommunityData('public'),
-   ...             UdpTransportTarget(('demo.pysnmp.com', 161)),
+   ...             await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...             ContextData(),
    ...             ObjectType(ObjectIdentity('IF-MIB', 'ifTable')))
    >>>
@@ -457,7 +457,7 @@ values in exactly the same order as they were in request message.
    >>>
    >>> g = await getCmd(SnmpEngine(),
    ...            CommunityData('public'),
-   ...            UdpTransportTarget(('demo.pysnmp.com', 161)),
+   ...            await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...            ContextData(),
    ...            ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0)),
    ...            ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysUpTime', 0))
@@ -480,7 +480,7 @@ function.
    >>>
    >>> g = await setCmd(SnmpEngine(),
    ...            CommunityData('public'),
-   ...            UdpTransportTarget(('demo.pysnmp.com', 161)),
+   ...            await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...            ContextData(),
    ...            ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0), 'Linux i386')
    ... )
@@ -544,7 +544,7 @@ or acknowledgement is sent.
    >>>
    >>> g = await sendNotification(SnmpEngine(),
    ...                      CommunityData('public'),
-   ...                      UdpTransportTarget(('demo.pysnmp.com', 162)),
+   ...                      await UdpTransportTarget.create(('demo.pysnmp.com', 162)),
    ...                      ContextData(),
    ...                      'trap',
    ...                      NotificationType(ObjectIdentity('IF-MIB', 'linkUp'), instanceIndex=(123,))
@@ -562,7 +562,7 @@ well as for agent-to-manager.
    >>>
    >>> g = await sendNotification(SnmpEngine(),
    ...                      CommunityData('public'),
-   ...                      UdpTransportTarget(('demo.pysnmp.com', 162)),
+   ...                      await UdpTransportTarget.create(('demo.pysnmp.com', 162)),
    ...                      ContextData(),
    ...                      'inform',
    ...                      NotificationType(ObjectIdentity('IF-MIB', 'linkUp'), instanceIndex=(123,))
@@ -592,7 +592,7 @@ object OIDs to current values.
    >>>
    >>> g = await sendNotification(SnmpEngine(),
    ...                      CommunityData('public'),
-   ...                      UdpTransportTarget(('demo.pysnmp.com', 162)),
+   ...                      await UdpTransportTarget.create(('demo.pysnmp.com', 162)),
    ...                      ContextData(),
    ...                      'inform',
    ...                      NotificationType(ObjectIdentity('IF-MIB', 'linkUp'), instanceIndex=(123,), objects=mib)

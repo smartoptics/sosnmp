@@ -30,7 +30,7 @@ async def run():
     iterator = await sendNotification(
         snmpDispatcher,
         CommunityData("public", mpModel=0),
-        UdpTransportTarget(("demo.pysnmp.com", 162)),
+        await UdpTransportTarget.create(("demo.pysnmp.com", 162)),
         "trap",
         NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2"))
         .loadMibs("SNMPv2-MIB")

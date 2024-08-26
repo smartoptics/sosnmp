@@ -143,7 +143,7 @@ async def getCmd(
     ...     errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
     ...         SnmpEngine(),
     ...         CommunityData('public'),
-    ...         UdpTransportTarget(('demo.pysnmp.com', 161)),
+    ...         await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
     ...         ContextData(),
     ...         ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0))
     ...     )
@@ -264,7 +264,7 @@ async def setCmd(
     ...     errorIndication, errorStatus, errorIndex, varBinds = await setCmd(
     ...         SnmpEngine(),
     ...         CommunityData('public'),
-    ...         UdpTransportTarget(('demo.pysnmp.com', 161)),
+    ...         await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
     ...         ContextData(),
     ...         ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0), 'Linux i386')
     ...     )
@@ -393,7 +393,7 @@ async def nextCmd(
     ...     errorIndication, errorStatus, errorIndex, varBinds = await nextCmd(
     ...         SnmpEngine(),
     ...         CommunityData('public'),
-    ...         UdpTransportTarget(('demo.pysnmp.com', 161)),
+    ...         await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
     ...         ContextData(),
     ...         ObjectType(ObjectIdentity('SNMPv2-MIB', 'system'))
     ...     )
@@ -561,7 +561,7 @@ async def bulkCmd(
     ...     errorIndication, errorStatus, errorIndex, varBinds = await bulkCmd(
     ...         SnmpEngine(),
     ...         CommunityData('public'),
-    ...         UdpTransportTarget(('demo.pysnmp.com', 161)),
+    ...         await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
     ...         ContextData(),
     ...         0, 2,
     ...         ObjectType(ObjectIdentity('SNMPv2-MIB', 'system'))
@@ -721,7 +721,7 @@ async def walkCmd(
     >>> from pysnmp.hlapi.v3arch.asyncio import *
     >>> g = await walkCmd(SnmpEngine(),
     ...             CommunityData('public'),
-    ...             UdpTransportTarget(('demo.pysnmp.com', 161)),
+    ...             await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
     ...             ContextData(),
     ...             ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr')))
     >>> next(g)
@@ -918,7 +918,7 @@ async def bulkWalkCmd(
     >>> from pysnmp.hlapi.v3arch.asyncio import *
     >>> g = await bulkWalkCmd(SnmpEngine(),
     ...             CommunityData('public'),
-    ...             UdpTransportTarget(('demo.pysnmp.com', 161)),
+    ...             await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
     ...             ContextData(),
     ...             0, 25,
     ...             ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr')))

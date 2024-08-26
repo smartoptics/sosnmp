@@ -11,7 +11,7 @@ async def test_v2c_get_table_bulk():
         objects = bulkWalkCmd(
             snmpEngine,
             CommunityData("public"),
-            UdpTransportTarget(("localhost", AGENT_PORT)),
+            await UdpTransportTarget.create(("localhost", AGENT_PORT)),
             ContextData(),
             0,
             4,
@@ -47,7 +47,7 @@ async def test_v2c_get_table_bulk_0_4():
         async for errorIndication, errorStatus, errorIndex, varBinds in bulkWalkCmd(
             snmpEngine,
             CommunityData("public"),
-            UdpTransportTarget(("localhost", AGENT_PORT)),
+            await UdpTransportTarget.create(("localhost", AGENT_PORT)),
             ContextData(),
             0,
             4,
@@ -84,7 +84,7 @@ async def test_v2c_get_table_bulk_0_1():
         async for errorIndication, errorStatus, errorIndex, varBinds in bulkWalkCmd(
             snmpEngine,
             CommunityData("public"),
-            UdpTransportTarget(("localhost", AGENT_PORT)),
+            await UdpTransportTarget.create(("localhost", AGENT_PORT)),
             ContextData(),
             0,
             1,

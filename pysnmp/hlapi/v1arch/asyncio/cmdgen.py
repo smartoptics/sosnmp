@@ -90,7 +90,7 @@ async def getCmd(snmpDispatcher, authData, transportTarget, *varBinds, **options
     ...     errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
     ...         SnmpDispatcher(),
     ...         CommunityData('public'),
-    ...         UdpTransportTarget(('demo.pysnmp.com', 161)),
+    ...         await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
     ...         ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0))
     ...     )
     ...     print(errorIndication, errorStatus, errorIndex, varBinds)
@@ -213,7 +213,7 @@ async def setCmd(snmpDispatcher, authData, transportTarget, *varBinds, **options
     ...     errorIndication, errorStatus, errorIndex, varBinds = await setCmd(
     ...         SnmpDispatcher(),
     ...         CommunityData('public'),
-    ...         UdpTransportTarget(('demo.pysnmp.com', 161)),
+    ...         await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
     ...         ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0), 'Linux i386')
     ...     )
     ...     print(errorIndication, errorStatus, errorIndex, varBinds)
@@ -339,7 +339,7 @@ async def nextCmd(snmpDispatcher, authData, transportTarget, *varBinds, **option
     ...     errorIndication, errorStatus, errorIndex, varBinds = await nextCmd(
     ...         SnmpDispatcher(),
     ...         CommunityData('public'),
-    ...         UdpTransportTarget(('demo.pysnmp.com', 161)),
+    ...         await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
     ...         ContextData(),
     ...         ObjectType(ObjectIdentity('SNMPv2-MIB', 'system'))
     ...     )
@@ -499,7 +499,7 @@ async def bulkCmd(
     ...     errorIndication, errorStatus, errorIndex, varBinds = await bulkCmd(
     ...         SnmpDispatcher(),
     ...         CommunityData('public'),
-    ...         UdpTransportTarget(('demo.pysnmp.com', 161)),
+    ...         await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
     ...         0, 2,
     ...         ObjectType(ObjectIdentity('SNMPv2-MIB', 'system'))
     ...     )

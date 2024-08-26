@@ -61,7 +61,7 @@ async def test_v1_get_raw():
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             CommunityData("public", mpModel=0),
-            UdpTransportTarget(("localhost", AGENT_PORT)),
+            await UdpTransportTarget.create(("localhost", AGENT_PORT)),
             ContextData(),
             ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         )
@@ -83,7 +83,7 @@ async def test_v1_get_ipv6():
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             CommunityData("public", mpModel=0),
-            Udp6TransportTarget(("localhost", AGENT_PORT)),
+            await Udp6TransportTarget.create(("localhost", AGENT_PORT)),
             ContextData(),
             ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         )
@@ -106,7 +106,7 @@ def test_v1_get_timeout_invalid_target():
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             CommunityData("community_string"),
-            UdpTransportTarget(("1.2.3.4", 161), timeout=1, retries=0),
+            await UdpTransportTarget.create(("1.2.3.4", 161), timeout=1, retries=0),
             ContextData(),
             ObjectType(ObjectIdentity("1.3.6.1.4.1.60069.9.1.0")),
         )
@@ -134,7 +134,9 @@ async def test_v1_get_timeout_slow_object():
             errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
                 snmpEngine,
                 CommunityData("public", mpModel=0),
-                UdpTransportTarget(("localhost", AGENT_PORT), timeout=1, retries=0),
+                await UdpTransportTarget.create(
+                    ("localhost", AGENT_PORT), timeout=1, retries=0
+                ),
                 ContextData(),
                 ObjectType(ObjectIdentity("1.3.6.1.4.1.60069.9.1.0")),
             )
@@ -160,7 +162,9 @@ async def test_v1_get_no_access_object():
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             CommunityData("public", mpModel=0),
-            UdpTransportTarget(("localhost", AGENT_PORT), timeout=1, retries=0),
+            await UdpTransportTarget.create(
+                ("localhost", AGENT_PORT), timeout=1, retries=0
+            ),
             ContextData(),
             ObjectType(ObjectIdentity("1.3.6.1.4.1.60069.9.3")),
         )

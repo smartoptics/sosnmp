@@ -34,7 +34,9 @@ async def test_v2_get_no_access_object():
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             CommunityData("public"),
-            UdpTransportTarget(("localhost", AGENT_PORT), timeout=1, retries=0),
+            await UdpTransportTarget.create(
+                ("localhost", AGENT_PORT), timeout=1, retries=0
+            ),
             ContextData(),
             ObjectType(ObjectIdentity("1.3.6.1.4.1.60069.9.3")),
         )
@@ -51,7 +53,9 @@ async def test_v2_get_legacy_object():
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             CommunityData("public"),
-            UdpTransportTarget(("localhost", AGENT_PORT), timeout=1, retries=0),
+            await UdpTransportTarget.create(
+                ("localhost", AGENT_PORT), timeout=1, retries=0
+            ),
             ContextData(),
             ObjectType(ObjectIdentity("1.3.6.1.4.1.60069.9.4")),
         )

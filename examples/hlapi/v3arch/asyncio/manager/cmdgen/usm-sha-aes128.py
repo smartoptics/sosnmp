@@ -39,7 +39,7 @@ async def run():
             authProtocol=USM_AUTH_HMAC96_SHA,
             privProtocol=USM_PRIV_CFB128_AES,
         ),
-        UdpTransportTarget(("demo.pysnmp.com", 161)),
+        await UdpTransportTarget.create(("demo.pysnmp.com", 161)),
         ContextData(),
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
     )

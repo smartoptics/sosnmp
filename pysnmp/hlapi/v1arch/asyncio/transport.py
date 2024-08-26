@@ -4,11 +4,11 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+import asyncio
 import socket
-import sys
+from typing import Tuple
 
-from pysnmp.carrier.asyncio.dgram import udp
-from pysnmp.carrier.asyncio.dgram import udp6
+from pysnmp.carrier.asyncio.dgram import udp, udp6
 from pysnmp.error import PySnmpError
 from pysnmp.hlapi.transport import AbstractTransportTarget
 
@@ -47,22 +47,25 @@ class UdpTransportTarget(AbstractTransportTarget):
     Examples
     --------
     >>> from pysnmp.hlapi.v1arch.asyncore import UdpTransportTarget
-    >>> UdpTransportTarget(('demo.pysnmp.com', 161))
+    >>> await UdpTransportTarget.create(('demo.pysnmp.com', 161))
     UdpTransportTarget(('195.218.195.228', 161), timeout=1, retries=5)
     >>>
     """
 
-    TRANSPORT_DOMAIN = udp.domainName
+    TRANSPORT_DOMAIN: Tuple[int, ...] = udp.DOMAIN_NAME
     PROTO_TRANSPORT = udp.UdpAsyncioTransport
 
-    def _resolveAddr(self, transportAddr):
+    async def _resolveAddr(self, transportAddr: Tuple) -> Tuple[str, int]:
         try:
-            return socket.getaddrinfo(
-                transportAddr[0],
-                transportAddr[1],
-                socket.AF_INET,
-                socket.SOCK_DGRAM,
-                socket.IPPROTO_UDP,
+            loop = asyncio.get_event_loop()
+            return (
+                await loop.getaddrinfo(
+                    transportAddr[0],
+                    transportAddr[1],
+                    family=socket.AF_INET,
+                    type=socket.SOCK_DGRAM,
+                    proto=socket.IPPROTO_UDP,
+                )
             )[0][4][:2]
         except socket.gaierror as exc:
             raise PySnmpError(
@@ -105,30 +108,33 @@ class Udp6TransportTarget(AbstractTransportTarget):
     Examples
     --------
     >>> from pysnmp.hlapi.asyncio import Udp6TransportTarget
-    >>> Udp6TransportTarget(('google.com', 161))
+    >>> await Udp6TransportTarget.create(('google.com', 161))
     Udp6TransportTarget(('2a00:1450:4014:80a::100e', 161), timeout=1, retries=5, tagList='')
-    >>> Udp6TransportTarget(('FEDC:BA98:7654:3210:FEDC:BA98:7654:3210', 161))
+    >>> await Udp6TransportTarget.create(('FEDC:BA98:7654:3210:FEDC:BA98:7654:3210', 161))
     Udp6TransportTarget(('fedc:ba98:7654:3210:fedc:ba98:7654:3210', 161), timeout=1, retries=5, tagList='')
-    >>> Udp6TransportTarget(('1080:0:0:0:8:800:200C:417A', 161))
+    >>> await Udp6TransportTarget.create(('1080:0:0:0:8:800:200C:417A', 161))
     Udp6TransportTarget(('1080::8:800:200c:417a', 161), timeout=1, retries=5, tagList='')
-    >>> Udp6TransportTarget(('::0', 161))
+    >>> await Udp6TransportTarget.create(('::0', 161))
     Udp6TransportTarget(('::', 161), timeout=1, retries=5, tagList='')
-    >>> Udp6TransportTarget(('::', 161))
+    >>> await Udp6TransportTarget.create(('::', 161))
     Udp6TransportTarget(('::', 161), timeout=1, retries=5, tagList='')
     >>>
     """
 
-    TRANSPORT_DOMAIN = udp6.domainName
+    TRANSPORT_DOMAIN: Tuple[int, ...] = udp6.DOMAIN_NAME
     PROTO_TRANSPORT = udp6.Udp6AsyncioTransport
 
-    def _resolveAddr(self, transportAddr):
+    async def _resolveAddr(self, transportAddr: Tuple) -> Tuple[str, int]:
         try:
-            return socket.getaddrinfo(
-                transportAddr[0],
-                transportAddr[1],
-                socket.AF_INET6,
-                socket.SOCK_DGRAM,
-                socket.IPPROTO_UDP,
+            loop = asyncio.get_event_loop()
+            return (
+                await loop.getaddrinfo(
+                    transportAddr[0],
+                    transportAddr[1],
+                    family=socket.AF_INET6,
+                    type=socket.SOCK_DGRAM,
+                    proto=socket.IPPROTO_UDP,
+                )
             )[0][4][:2]
         except socket.gaierror as exc:
             raise PySnmpError(

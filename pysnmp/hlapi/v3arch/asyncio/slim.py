@@ -142,9 +142,9 @@ class Slim:
         return await getCmd(
             self.snmpEngine,
             CommunityData(communityName, mpModel=self.version - 1),
-            Udp6TransportTarget((address, port), timeout, retries)
+            await Udp6TransportTarget.create((address, port), timeout, retries)
             if ":" in address
-            else UdpTransportTarget((address, port), timeout, retries),
+            else await UdpTransportTarget.create((address, port), timeout, retries),
             ContextData(),
             *varBinds,
         )
@@ -233,9 +233,9 @@ class Slim:
         return await nextCmd(
             self.snmpEngine,
             CommunityData(communityName, mpModel=self.version - 1),
-            Udp6TransportTarget((address, port), timeout, retries)
+            await Udp6TransportTarget.create((address, port), timeout, retries)
             if ":" in address
-            else UdpTransportTarget((address, port), timeout, retries),
+            else await UdpTransportTarget.create((address, port), timeout, retries),
             ContextData(),
             *varBinds,
         )
@@ -356,9 +356,9 @@ class Slim:
         return await bulkCmd(
             self.snmpEngine,
             CommunityData(communityName, mpModel=version),
-            Udp6TransportTarget((address, port), timeout, retries)
+            await Udp6TransportTarget.create((address, port), timeout, retries)
             if ":" in address
-            else UdpTransportTarget((address, port), timeout, retries),
+            else await UdpTransportTarget.create((address, port), timeout, retries),
             ContextData(),
             nonRepeaters,
             maxRepetitions,
@@ -442,9 +442,9 @@ class Slim:
         return await setCmd(
             self.snmpEngine,
             CommunityData(communityName, mpModel=self.version - 1),
-            Udp6TransportTarget((address, port), timeout, retries)
+            await Udp6TransportTarget.create((address, port), timeout, retries)
             if ":" in address
-            else UdpTransportTarget((address, port), timeout, retries),
+            else await UdpTransportTarget.create((address, port), timeout, retries),
             ContextData(),
             *varBinds,
         )

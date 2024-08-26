@@ -12,7 +12,7 @@ async def test_send_trap():
     errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
         snmpEngine,
         CommunityData("public", mpModel=0),
-        UdpTransportTarget(("demo.pysnmp.com", 162)),
+        await UdpTransportTarget.create(("demo.pysnmp.com", 162)),
         ContextData(),
         "trap",
         NotificationType(

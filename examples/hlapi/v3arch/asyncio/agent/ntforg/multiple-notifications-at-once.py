@@ -30,7 +30,7 @@ async def sendone(snmpEngine, hostname, notifyType):
     errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
         snmpEngine,
         CommunityData("public", tag=hostname),
-        UdpTransportTarget((hostname, 162), tagList=hostname),
+        await UdpTransportTarget.create((hostname, 162), tagList=hostname),
         ContextData(),
         notifyType,
         NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2"))

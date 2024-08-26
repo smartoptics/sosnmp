@@ -36,7 +36,7 @@ async def run_snmp_get():
             privKeyType=USM_KEY_TYPE_LOCALIZED,
             securityEngineId=OctetString(hexValue="80004fb805636c6f75644dab22cc"),
         ),
-        UdpTransportTarget(("demo.pysnmp.com", 161)),
+        await UdpTransportTarget.create(("demo.pysnmp.com", 161)),
         ContextData(),
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
     )

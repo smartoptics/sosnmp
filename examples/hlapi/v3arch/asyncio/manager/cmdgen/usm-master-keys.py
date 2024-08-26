@@ -33,7 +33,7 @@ async def run_snmp_get():
             authKeyType=USM_KEY_TYPE_MASTER,
             privKeyType=USM_KEY_TYPE_MASTER,
         ),
-        UdpTransportTarget(("demo.pysnmp.com", 161)),
+        await UdpTransportTarget.create(("demo.pysnmp.com", 161)),
         ContextData(),
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
     )

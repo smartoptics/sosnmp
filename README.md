@@ -121,7 +121,7 @@ snmpEngine = SnmpEngine()
 errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
     snmpEngine,
     CommunityData('public', mpModel=0),
-    UdpTransportTarget(('demo.pysnmp.com', 162)),
+    await UdpTransportTarget.create(('demo.pysnmp.com', 162)),
     ContextData(),
     "trap",
     NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2")).addVarBinds(

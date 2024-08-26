@@ -27,7 +27,7 @@ async def run(varBinds):
         errorIndication, errorStatus, errorIndex, varBindTable = await bulkCmd(
             snmpEngine,
             UsmUserData("usr-none-none"),
-            UdpTransportTarget(("demo.pysnmp.com", 161)),
+            await UdpTransportTarget.create(("demo.pysnmp.com", 161)),
             ContextData(),
             0,
             50,

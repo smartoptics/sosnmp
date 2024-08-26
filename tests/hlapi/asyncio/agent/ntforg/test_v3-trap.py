@@ -10,7 +10,7 @@ async def test_send_v3_trap_notification():
         errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
             snmpEngine,
             UsmUserData("usr-md5-des", "authkey1", "privkey1"),
-            UdpTransportTarget(("localhost", MANAGER_PORT)),
+            await UdpTransportTarget.create(("localhost", MANAGER_PORT)),
             ContextData(),
             "trap",
             NotificationType(ObjectIdentity("IF-MIB", "linkDown")),

@@ -18,7 +18,7 @@ async def test_usm_sha_aes128():
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             authData,
-            UdpTransportTarget(("localhost", AGENT_PORT), retries=0),
+            await UdpTransportTarget.create(("localhost", AGENT_PORT), retries=0),
             ContextData(),
             ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         )
@@ -46,7 +46,7 @@ async def test_usm_sha_aes128_wrong_auth():
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             authData,
-            UdpTransportTarget(("localhost", AGENT_PORT), retries=0),
+            await UdpTransportTarget.create(("localhost", AGENT_PORT), retries=0),
             ContextData(),
             ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         )
@@ -71,7 +71,7 @@ async def test_usm_sha_aes128_wrong_priv():
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             authData,
-            UdpTransportTarget(("localhost", AGENT_PORT), retries=0),
+            await UdpTransportTarget.create(("localhost", AGENT_PORT), retries=0),
             ContextData(),
             ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         )
@@ -99,7 +99,7 @@ async def test_usm_sha_aes128_wrong_user():
         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
             snmpEngine,
             authData,
-            UdpTransportTarget(("localhost", AGENT_PORT), retries=0),
+            await UdpTransportTarget.create(("localhost", AGENT_PORT), retries=0),
             ContextData(),
             ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         )
