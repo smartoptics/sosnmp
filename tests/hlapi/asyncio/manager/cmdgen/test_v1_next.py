@@ -23,25 +23,15 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 
 @pytest.mark.asyncio
 async def test_v1_next():
-    # Assemble MIB browser
-    mibBuilder = builder.MibBuilder()
-    mibViewController = view.MibViewController(mibBuilder)
-    compiler.addMibCompiler(
-        mibBuilder,
-        sources=["file:///usr/share/snmp/mibs", "https://mibs.pysnmp.com/asn1/@mib@"],
-    )
-
-    # Pre-load MIB modules we expect to work with
-    mibBuilder.loadModules("PYSNMP-MIB")
-
     async with AgentContextManager():
         with Slim(1) as slim:
-            slim.snmpEngine.cache["mibViewController"] = mibViewController
             errorIndication, errorStatus, errorIndex, varBinds = await slim.next(
                 "public",
                 "localhost",
                 AGENT_PORT,
-                ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
+                ObjectType(
+                    ObjectIdentity("SNMPv2-MIB", "sysDescr", 0).loadMibs("PYSNMP-MIB")
+                ),
             )
 
             assert errorIndication is None

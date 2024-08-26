@@ -7,31 +7,16 @@ from tests.manager_context import MANAGER_PORT, ManagerContextManager
 @pytest.mark.asyncio
 async def test_send_v3_inform():
     async with ManagerContextManager():
-        # Assemble MIB browser
-        mibBuilder = builder.MibBuilder()
-        mibViewController = view.MibViewController(mibBuilder)
-        compiler.addMibCompiler(
-            mibBuilder,
-            sources=[
-                "file:///usr/share/snmp/mibs",
-                "https://mibs.pysnmp.com/asn1/@mib@",
-            ],
-        )
-
-        # Pre-load MIB modules we expect to work with
-        mibBuilder.loadModules("SNMPv2-MIB")
-
         snmpEngine = SnmpEngine()
-        snmpEngine.cache["mibViewController"] = mibViewController
         errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
             snmpEngine,
             UsmUserData("usr-md5-des", "authkey1", "privkey1"),
             UdpTransportTarget(("localhost", MANAGER_PORT)),
             ContextData(),
             "inform",
-            NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2")).addVarBinds(
-                ("1.3.6.1.2.1.1.1.0", OctetString("my system"))
-            ),
+            NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2"))
+            .loadMibs("SNMPv2-MIB")
+            .addVarBinds(("1.3.6.1.2.1.1.1.0", OctetString("my system"))),
         )
 
         assert errorIndication is None
