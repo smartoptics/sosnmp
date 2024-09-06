@@ -1,4 +1,7 @@
 # manager_context.py
+from typing import Tuple
+
+
 from pysnmp.entity.rfc3413 import ntfrcv
 from pysnmp.hlapi.v3arch.asyncio import *
 from pysnmp.carrier.asyncio.dgram import udp
@@ -12,7 +15,7 @@ import asyncio
 MANAGER_PORT = 1622
 
 
-async def start_manager() -> SnmpEngine:
+async def start_manager() -> Tuple[SnmpEngine, ntfrcv.NotificationReceiver]:
     # Create SNMP engine
     snmpEngine = engine.SnmpEngine()
 
@@ -68,7 +71,7 @@ async def start_manager() -> SnmpEngine:
             print(f"{name.prettyPrint()} = {val.prettyPrint()}")
 
     # Register SNMP Application at the SNMP engine
-    ntfrcv.NotificationReceiver(snmpEngine, cbFun)
+    receiver = ntfrcv.NotificationReceiver(snmpEngine, cbFun)
 
     # Run I/O dispatcher which would receive queries and send confirmations
     snmpEngine.transportDispatcher.jobStarted(1)  # this job would never finish
@@ -79,7 +82,7 @@ async def start_manager() -> SnmpEngine:
     await asyncio.sleep(1)
 
     # return the engine
-    return snmpEngine
+    return snmpEngine, receiver
 
 
 class ManagerContextManager:
@@ -96,10 +99,15 @@ class ManagerContextManager:
     Note: The `start_manager()` function and the `transportDispatcher` attribute are not defined in this code snippet.
     """
 
+    manager: SnmpEngine
+    receiver: ntfrcv.NotificationReceiver
+
     async def __aenter__(self):
-        self.manager = await start_manager()
+        self.manager, self.receiver = await start_manager()
         return self.manager
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
+        self.receiver.close(self.manager)
+
         self.manager.transportDispatcher.jobFinished(1)
         self.manager.closeDispatcher()
