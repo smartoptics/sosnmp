@@ -1,18 +1,22 @@
+import asyncio
 import pytest
+
+
 from pysnmp.hlapi.v3arch.asyncio import *
 from pysnmp.proto.api import v2c
-from tests.manager_context import MANAGER_PORT, ManagerContextManager
+import tests.manager_context
 
 
 @pytest.mark.asyncio
 async def test_send_trap_enterprise_specific():
-    async with ManagerContextManager():
+    async with tests.manager_context.ManagerContextManager():
         snmpEngine = SnmpEngine()
         errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
             snmpEngine,
             CommunityData("public", mpModel=0),
-            # await UdpTransportTarget.create(("localhost", MANAGER_PORT)), # TODO: Fix this
-            await UdpTransportTarget.create(("demo.pysnmp.com", 162)),
+            await UdpTransportTarget.create(
+                ("localhost", tests.manager_context.MANAGER_PORT)
+            ),
             ContextData(),
             "trap",
             NotificationType(
@@ -27,22 +31,22 @@ async def test_send_trap_enterprise_specific():
                 ),
             ),
         )
-        assert errorIndication is None
-        assert errorStatus == 0
-        assert errorIndex == 0
-        assert varBinds == []
+
         snmpEngine.closeDispatcher()
+        await asyncio.sleep(1)
+        assert tests.manager_context.message_count == 1
 
 
 @pytest.mark.asyncio
 async def test_send_trap_generic():
-    async with ManagerContextManager():
+    async with tests.manager_context.ManagerContextManager():
         snmpEngine = SnmpEngine()
         errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
             snmpEngine,
             CommunityData("public", mpModel=0),
-            # await UdpTransportTarget.create(("localhost", MANAGER_PORT)), # TODO: Fix this
-            await UdpTransportTarget.create(("demo.pysnmp.com", 162)),
+            await UdpTransportTarget.create(
+                ("localhost", tests.manager_context.MANAGER_PORT)
+            ),
             ContextData(),
             "trap",
             NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2"))
@@ -55,8 +59,7 @@ async def test_send_trap_generic():
                 ("1.3.6.1.2.1.1.1.0", OctetString("my system")),
             ),
         )
-        assert errorIndication is None
-        assert errorStatus == 0
-        assert errorIndex == 0
-        assert varBinds == []
+
         snmpEngine.closeDispatcher()
+        await asyncio.sleep(1)
+        assert tests.manager_context.message_count == 1

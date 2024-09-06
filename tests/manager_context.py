@@ -1,4 +1,5 @@
 # manager_context.py
+import asyncio
 from typing import Tuple
 
 
@@ -8,11 +9,12 @@ from pysnmp.carrier.asyncio.dgram import udp
 from pysnmp.entity import engine, config
 from pysnmp.proto.api import v2c
 
-import asyncio
-
 # Set the port to 1622 instead of 162, because 162 is a
 # privileged port and requires root access
 MANAGER_PORT = 1622
+
+# Global variable to track message count
+message_count = 0
 
 
 async def start_manager() -> Tuple[SnmpEngine, ntfrcv.NotificationReceiver]:
@@ -62,6 +64,8 @@ async def start_manager() -> Tuple[SnmpEngine, ntfrcv.NotificationReceiver]:
     def cbFun(
         snmpEngine, stateReference, contextEngineId, contextName, varBinds, cbCtx
     ):
+        global message_count
+        message_count += 1
         print(
             'Notification from ContextEngineId "{}", ContextName "{}"'.format(
                 contextEngineId.prettyPrint(), contextName.prettyPrint()
@@ -103,6 +107,9 @@ class ManagerContextManager:
     receiver: ntfrcv.NotificationReceiver
 
     async def __aenter__(self):
+        global message_count
+        message_count = 0
+
         self.manager, self.receiver = await start_manager()
         return self.manager
 
