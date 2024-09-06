@@ -232,10 +232,10 @@ USM_PRIV_CFB128_AES = config.USM_PRIV_CFB128_AES
 """The CFB128-AES-128 Symmetric Encryption Protocol (:RFC:`3826#section-3`)"""
 
 USM_PRIV_CFB192_AES = config.USM_PRIV_CFB192_AES
-"""The CFB128-AES-192 Symmetric Encryption Protocol (`draft-blumenthal-aes-usm-04 <https:://tools.ietf.org/html/draft-blumenthal-aes-usm-04#section-3>`_) with Reeder key localization"""
+"""The CFB128-AES-192 Symmetric Encryption Protocol (`draft-blumenthal-aes-usm-04 <https:://tools.ietf.org/html/draft-blumenthal-aes-usm-04#section-3>`_) with Reeder key localization. Also known as AES-192-Cisco"""
 
 USM_PRIV_CFB256_AES = config.USM_PRIV_CFB256_AES
-"""The CFB128-AES-256 Symmetric Encryption Protocol (`draft-blumenthal-aes-usm-04 <https:://tools.ietf.org/html/draft-blumenthal-aes-usm-04#section-3>`_) with Reeder key localization"""
+"""The CFB128-AES-256 Symmetric Encryption Protocol (`draft-blumenthal-aes-usm-04 <https:://tools.ietf.org/html/draft-blumenthal-aes-usm-04#section-3>`_) with Reeder key localization. Also known as AES-256-Cisco"""
 
 USM_PRIV_CFB192_AES_BLUMENTHAL = config.USM_PRIV_CFB192_AES_BLUMENTHAL
 """The CFB128-AES-192 Symmetric Encryption Protocol (`draft-blumenthal-aes-usm-04 <https:://tools.ietf.org/html/draft-blumenthal-aes-usm-04#section-3>`_)"""

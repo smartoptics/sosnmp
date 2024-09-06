@@ -57,12 +57,12 @@ USM_PRIV_CFB128_AES = auth.USM_PRIV_CFB128_AES
 USM_PRIV_CFB192_AES = auth.USM_PRIV_CFB192_AES
 """The CFB128-AES-192 Symmetric Encryption Protocol (`draft-blumenthal-aes-usm-04 \
 <https:://tools.ietf.org/html/draft-blumenthal-aes-usm-04#section-3>`_) with \
-Reeder key localization"""
+Reeder key localization. Also known as AES-192-Cisco"""
 
 USM_PRIV_CFB256_AES = auth.USM_PRIV_CFB256_AES
 """The CFB128-AES-256 Symmetric Encryption Protocol (`draft-blumenthal-aes-usm-04 \
 <https:://tools.ietf.org/html/draft-blumenthal-aes-usm-04#section-3>`_) with \
-Reeder key localization"""
+Reeder key localization. Also also known as AES-256-Cisco"""
 
 USM_PRIV_CFB192_AES_BLUMENTHAL = auth.USM_PRIV_CFB192_AES_BLUMENTHAL
 """The CFB128-AES-192 Symmetric Encryption Protocol (`draft-blumenthal-aes-usm-04 \
