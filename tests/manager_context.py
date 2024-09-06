@@ -1,6 +1,6 @@
 # manager_context.py
 import asyncio
-from typing import Tuple
+from typing import List, Tuple
 
 
 from pysnmp.entity.rfc3413 import ntfrcv
@@ -13,11 +13,10 @@ from pysnmp.proto.api import v2c
 # privileged port and requires root access
 MANAGER_PORT = 1622
 
-# Global variable to track message count
-message_count = 0
 
-
-async def start_manager() -> Tuple[SnmpEngine, ntfrcv.NotificationReceiver]:
+async def start_manager(
+    message_count: List[int],
+) -> Tuple[SnmpEngine, ntfrcv.NotificationReceiver]:
     # Create SNMP engine
     snmpEngine = engine.SnmpEngine()
 
@@ -64,8 +63,7 @@ async def start_manager() -> Tuple[SnmpEngine, ntfrcv.NotificationReceiver]:
     def cbFun(
         snmpEngine, stateReference, contextEngineId, contextName, varBinds, cbCtx
     ):
-        global message_count
-        message_count += 1
+        message_count[0] += 1
         print(
             'Notification from ContextEngineId "{}", ContextName "{}"'.format(
                 contextEngineId.prettyPrint(), contextName.prettyPrint()
@@ -105,13 +103,12 @@ class ManagerContextManager:
 
     manager: SnmpEngine
     receiver: ntfrcv.NotificationReceiver
+    message_count: List[int]
 
     async def __aenter__(self):
-        global message_count
-        message_count = 0
-
-        self.manager, self.receiver = await start_manager()
-        return self.manager
+        self.message_count = [0]
+        self.manager, self.receiver = await start_manager(self.message_count)
+        return self.manager, self.message_count
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         self.receiver.close(self.manager)
