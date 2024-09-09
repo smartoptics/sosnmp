@@ -4,7 +4,12 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+from __future__ import annotations
 import sys
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from pysnmp.entity.engine import SnmpEngine
 
 from pyasn1.codec.ber import decoder, eoo
 from pyasn1.error import PyAsn1Error
@@ -348,7 +353,7 @@ class SnmpV3MessageProcessingModel(AbstractMessageProcessingModel):
 
     def prepareResponseMessage(
         self,
-        snmpEngine,
+        snmpEngine: SnmpEngine,
         messageProcessingModel,
         securityModel,
         securityName,

@@ -101,6 +101,16 @@ class SnmpUSMSecurityModel(AbstractSecurityModel):
         self.__expirationTimer = 0
         self.__paramsBranchId = -1
 
+    def _close(self):
+        """
+        Close the security model to test memory leak.
+
+        This method is intended for unit testing purposes only.
+        It closes the security model and checks if all associated resources are released.
+        """
+        if self._cache and not self._cache.isEmpty():
+            raise ValueError("Cache is not empty")
+
     def __sec2usr(self, snmpEngine, securityName, securityEngineID=None):
         mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
         (usmUserEngineID,) = mibBuilder.importSymbols(

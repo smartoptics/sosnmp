@@ -31,6 +31,15 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
         ) = self.__communityBranchId = self.__securityBranchId = -1
         base.AbstractSecurityModel.__init__(self)
 
+    def _close(self):
+        """
+        Close the security model to test memory leak.
+
+        This method is intended for unit testing purposes only.
+        It closes the security model and checks if all associated resources are released.
+        """
+        pass
+
     def _sec2com(self, snmpEngine, securityName, contextEngineId, contextName):
         (
             snmpTargetParamsSecurityName,

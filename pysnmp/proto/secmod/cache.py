@@ -4,12 +4,16 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+from typing import Any, Dict
+
+
 from pysnmp import nextid
 from pysnmp.proto import error
 
 
 class Cache:
     __stateReference = nextid.Integer(0xFFFFFF)
+    __cacheEntries: Dict[int, Any]
 
     def __init__(self):
         self.__cacheEntries = {}
@@ -28,3 +32,6 @@ class Cache:
             )
         del self.__cacheEntries[stateReference]
         return securityData
+
+    def isEmpty(self):
+        return not bool(self.__cacheEntries)

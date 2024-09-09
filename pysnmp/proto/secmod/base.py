@@ -11,6 +11,7 @@ from pysnmp.proto.secmod import cache
 
 class AbstractSecurityModel:
     SECURITY_MODEL_ID = None
+    _cache: cache.Cache
 
     def __init__(self):
         self._cache = cache.Cache()
@@ -63,3 +64,13 @@ class AbstractSecurityModel:
 
     def receiveTimerTick(self, snmpEngine, timeNow):
         pass
+
+    def _close(self):
+        """
+        Close the security model to test memory leak.
+
+        This method is intended for unit testing purposes only.
+        It closes the security model and checks if all associated resources are released.
+        """
+
+        raise error.ProtocolError("Security model %s not implemented" % self)

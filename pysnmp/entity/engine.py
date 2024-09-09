@@ -24,6 +24,7 @@ from pysnmp.proto.mpmod.rfc2576 import (
 from pysnmp.proto.mpmod.rfc3412 import SnmpV3MessageProcessingModel
 from pysnmp.proto.rfc1902 import OctetString
 from pysnmp.proto.rfc3412 import MsgAndPduDispatcher
+from pysnmp.proto.secmod.base import AbstractSecurityModel
 from pysnmp.proto.secmod.rfc2576 import SnmpV1SecurityModel, SnmpV2cSecurityModel
 from pysnmp.proto.secmod.rfc3414 import SnmpUSMSecurityModel
 
@@ -65,6 +66,7 @@ class SnmpEngine:
     msgAndPduDsp: MsgAndPduDispatcher
     snmpEngineId: OctetString
     cache: Dict[str, Any]
+    securityModels: Dict[int, AbstractSecurityModel]
 
     def __init__(
         self,
@@ -176,6 +178,16 @@ class SnmpEngine:
 
     def __repr__(self):
         return f"{self.__class__.__name__}(snmpEngineID={self.snmpEngineID!r})"
+
+    def _close(self):
+        """
+        Close the SNMP engine to test memory leak.
+
+        This method is intended for unit testing purposes only.
+        It closes the SNMP engine and checks if all associated resources are released.
+        """
+        for securityModel in self.securityModels.values():
+            securityModel._close()
 
     def openDispatcher(self, timeout: float = 0):
         """

@@ -42,6 +42,8 @@ async def start_agent(
         snmpEngine, "usr-none-none", config.USM_AUTH_NONE, config.USM_PRIV_NONE
     )
 
+    config.addV3User(snmpEngine, "usr-sha-none", config.USM_AUTH_HMAC96_SHA, "authkey1")
+
     config.addV3User(
         snmpEngine,
         "usr-sha-aes",
@@ -51,7 +53,14 @@ async def start_agent(
         "privkey1",
     )
 
-    config.addV3User(snmpEngine, "usr-sha-none", config.USM_AUTH_HMAC96_SHA, "authkey1")
+    config.addV3User(
+        snmpEngine,
+        "usr-sha-aes256",
+        config.USM_AUTH_HMAC96_SHA,
+        "authkey1",
+        config.USM_PRIV_CFB256_AES,
+        "privkey1",
+    )
 
     # Allow read MIB access for this user / securityModels at VACM
     config.addVacmUser(snmpEngine, 1, "public", "noAuthNoPriv", (1, 3, 6), (1, 3, 6))
@@ -59,6 +68,7 @@ async def start_agent(
     config.addVacmUser(snmpEngine, 3, "usr-none-none", "noAuthNoPriv", (1, 3, 6))
     config.addVacmUser(snmpEngine, 3, "usr-sha-none", "authNoPriv", (1, 3, 6))
     config.addVacmUser(snmpEngine, 3, "usr-sha-aes", "authPriv", (1, 3, 6))
+    config.addVacmUser(snmpEngine, 3, "usr-sha-aes256", "authPriv", (1, 3, 6))
 
     # Configure SNMP context
     snmpContext = context.SnmpContext(snmpEngine)
