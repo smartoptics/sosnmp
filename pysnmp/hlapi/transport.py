@@ -6,7 +6,6 @@
 #
 from typing import Tuple
 
-from pyasn1.compat.octets import null
 
 from pysnmp import error
 from pysnmp.carrier.base import AbstractTransport, AbstractTransportAddress
@@ -28,7 +27,7 @@ class AbstractTransportTarget:
         self,
         timeout: float = 1,
         retries: int = 5,
-        tagList=null,
+        tagList=b"",
     ):
         self.timeout = timeout
         self.retries = retries
