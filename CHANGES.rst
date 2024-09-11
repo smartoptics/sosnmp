@@ -1,3 +1,9 @@
+Revision 7.1.0, released on Sep 11, 2024
+----------------------------------------
+
+- Removed pyasn1.compat dependency.
+- Switched to async DNS resolver.
+
 Revision 7.0.3, released on Aug 26, 2024
 ----------------------------------------
 
@@ -50,6 +56,11 @@ Revision 7.0.1, released on Aug 24, 2024
 
 - Cherry-picked many minor fixes from etingof/master branch.
 
+Revision 6.2.6, released on Sep 11, 2024
+----------------------------------------
+
+- Removed pyasn1.compat dependency. A helper release to enable migration.
+
 Revision 6.2.5, released on Aug 10, 2024
 ----------------------------------------
 
@@ -82,8 +93,13 @@ Revision 6.2.0, released on Jul 12, 2024
 
 - Retired temporary sync API.
 
-Revision 6.1.3, released on July 16, 2024
------------------------------------------
+Revision 6.1.4, released on Sep 11, 2024
+----------------------------------------
+
+- Removed pyasn1.compat dependency. A helper release to enable migration.
+
+Revision 6.1.3, released on Jul 16, 2024
+----------------------------------------
 
 - Removed package postfix. A helper release to enable migration.
 

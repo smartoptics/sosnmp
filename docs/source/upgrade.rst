@@ -6,7 +6,7 @@ Upgrade to 6.x/7.x Releases
 .. toctree::
    :maxdepth: 2
 
-This article provides information on how to upgrade to the latest 6.x/7.0
+This article provides information on how to upgrade to the latest 6.x/7.x
 releases from old releases such as 4.x and 5.x.
 
 .. note::
@@ -169,11 +169,11 @@ above.
 
 .. important::
 
-   We only published 6.1.3 release, and we are not planning to publish any
-   more 6.1 releases. The 6.1.3 release was published to ensure smooth
+   We only published releases >=6.1.3, and we are not planning to publish
+   any more 6.1 releases. Those releases were published to ensure smooth
    transition for users who are still using the 4.x/5.x/6.0 releases.
 
-   We consider the 6.1.3 release as a stepping stone to the 6.2 releases,
+   We consider those releases as a stepping stone to the 6.2 releases,
    so please don't stay with them for long.
 
 Upgrade to 6.2 Releases
@@ -184,7 +184,7 @@ we decided to remove it from 6.2 release.
 
 .. important::
 
-   We published release >=6.2.2, and we are not planning to publish any
+   We published releases >=6.2.2, and we are not planning to publish any
    older 6.2 releases. The new 6.2 releases were published to ensure smooth
    transition for users who are still using the 4.x/5.x/6.0/6.1 releases.
 
@@ -200,6 +200,13 @@ standards in 7.0 release.
    Since API surface changes are significant, users who upgrade from 6.x
    releases should carefully review the changes and adjust their code
    accordingly.
+
+Upgrade to 7.1 Releases
+-----------------------
+
+Switching to async DNS resolver forced us to make some changes to the API,
+so instead of using simply ``UdpTransportTarget()`` now you need to call
+```await UdpTransportTarget.create()``.
 
 Important Changes
 -----------------
@@ -228,6 +235,9 @@ compatible with Python 3.8 and later.
 We were hoping the new sync API would be stable enough to meet the quality
 expectation, but it turned out to be the opposite. So we decided to remove
 it from 6.2 release.
+
+You might copy the sync wrappers from 6.1 release and use them in your code
+if you still need them.
 
 RFC3414 Compliance
 ++++++++++++++++++
