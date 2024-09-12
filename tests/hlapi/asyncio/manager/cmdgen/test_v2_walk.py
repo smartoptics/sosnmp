@@ -4,12 +4,12 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 
 
 @pytest.mark.asyncio
-async def test_v1_walk():
+async def test_v2_walk():  # some agents have different v2 GET NEXT behavior
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
         objects = walkCmd(
             snmpEngine,
-            CommunityData("public", mpModel=0),
+            CommunityData("public"),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
             ContextData(),
             ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
@@ -37,12 +37,12 @@ async def test_v1_walk():
 
 
 @pytest.mark.asyncio
-async def test_v1_walk_subtree():
+async def test_v2_walk_subtree():
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
         objects = walkCmd(
             snmpEngine,
-            CommunityData("public", mpModel=0),
+            CommunityData("public"),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
             ContextData(),
             ObjectType(ObjectIdentity("SNMPv2-MIB", "system")),

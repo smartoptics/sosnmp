@@ -6,10 +6,24 @@
 #
 from typing import Any, Dict
 
+from pysnmp.proto.api import v2c
 from pysnmp.smi import builder, view
 from pysnmp.smi.rfc1902 import NotificationType, ObjectIdentity, ObjectType
 
-__all__ = ["CommandGeneratorVarBinds", "NotificationOriginatorVarBinds"]
+__all__ = ["CommandGeneratorVarBinds", "NotificationOriginatorVarBinds", "isEndOfMib"]
+
+
+def isEndOfMib(var_binds):  # noqa: N816
+    """
+    Check if the given variable bindings indicate the end of the MIB.
+
+    Parameters:
+    var_binds (list): A list of variable bindings.
+
+    Returns:
+    bool: True if it is the end of the MIB, False otherwise.
+    """
+    return not v2c.apiPDU.getNextVarBinds(var_binds)[1]
 
 
 class MibViewControllerManager:

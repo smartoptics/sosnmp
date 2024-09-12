@@ -70,7 +70,7 @@ class Slim:
         *varBinds,
         timeout: int = 1,
         retries: int = 5,
-    ) -> "tuple[ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
+    ) -> "tuple[ErrorIndication, Integer32 | int, Integer32 | int, list[ObjectType]]":
         r"""Creates a generator to perform SNMP GET query.
 
         When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -157,7 +157,7 @@ class Slim:
         *varBinds,
         timeout: int = 1,
         retries: int = 5,
-    ) -> "tuple[ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
+    ) -> "tuple[ErrorIndication, Integer32 | str | int, Integer32 | int, list[ObjectType]]":
         r"""Creates a generator to perform SNMP GETNEXT query.
 
         When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -250,7 +250,7 @@ class Slim:
         *varBinds,
         timeout: int = 1,
         retries: int = 5,
-    ) -> "tuple[ErrorIndication, Integer32 | int, Integer32 | int, tuple[tuple[ObjectType, ...], ...]]":
+    ) -> "tuple[ErrorIndication, Integer32 | str | int, Integer32 | int, list[ObjectType]]":
         r"""Creates a generator to perform SNMP GETBULK query.
 
         When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -373,7 +373,7 @@ class Slim:
         *varBinds,
         timeout: int = 1,
         retries: int = 5,
-    ) -> "tuple[ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
+    ) -> "tuple[ErrorIndication, Integer32 | int, Integer32 | int, list[ObjectType]]":
         r"""Creates a generator to perform SNMP SET query.
 
         When iterator gets advanced by :py:mod:`asyncio` main loop,

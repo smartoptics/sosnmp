@@ -76,10 +76,9 @@ class PDUAPI(v1.PDUAPI):
             ):
                 nonNulls -= 1
             elif origVarBinds is not None:
-                if (
-                    ObjectIdentifier(origVarBinds[idx][0]).asTuple()
-                    >= varBinds[idx][0].asTuple()
-                ):
+                seed = ObjectIdentifier(origVarBinds[idx][0]).asTuple()
+                found = varBinds[idx][0].asTuple()
+                if seed >= found:
                     errorIndication = errind.oidNotIncreasing
 
             rspVarBinds.insert(0, (varBinds[idx][0], null))
@@ -158,34 +157,6 @@ class BulkPDUAPI(PDUAPI):
     @staticmethod
     def setMaxRepetitions(pdu, value):
         pdu.setComponentByPosition(2, value)
-
-    def getVarBindTable(self, reqPDU, rspPDU):
-        nonRepeaters = self.getNonRepeaters(reqPDU)
-
-        reqVarBinds = self.getVarBinds(reqPDU)
-
-        N = min(int(nonRepeaters), len(reqVarBinds))
-
-        rspVarBinds = self.getVarBinds(rspPDU)
-
-        # shortcut for the most trivial case
-        if N == 0 and len(reqVarBinds) == 1:
-            return [[vb] for vb in rspVarBinds]
-
-        R = max(len(reqVarBinds) - N, 0)
-
-        varBindTable = []
-
-        if R:
-            for i in range(0, len(rspVarBinds) - N, R):
-                varBindRow = rspVarBinds[:N] + rspVarBinds[N + i : N + R + i]
-                # ignore stray OIDs / non-rectangular table
-                if len(varBindRow) == N + R:
-                    varBindTable.append(varBindRow)
-        elif N:
-            varBindTable.append(rspVarBinds[:N])
-
-        return varBindTable
 
 
 apiBulkPDU = BulkPDUAPI()  # noqa: N816

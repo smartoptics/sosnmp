@@ -12,7 +12,7 @@ from pyasn1.type import univ
 from pysnmp import debug, error, nextid
 from pysnmp.entity.engine import SnmpEngine
 from pysnmp.entity.rfc3413 import config
-from pysnmp.proto import errind, rfc1905
+from pysnmp.proto import errind
 from pysnmp.proto.api import v2c
 from pysnmp.proto.error import StatusInformation
 from pysnmp.proto.proxy import rfc2576
@@ -568,16 +568,6 @@ class BulkCommandGenerator(BulkCommandGeneratorSingleRun):
             errorIndication, varBinds = None, ()
         elif not varBindTable:
             errorIndication, varBinds = errind.emptyResponse, ()
-        else:
-            errorIndication, varBinds = v2c.apiBulkPDU.getNextVarBinds(
-                varBindTable[-1], v2c.apiPDU.getVarBinds(reqPDU)
-            )
-            nonRepeaters = v2c.apiBulkPDU.getNonRepeaters(reqPDU)
-            if nonRepeaters:
-                varBinds = (
-                    v2c.apiBulkPDU.getVarBinds(reqPDU)[: int(nonRepeaters)]
-                    + varBinds[int(nonRepeaters) :]
-                )
 
         if not cbFun(
             snmpEngine,
@@ -596,43 +586,3 @@ class BulkCommandGenerator(BulkCommandGeneratorSingleRun):
 
         if not varBinds:
             return  # no more objects available
-
-        v2c.apiBulkPDU.setRequestID(reqPDU, v2c.getNextRequestID())
-        v2c.apiBulkPDU.setVarBinds(reqPDU, varBinds)
-
-        try:
-            self.sendPdu(
-                snmpEngine,
-                targetName,
-                contextEngineId,
-                contextName,
-                reqPDU,
-                self.processResponseVarBinds,
-                (
-                    targetName,
-                    nonRepeaters,
-                    maxRepetitions,
-                    contextEngineId,
-                    contextName,
-                    reqPDU,
-                    cbFun,
-                    cbCtx,
-                ),
-            )
-
-        except StatusInformation:
-            statusInformation = sys.exc_info()[1]
-            debug.logger & debug.FLAG_APP and debug.logger(
-                "processResponseVarBinds: sendPduHandle {}: _sendPdu() failed with {!r}".format(
-                    sendRequestHandle, statusInformation
-                )
-            )
-            cbFun(
-                snmpEngine,
-                sendRequestHandle,
-                statusInformation["errorIndication"],
-                0,
-                0,
-                (),
-                cbCtx,
-            )  # type: ignore

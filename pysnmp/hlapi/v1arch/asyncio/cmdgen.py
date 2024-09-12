@@ -5,7 +5,7 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 from pysnmp.hlapi.v1arch.auth import *
-from pysnmp.hlapi.varbinds import *
+from pysnmp.hlapi import varbinds
 from pysnmp.hlapi.v1arch.asyncio.transport import *
 from pysnmp.smi.rfc1902 import *
 from pysnmp.proto import api
@@ -14,9 +14,8 @@ import asyncio
 
 __all__ = ["getCmd", "nextCmd", "setCmd", "bulkCmd", "isEndOfMib"]
 
-VB_PROCESSOR = CommandGeneratorVarBinds()
-
-isEndOfMib = lambda varBinds: not api.v2c.apiPDU.getNextVarBinds(varBinds)[1]
+VB_PROCESSOR = varbinds.CommandGeneratorVarBinds()
+isEndOfMib = varbinds.isEndOfMib
 
 
 async def getCmd(snmpDispatcher, authData, transportTarget, *varBinds, **options):

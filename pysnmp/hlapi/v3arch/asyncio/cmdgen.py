@@ -9,6 +9,8 @@
 #          Zachary Lorusso <zlorusso@gmail.com>
 # Modified by Ilya Etingof <ilya@snmplabs.com>
 #
+# Copyright (C) 2024, LeXtudio Inc. <support@lextudio.com>
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 #
@@ -32,7 +34,6 @@
 # THE POSSIBILITY OF SUCH DAMAGE.
 #
 import asyncio
-import sys
 from typing import AsyncGenerator
 
 from pysnmp.entity.engine import SnmpEngine
@@ -41,7 +42,7 @@ from pysnmp.hlapi.v3arch.asyncio.auth import CommunityData, UsmUserData
 from pysnmp.hlapi.v3arch.asyncio.context import ContextData
 from pysnmp.hlapi.v3arch.asyncio.lcd import CommandGeneratorLcdConfigurator
 from pysnmp.hlapi.v3arch.asyncio.transport import AbstractTransportTarget
-from pysnmp.hlapi.varbinds import CommandGeneratorVarBinds
+from pysnmp.hlapi import varbinds
 from pysnmp.proto import errind
 from pysnmp.proto.rfc1902 import Integer32, Null
 from pysnmp.proto.rfc1905 import EndOfMibView, endOfMibView
@@ -53,26 +54,14 @@ __all__ = [
     "nextCmd",
     "setCmd",
     "bulkCmd",
-    "isEndOfMib",
     "walkCmd",
     "bulkWalkCmd",
+    "isEndOfMib",
 ]
 
-VB_PROCESSOR = CommandGeneratorVarBinds()
+VB_PROCESSOR = varbinds.CommandGeneratorVarBinds()
 LCD = CommandGeneratorLcdConfigurator()
-
-
-def isEndOfMib(var_binds):  # noqa: N816
-    """
-    Check if the given variable bindings indicate the end of the MIB.
-
-    Parameters:
-    var_binds (list): A list of variable bindings.
-
-    Returns:
-    bool: True if it is the end of the MIB, False otherwise.
-    """
-    return not v2c.apiPDU.getNextVarBinds(var_binds)[1]
+isEndOfMib = varbinds.isEndOfMib
 
 
 async def getCmd(
@@ -82,7 +71,7 @@ async def getCmd(
     contextData: ContextData,
     *varBinds,
     **options
-) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
+) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, list[ObjectType]]":
     r"""Creates a generator to perform SNMP GET query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -203,7 +192,7 @@ async def setCmd(
     contextData: ContextData,
     *varBinds,
     **options
-) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
+) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, list[ObjectType]]":
     r"""Creates a generator to perform SNMP SET query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -324,7 +313,7 @@ async def nextCmd(
     contextData: ContextData,
     *varBinds,
     **options
-) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]":
+) -> "tuple[errind.ErrorIndication, Integer32 | str | int, Integer32 | int, list[ObjectType]]":
     r"""Creates a generator to perform SNMP GETNEXT query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -462,9 +451,9 @@ async def bulkCmd(
     contextData: ContextData,
     nonRepeaters: int,
     maxRepetitions: int,
-    *varBinds,
+    *varBinds: ObjectType,
     **options
-) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[tuple[ObjectType, ...], ...]]":
+) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, list[ObjectType]]":
     r"""Creates a generator to perform SNMP GETBULK query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -631,10 +620,10 @@ async def walkCmd(
     authData: "CommunityData | UsmUserData",
     transportTarget: AbstractTransportTarget,
     contextData: ContextData,
-    *varBinds,
+    varBind: ObjectType,
     **options
 ) -> AsyncGenerator[
-    "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]",
+    "tuple[errind.ErrorIndication | None, Integer32 | str | int | None, Integer32 | int | None, list[ObjectType]]",
     None,
 ]:
     r"""Creates a generator to perform one or more SNMP GETNEXT queries.
@@ -657,8 +646,8 @@ async def walkCmd(
     contextData : :py:class:`~pysnmp.hlapi.v3arch.asyncio.ContextData`
         Class instance representing SNMP ContextEngineId and ContextName values.
 
-    \*varBinds : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
-        One or more class instances representing MIB variables to place
+    varBind : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
+        One class instance representing MIB variables to place
         into SNMP request.
 
     Other Parameters
@@ -734,19 +723,18 @@ async def walkCmd(
     maxRows = options.get("maxRows", 0)
     maxCalls = options.get("maxCalls", 0)
 
-    initialVars = [x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine.cache, varBinds)]
+    initialVars = [x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine.cache, [varBind])]
 
     totalRows = totalCalls = 0
 
     while True:
-        previousVarBinds = varBinds
-        if varBinds:
+        if varBind:
             errorIndication, errorStatus, errorIndex, varBindTable = await nextCmd(
                 snmpEngine,
                 authData,
                 transportTarget,
                 contextData,
-                *[(x[0], Null("")) for x in varBinds],
+                *[(varBind[0], Null(""))],
                 **dict(lookupMib=options.get("lookupMib", True))
             )
             if (
@@ -757,7 +745,7 @@ async def walkCmd(
                 errorIndication = None
 
             if errorIndication:
-                yield (errorIndication, errorStatus, errorIndex, varBinds)
+                yield (errorIndication, errorStatus, errorIndex, [varBind])
                 return
             elif errorStatus:
                 if errorStatus == 2:
@@ -765,23 +753,22 @@ async def walkCmd(
                     # from SNMPv1 Agent through internal pysnmp proxy.
                     errorStatus = 0
                     errorIndex = 0
-                yield (errorIndication, errorStatus, errorIndex, varBinds)
                 return
             else:
                 stopFlag = True
 
-                varBinds = varBindTable[0]
+                varBind = varBindTable[0][0]
 
-                for col, varBind in enumerate(varBinds):
-                    name, val = varBind
-                    if isinstance(val, Null) or isinstance(val, EndOfMibView):
-                        varBinds[col] = previousVarBinds[col][0], endOfMibView
+                name, val = varBind
+                foundEnding = isinstance(val, Null) or isinstance(val, EndOfMibView)
+                foundBeyond = not lexicographicMode and not initialVars[0].isPrefixOf(
+                    name
+                )
+                if foundEnding or foundBeyond:
+                    return
 
-                    if not lexicographicMode and not initialVars[col].isPrefixOf(name):
-                        varBinds[col] = previousVarBinds[col][0], endOfMibView
-
-                    if stopFlag and varBinds[col][1] is not endOfMibView:
-                        stopFlag = False
+                if stopFlag and varBind[1] is not endOfMibView:
+                    stopFlag = False
 
                 if stopFlag:
                     return
@@ -790,14 +777,15 @@ async def walkCmd(
                 totalCalls += 1
         else:
             errorIndication = errorStatus = errorIndex = None
-            varBinds = []
+            varBind = None
 
-        initialVarBinds = (yield errorIndication, errorStatus, errorIndex, varBinds)
+        initialVarBinds = (yield errorIndication, errorStatus, errorIndex, [varBind])
 
         if initialVarBinds:
-            varBinds = initialVarBinds
+            varBind = initialVarBinds[0]
             initialVars = [
-                x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine.cache, varBinds)
+                x[0]
+                for x in VB_PROCESSOR.makeVarBinds(snmpEngine.cache, initialVarBinds)
             ]
 
         if maxRows and totalRows >= maxRows:
@@ -812,12 +800,12 @@ async def bulkWalkCmd(
     authData: "CommunityData | UsmUserData",
     transportTarget: AbstractTransportTarget,
     contextData: ContextData,
-    nonRepeaters,
-    maxRepetitions,
-    *varBinds,
+    nonRepeaters: int,
+    maxRepetitions: int,
+    varBind: ObjectType,
     **options
 ) -> AsyncGenerator[
-    "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType]]",
+    "tuple[errind.ErrorIndication | None, Integer32 | int | None, Integer32 | int | None, list[ObjectType]]",
     None,
 ]:
     r"""Creates a generator to perform one or more SNMP GETBULK queries.
@@ -850,8 +838,8 @@ async def bulkWalkCmd(
         `nonRepeaters`). Remote SNMP engine may choose lesser value than
         requested.
 
-    \*varBinds : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
-        One or more class instances representing MIB variables to place
+    varBind : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
+        One class instance representing MIB variables to place
         into SNMP request.
 
     Other Parameters
@@ -932,111 +920,100 @@ async def bulkWalkCmd(
     maxRows = options.get("maxRows", 0)
     maxCalls = options.get("maxCalls", 0)
 
-    initialVars = [x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine.cache, varBinds)]
-    nullVarBinds = [False] * len(initialVars)
+    initialVars = [x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine.cache, [varBind])]
 
     totalRows = totalCalls = 0
-    stopFlag = False
 
-    while not stopFlag:
+    varBinds = [varBind]
+
+    while True:
         if maxRows and totalRows < maxRows:
             maxRepetitions = min(maxRepetitions, maxRows - totalRows)
 
-        previousVarBinds = varBinds
-
-        errorIndication, errorStatus, errorIndex, varBindTable = await bulkCmd(
-            snmpEngine,
-            authData,
-            transportTarget,
-            contextData,
-            nonRepeaters,
-            maxRepetitions,
-            *[(x[0], Null("")) for x in varBinds],
-            **dict(lookupMib=options.get("lookupMib", True))
-        )
-
-        if (
-            ignoreNonIncreasingOid
-            and errorIndication
-            and isinstance(errorIndication, errind.OidNotIncreasing)
-        ):
-            errorIndication = None
-
-        if errorIndication:
-            yield (
-                errorIndication,
-                errorStatus,
-                errorIndex,
-                varBindTable and varBindTable[0] or [],
+        if varBinds:
+            errorIndication, errorStatus, errorIndex, varBindTable = await bulkCmd(
+                snmpEngine,
+                authData,
+                transportTarget,
+                contextData,
+                nonRepeaters,
+                maxRepetitions,
+                *[ObjectType(varBinds[-1][0], Null(""))],
+                **dict(lookupMib=options.get("lookupMib", True))
             )
-            if errorIndication != errind.requestTimedOut:
-                return
-        elif errorStatus:
-            if errorStatus == 2:
-                # Hide SNMPv1 noSuchName error which leaks in here
-                # from SNMPv1 Agent through internal pysnmp proxy.
-                errorStatus = 0
-                errorIndex = 0
-            yield (
-                errorIndication,
-                errorStatus,
-                errorIndex,
-                varBindTable and varBindTable[0] or [],
-            )
-            return
-        else:
-            for row in range(len(varBindTable)):
-                stopFlag = True
-                if len(varBindTable[row]) != len(initialVars):
-                    varBindTable = row and varBindTable[: row - 1] or []
-                    break
-                for col in range(len(varBindTable[row])):
-                    name, val = varBindTable[row][col]
-                    if row:
-                        previousVarBinds = varBindTable[row - 1]
-                    if nullVarBinds[col]:
-                        varBindTable[row][col] = previousVarBinds[col][0], endOfMibView
-                        continue
-                    stopFlag = False
-                    if isinstance(val, Null) or isinstance(val, EndOfMibView):
-                        varBindTable[row][col] = previousVarBinds[col][0], endOfMibView
-                        nullVarBinds[col] = True
-                    if not lexicographicMode and not initialVars[col].isPrefixOf(name):
-                        varBindTable[row][col] = previousVarBinds[col][0], endOfMibView
-                        if len(varBindTable) == 1:
-                            stopFlag = True
-                            break
-                        else:
-                            nullVarBinds[col] = True
-                if stopFlag:
-                    varBindTable = row and varBindTable[: row - 1] or []
-                    break
 
-            totalRows += len(varBindTable)
-            totalCalls += 1
+            if (
+                ignoreNonIncreasingOid
+                and errorIndication
+                and isinstance(errorIndication, errind.OidNotIncreasing)
+            ):
+                errorIndication = None
 
-            if maxRows and totalRows >= maxRows:
-                if totalRows > maxRows:
-                    varBindTable = varBindTable[: -(totalRows - maxRows)]
-                stopFlag = True
-
-            if maxCalls and totalCalls >= maxCalls:
-                stopFlag = True
-
-            varBinds = varBindTable and varBindTable[-1] or []
-
-            for varBindRow in varBindTable:
-                initialVarBinds = (
-                    yield errorIndication,
+            if errorIndication:
+                yield (
+                    errorIndication,
                     errorStatus,
                     errorIndex,
-                    varBindRow,
+                    varBindTable[0] and varBinds,
                 )
+                if errorIndication != errind.requestTimedOut:
+                    return
+            elif errorStatus:
+                if errorStatus == 2:
+                    # Hide SNMPv1 noSuchName error which leaks in here
+                    # from SNMPv1 Agent through internal pysnmp proxy.
+                    errorStatus = 0
+                    errorIndex = 0
+                yield (
+                    errorIndication,
+                    errorStatus,
+                    errorIndex,
+                    varBinds,
+                )
+                return
+            else:
+                stopFlag = True
+                varBinds = varBindTable[0]
 
-                if initialVarBinds:
-                    varBinds = initialVarBinds
-                    initialVars = [
-                        x[0]
-                        for x in VB_PROCESSOR.makeVarBinds(snmpEngine.cache, varBinds)
-                    ]
-                    nullVarBinds = [False] * len(initialVars)
+                for col, varBind in enumerate(varBinds):
+                    name, val = varBind
+                    foundEnding = isinstance(val, Null) or isinstance(val, EndOfMibView)
+                    foundBeyond = not lexicographicMode and not initialVars[
+                        0
+                    ].isPrefixOf(name)
+                    if foundEnding or foundBeyond:
+                        stopFlag = True
+                        result = varBinds[:col]
+                        if len(result) > 0:
+                            yield (
+                                errorIndication,
+                                errorStatus,
+                                errorIndex,
+                                result,
+                            )
+                        return
+
+                    if stopFlag and varBinds[col][1] is not endOfMibView:
+                        stopFlag = False
+
+                if stopFlag:
+                    return
+
+                totalRows += 1
+                totalCalls += 1
+        else:
+            errorIndication = errorStatus = errorIndex = None
+            varBinds = []
+
+        initialVarBinds = (yield errorIndication, errorStatus, errorIndex, varBinds)
+        if initialVarBinds:
+            varBinds = initialVarBinds
+            initialVars = [
+                x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine.cache, varBinds)
+            ]
+
+        if maxRows and totalRows >= maxRows:
+            return
+
+        if maxCalls and totalCalls >= maxCalls:
+            return
