@@ -18,11 +18,11 @@ from pysnmp.carrier.asyncio.dispatch import AsyncioDispatcher
 from pysnmp.carrier.asyncio.dgram import udp
 from pyasn1.codec.ber import encoder, decoder
 from pysnmp.proto import api
-from time import time
+
 
 # Protocol version to use
-# pMod = api.protoModules[api.protoVersion1]
-pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_1]
+# pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_1]
+pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_2C]
 
 # Build PDU
 reqPDU = pMod.SetRequestPDU()

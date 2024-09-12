@@ -29,7 +29,7 @@ from pysnmp.proto import api
 
 # Protocol version to use
 pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_1]
-# pMod = api.protoModules[api.protoVersion2c]
+# pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_2C]
 
 # Build PDU
 trapPDU = pMod.TrapPDU()

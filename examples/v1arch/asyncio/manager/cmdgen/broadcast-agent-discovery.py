@@ -30,7 +30,7 @@ maxWaitForResponses = 5
 maxNumberResponses = 10
 
 # Protocol version to use
-# pMod = api.protoModules[api.protoVersion1]
+# pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_1]
 pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_2C]
 
 # Build PDU
