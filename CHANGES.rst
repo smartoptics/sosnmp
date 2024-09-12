@@ -1,3 +1,8 @@
+Revision 7.1.1, released on Sep 12, 2024
+----------------------------------------
+
+- Reimplemented walkCmd and bulkWalkCmd.
+
 Revision 7.1.0, released on Sep 11, 2024
 ----------------------------------------
 
