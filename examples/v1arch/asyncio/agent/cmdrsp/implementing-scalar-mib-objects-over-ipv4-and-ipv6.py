@@ -160,8 +160,13 @@ transportDispatcher.registerTransport(
 transportDispatcher.jobStarted(1)
 
 try:
+    print("This program needs to run as root/administrator to monitor port 161.")
+    print("Started. Press Ctrl-C to stop")
     # Dispatcher will never finish as job#1 never reaches zero
     transportDispatcher.runDispatcher()
-except:
+
+except KeyboardInterrupt:
+    print("Shutting down...")
+
+finally:
     transportDispatcher.closeDispatcher()
-    raise

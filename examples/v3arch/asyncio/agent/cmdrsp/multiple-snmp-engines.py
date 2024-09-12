@@ -90,7 +90,12 @@ transportDispatcher.jobStarted(1)
 
 # Run I/O dispatcher which would receive queries and send responses
 try:
+    print("This program needs to run as root/administrator to monitor port 161.")
+    print("Started. Press Ctrl-C to stop")
     transportDispatcher.runDispatcher()
-except:
+
+except KeyboardInterrupt:
+    print("Shutting down...")
+
+finally:
     transportDispatcher.closeDispatcher()
-    raise
