@@ -206,7 +206,7 @@ Upgrade to 7.1 Releases
 
 Switching to async DNS resolver forced us to make some changes to the API,
 so instead of using simply ``UdpTransportTarget()`` now you need to call
-```await UdpTransportTarget.create()``.
+``await UdpTransportTarget.create()``.
 
 Important Changes
 -----------------

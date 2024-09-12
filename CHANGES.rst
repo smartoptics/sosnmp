@@ -41,8 +41,6 @@ Revision 7.0.2, released on Aug 25, 2024
 Revision 7.0.1, released on Aug 24, 2024
 ----------------------------------------
 
-- Applied PEP8 recommended names. This breaks backward compatibility.
-
 - Many really old backward-compatibility code snippets removed.
   Most importantly, everything related to (non-standard) UNIX domain socket
   transport are gone.
@@ -60,6 +58,11 @@ Revision 7.0.1, released on Aug 24, 2024
     custom Python objects they need while being called back.
 
 - Cherry-picked many minor fixes from etingof/master branch.
+
+Revision 7.0.0, released on Aug 22, 2024
+----------------------------------------
+
+- Applied PEP8 recommended names. This breaks backward compatibility.
 
 Revision 6.2.6, released on Sep 11, 2024
 ----------------------------------------
