@@ -18,6 +18,11 @@ releases from old releases such as 4.x and 5.x.
    We will keep the ``-lextudio`` packages for a while to ensure a smooth
    transition for users who are still using them.
 
+.. important::
+
+   Each release has its own end-of-life date, so please check the table on
+   `this lifecycle page`_ for more details.
+
 
 Issues in 4.x Releases
 ----------------------
@@ -142,6 +147,8 @@ the code base. So far, this release introduces the following changes:
   operations and easy migration from 4.x/5.0 releases.
 * The API surface was adjusted slightly to make it more aligned with other
   SNMP implementations.
+* Upon better time synchronization in 5.0 release, more changes are
+  included in 6.0 release to make the engine fully compliant with RFC3414.
 * Documentation is significantly improved to cover the new features and
   changes.
 * Continuous collaboration with downstream projects.
@@ -179,8 +186,16 @@ above.
 Upgrade to 6.2 Releases
 -----------------------
 
-As the quality of asyncio-based sync API is not as good as we expect,
-we decided to remove it from 6.2 release.
+The new sync API is added to enable synchronous I/O operations and easy
+migration from 4.x/5.x releases. The new API is based on asyncio and is
+compatible with Python 3.8 and later.
+
+We were hoping the new sync API would be stable enough to meet the quality
+expectation, but it turned out to be the opposite. So we decided to remove
+it from 6.2 release.
+
+You might copy the sync wrappers from 6.1 release and use them in your code
+if you still need them.
 
 .. important::
 
@@ -207,47 +222,6 @@ Upgrade to 7.1 Releases
 Switching to async DNS resolver forced us to make some changes to the API,
 so instead of using simply ``UdpTransportTarget()`` now you need to call
 ``await UdpTransportTarget.create()``.
-
-Important Changes
------------------
-
-The following changes are important to note when upgrading to 6.x:
-
-Async API based on asyncore
-+++++++++++++++++++++++++++
-
-All such APIs are removed, so you can no longer import types from the
-relevant modules.
-
-Sync API based on asyncore
-++++++++++++++++++++++++++
-
-The old sync API is removed, so you can no longer import types from the
-relevant modules.
-
-Sync API based on asyncio
-+++++++++++++++++++++++++
-
-The new sync API is added to enable synchronous I/O operations and easy
-migration from 4.x/5.x releases. The new API is based on asyncio and is
-compatible with Python 3.8 and later.
-
-We were hoping the new sync API would be stable enough to meet the quality
-expectation, but it turned out to be the opposite. So we decided to remove
-it from 6.2 release.
-
-You might copy the sync wrappers from 6.1 release and use them in your code
-if you still need them.
-
-RFC3414 Compliance
-++++++++++++++++++
-
-The engine request/response processing wasn't fully compliant with RFC3414,
-especially when it came to error handling.
-
-Initial changes were introduced to better support time synchronization in
-5.0 release, but more changes are included in 6.0 release to make the
-engine fully compliant with RFC3414.
 
 Related Resources
 -----------------
