@@ -508,8 +508,11 @@ name = "docutils"
 version = "0.19"
 description = "Docutils -- Python Documentation Utilities"
 optional = false
-python-versions = "*"
-files = []
+python-versions = ">=3.7"
+files = [
+    {file = "docutils-0.19-py3-none-any.whl", hash = "sha256:5e1de4d849fee02c63b040a4a3fd567f4ab104defd8a5511fbbc24a8a017efbc"},
+    {file = "docutils-0.19.tar.gz", hash = "sha256:33995a6753c30b7f577febfc2c50411fec6aac7f7ffeb7c4cfe5991072dcf9e6"},
+]
 
 [[package]]
 name = "exceptiongroup"
@@ -912,6 +915,7 @@ description = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs 
 optional = false
 python-versions = ">=3.8"
 files = [
+    {file = "pyasn1-0.6.1-py3-none-any.whl", hash = "sha256:0d632f46f2ba09143da3a8afe9e33fb6f92fa2320ab7e886e2d0f7672af84629"},
     {file = "pyasn1-0.6.1.tar.gz", hash = "sha256:6f580d2bdd84365380830acf45550f2511469f673cb4a5ae3857a3170128b034"},
 ]
 
@@ -1325,6 +1329,21 @@ doc = ["sphinx-autoapi", "sphinx-rtd-theme", "sphinx-tabs", "sphinxemoji"]
 test = ["tox"]
 
 [[package]]
+name = "sphinx-polyversion"
+version = "1.0.0"
+description = "Build multiple versions of your sphinx docs and merge them into one website."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "sphinx_polyversion-1.0.0-py3-none-any.whl", hash = "sha256:f6d5e8b05f8146c08ed948c87864ee3b0eb4fdad993d64b349ef649d9266d678"},
+    {file = "sphinx_polyversion-1.0.0.tar.gz", hash = "sha256:38bb3b8b0fac781f0a927faaba9925ffb2d08c5fc951cc7fe6eb4d5371feb046"},
+]
+
+[package.extras]
+jinja = ["jinja2 (>=3)"]
+virtualenv = ["virtualenv (>=20)"]
+
+[[package]]
 name = "sphinx-sitemap-lextudio"
 version = "2.5.2"
 description = "Sitemap generator for Sphinx"
@@ -1525,4 +1544,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "6cfc009a55969053a46b23488cfd552f2982fa779cf423f7c6d500088dfd42b4"
+content-hash = "e903306515dfda90fa30bb0ed4f03a6d6870c8a54cb466959b969b731cf875d2"
