@@ -42,11 +42,10 @@ async def run(varBinds):
                 f"{errorStatus.prettyPrint()} at {varBinds[int(errorIndex) - 1][0] if errorIndex else '?'}"
             )
         else:
-            for varBindRow in varBindTable:
-                for varBind in varBindRow:
-                    print(" = ".join([x.prettyPrint() for x in varBind]))
+            for varBind in varBindTable:
+                print(" = ".join([x.prettyPrint() for x in varBind]))
 
-        varBinds = varBindTable[-1]
+        varBinds = varBindTable
         if isEndOfMib(varBinds):
             break
     return

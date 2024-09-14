@@ -16,7 +16,7 @@ Functionally similar to:
 
 """  #
 import asyncio
-from pysnmp.hlapi.asyncio.slim import Slim
+from pysnmp.hlapi.v1arch.asyncio.slim import Slim
 from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
 
 

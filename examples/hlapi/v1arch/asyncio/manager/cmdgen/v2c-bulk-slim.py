@@ -1,10 +1,10 @@
 """
-SNMPv1
-++++++
+SNMPv2c
++++++++
 
 Send SNMP GET request using the following options:
 
-  * with SNMPv1, community 'public'
+  * with SNMPv2c, community 'public'
   * over IPv4/UDP
   * to an Agent at demo.pysnmp.com:161
   * for an instance of SNMPv2-MIB::sysDescr.0 MIB object
@@ -12,20 +12,22 @@ Send SNMP GET request using the following options:
 
 Functionally similar to:
 
-| $ snmpgetnext -v1 -c public demo.pysnmp.com SNMPv2-MIB::sysDescr.0
+| $ snmpbulkget -v2c -c public demo.pysnmp.com SNMPv2-MIB::sysDescr.0
 
 """  #
 import asyncio
-from pysnmp.hlapi.asyncio.slim import Slim
+from pysnmp.hlapi.v1arch.asyncio.slim import Slim
 from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
 
 
 async def run():
-    with Slim(1) as slim:
-        errorIndication, errorStatus, errorIndex, varBinds = await slim.next(
+    with Slim() as slim:
+        errorIndication, errorStatus, errorIndex, varBinds = await slim.bulk(
             "public",
             "demo.pysnmp.com",
             161,
+            0,
+            50,
             ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         )
 

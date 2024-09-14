@@ -18,8 +18,10 @@ from sphinx_polyversion.git import GitRef
 
 # -- Load versioning data ----------------------------------------------------
 
-data = load(globals())  # adds variables `current` and `revisions`
-current: GitRef = data["current"]
+if "POLYVERSION_DATA" in os.environ:
+    # This is the case when polyversion documentation is built
+    data = load(globals())  # adds variables `current` and `revisions`
+    current: GitRef = data["current"]
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -164,7 +166,7 @@ html_css_files = [
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = "PySNMP 7 Documentation"
+html_title = f"PySNMP {version} Documentation"
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 # html_short_title = None

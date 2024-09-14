@@ -86,7 +86,7 @@ PySNMP is designed in a layered fashion. Top-level and easiest to use API is kno
 *hlapi*. Here's a quick example on how to SNMP GET:
 
 ```python
-from pysnmp.hlapi.v3arch.asyncio import *
+from pysnmp.hlapi.v1arch.asyncio import *
 from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
 
 with Slim(1) as slim:

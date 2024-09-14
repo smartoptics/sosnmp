@@ -2,7 +2,7 @@
 Dealing with the "OID not increasing" error
 -------------------------------------------
 
-Q. I'm walking a particular Agent with the `nextCmd()` or `bulkCmd()`
+Q. I'm walking a particular Agent with the `walkCmd()` or `bulkWalkCmd()`
    functions. It works for some OIDs, but invariably fails at certain
    OID with the *OID not increasing* error. What does it mean and
    how do I fix that?

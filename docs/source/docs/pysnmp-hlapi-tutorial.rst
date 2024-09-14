@@ -397,10 +397,10 @@ function.
    ...             ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr')))
    >>> g
    (None, 0, 0, [ObjectType(ObjectIdentity('1.3.6.1.2.1.1.1.0'), DisplayString('SunOS zeus.pysnmp.com'))])
-   >>> g
-   (None, 0, 0, [ObjectType(ObjectIdentity('1.3.6.1.2.1.1.2.0'), ObjectIdentity(ObjectIdentifier('1.3.6.1.4.1.8072.3.2.10')))])
 
-Iteration over the generator object "walk" over SNMP agent's MIB objects.
+Iteration over the generator object "walk" over SNMP agent's MIB objects
+requires :py:func:`~pysnmp.hlapi.v3arch.asyncio.walkCmd` function to be
+called.
 
 SNMPv2c introduced significant optimization to the *GETNEXT* command -
 the revised version is called *GETBULK* and is capable to gather and
@@ -409,8 +409,8 @@ non-repeaters and max-repetitions parameters can be used to influence
 MIB objects batching.
 
 PySNMP hides this *GETBULK* optimization at the protocol level, the
-:py:func:`~pysnmp.hlapi.v3arch.asyncio.bulkCmd` function exposes the same generator
-API as *getNext()* for convenience.
+:py:func:`~pysnmp.hlapi.v3arch.asyncio.bulkWalkCmd` function exposes the
+same generator API as *getNext()* for convenience.
 
 .. code-block:: python
 
@@ -425,9 +425,7 @@ API as *getNext()* for convenience.
    ...             ObjectType(ObjectIdentity('1.3.6')))
    >>>
    >>> g
-   (None, 0, 0, [ObjectType(ObjectIdentity('1.3.6.1.2.1.1.1.0'), DisplayString('SunOS zeus.pysnmp.com'))])
-   >>> g
-   (None, 0, 0, [ObjectType(ObjectIdentity('1.3.6.1.2.1.1.2.0'), ObjectIdentifier('1.3.6.1.4.1.20408'))])
+   (None, 0, 0, [ObjectType(ObjectIdentity('1.3.6.1.2.1.1.1.0'), DisplayString('SunOS zeus.pysnmp.com')), ObjectType(ObjectIdentity('1.3.6.1.2.1.1.2.0'), ObjectIdentifier('1.3.6.1.4.1.20408'))])
 
 Python generators can not only produce data, but it is also possible
 to send data into running generator object. That feature is used by

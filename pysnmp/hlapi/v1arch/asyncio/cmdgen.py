@@ -652,7 +652,7 @@ async def walkCmd(
 
     Notes
     -----
-    The `nextCmd` generator will be exhausted on any of the following
+    The `walkCmd` generator will be exhausted on any of the following
     conditions:
 
     * SNMP engine error occurs thus `errorIndication` is `True`
@@ -845,7 +845,7 @@ async def bulkWalkCmd(
 
     Notes
     -----
-    The `bulkCmd` generator will be exhausted on any of the following
+    The `bulkWalkCmd` generator will be exhausted on any of the following
     conditions:
 
     * SNMP engine error occurs thus `errorIndication` is `True`

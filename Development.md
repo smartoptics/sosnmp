@@ -24,10 +24,20 @@ poetry lock
 poetry version patch
 ```
 
+Edit `docs/poly.py` if the new version tag needs to be added to the list.
+
 ## Build Documentation
+
+To build current version documentation:
 
 ```bash
 poetry run make html -C docs
+```
+
+To build multiple versions documentation:
+
+```bash
+poetry run sphinx-polyversion docs/poly.py
 ```
 
 ## Check Port number
