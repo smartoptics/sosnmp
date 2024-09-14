@@ -1,5 +1,5 @@
 import pytest
-from pysnmp.hlapi.v3arch.asyncio import *
+from pysnmp.hlapi.v1arch.asyncio import *
 from pysnmp.proto.rfc1902 import OctetString
 from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
 from tests.agent_context import AGENT_PORT, AgentContextManager
@@ -8,12 +8,11 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 @pytest.mark.asyncio
 async def test_v2_set():
     async with AgentContextManager():
-        snmpEngine = SnmpEngine()
+        snmpDispatcher = SnmpDispatcher()
         errorIndication, errorStatus, errorIndex, varBinds = await setCmd(
-            snmpEngine,
+            snmpDispatcher,
             CommunityData("public"),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
-            ContextData(),
             ObjectType(ObjectIdentity("SNMPv2-MIB", "sysLocation", 0), "Shanghai"),
         )
 
@@ -24,4 +23,4 @@ async def test_v2_set():
         assert varBinds[0][1].prettyPrint() == "Shanghai"
         assert isinstance(varBinds[0][1], OctetString)
 
-        snmpEngine.closeDispatcher()
+        snmpDispatcher.transportDispatcher.closeDispatcher()

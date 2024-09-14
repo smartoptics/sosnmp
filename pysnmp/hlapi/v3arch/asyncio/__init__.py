@@ -13,7 +13,6 @@ from pysnmp.hlapi.v3arch.asyncio.auth import CommunityData, UsmUserData
 from pysnmp.hlapi.v3arch.asyncio.cmdgen import *
 from pysnmp.hlapi.v3arch.asyncio.context import *
 from pysnmp.hlapi.v3arch.asyncio.ntforg import *
-from pysnmp.hlapi.v3arch.asyncio.slim import *
 from pysnmp.hlapi.v3arch.asyncio.transport import *
 from pysnmp.proto.rfc1902 import *
 from pysnmp.proto.rfc1905 import EndOfMibView, NoSuchInstance, NoSuchObject

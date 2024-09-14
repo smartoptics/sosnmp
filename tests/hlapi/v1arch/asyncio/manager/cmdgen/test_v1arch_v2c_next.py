@@ -16,7 +16,7 @@ Functionally similar to:
 
 """  #
 import pytest
-from pysnmp.hlapi.v3arch.asyncio import *
+from pysnmp.hlapi.v1arch.asyncio import *
 from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
 from tests.agent_context import AGENT_PORT, AgentContextManager
 
@@ -24,12 +24,11 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 @pytest.mark.asyncio
 async def test_v2_next():
     async with AgentContextManager():
-        snmpEngine = SnmpEngine()
+        snmpDispatcher = SnmpDispatcher()
         errorIndication, errorStatus, errorIndex, varBinds = await nextCmd(
-            snmpEngine,
+            snmpDispatcher,
             CommunityData("public"),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
-            ContextData(),
             ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         )
 
@@ -39,4 +38,4 @@ async def test_v2_next():
         assert len(varBinds) == 1
         assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysObjectID.0"
 
-        snmpEngine.closeDispatcher()
+        snmpDispatcher.transportDispatcher.closeDispatcher()

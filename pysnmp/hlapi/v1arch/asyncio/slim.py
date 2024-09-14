@@ -4,12 +4,11 @@
 # Copyright (c) 2023-2024, LeXtudio Inc. <support@lextudio.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-from pysnmp.entity.engine import SnmpEngine
 from pysnmp.error import PySnmpError
-from pysnmp.hlapi.v3arch.asyncio.auth import CommunityData
-from pysnmp.hlapi.v3arch.asyncio.cmdgen import bulkCmd, getCmd, nextCmd, setCmd
-from pysnmp.hlapi.v3arch.asyncio.context import ContextData
-from pysnmp.hlapi.v3arch.asyncio.transport import (
+from pysnmp.hlapi.v1arch.asyncio.auth import CommunityData
+from pysnmp.hlapi.v1arch.asyncio.cmdgen import bulkCmd, getCmd, nextCmd, setCmd
+from pysnmp.hlapi.v1arch.asyncio.dispatch import SnmpDispatcher
+from pysnmp.hlapi.v1arch.asyncio.transport import (
     Udp6TransportTarget,
     UdpTransportTarget,
 )
@@ -43,18 +42,18 @@ class Slim:
     >>>
 
     """
-    snmpEngine: SnmpEngine
+    snmpDispatcher: SnmpDispatcher
     version: int
 
     def __init__(self, version: int = 2):
-        self.snmpEngine = SnmpEngine()
+        self.snmpDispatcher = SnmpDispatcher()
         if version not in (1, 2):
             raise PySnmpError(f"Not supported version {version}")
         self.version = version
 
     def close(self):
         """Closes the wrapper to release its resources."""
-        self.snmpEngine.closeDispatcher()
+        self.snmpDispatcher.transportDispatcher.closeDispatcher()
 
     def __enter__(self):
         return self
@@ -70,7 +69,7 @@ class Slim:
         *varBinds,
         timeout: int = 1,
         retries: int = 5,
-    ) -> "tuple[ErrorIndication, Integer32 | int, Integer32 | int, list[ObjectType]]":
+    ) -> "tuple[ErrorIndication | None, Integer32 | str | int | None, Integer32 | int | None, tuple[ObjectType, ...]]":
         r"""Creates a generator to perform SNMP GET query.
 
         When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -123,7 +122,7 @@ class Slim:
         Examples
         --------
         >>> import asyncio
-        >>> from pysnmp.hlapi.v3arch.asyncio.slim import Slim
+        >>> from pysnmp.hlapi.v1arch.asyncio.slim import Slim
         >>>
         >>> async def run():
         ...     with Slim() as slim:
@@ -140,12 +139,11 @@ class Slim:
         >>>
         """
         return await getCmd(
-            self.snmpEngine,
+            self.snmpDispatcher,
             CommunityData(communityName, mpModel=self.version - 1),
             await Udp6TransportTarget.create((address, port), timeout, retries)
             if ":" in address
             else await UdpTransportTarget.create((address, port), timeout, retries),
-            ContextData(),
             *varBinds,
         )
 
@@ -157,7 +155,7 @@ class Slim:
         *varBinds,
         timeout: int = 1,
         retries: int = 5,
-    ) -> "tuple[ErrorIndication, Integer32 | str | int, Integer32 | int, list[ObjectType]]":
+    ) -> "tuple[ErrorIndication | None, Integer32 | str | int | None, Integer32 | int | None, tuple[ObjectType, ...]]":
         r"""Creates a generator to perform SNMP GETNEXT query.
 
         When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -214,7 +212,7 @@ class Slim:
         Examples
         --------
         >>> import asyncio
-        >>> from pysnmp.hlapi.v3arch.asyncio.slim import Slim
+        >>> from pysnmp.hlapi.v1arch.asyncio.slim import Slim
         >>>
         >>> async def run():
         ...     with Slim() as slim:
@@ -231,12 +229,11 @@ class Slim:
         >>>
         """
         return await nextCmd(
-            self.snmpEngine,
+            self.snmpDispatcher,
             CommunityData(communityName, mpModel=self.version - 1),
             await Udp6TransportTarget.create((address, port), timeout, retries)
             if ":" in address
             else await UdpTransportTarget.create((address, port), timeout, retries),
-            ContextData(),
             *varBinds,
         )
 
@@ -250,7 +247,7 @@ class Slim:
         *varBinds,
         timeout: int = 1,
         retries: int = 5,
-    ) -> "tuple[ErrorIndication, Integer32 | str | int, Integer32 | int, list[ObjectType]]":
+    ) -> "tuple[ErrorIndication | None, Integer32 | str | int | None, Integer32 | int | None, tuple[ObjectType, ...]]":
         r"""Creates a generator to perform SNMP GETBULK query.
 
         When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -332,7 +329,7 @@ class Slim:
         Examples
         --------
         >>> import asyncio
-        >>> from pysnmp.hlapi.v3arch.asyncio.slim import Slim
+        >>> from pysnmp.hlapi.v1arch.asyncio.slim import Slim
         >>>
         >>> async def run():
         ...     with Slim() as slim:
@@ -354,12 +351,11 @@ class Slim:
         if version == 0:
             raise PySnmpError("Cannot send V2 PDU on V1 session")
         return await bulkCmd(
-            self.snmpEngine,
+            self.snmpDispatcher,
             CommunityData(communityName, mpModel=version),
             await Udp6TransportTarget.create((address, port), timeout, retries)
             if ":" in address
             else await UdpTransportTarget.create((address, port), timeout, retries),
-            ContextData(),
             nonRepeaters,
             maxRepetitions,
             *varBinds,
@@ -373,7 +369,7 @@ class Slim:
         *varBinds,
         timeout: int = 1,
         retries: int = 5,
-    ) -> "tuple[ErrorIndication, Integer32 | int, Integer32 | int, list[ObjectType]]":
+    ) -> "tuple[ErrorIndication | None, Integer32 | str | int | None, Integer32 | int | None, tuple[ObjectType, ...]]":
         r"""Creates a generator to perform SNMP SET query.
 
         When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -423,7 +419,7 @@ class Slim:
         Examples
         --------
         >>> import asyncio
-        >>> from pysnmp.hlapi.v3arch.asyncio.slim import Slim
+        >>> from pysnmp.hlapi.v1arch.asyncio.slim import Slim
         >>>
         >>> async def run():
         ...     with Slim() as slim:
@@ -440,11 +436,10 @@ class Slim:
         >>>
         """
         return await setCmd(
-            self.snmpEngine,
+            self.snmpDispatcher,
             CommunityData(communityName, mpModel=self.version - 1),
             await Udp6TransportTarget.create((address, port), timeout, retries)
             if ":" in address
             else await UdpTransportTarget.create((address, port), timeout, retries),
-            ContextData(),
             *varBinds,
         )

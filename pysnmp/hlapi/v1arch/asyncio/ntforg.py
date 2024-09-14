@@ -4,13 +4,16 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-from pysnmp.hlapi.v1arch.auth import *
+from pysnmp.hlapi.transport import AbstractTransportTarget
+from pysnmp.hlapi.v1arch.asyncio.auth import *
+from pysnmp.hlapi.v1arch.asyncio.dispatch import SnmpDispatcher
 from pysnmp.hlapi.varbinds import *
 from pysnmp.hlapi.v1arch.asyncio.transport import *
 from pysnmp.proto.api import v2c
 from pysnmp.proto.proxy import rfc2576
+from pysnmp.proto.rfc1902 import Integer32
 from pysnmp.smi.rfc1902 import *
-from pysnmp.proto import api
+from pysnmp.proto import api, errind, error
 
 import asyncio
 
@@ -20,8 +23,13 @@ VB_PROCESSOR = NotificationOriginatorVarBinds()
 
 
 async def sendNotification(
-    snmpDispatcher, authData, transportTarget, notifyType, *varBinds, **options
-):
+    snmpDispatcher: SnmpDispatcher,
+    authData: CommunityData,
+    transportTarget: AbstractTransportTarget,
+    notifyType: str,
+    *varBinds: ObjectType,
+    **options
+) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType, ...]]":
     r"""Creates a generator to send SNMP notification.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -166,6 +174,7 @@ async def sendNotification(
         return varBinds
 
     def _cbFun(snmpDispatcher, stateHandle, errorIndication, rspPdu, _cbCtx):
+        lookupMib, future = _cbCtx
         if future.cancelled():
             return
 
@@ -231,7 +240,9 @@ async def sendNotification(
 
     future = asyncio.Future()
 
-    snmpDispatcher.sendPdu(authData, transportTarget, reqPdu, cbFun=_cbFun)
+    snmpDispatcher.sendPdu(
+        authData, transportTarget, reqPdu, cbFun=_cbFun, cbCtx=(lookupMib, future)
+    )
 
     if notifyType == "trap":
 

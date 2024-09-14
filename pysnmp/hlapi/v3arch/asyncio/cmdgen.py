@@ -69,9 +69,9 @@ async def getCmd(
     authData: "CommunityData | UsmUserData",
     transportTarget: AbstractTransportTarget,
     contextData: ContextData,
-    *varBinds,
+    *varBinds: ObjectType,
     **options
-) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, list[ObjectType]]":
+) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType, ...]]":
     r"""Creates a generator to perform SNMP GET query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -190,9 +190,9 @@ async def setCmd(
     authData: "CommunityData | UsmUserData",
     transportTarget: AbstractTransportTarget,
     contextData: ContextData,
-    *varBinds,
+    *varBinds: ObjectType,
     **options
-) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, list[ObjectType]]":
+) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType, ...]]":
     r"""Creates a generator to perform SNMP SET query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -311,9 +311,9 @@ async def nextCmd(
     authData: "CommunityData | UsmUserData",
     transportTarget: AbstractTransportTarget,
     contextData: ContextData,
-    *varBinds,
+    *varBinds: ObjectType,
     **options
-) -> "tuple[errind.ErrorIndication, Integer32 | str | int, Integer32 | int, list[ObjectType]]":
+) -> "tuple[errind.ErrorIndication, Integer32 | str | int, Integer32 | int, tuple[ObjectType, ...]]":
     r"""Creates a generator to perform SNMP GETNEXT query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -413,12 +413,9 @@ async def nextCmd(
         ):
             errorIndication = None  # TODO: fix this
         try:
-            varBindsUnmade = [
-                VB_PROCESSOR.unmakeVarBinds(
-                    snmpEngine.cache, varBindTableRow, lookupMib
-                )
-                for varBindTableRow in varBindTable
-            ]
+            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+                snmpEngine.cache, varBindTable[0], lookupMib
+            )
         except Exception as e:
             future.set_exception(e)
         else:
@@ -453,7 +450,7 @@ async def bulkCmd(
     maxRepetitions: int,
     *varBinds: ObjectType,
     **options
-) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, list[ObjectType]]":
+) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType, ...]]":
     r"""Creates a generator to perform SNMP GETBULK query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -582,12 +579,9 @@ async def bulkCmd(
         ):
             errorIndication = None  # TODO: fix here
         try:
-            varBindsUnmade = [
-                VB_PROCESSOR.unmakeVarBinds(
-                    snmpEngine.cache, varBindTableRow, lookupMib
-                )
-                for varBindTableRow in varBindTable
-            ]
+            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+                snmpEngine.cache, varBindTable[0], lookupMib
+            )
         except Exception as e:
             future.set_exception(e)
         else:
@@ -623,7 +617,7 @@ async def walkCmd(
     varBind: ObjectType,
     **options
 ) -> AsyncGenerator[
-    "tuple[errind.ErrorIndication | None, Integer32 | str | int | None, Integer32 | int | None, list[ObjectType]]",
+    "tuple[errind.ErrorIndication | None, Integer32 | str | int | None, Integer32 | int | None, tuple[ObjectType, ...]]",
     None,
 ]:
     r"""Creates a generator to perform one or more SNMP GETNEXT queries.
@@ -757,7 +751,7 @@ async def walkCmd(
             else:
                 stopFlag = True
 
-                varBind = varBindTable[0][0]
+                varBind = varBindTable[0]
 
                 name, val = varBind
                 foundEnding = isinstance(val, Null) or isinstance(val, EndOfMibView)
@@ -805,7 +799,7 @@ async def bulkWalkCmd(
     varBind: ObjectType,
     **options
 ) -> AsyncGenerator[
-    "tuple[errind.ErrorIndication | None, Integer32 | int | None, Integer32 | int | None, list[ObjectType]]",
+    "tuple[errind.ErrorIndication | None, Integer32 | int | None, Integer32 | int | None, tuple[ObjectType, ...]]",
     None,
 ]:
     r"""Creates a generator to perform one or more SNMP GETBULK queries.
@@ -920,11 +914,13 @@ async def bulkWalkCmd(
     maxRows = options.get("maxRows", 0)
     maxCalls = options.get("maxCalls", 0)
 
-    initialVars = [x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine.cache, [varBind])]
+    initialVars = [
+        x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine.cache, (varBind,))
+    ]
 
     totalRows = totalCalls = 0
 
-    varBinds = [varBind]
+    varBinds: "tuple[ObjectType, ...]" = (varBind,)
 
     while True:
         if maxRows and totalRows < maxRows:
@@ -954,7 +950,7 @@ async def bulkWalkCmd(
                     errorIndication,
                     errorStatus,
                     errorIndex,
-                    varBindTable[0] and varBinds,
+                    varBindTable and varBinds,
                 )
                 if errorIndication != errind.requestTimedOut:
                     return
@@ -973,7 +969,7 @@ async def bulkWalkCmd(
                 return
             else:
                 stopFlag = True
-                varBinds = varBindTable[0]
+                varBinds = varBindTable
 
                 for col, varBind in enumerate(varBinds):
                     name, val = varBind

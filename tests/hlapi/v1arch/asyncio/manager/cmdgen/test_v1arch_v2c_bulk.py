@@ -1,6 +1,6 @@
 import pytest
 
-from pysnmp.hlapi.v3arch.asyncio import *
+from pysnmp.hlapi.v1arch.asyncio import *
 from tests.agent_context import AGENT_PORT, AgentContextManager
 
 
@@ -8,12 +8,11 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 @pytest.mark.parametrize("num_bulk", [1, 2, 50])
 async def test_v2c_bulk(num_bulk):
     async with AgentContextManager():
-        snmpEngine = SnmpEngine()
+        snmpDispatcher = SnmpDispatcher()
         errorIndication, errorStatus, errorIndex, varBinds = await bulkCmd(
-            snmpEngine,
+            snmpDispatcher,
             CommunityData("public"),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
-            ContextData(),
             0,
             num_bulk,
             ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
@@ -29,23 +28,22 @@ async def test_v2c_bulk(num_bulk):
         if num_bulk > 2:
             assert varBinds[2][0].prettyPrint() == "SNMPv2-MIB::sysContact.0"
 
-        snmpEngine.closeDispatcher()
+        snmpDispatcher.transportDispatcher.closeDispatcher()
 
 
 @pytest.mark.asyncio
 async def test_v2c_bulk_multiple_input():
-    mib_objects = [
+    mib_objects = (
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysContact")),
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysORIndex")),
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysORDescr")),
-    ]
+    )
     async with AgentContextManager():
-        snmpEngine = SnmpEngine()
+        snmpDispatcher = SnmpDispatcher()
         errorIndication, errorStatus, errorIndex, varBinds = await bulkCmd(
-            snmpEngine,
+            snmpDispatcher,
             CommunityData("public"),
-            await UdpTransportTarget.create(("localhost", AGENT_PORT)),
-            ContextData(),
+            await UdpTransportTarget.create(("demo.pysnmp.com", 161)),
             1,
             2,
             *mib_objects,

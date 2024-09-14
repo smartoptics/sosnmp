@@ -16,21 +16,22 @@ Functionally similar to:
 
 """  #
 import pytest
-from pysnmp.hlapi.v3arch.asyncio import *
-from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
+from pysnmp.hlapi.v1arch.asyncio import *
+from pysnmp.smi import builder, compiler, view
 from tests.agent_context import AGENT_PORT, AgentContextManager
 
 
 @pytest.mark.asyncio
-async def test_v2_next():
+async def test_v1_next():
     async with AgentContextManager():
-        snmpEngine = SnmpEngine()
+        snmpDispatcher = SnmpDispatcher()
         errorIndication, errorStatus, errorIndex, varBinds = await nextCmd(
-            snmpEngine,
-            CommunityData("public"),
+            snmpDispatcher,
+            CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
-            ContextData(),
-            ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
+            ObjectType(
+                ObjectIdentity("SNMPv2-MIB", "sysDescr", 0).loadMibs("PYSNMP-MIB")
+            ),
         )
 
         assert errorIndication is None
@@ -38,5 +39,9 @@ async def test_v2_next():
         assert errorIndex == 0
         assert len(varBinds) == 1
         assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysObjectID.0"
+        assert (
+            varBinds[0][1].prettyPrint() == "PYSNMP-MIB::pysnmp"
+        )  # IMPORTANT: MIB is needed to resolve this name
+        # assert type(varBinds[0][0][1]).__name__ == "ObjectIdentifier"  # TODO: fix this
 
-        snmpEngine.closeDispatcher()
+        snmpDispatcher.transportDispatcher.closeDispatcher()
