@@ -1,3 +1,10 @@
+Revision 7.1.2, released on Sep 14, 2024
+----------------------------------------
+
+- Revised v1arch hlapi and its docs/examples.
+- Revised nextCmd, bulkCmd, walkCmd, and bulkWalkCmd returned collections.
+- Moved Slim class to v1arch.
+
 Revision 7.1.1, released on Sep 12, 2024
 ----------------------------------------
 
