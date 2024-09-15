@@ -9,18 +9,16 @@
 #          Zachary Lorusso <zlorusso@gmail.com>
 #
 import asyncio
-import sys
 
+
+from pysnmp.entity.engine import SnmpEngine
 from pysnmp.entity.rfc3413 import ntforg
+from pysnmp.hlapi.transport import AbstractTransportTarget
 from pysnmp.hlapi.v3arch.asyncio.auth import CommunityData, UsmUserData
 from pysnmp.hlapi.v3arch.asyncio.context import ContextData
 from pysnmp.hlapi.v3arch.asyncio.lcd import NotificationOriginatorLcdConfigurator
-from pysnmp.hlapi.v3arch.asyncio.transport import (
-    Udp6TransportTarget,
-    UdpTransportTarget,
-)
 from pysnmp.hlapi.varbinds import NotificationOriginatorVarBinds
-from pysnmp.smi.rfc1902 import NotificationType, ObjectIdentity
+from pysnmp.smi.rfc1902 import NotificationType
 
 __all__ = ["sendNotification"]
 
@@ -29,7 +27,13 @@ LCD = NotificationOriginatorLcdConfigurator()
 
 
 async def sendNotification(
-    snmpEngine, authData, transportTarget, contextData, notifyType, varBinds, **options
+    snmpEngine: SnmpEngine,
+    authData: "CommunityData | UsmUserData",
+    transportTarget: AbstractTransportTarget,
+    contextData: ContextData,
+    notifyType: str,
+    *varBinds: NotificationType,
+    **options
 ):
     r"""Creates a generator to send SNMP notification.
 

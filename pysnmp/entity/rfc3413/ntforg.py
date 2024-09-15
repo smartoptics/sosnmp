@@ -8,10 +8,12 @@ import sys
 
 
 from pysnmp import debug, nextid
+from pysnmp.entity.engine import SnmpEngine
 from pysnmp.entity.rfc3413 import config
 from pysnmp.proto import errind, error, rfc3411
 from pysnmp.proto.api import v2c
 from pysnmp.proto.proxy import rfc2576
+from pysnmp.smi.rfc1902 import ObjectType
 
 
 getNextHandle = nextid.Integer(0x7FFFFFFF)  # noqa: N816
@@ -325,11 +327,11 @@ class NotificationOriginator:
     #
     def sendVarBinds(
         self,
-        snmpEngine,
+        snmpEngine: SnmpEngine,
         notificationTarget,
         contextEngineId,
         contextName,
-        varBinds=(),
+        varBinds: "tuple[ObjectType, ...]" = (),
         cbFun=None,
         cbCtx=None,
     ):
@@ -362,7 +364,7 @@ class NotificationOriginator:
             "notifyType %s" % (notificationHandle, notifyTag, notifyType)
         )
 
-        varBinds = [(v2c.ObjectIdentifier(x), y) for x, y in varBinds]
+        inputVarBinds = [(v2c.ObjectIdentifier(x), y) for (x, y) in varBinds]
 
         # 3.3.2 & 3.3.3
         snmpTrapOID, sysUpTime = mibBuilder.importSymbols(
@@ -373,33 +375,33 @@ class NotificationOriginator:
         sysUpTime, uptime = sysUpTime.getName(), sysUpTime.getSyntax()
 
         # Add sysUpTime if not present already
-        if not varBinds or varBinds[0][0] != sysUpTime:
-            varBinds.insert(0, (v2c.ObjectIdentifier(sysUpTime), uptime.clone()))
+        if not inputVarBinds or inputVarBinds[0][0] != sysUpTime:
+            inputVarBinds.insert(0, (v2c.ObjectIdentifier(sysUpTime), uptime.clone()))
 
         # Search for and reposition sysUpTime if it's elsewhere
-        for idx, varBind in enumerate(varBinds[1:]):
+        for idx, varBind in enumerate(inputVarBinds[1:]):
             if varBind[0] == sysUpTime:
-                varBinds[0] = varBind
-                del varBinds[idx + 1]
+                inputVarBinds[0] = varBind
+                del inputVarBinds[idx + 1]
                 break
 
-        if len(varBinds) < 2:
+        if len(inputVarBinds) < 2:
             raise error.PySnmpError(
                 "SNMP notification PDU requires "
                 "SNMPv2-MIB::snmpTrapOID.0 to be present"
             )
 
         # Search for and reposition snmpTrapOID if it's elsewhere
-        for idx, varBind in enumerate(varBinds[2:]):
+        for idx, varBind in enumerate(inputVarBinds[2:]):
             if varBind[0] == snmpTrapOID:
-                del varBinds[idx + 2]
-                if varBinds[1][0] == snmpTrapOID:
-                    varBinds[1] = varBind
+                del inputVarBinds[idx + 2]
+                if inputVarBinds[1][0] == snmpTrapOID:
+                    inputVarBinds[1] = varBind
                 else:
-                    varBinds.insert(1, varBind)
+                    inputVarBinds.insert(1, varBind)
                 break
 
-        if varBinds[1][0] != snmpTrapOID:
+        if inputVarBinds[1][0] != snmpTrapOID:
             raise error.PySnmpError(
                 "SNMP notification PDU requires "
                 "SNMPv2-MIB::snmpTrapOID.0 to be present"
@@ -445,7 +447,7 @@ class NotificationOriginator:
                 )
             )
 
-            for varName, varVal in varBinds:
+            for varName, varVal in inputVarBinds:
                 if varName in (sysUpTime, snmpTrapOID):
                     continue
                 try:
@@ -480,7 +482,7 @@ class NotificationOriginator:
                 raise error.ProtocolError("Unknown notify-type %r", notifyType)
 
             v2c.apiPDU.setDefaults(pdu)
-            v2c.apiPDU.setVarBinds(pdu, varBinds)
+            v2c.apiPDU.setVarBinds(pdu, inputVarBinds)
 
             # 3.3.5
             try:

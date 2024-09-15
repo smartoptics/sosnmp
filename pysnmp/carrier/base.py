@@ -100,7 +100,7 @@ class AbstractTransport:
 class AbstractTransportDispatcher:
     __transports: "dict[tuple[int, ...], AbstractTransport]"
     __transportDomainMap: "dict[AbstractTransport, tuple[int, ...]]"
-    __recvCallables: "dict['tuple[int, ...] | None', Callable]"
+    __recvCallables: "dict['tuple[int, ...] | str | None', Callable]"
     __timerCallables: "list[TimerCallable]"
     __ticks: int
     __timerResolution: float
@@ -161,7 +161,7 @@ class AbstractTransportDispatcher:
         if self.__routingCbFun:
             self.__routingCbFun = None
 
-    def registerRecvCbFun(self, recvCb, recvId: "tuple[int, ...] | None" = None):
+    def registerRecvCbFun(self, recvCb, recvId: "tuple[int, ...] | str | None" = None):
         if recvId in self.__recvCallables:
             raise error.CarrierError(
                 "Receive callback {!r} already registered".format(

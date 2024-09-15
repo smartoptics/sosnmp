@@ -891,7 +891,7 @@ class ObjectType:
         self.__args[0].loadMibs(*modNames)
         return self
 
-    def resolveWithMib(self, mibViewController, ignoreErrors=True):
+    def resolveWithMib(self, mibViewController, ignoreErrors=True) -> "ObjectType":
         """Perform MIB variable ID and associated value conversion.
 
         Parameters
@@ -1219,7 +1219,9 @@ class NotificationType:
     def isFullyResolved(self):
         return self.__state & self.ST_CLEAN
 
-    def resolveWithMib(self, mibViewController, ignoreErrors=True):
+    def resolveWithMib(
+        self, mibViewController, ignoreErrors=True
+    ) -> "NotificationType":
         """Perform MIB variable ID conversion and notification objects expansion.
 
         Parameters
@@ -1326,5 +1328,11 @@ class NotificationType:
                     for x in self.__varBinds
                 ]
             )
+        else:
+            raise SmiError("%s object not fully initialized" % self.__class__.__name__)
+
+    def toVarBinds(self) -> "tuple[ObjectType, ...]":
+        if self.__state & self.ST_CLEAN:
+            return tuple(self.__varBinds)
         else:
             raise SmiError("%s object not fully initialized" % self.__class__.__name__)

@@ -27,7 +27,7 @@ async def sendNotification(
     authData: CommunityData,
     transportTarget: AbstractTransportTarget,
     notifyType: str,
-    *varBinds: ObjectType,
+    *varBinds: NotificationType,
     **options
 ) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType, ...]]":
     r"""Creates a generator to send SNMP notification.
@@ -185,7 +185,7 @@ async def sendNotification(
 
         try:
             varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
-                snmpDispatcher.cache, varBinds, lookupMib
+                snmpDispatcher.cache, varBinds, lookupMib  # type: ignore
             )
         except Exception as e:
             future.set_exception(e)
@@ -203,7 +203,7 @@ async def sendNotification(
         lookupMib = True
 
     if lookupMib:
-        varBinds = VB_PROCESSOR.makeVarBinds(snmpDispatcher.cache, varBinds)
+        inputVarBinds = VB_PROCESSOR.makeVarBinds(snmpDispatcher.cache, varBinds)
 
     # # make sure required PDU payload is in place
     # completeVarBinds = []
@@ -229,11 +229,11 @@ async def sendNotification(
         reqPdu = v2c.InformRequestPDU()
 
     v2c.apiTrapPDU.setDefaults(reqPdu)
-    v2c.apiTrapPDU.setVarBinds(reqPdu, varBinds)
+    v2c.apiTrapPDU.setVarBinds(reqPdu, inputVarBinds)
 
-    varBinds = v2c.apiTrapPDU.getVarBinds(reqPdu)
+    inputVarBinds = v2c.apiTrapPDU.getVarBinds(reqPdu)
 
-    v2c.apiTrapPDU.setVarBinds(reqPdu, _ensureVarBinds(varBinds))
+    v2c.apiTrapPDU.setVarBinds(reqPdu, _ensureVarBinds(inputVarBinds))
 
     if authData.mpModel == 0:
         reqPdu = rfc2576.v2ToV1(reqPdu)

@@ -86,18 +86,25 @@ class CommandGeneratorVarBinds(MibViewControllerManager):
 
 
 class NotificationOriginatorVarBinds(MibViewControllerManager):
-    def makeVarBinds(self, userCache: Dict[str, Any], varBinds):
+    def makeVarBinds(
+        self, userCache: Dict[str, Any], varBinds: "tuple[NotificationType, ...]"
+    ) -> "tuple[ObjectType, ...]":
         mibViewController = self.getMibViewController(userCache)
 
+        # TODO: this shouldn't be needed
         if isinstance(varBinds, NotificationType):
-            return varBinds.resolveWithMib(mibViewController, ignoreErrors=False)
+            return varBinds.resolveWithMib(
+                mibViewController, ignoreErrors=False
+            ).toVarBinds()
 
-        resolvedVarBinds = []
+        resolvedVarBinds: "list[ObjectType]" = []
 
         for varBind in varBinds:
             if isinstance(varBind, NotificationType):
                 resolvedVarBinds.extend(
-                    varBind.resolveWithMib(mibViewController, ignoreErrors=False)
+                    varBind.resolveWithMib(
+                        mibViewController, ignoreErrors=False
+                    ).toVarBinds()
                 )
                 continue
 
@@ -114,13 +121,18 @@ class NotificationOriginatorVarBinds(MibViewControllerManager):
                 varBind.resolveWithMib(mibViewController, ignoreErrors=False)
             )
 
-        return resolvedVarBinds
+        return tuple(resolvedVarBinds)
 
-    def unmakeVarBinds(self, userCache: Dict[str, Any], varBinds, lookupMib=False):
+    def unmakeVarBinds(
+        self,
+        userCache: Dict[str, Any],
+        varBinds: "tuple[ObjectType, ...]",
+        lookupMib=False,
+    ) -> "tuple[ObjectType, ...]":
         if lookupMib:
             mibViewController = self.getMibViewController(userCache)
-            varBinds = [
+            varBinds = tuple(
                 ObjectType(ObjectIdentity(x[0]), x[1]).resolveWithMib(mibViewController)
                 for x in varBinds
-            ]
+            )
         return varBinds

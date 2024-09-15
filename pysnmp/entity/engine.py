@@ -232,7 +232,7 @@ class SnmpEngine:
     def registerTransportDispatcher(
         self,
         transportDispatcher: AbstractTransportDispatcher,
-        recvId: "tuple[int, ...] | None" = None,
+        recvId: "tuple[int, ...] | str | None" = None,
     ):
         if (
             self.transportDispatcher is not None
