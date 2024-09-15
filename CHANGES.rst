@@ -1,3 +1,10 @@
+Revision 7.1.3, released on Sep 15, 2024
+----------------------------------------
+
+- Fixed a bulkCmd IndexError bug.
+- Cleaned up nextCmd/bulkCmd related code.
+- Revised docs and examples accordingly.
+
 Revision 7.1.2, released on Sep 14, 2024
 ----------------------------------------
 
