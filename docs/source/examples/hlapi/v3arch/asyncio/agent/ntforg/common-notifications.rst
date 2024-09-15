@@ -6,10 +6,10 @@ Common notifications
 
 .. include:: /../../examples/hlapi/v3arch/asyncio/agent/ntforg/default-v1-trap.py
    :start-after: """
-   :end-before: """#
+   :end-before: """  #
 
 .. literalinclude:: /../../examples/hlapi/v3arch/asyncio/agent/ntforg/default-v1-trap.py
-   :start-after: """#
+   :start-after: """  #
    :language: python
 
 :download:`Download</../../examples/hlapi/v3arch/asyncio/agent/ntforg/default-v1-trap.py>` script.

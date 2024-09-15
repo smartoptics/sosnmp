@@ -28,10 +28,10 @@ Advanced Command Generator
 
 .. include:: /../../examples/hlapi/v3arch/asyncio/manager/cmdgen/multiple-concurrent-queries-over-ipv4-and-ipv6.py
    :start-after: """
-   :end-before: """#
+   :end-before: """  #
 
 .. literalinclude:: /../../examples/hlapi/v3arch/asyncio/manager/cmdgen/multiple-concurrent-queries-over-ipv4-and-ipv6.py
-   :start-after: """#
+   :start-after: """  #
    :language: python
 
 :download:`Download</../../examples/hlapi/v3arch/asyncio/manager/cmdgen/multiple-concurrent-queries-over-ipv4-and-ipv6.py>` script.
@@ -39,10 +39,10 @@ Advanced Command Generator
 
 .. include:: /../../examples/hlapi/v3arch/asyncio/manager/cmdgen/multiple-sequential-queries.py
    :start-after: """
-   :end-before: """#
+   :end-before: """  #
 
 .. literalinclude:: /../../examples/hlapi/v3arch/asyncio/manager/cmdgen/multiple-sequential-queries.py
-   :start-after: """#
+   :start-after: """  #
    :language: python
 
 :download:`Download</../../examples/hlapi/v3arch/asyncio/manager/cmdgen/multiple-sequential-queries.py>` script.
