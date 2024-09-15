@@ -87,28 +87,33 @@ PySNMP is designed in a layered fashion. Top-level and easiest to use API is kno
 
 ```python
 from pysnmp.hlapi.v1arch.asyncio import *
-from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
 
-with Slim(1) as slim:
-    errorIndication, errorStatus, errorIndex, varBinds = await slim.get(
-        'public',
-        'demo.pysnmp.com',
-        161,
-        ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
-    )
+import asyncio
 
-    if errorIndication:
-        print(errorIndication)
-    elif errorStatus:
-        print(
-            "{} at {}".format(
-                errorStatus.prettyPrint(),
-                errorIndex and varBinds[int(errorIndex) - 1][0] or "?",
-            )
+
+async def run():
+    with Slim(1) as slim:
+        errorIndication, errorStatus, errorIndex, varBinds = await slim.get(
+            'public',
+            'demo.pysnmp.com',
+            161,
+            ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         )
-    else:
-        for varBind in varBinds:
-            print(" = ".join([x.prettyPrint() for x in varBind]))
+
+        if errorIndication:
+            print(errorIndication)
+        elif errorStatus:
+            print(
+                "{} at {}".format(
+                    errorStatus.prettyPrint(),
+                    errorIndex and varBinds[int(errorIndex) - 1][0] or "?",
+                )
+            )
+        else:
+            for varBind in varBinds:
+                print(" = ".join([x.prettyPrint() for x in varBind]))
+
+asyncio.run(run())
 ```
 
 This is how to send SNMP TRAP:
@@ -116,24 +121,29 @@ This is how to send SNMP TRAP:
 ```python
 from pysnmp.hlapi.v3arch.asyncio import *
 
+import asyncio
 
-snmpEngine = SnmpEngine()
-errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
-    snmpEngine,
-    CommunityData('public', mpModel=0),
-    await UdpTransportTarget.create(('demo.pysnmp.com', 162)),
-    ContextData(),
-    "trap",
-    NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2")).addVarBinds(
-        ("1.3.6.1.6.3.1.1.4.3.0", "1.3.6.1.4.1.20408.4.1.1.2"),
-        ("1.3.6.1.2.1.1.1.0", OctetString("my system")),
-    ),
-)
 
-if errorIndication:
-    print(errorIndication)
+async def run():
+    snmpEngine = SnmpEngine()
+    errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
+        snmpEngine,
+        CommunityData('public', mpModel=0),
+        await UdpTransportTarget.create(('demo.pysnmp.com', 162)),
+        ContextData(),
+        "trap",
+        NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2")).addVarBinds(
+            ("1.3.6.1.6.3.1.1.4.3.0", "1.3.6.1.4.1.20408.4.1.1.2"),
+            ("1.3.6.1.2.1.1.1.0", OctetString("my system")),
+        ),
+    )
 
-snmpEngine.closeDispatcher()
+    if errorIndication:
+        print(errorIndication)
+
+    snmpEngine.closeDispatcher()
+
+asyncio.run(run())
 ```
 
 > We maintain publicly available SNMP Agent and TRAP sink at
