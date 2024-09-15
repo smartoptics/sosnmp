@@ -43,6 +43,6 @@ async def test_v1_next():
         assert (
             varBinds[0][1].prettyPrint() == "PYSNMP-MIB::pysnmp"
         )  # IMPORTANT: MIB is needed to resolve this name
-        # assert type(varBinds[0][0][1]).__name__ == "ObjectIdentifier"  # TODO: fix this
+        assert type(varBinds[0][1]).__name__ == "ObjectIdentity"
 
         snmpEngine.closeDispatcher()

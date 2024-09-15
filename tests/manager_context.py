@@ -64,13 +64,6 @@ async def start_manager(
         snmpEngine, stateReference, contextEngineId, contextName, varBinds, cbCtx
     ):
         message_count[0] += 1
-        print(
-            'Notification from ContextEngineId "{}", ContextName "{}"'.format(
-                contextEngineId.prettyPrint(), contextName.prettyPrint()
-            )
-        )
-        for name, val in varBinds:
-            print(f"{name.prettyPrint()} = {val.prettyPrint()}")
 
     # Register SNMP Application at the SNMP engine
     receiver = ntfrcv.NotificationReceiver(snmpEngine, cbFun)

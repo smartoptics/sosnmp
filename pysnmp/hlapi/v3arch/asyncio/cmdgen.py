@@ -400,21 +400,23 @@ async def nextCmd(
         errorIndication: errind.ErrorIndication,
         errorStatus: "Integer32 | int",
         errorIndex: "Integer32 | int",
-        varBindTable,
+        varBinds,
         cbCtx,
     ):
         lookupMib, future = cbCtx
         if future.cancelled():
             return
+
         if (
             options.get("ignoreNonIncreasingOid", False)
             and errorIndication
             and isinstance(errorIndication, errind.OidNotIncreasing)
         ):
             errorIndication = None  # TODO: fix this
+
         try:
             varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
-                snmpEngine.cache, varBindTable[0], lookupMib
+                snmpEngine.cache, varBinds, lookupMib
             )
         except Exception as e:
             future.set_exception(e)
@@ -450,7 +452,7 @@ async def bulkCmd(
     maxRepetitions: int,
     *varBinds: ObjectType,
     **options
-) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType, ...]]":
+) -> "tuple[errind.ErrorIndication, Integer32 | str | int, Integer32 | int, tuple[ObjectType, ...]]":
     r"""Creates a generator to perform SNMP GETBULK query.
 
     When iterator gets advanced by :py:mod:`asyncio` main loop,
@@ -566,21 +568,23 @@ async def bulkCmd(
         errorIndication: errind.ErrorIndication,
         errorStatus: "Integer32 | int",
         errorIndex: "Integer32 | int",
-        varBindTable,
+        varBinds,
         cbCtx,
     ):
         lookupMib, future = cbCtx
         if future.cancelled():
             return
+
         if (
             options.get("ignoreNonIncreasingOid", False)
             and errorIndication
             and isinstance(errorIndication, errind.OidNotIncreasing)
         ):
             errorIndication = None  # TODO: fix here
+
         try:
             varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
-                snmpEngine.cache, varBindTable[0], lookupMib
+                snmpEngine.cache, varBinds, lookupMib
             )
         except Exception as e:
             future.set_exception(e)
@@ -717,7 +721,9 @@ async def walkCmd(
     maxRows = options.get("maxRows", 0)
     maxCalls = options.get("maxCalls", 0)
 
-    initialVars = [x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine.cache, [varBind])]
+    initialVars = [
+        x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine.cache, (varBind,))
+    ]
 
     totalRows = totalCalls = 0
 
@@ -728,7 +734,7 @@ async def walkCmd(
                 authData,
                 transportTarget,
                 contextData,
-                *[(varBind[0], Null(""))],
+                (varBind[0], Null("")),
                 **dict(lookupMib=options.get("lookupMib", True))
             )
             if (
@@ -739,7 +745,7 @@ async def walkCmd(
                 errorIndication = None
 
             if errorIndication:
-                yield (errorIndication, errorStatus, errorIndex, [varBind])
+                yield (errorIndication, errorStatus, errorIndex, (varBind,))
                 return
             elif errorStatus:
                 if errorStatus == 2:
@@ -773,7 +779,12 @@ async def walkCmd(
             errorIndication = errorStatus = errorIndex = None
             varBind = None
 
-        initialVarBinds = (yield errorIndication, errorStatus, errorIndex, [varBind])
+        initialVarBinds: "tuple[ObjectType, ...]|None" = (
+            yield errorIndication,
+            errorStatus,
+            errorIndex,
+            (varBind,),
+        )
 
         if initialVarBinds:
             varBind = initialVarBinds[0]
@@ -799,7 +810,7 @@ async def bulkWalkCmd(
     varBind: ObjectType,
     **options
 ) -> AsyncGenerator[
-    "tuple[errind.ErrorIndication | None, Integer32 | int | None, Integer32 | int | None, tuple[ObjectType, ...]]",
+    "tuple[errind.ErrorIndication | None, Integer32 | str | int | None, Integer32 | int | None, tuple[ObjectType, ...]]",
     None,
 ]:
     r"""Creates a generator to perform one or more SNMP GETBULK queries.
@@ -999,9 +1010,14 @@ async def bulkWalkCmd(
                 totalCalls += 1
         else:
             errorIndication = errorStatus = errorIndex = None
-            varBinds = []
+            varBinds = ()
 
-        initialVarBinds = (yield errorIndication, errorStatus, errorIndex, varBinds)
+        initialVarBinds: "tuple[ObjectType, ...]|None" = (
+            yield errorIndication,
+            errorStatus,
+            errorIndex,
+            varBinds,
+        )
         if initialVarBinds:
             varBinds = initialVarBinds
             initialVars = [

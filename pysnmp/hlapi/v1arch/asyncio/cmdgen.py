@@ -118,7 +118,8 @@ async def getCmd(
     >>>
     """
 
-    def _cbFun(snmpDispatcher, stateHandle, errorIndication, rspPdu, _cbCtx):
+    def _cbFun(snmpDispatcher, stateHandle, errorIndication, rspPdu, cbCtx):
+        lookupMib, future = cbCtx
         if future.cancelled():
             return
 
@@ -127,17 +128,16 @@ async def getCmd(
 
         varBinds = pMod.apiPDU.getVarBinds(rspPdu)
 
-        if lookupMib:
-            try:
-                varBinds = VB_PROCESSOR.unmakeVarBinds(
-                    snmpDispatcher.cache, varBinds, lookupMib
-                )
-
-            except Exception as e:
-                future.set_exception(e)
-                return
-
-        future.set_result((errorIndication, errorStatus, errorIndex, varBinds))
+        try:
+            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+                snmpDispatcher.cache, varBinds, lookupMib
+            )
+        except Exception as e:
+            future.set_exception(e)
+        else:
+            future.set_result(
+                (errorIndication, errorStatus, errorIndex, varBindsUnmade)
+            )
 
     lookupMib = options.get("lookupMib")
 
@@ -155,7 +155,9 @@ async def getCmd(
 
     future = asyncio.Future()
 
-    snmpDispatcher.sendPdu(authData, transportTarget, reqPdu, cbFun=_cbFun)
+    snmpDispatcher.sendPdu(
+        authData, transportTarget, reqPdu, cbFun=_cbFun, cbCtx=(lookupMib, future)
+    )
 
     return await future
 
@@ -247,7 +249,8 @@ async def setCmd(
     >>>
     """
 
-    def _cbFun(snmpDispatcher, stateHandle, errorIndication, rspPdu, _cbCtx):
+    def _cbFun(snmpDispatcher, stateHandle, errorIndication, rspPdu, cbCtx):
+        lookupMib, future = cbCtx
         if future.cancelled():
             return
 
@@ -256,17 +259,16 @@ async def setCmd(
 
         varBinds = pMod.apiPDU.getVarBinds(rspPdu)
 
-        if lookupMib:
-            try:
-                varBinds = VB_PROCESSOR.unmakeVarBinds(
-                    snmpDispatcher.cache, varBinds, lookupMib
-                )
-
-            except Exception as e:
-                future.set_exception(e)
-                return
-
-        future.set_result((errorIndication, errorStatus, errorIndex, varBinds))
+        try:
+            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+                snmpDispatcher.cache, varBinds, lookupMib
+            )
+        except Exception as e:
+            future.set_exception(e)
+        else:
+            future.set_result(
+                (errorIndication, errorStatus, errorIndex, varBindsUnmade)
+            )
 
     lookupMib = options.get("lookupMib")
 
@@ -284,7 +286,9 @@ async def setCmd(
 
     future = asyncio.Future()
 
-    snmpDispatcher.sendPdu(authData, transportTarget, reqPdu, cbFun=_cbFun)
+    snmpDispatcher.sendPdu(
+        authData, transportTarget, reqPdu, cbFun=_cbFun, cbCtx=(lookupMib, future)
+    )
 
     return await future
 
@@ -380,26 +384,39 @@ async def nextCmd(
     >>>
     """
 
-    def _cbFun(snmpDispatcher, stateHandle, errorIndication, rspPdu, _cbCtx):
+    def _cbFun(
+        snmpDispatcher: SnmpDispatcher,
+        stateHandle,
+        errorIndication: errind.ErrorIndication,
+        rspPdu,
+        cbCtx,
+    ):
+        lookupMib, future = cbCtx
         if future.cancelled():
             return
+
+        if (
+            options.get("ignoreNonIncreasingOid", False)
+            and errorIndication
+            and isinstance(errorIndication, errind.OidNotIncreasing)
+        ):
+            errorIndication = None  # TODO: fix this
 
         errorStatus = pMod.apiPDU.getErrorStatus(rspPdu)
         errorIndex = pMod.apiPDU.getErrorIndex(rspPdu)
 
-        varBindTable = pMod.apiPDU.getVarBindTable(reqPdu, rspPdu)
+        varBinds = pMod.apiPDU.getVarBinds(rspPdu)
 
-        if lookupMib:
-            try:
-                varBindTable = VB_PROCESSOR.unmakeVarBinds(
-                    snmpDispatcher.cache, varBindTable[0], lookupMib
-                )
-
-            except Exception as e:
-                future.set_exception(e)
-                return
-
-        future.set_result((errorIndication, errorStatus, errorIndex, varBindTable))
+        try:
+            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+                snmpDispatcher.cache, varBinds, lookupMib
+            )
+        except Exception as e:
+            future.set_exception(e)
+        else:
+            future.set_result(
+                (errorIndication, errorStatus, errorIndex, varBindsUnmade)
+            )
 
     lookupMib = options.get("lookupMib")
 
@@ -417,7 +434,9 @@ async def nextCmd(
 
     future = asyncio.Future()
 
-    snmpDispatcher.sendPdu(authData, transportTarget, reqPdu, cbFun=_cbFun)
+    snmpDispatcher.sendPdu(
+        authData, transportTarget, reqPdu, cbFun=_cbFun, cbCtx=(lookupMib, future)
+    )
 
     return await future
 
@@ -537,26 +556,39 @@ async def bulkCmd(
     >>>
     """
 
-    def _cbFun(snmpDispatcher, stateHandle, errorIndication, rspPdu, _cbCtx):
+    def _cbFun(
+        snmpDispatcher: SnmpDispatcher,
+        stateHandle,
+        errorIndication: errind.ErrorIndication,
+        rspPdu,
+        cbCtx,
+    ):
+        lookupMib, future = cbCtx
         if future.cancelled():
             return
+
+        if (
+            options.get("ignoreNonIncreasingOid", False)
+            and errorIndication
+            and isinstance(errorIndication, errind.OidNotIncreasing)
+        ):
+            errorIndication = None  # TODO: fix here
 
         errorStatus = pMod.apiPDU.getErrorStatus(rspPdu)
         errorIndex = pMod.apiPDU.getErrorIndex(rspPdu)
 
-        varBindTable = pMod.apiBulkPDU.getVarBindTable(reqPdu, rspPdu)
+        varBinds = pMod.apiBulkPDU.getVarBinds(rspPdu)
 
-        if lookupMib:
-            try:
-                varBindTable = VB_PROCESSOR.unmakeVarBinds(
-                    snmpDispatcher.cache, varBindTable[0], lookupMib
-                )
-
-            except Exception as e:
-                future.set_exception(e)
-                return
-
-        future.set_result((errorIndication, errorStatus, errorIndex, varBindTable))
+        try:
+            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+                snmpDispatcher.cache, varBinds, lookupMib
+            )
+        except Exception as e:
+            future.set_exception(e)
+        else:
+            future.set_result(
+                (errorIndication, errorStatus, errorIndex, varBindsUnmade)
+            )
 
     lookupMib = options.get("lookupMib")
 
@@ -576,7 +608,9 @@ async def bulkCmd(
 
     future = asyncio.Future()
 
-    snmpDispatcher.sendPdu(authData, transportTarget, reqPdu, cbFun=_cbFun)
+    snmpDispatcher.sendPdu(
+        authData, transportTarget, reqPdu, cbFun=_cbFun, cbCtx=(lookupMib, future)
+    )
 
     return await future
 
@@ -741,7 +775,7 @@ async def walkCmd(
             errorIndication = errorStatus = errorIndex = None
             varBind = None
 
-        initialVarBinds: "tuple[ObjectType, ...]" = (
+        initialVarBinds: "tuple[ObjectType, ...]|None" = (
             yield errorIndication,
             errorStatus,
             errorIndex,
@@ -771,7 +805,7 @@ async def bulkWalkCmd(
     varBind: ObjectType,
     **options
 ) -> AsyncGenerator[
-    "tuple[errind.ErrorIndication | None, Integer32 | int | None, Integer32 | int | None, tuple[ObjectType, ...]]",
+    "tuple[errind.ErrorIndication | None, Integer32 | str | int | None, Integer32 | int | None, tuple[ObjectType, ...]]",
     None,
 ]:
     r"""Creates a generator to perform one or more SNMP GETBULK queries.
@@ -968,7 +1002,7 @@ async def bulkWalkCmd(
             errorIndication = errorStatus = errorIndex = None
             varBinds = ()
 
-        initialVarBinds: "tuple[ObjectType, ...]" = (
+        initialVarBinds: "tuple[ObjectType, ...]|None" = (
             yield errorIndication,
             errorStatus,
             errorIndex,

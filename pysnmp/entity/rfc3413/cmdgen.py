@@ -419,16 +419,12 @@ class NextCommandGenerator(NextCommandGeneratorSingleRun):
             cbFun(snmpEngine, sendRequestHandle, errorIndication, 0, 0, (), cbCtx)
             return
 
-        varBindTable = v2c.apiPDU.getVarBindTable(reqPDU, PDU)
+        varBinds = v2c.apiPDU.getVarBinds(PDU)
 
         if v2c.apiPDU.getErrorStatus(PDU):
             errorIndication, varBinds = None, ()
-        elif not varBindTable:
+        elif not varBinds:
             errorIndication, varBinds = errind.emptyResponse, ()
-        else:
-            errorIndication, varBinds = v2c.apiPDU.getNextVarBinds(
-                varBindTable[-1], v2c.apiPDU.getVarBinds(reqPDU)
-            )
 
         if not cbFun(
             snmpEngine,
@@ -436,7 +432,7 @@ class NextCommandGenerator(NextCommandGeneratorSingleRun):
             errorIndication,
             v2c.apiPDU.getErrorStatus(PDU),
             v2c.apiPDU.getErrorIndex(PDU, muteErrors=True),
-            varBindTable,
+            varBinds,
             cbCtx,
         ):
             debug.logger & debug.FLAG_APP and debug.logger(
@@ -447,35 +443,6 @@ class NextCommandGenerator(NextCommandGeneratorSingleRun):
 
         if not varBinds:
             return  # no more objects available
-
-        v2c.apiPDU.setRequestID(reqPDU, v2c.getNextRequestID())
-        v2c.apiPDU.setVarBinds(reqPDU, varBinds)
-
-        try:
-            self.sendPdu(
-                snmpEngine,
-                targetName,
-                contextEngineId,
-                contextName,
-                reqPDU,
-                self.processResponseVarBinds,
-                (targetName, contextEngineId, contextName, reqPDU, cbFun, cbCtx),
-            )
-
-        except StatusInformation:
-            statusInformation = sys.exc_info()[1]
-            debug.logger & debug.FLAG_APP and debug.logger(
-                f"sendVarBinds: sendPduHandle {sendRequestHandle}: sendPdu() failed with {statusInformation!r}"
-            )
-            cbFun(
-                snmpEngine,
-                sendRequestHandle,
-                statusInformation["errorIndication"],  # type: ignore
-                0,
-                0,
-                (),
-                cbCtx,
-            )
 
 
 class BulkCommandGeneratorSingleRun(CommandGenerator):
@@ -562,11 +529,11 @@ class BulkCommandGenerator(BulkCommandGeneratorSingleRun):
             cbFun(snmpEngine, sendRequestHandle, errorIndication, 0, 0, (), cbCtx)
             return
 
-        varBindTable = v2c.apiBulkPDU.getVarBindTable(reqPDU, PDU)
+        varBinds = v2c.apiBulkPDU.getVarBinds(PDU)
 
         if v2c.apiBulkPDU.getErrorStatus(PDU):
             errorIndication, varBinds = None, ()
-        elif not varBindTable:
+        elif not varBinds:
             errorIndication, varBinds = errind.emptyResponse, ()
 
         if not cbFun(
@@ -575,7 +542,7 @@ class BulkCommandGenerator(BulkCommandGeneratorSingleRun):
             errorIndication,
             v2c.apiBulkPDU.getErrorStatus(PDU),
             v2c.apiBulkPDU.getErrorIndex(PDU, muteErrors=True),
-            varBindTable,
+            varBinds,
             cbCtx,
         ):
             debug.logger & debug.FLAG_APP and debug.logger(

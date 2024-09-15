@@ -65,7 +65,7 @@ async def test_v1_set_table_creation():
         assert len(varBinds) == 1
         assert varBinds[0][0].prettyPrint() == "SNMPv2-SMI::dod.6.1.5.2.97.98.99"
         assert varBinds[0][1].prettyPrint() == "My value"
-        # TODO: assert isinstance(varBinds[0][1], OctetString)
+        assert type(varBinds[0][1]).__name__ == "OctetString"
 
         errorIndication, errorStatus, errorIndex, varBinds = await setCmd(
             snmpDispatcher,

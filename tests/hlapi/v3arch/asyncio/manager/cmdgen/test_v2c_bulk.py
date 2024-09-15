@@ -1,6 +1,7 @@
 import pytest
 
 from pysnmp.hlapi.v3arch.asyncio import *
+from pysnmp.proto.errind import RequestTimedOut
 from tests.agent_context import AGENT_PORT, AgentContextManager
 
 
@@ -30,6 +31,25 @@ async def test_v2c_bulk(num_bulk):
             assert varBinds[2][0].prettyPrint() == "SNMPv2-MIB::sysContact.0"
 
         snmpEngine.closeDispatcher()
+
+
+@pytest.mark.asyncio
+async def test_v2c_bulk_non_exist():
+    snmpEngine = SnmpEngine()
+    errorIndication, errorStatus, errorIndex, varBinds = await bulkCmd(
+        snmpEngine,
+        CommunityData("public"),
+        await UdpTransportTarget.create(
+            ("localhost", AGENT_PORT), timeout=0.5, retries=0
+        ),
+        ContextData(),
+        0,
+        1,
+        ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
+    )
+
+    assert isinstance(errorIndication, RequestTimedOut)
+    snmpEngine.closeDispatcher()
 
 
 @pytest.mark.asyncio
