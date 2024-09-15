@@ -150,16 +150,6 @@ asyncio.run(run())
 > [demo.pysnmp.com](https://www.pysnmp.com/snmp-simulation-service). You are
 > welcome to use it while experimenting with whatever SNMP software you deal with.
 
-```bash
-$ python3 examples/hlapi/asyncio/manager/cmdgen/usm-sha-aes128.py
-SNMPv2-MIB::sysDescr.0 = SunOS zeus.pysnmp.com 4.1.3_U1 1 sun4m
-$
-$ python3 examples/hlapi/asyncio/agent/ntforg/v3-inform.py
-SNMPv2-MIB::sysUpTime.0 = 0
-SNMPv2-MIB::snmpTrapOID.0 = SNMPv2-MIB::warmStart
-SNMPv2-MIB::sysName.0 = system name
-```
-
 Other than that, PySNMP is capable to automatically fetch and use required MIBs from HTTP sites
 or local directories. You could configure any MIB source available to you (including
 [this one](https://mibs.pysnmp.com)) for that purpose.
