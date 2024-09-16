@@ -19,22 +19,28 @@ poetry env list
 
 ## Bump Version Number
 
-```bash
-poetry lock
-poetry version patch
-```
+1. Bump the version
 
-Edit `docs/poly.py` if the new version tag needs to be added to the list.
+   ```bash
+   poetry lock
+   poetry version patch
+   ```
+
+1. Edit `CHANGES.rst`
+
+1. Edit `docs/poly.py` if the new version tag needs to be added to the list.
+
+1. Modify nginx rule to route traffic to the latest version.
 
 ## Build Documentation
 
-To build current version documentation:
+Build current version documentation to find and fix issues:
 
 ```bash
 poetry run make html -C docs
 ```
 
-To build multiple versions documentation:
+Build multiple versions documentation for deployment:
 
 ```bash
 poetry run sphinx-polyversion docs/poly.py
