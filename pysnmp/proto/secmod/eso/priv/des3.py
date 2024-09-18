@@ -15,11 +15,13 @@ from pysnmp.proto.secmod.rfc3414.auth import hmacmd5, hmacsha
 from pysnmp.proto.secmod.rfc3414.priv import base
 from pysnmp.proto.secmod.rfc7860.auth import hmacsha2
 
+PysnmpCryptoError = False
 try:
-    from pysnmpcrypto import PysnmpCryptoError, des3
+    from cryptography.hazmat.backends import default_backend
+    from cryptography.hazmat.decrepit.ciphers import algorithms
+    from cryptography.hazmat.primitives.ciphers import Cipher, modes
 except ImportError:
-    PysnmpCryptoError = AttributeError
-    des3 = None
+    PysnmpCryptoError = True
 
 random.seed()
 
@@ -112,7 +114,7 @@ class Des3(base.AbstractEncryptionService):
 
     # 5.1.1.2
     def encryptData(self, encryptKey, privParameters, dataToEncrypt):
-        if des3 is None:
+        if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.encryptionError)
 
         snmpEngineBoots, snmpEngineTime, salt = privParameters
@@ -127,9 +129,10 @@ class Des3(base.AbstractEncryptionService):
         )
 
         try:
-            ciphertext = des3.encrypt(plaintext, des3Key, iv)
+            des3 = _cryptography_cipher(des3Key, iv).encryptor()
+            ciphertext = des3.update(plaintext) + des3.finalize()
 
-        except PysnmpCryptoError:
+        except AttributeError:
             raise error.StatusInformation(
                 errorIndication=errind.unsupportedPrivProtocol
             )
@@ -138,7 +141,7 @@ class Des3(base.AbstractEncryptionService):
 
     # 5.1.1.3
     def decryptData(self, decryptKey, privParameters, encryptedData):
-        if des3 is None:
+        if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.decryptionError)
         snmpEngineBoots, snmpEngineTime, salt = privParameters
 
@@ -153,11 +156,27 @@ class Des3(base.AbstractEncryptionService):
         ciphertext = encryptedData.asOctets()
 
         try:
-            plaintext = des3.decrypt(ciphertext, des3Key, iv)
+            des3 = _cryptography_cipher(des3Key, iv).decryptor()
+            plaintext = des3.update(ciphertext) + des3.finalize()
 
-        except PysnmpCryptoError:
+        except AttributeError:
             raise error.StatusInformation(
                 errorIndication=errind.unsupportedPrivProtocol
             )
 
         return plaintext
+
+
+def _cryptography_cipher(key, iv):
+    """Build a cryptography TripleDES Cipher object.
+
+    :param bytes key: Encryption key
+    :param bytesiv iv: Initialization vector
+    :returns: TripleDES Cipher instance
+    :rtype: cryptography.hazmat.primitives.ciphers.Cipher
+    """
+    return Cipher(
+        algorithm=algorithms.TripleDES(key),
+        mode=modes.CBC(iv),
+        backend=default_backend(),
+    )

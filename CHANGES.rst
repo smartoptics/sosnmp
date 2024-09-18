@@ -1,3 +1,8 @@
+Revision 7.1.4, released on Sep 17, 2024
+----------------------------------------
+
+- Dumped pysnmpcrypto dependency and bind to cryptography if presented.
+
 Revision 7.1.3, released on Sep 15, 2024
 ----------------------------------------
 

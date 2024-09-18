@@ -15,11 +15,14 @@ from pysnmp.proto.secmod.rfc3414.auth import hmacmd5, hmacsha
 from pysnmp.proto.secmod.rfc3414.priv import base
 from pysnmp.proto.secmod.rfc7860.auth import hmacsha2
 
+PysnmpCryptoError = False
 try:
-    from pysnmpcrypto import PysnmpCryptoError, aes
+    from cryptography.hazmat.backends import default_backend
+    from cryptography.hazmat.primitives.ciphers import algorithms, Cipher, modes
+
 except ImportError:
-    PysnmpCryptoError = AttributeError
-    aes = None
+    PysnmpCryptoError = True
+
 
 random.seed()
 
@@ -101,7 +104,7 @@ class Aes(base.AbstractEncryptionService):
 
     # 3.2.4.1
     def encryptData(self, encryptKey, privParameters, dataToEncrypt):
-        if aes is None:
+        if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.encryptionError)
 
         snmpEngineBoots, snmpEngineTime, salt = privParameters
@@ -113,9 +116,10 @@ class Aes(base.AbstractEncryptionService):
 
         # 3.3.1.3
         try:
-            ciphertext = aes.encrypt(dataToEncrypt, aesKey, iv)
+            aes = _cryptography_cipher(aesKey, iv).encryptor()
+            ciphertext = aes.update(dataToEncrypt) + aes.finalize()
 
-        except PysnmpCryptoError:
+        except AttributeError:
             raise error.StatusInformation(
                 errorIndication=errind.unsupportedPrivProtocol
             )
@@ -125,7 +129,7 @@ class Aes(base.AbstractEncryptionService):
 
     # 3.2.4.2
     def decryptData(self, decryptKey, privParameters, encryptedData):
-        if aes is None:
+        if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.decryptionError)
 
         snmpEngineBoots, snmpEngineTime, salt = privParameters
@@ -141,9 +145,23 @@ class Aes(base.AbstractEncryptionService):
 
         try:
             # 3.3.2.4-6
-            return aes.decrypt(encryptedData.asOctets(), aesKey, iv)
+            aes = _cryptography_cipher(aesKey, iv).decryptor()
+            return aes.update(encryptedData.asOctets()) + aes.finalize()
 
-        except PysnmpCryptoError:
+        except AttributeError:
             raise error.StatusInformation(
                 errorIndication=errind.unsupportedPrivProtocol
             )
+
+
+def _cryptography_cipher(key, iv):
+    """Build a cryptography AES Cipher object.
+
+    :param bytes key: Encryption key
+    :param bytes iv: Initialization vector
+    :returns: AES Cipher instance
+    :rtype: cryptography.hazmat.primitives.ciphers.Cipher
+    """
+    return Cipher(
+        algorithm=algorithms.AES(key), mode=modes.CFB(iv), backend=default_backend()
+    )

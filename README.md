@@ -59,25 +59,12 @@ $ pip install pysnmp
 
 To download and install PySNMP along with its dependencies:
 
-<!-- Need to find an alternate location for the links to pysnmp.com -->
 * [PyASN1](https://pyasn1.readthedocs.io)
 * [PySMI](https://www.pysnmp.com/pysmi/) (required for MIB services only)
-* Optional [pysnmpcrypto](https://github.com/etingof/pysnmpcrypto) package
-  whenever strong SNMPv3 encryption is desired
+* If cryptography package presents strong SNMPv3 encryption is enabled
 
-Besides the library, command-line [SNMP utilities](https://github.com/lextudio/snmpclitools)
-written in pure-Python could be installed via:
-
-```bash
-$ pip install snmpclitools
-```
-
-and used in the very similar manner as conventional Net-SNMP tools:
-
-```bash
-$ snmpget.py -v3 -l authPriv -u usr-md5-des -A authkey1 -X privkey1 demo.pysnmp.com sysDescr.0
-SNMPv2-MIB::sysDescr.0 = STRING: Linux zeus 4.8.6.5-smp #2 SMP Sun Nov 13 14:58:11 CDT 2016 i686
-```
+Make sure you check out other sibling projects of PySNMP on
+[the home page](https://www.pysnmp.com/).
 
 Examples
 --------

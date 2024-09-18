@@ -15,11 +15,13 @@ from pysnmp.proto.secmod.rfc3414.auth import hmacmd5, hmacsha
 from pysnmp.proto.secmod.rfc3414.priv import base
 from pysnmp.proto.secmod.rfc7860.auth import hmacsha2
 
+PysnmpCryptoError = False
 try:
-    from pysnmpcrypto import PysnmpCryptoError, des
+    from cryptography.hazmat.backends import default_backend
+    from cryptography.hazmat.decrepit.ciphers import algorithms
+    from cryptography.hazmat.primitives.ciphers import Cipher, modes
 except ImportError:
-    PysnmpCryptoError = AttributeError
-    des = None
+    PysnmpCryptoError = True
 
 random.seed()
 
@@ -97,7 +99,7 @@ class Des(base.AbstractEncryptionService):
 
     # 8.2.4.1
     def encryptData(self, encryptKey, privParameters, dataToEncrypt):
-        if des is None:
+        if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.encryptionError)
 
         snmpEngineBoots, snmpEngineTime, salt = privParameters
@@ -115,9 +117,10 @@ class Des(base.AbstractEncryptionService):
         )
 
         try:
-            ciphertext = des.encrypt(plaintext, desKey, iv)
+            des = _cryptography_cipher(desKey, iv).encryptor()
+            ciphertext = des.update(plaintext) + des.finalize()
 
-        except PysnmpCryptoError:
+        except AttributeError:
             raise error.StatusInformation(
                 errorIndication=errind.unsupportedPrivProtocol
             )
@@ -127,7 +130,7 @@ class Des(base.AbstractEncryptionService):
 
     # 8.2.4.2
     def decryptData(self, decryptKey, privParameters, encryptedData):
-        if des is None:
+        if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.decryptionError)
 
         snmpEngineBoots, snmpEngineTime, salt = privParameters
@@ -147,9 +150,35 @@ class Des(base.AbstractEncryptionService):
 
         try:
             # 8.3.2.6
-            return des.decrypt(encryptedData.asOctets(), desKey, iv)
+            des = _cryptography_cipher(desKey, iv).decryptor()
+            return des.update(encryptedData.asOctets()) + des.finalize()
 
-        except PysnmpCryptoError:
+        except AttributeError:
             raise error.StatusInformation(
                 errorIndication=errind.unsupportedPrivProtocol
             )
+
+
+def _cryptography_cipher(key, iv):
+    """Build a cryptography DES(-like) Cipher object.
+
+    .. note::
+
+        pyca/cryptography does not support DES directly because it is a
+        seriously old, insecure, and deprecated algorithm. However,
+        triple DES is just three rounds of DES (encrypt, decrypt, encrypt)
+        done by taking a key three times the size of a DES key and breaking
+        it into three pieces. So triple DES with des_key * 3 is equivalent
+        to DES.
+
+    :param bytes key: Encryption key
+    :param bytes iv: Initialization vector
+    :returns: TripleDES Cipher instance providing DES behavior by using
+        provided DES key
+    :rtype: cryptography.hazmat.primitives.ciphers.Cipher
+    """
+    return Cipher(
+        algorithm=algorithms.TripleDES(key * 3),
+        mode=modes.CBC(iv),
+        backend=default_backend(),
+    )
