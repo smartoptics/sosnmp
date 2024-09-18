@@ -1,7 +1,7 @@
 .. include:: /includes/_links.rst
 
-SNMP Library for Python 7
-=========================
+SNMP Library for Python |version|
+=================================
 
 .. toctree::
    :maxdepth: 1
