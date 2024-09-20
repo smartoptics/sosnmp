@@ -869,6 +869,7 @@ class MibScalarInstance(MibTree):
     # noinspection PyAttributeOutsideInit
     def writeCleanup(self, varBind, **context):
         self.branchVersionId += 1
+        name, val = varBind
         debug.logger & debug.FLAG_INS and debug.logger(f"writeCleanup: {name}={val!r}")
         # Drop previous value
         self.__newSyntax = self.__oldSyntax = None
