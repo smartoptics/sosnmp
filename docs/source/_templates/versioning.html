@@ -22,7 +22,7 @@ needed data isn't provided but the result doesn't work as expected. #}
         current or not current.name.startswith("v") %} v: {% endif %} {{
         current.name if current else "undefined" }}
     </span>
-    {% if revisions %} {# This item lists the avaible versions grouped into
+    {% if revisions %} {# This item lists the available versions grouped into
     branches and tags. The item is hidden by default but appears when the user
     hovers over the version selector. #}
     <div class="rst-other-versions">
