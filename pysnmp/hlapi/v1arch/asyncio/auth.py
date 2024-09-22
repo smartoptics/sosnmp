@@ -12,8 +12,8 @@ class CommunityData:
     """Creates SNMP v1/v2c configuration entry.
 
     This object can be used by
-    :py:class:`~pysnmp.hlapi.v1arch.asyncore.AsyncCommandGenerator` or
-    :py:class:`~pysnmp.hlapi.v1arch.asyncore.AsyncNotificationOriginator`
+    :py:class:`~pysnmp.hlapi.v1arch.asyncio.AsyncCommandGenerator` or
+    :py:class:`~pysnmp.hlapi.v1arch.asyncio.AsyncNotificationOriginator`
     and their derivatives for conveying SNMP v1/v2c configuration.
 
     Parameters

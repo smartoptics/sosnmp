@@ -46,7 +46,7 @@ class UdpTransportTarget(AbstractTransportTarget):
 
     Examples
     --------
-    >>> from pysnmp.hlapi.v1arch.asyncore import UdpTransportTarget
+    >>> from pysnmp.hlapi.v1arch.asyncio import UdpTransportTarget
     >>> await UdpTransportTarget.create(('demo.pysnmp.com', 161))
     UdpTransportTarget(('195.218.195.228', 161), timeout=1, retries=5)
     >>>

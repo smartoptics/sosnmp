@@ -39,7 +39,7 @@ async def sendNotification(
 
     Parameters
     ----------
-    snmpDispatcher: :py:class:`~pysnmp.hlapi.v1arch.asyncore.SnmpDispatcher`
+    snmpDispatcher: :py:class:`~pysnmp.hlapi.v1arch.asyncio.SnmpDispatcher`
         Class instance representing asynio-based asynchronous event loop and
         associated state information.
 
