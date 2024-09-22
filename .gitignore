@@ -24,7 +24,6 @@ venv*
 # Tox
 .tox/
 .env
-.python-version
 .coverage
 junit/test-results.xml
 coverage.xml

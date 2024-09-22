@@ -64,6 +64,3 @@ replace = "| {new_version}"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.esbonio.sphinx]
-buildCommand = ["sphinx-build", "-M", "html", "./docs/source", "./docs/build"]
