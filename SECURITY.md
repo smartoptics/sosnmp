@@ -27,6 +27,8 @@ To ensure the security and stability of your PySNMP installation, please adhere 
   Minor releases include new features and improvements. Upgrade to the latest minor version within 6 months after a new minor release is available to continue receiving security updates.
   *Example:* After 6.2.0 is released, upgrade to the latest 6.2.x within 6 months.
 
+  > Note that our plan is to reduce this from 6 months to 3 months for 7.1.0 and above.
+
 - **Upgrade to the Next Major Release Within 1 Year**
   Major releases may introduce significant changes and new functionalities. Upgrade to the latest major version within 1 year after a new major release to maintain support and security updates.
   *Example:* After 7.0.0 is released, upgrade to 7.x.x within 1 year.

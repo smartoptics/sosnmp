@@ -32,6 +32,8 @@ poetry env list
 
 1. Modify nginx rule to route traffic to the latest version.
 
+1. Update Roadmap in `ROADMAP.md`.
+
 ## Build Documentation
 
 Build current version documentation to find and fix issues:

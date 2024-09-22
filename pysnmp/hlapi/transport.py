@@ -41,11 +41,24 @@ class AbstractTransportTarget:
             )
 
     @classmethod
-    async def create(cls, *args, **kwargs):
+    async def create(cls, address: Tuple[str, int], *args, **kwargs):
+        """
+        Asynchronously creates an instance of the class with the given address.
+
+        Args:
+            cls (Type): The class to create an instance of.
+            address (Tuple[str, int]): A tuple containing the address as a string and the port as an integer.
+            *args: Additional positional arguments to pass to the class initializer.
+            **kwargs: Additional keyword arguments to pass to the class initializer.
+
+        Returns:
+            An instance of the class with the resolved transport address.
+
+        """
         self = cls.__new__(cls)
-        transportAddr = args[0]
+        transportAddr = address
         self.transportAddr = await self._resolveAddr(transportAddr)
-        self.__init__(*args[1:], **kwargs)
+        self.__init__(*args, **kwargs)
         return self
 
     def __repr__(self):
@@ -82,8 +95,11 @@ class AbstractTransportTarget:
         return self.transport
 
     def verifyDispatcherCompatibility(self, snmpEngine: SnmpEngine):
-        if not self.PROTO_TRANSPORT.isCompatibleWithDispatcher(
-            snmpEngine.transportDispatcher
+        if (
+            snmpEngine.transportDispatcher is None
+            or not self.PROTO_TRANSPORT.isCompatibleWithDispatcher(
+                snmpEngine.transportDispatcher
+            )
         ):
             raise error.PySnmpError(
                 "Transport {!r} is not compatible with dispatcher {!r}".format(

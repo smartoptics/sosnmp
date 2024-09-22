@@ -1,4 +1,4 @@
-# Release 6.x Roadmap
+# Roadmap
 
 ## Background
 
@@ -6,33 +6,52 @@ Ilya started this project and worked on the 1.0-4.0 releases.
 
 > Ilya left his ideas on the future of the project in the `TODO.txt` file.
 
-The Splunk team took over part of the project and started the 5.0 release.
-LeXtudio Inc. continued the 5.0 release when it started to [take over the
-entire PySNMP ecosystem](https://github.com/etingof/pysnmp/issues/429).
+LeXtudio Inc. took over the ecosystem during the 5.0 release cycle after
+[its initial announcement](https://github.com/etingof/pysnmp/issues/429).
 
 Now the Python landscape has changed a lot due to frequent Python releases
 and breaking changes in each of them. The PySNMP project needs to adapt to
-the new reality and provide a better user experience.
+the new reality and provide a better user experience. So after a few
+successful releases such as 6.x and 7.0, we decided to plan the future of
+the project as below.
 
-Thus, the 6.x release is planned to address the most critical issues.
+## 7.1 Releases
 
-## Goals
+The goals are
 
-- Modern Python support (new releases and new features)
-- Better documentation
-- Better test coverage
-- Frequent housekeeping (remove old code, update dependencies, etc.)
+- Adapt to async DNS queries.
+- Rework on GET NEXT and GET BULK related API surface.
+- Fix more known issues reported in the past few years.
 
-## Tasks
+Planned tasks are
 
-- [x] Limit Python support to 3.8+. This is to reduce the maintenance burden.
-- [x] Removed asyncore support. This is to reduce the maintenance burden.
-- [x] Converted all asyncore code to asyncio. This is to support modern Python.
-- [x] Updated sample code and documentation to use asyncio. This is to support modern Python.
-- [ ] Improve test cases and coverage. This is to improve code quality.
+- [x] Introduced async DNS queries.
+- [x] Identified how the new GET NEXT and GET BULK related API should be
+  designed.
+- [ ] Adapt to Python 3.8 end of life.
+- [ ] TODOs
 
-## Breaking Changes
+Breaking changes are
 
-- Removed asyncore related API from `pysnmp.hlapi` module. This is expected to break existing code that uses `pysnmp.hlapi` module with asyncore. Users can stay on 5.0 release but are encouraged to migrate to asyncio and our 6.0+ release.
-- Switched to `asyncio` in many type implementation in `pysnmp.hlapi` module. This is expected to break existing code that uses `pysnmp.hlapi` module if it assumes the relevant API is implemented upon asyncore. Users are encouraged to test their code thoroughly and make necessary changes.
-- Stopped supporting Python 3.7 and below. Users are encouraged to upgrade their Python to 3.8+ (ideally 3.11+).
+- Transport type construction API is completely changed to support
+  async DNS queries.
+
+  For example, calls to ``UdpTransportTarget()`` need to move to
+  ``await UdpTransportTarget.create()``.
+- nextCmd and bulkCmd parameters and return types are revised.
+- walkCmd and bulkWalkCmd are updated accordingly.
+
+## 8.0 Releases
+
+The goals are
+
+- Remove legacy bits related to Python 3.8.
+- TODOs
+
+Planned tasks are
+
+- [ ] TODOs
+
+Breaking changes are
+
+- TODOs
