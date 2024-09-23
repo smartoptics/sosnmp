@@ -367,7 +367,7 @@ async def nextCmd(
     Examples
     --------
     >>> import asyncio
-    >>> from pysnmp.hlapi.asyncio import *
+    >>> from pysnmp.hlapi.v1arch.asyncio import *
     >>>
     >>> async def run():
     ...     errorIndication, errorStatus, errorIndex, varBinds = await nextCmd(

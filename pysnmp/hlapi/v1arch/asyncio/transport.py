@@ -107,7 +107,7 @@ class Udp6TransportTarget(AbstractTransportTarget):
 
     Examples
     --------
-    >>> from pysnmp.hlapi.asyncio import Udp6TransportTarget
+    >>> from pysnmp.hlapi.v1arch.asyncio import Udp6TransportTarget
     >>> await Udp6TransportTarget.create(('google.com', 161))
     Udp6TransportTarget(('2a00:1450:4014:80a::100e', 161), timeout=1, retries=5, tagList='')
     >>> await Udp6TransportTarget.create(('FEDC:BA98:7654:3210:FEDC:BA98:7654:3210', 161))

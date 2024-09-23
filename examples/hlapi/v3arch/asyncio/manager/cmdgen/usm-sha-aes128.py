@@ -25,7 +25,7 @@ Functionally similar to:
 | $ snmpget -v3 -l authPriv -u usr-sha-aes -A authkey1 -X privkey1 -a SHA -x AES demo.pysnmp.com SNMPv2-MIB::sysDescr.0
 """  #
 import asyncio
-from pysnmp.hlapi.asyncio import *
+from pysnmp.hlapi.v3arch.asyncio import *
 
 
 async def run():

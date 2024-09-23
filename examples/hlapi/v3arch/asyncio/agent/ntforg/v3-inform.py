@@ -13,7 +13,7 @@ Functionally similar to:
 """  #
 
 import asyncio
-from pysnmp.hlapi.asyncio import *
+from pysnmp.hlapi.v3arch.asyncio import *
 
 
 async def run():
