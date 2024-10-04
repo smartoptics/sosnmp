@@ -5,6 +5,7 @@ description = "A Python library for SNMP"
 authors = ["Ilya Etingof <etingof@gmail.com>", "LeXtudio Inc. <support@lextudio.com>"]
 license = "BSD-2-Clause"
 repository = "https://github.com/lextudio/pysnmp"
+homepage = "https://pysnmp.com"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
