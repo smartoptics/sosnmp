@@ -58,6 +58,16 @@ async def start_manager(
         securityEngineId=v2c.OctetString(hexValue="8000000001020304"),
     )
 
+    # user: usr-none-none, auth: NONE, priv: NONE
+    # this USM entry is used for TRAP receiving purposes
+    config.addV3User(
+        snmpEngine,
+        "usr-none-none",
+        config.USM_AUTH_NONE,
+        config.USM_PRIV_NONE,
+        securityEngineId=v2c.OctetString(hexValue="8000000001020305"),
+    )
+
     # Callback function for receiving notifications
     # noinspection PyUnusedLocal,PyUnusedLocal,PyUnusedLocal
     def cbFun(
