@@ -19,22 +19,25 @@ Most of SNMP operations involve packet exchange over network. PySNMP
 is shipped with asyncio binding that let you run PySNMP in parallel with
 other tasks your application may perform.
 
-High-level, v3arch, sync
-------------------------
+High-level v3arch sync
+----------------------
 
 Most simple and straightforward way to use PySNMP is by employing its
-Synchronous, blocking API. It's also the default API offered by
-users on *pysnmp.hlapi* sub-package import.
+Synchronous, blocking API. It used to be the default API to offer on
+*pysnmp.hlapi* sub-package import. However, it is now deprecated and
+removed.
 
-.. warning:: Completely deprecated in PySNMP 6.2 release.
+.. warning:: First deprecated in PySNMP 6.0, and completely removed in
+   PySNMP 6.2.
 
 High-level v3arch asyncio
 -------------------------
 
 The :mod:`asyncio` module first appeared in standard library since
 Python 3.3 (in provisional basis). Its main design feature is that
-it makes asynchronous code looking like synchronous one. That greatly
-simplifies development and maintenance.
+it makes asynchronous code looking like synchronous one, especially after
+the introduction of async/await pattern. That greatly simplifies
+development and maintenance.
 
 Command Generator
 
@@ -187,6 +190,11 @@ High-level v1arch asyncio
 The :mod:`asyncio` module is in Python standard library since ancient
 times. Main loop is built around :mod:`select` dispatcher, user
 code is invoked through callback callables.
+
+Different from `v3arch` asyncio, `v1arch` asyncio API aims to avoid the
+complexity of the `v3arch` asyncio API, and to provide a simpler and more
+straightforward API for users who only need to perform SNMP v1 and v2c
+operations.
 
 Command Generator
 

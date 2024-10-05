@@ -1,6 +1,6 @@
 
-TRAP/INFORM notification
-========================
+TRAP/INFORM Operation
+=====================
 
 .. toctree::
    :maxdepth: 2

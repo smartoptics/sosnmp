@@ -166,6 +166,11 @@ Using these examples
    It is difficult to cover all examples on this site, so you might want to
    visit the ``examples`` folder in `PySNMP GitHub repository`_.
 
+   When examples are not enough or out-of-date, you might want to refer to
+   the latest unit test cases under the ``tests`` folder in the
+   `PySNMP GitHub repository`_. They are the most reliable resources to see
+   the API in action.
+
 Before using the sample code, make sure ``pysnmp`` and its
 dependencies are installed. You might refer to :doc:`/quick-start` for
 details.

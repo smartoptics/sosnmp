@@ -1,6 +1,6 @@
 
-GETNEXT command
-===============
+GETNEXT Operation
+=================
 
 .. toctree::
    :maxdepth: 2

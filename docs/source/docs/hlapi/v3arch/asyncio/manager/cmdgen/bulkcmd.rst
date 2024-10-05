@@ -1,6 +1,6 @@
 
-GETBULK command
-===============
+GETBULK Operation
+=================
 
 .. toctree::
    :maxdepth: 2

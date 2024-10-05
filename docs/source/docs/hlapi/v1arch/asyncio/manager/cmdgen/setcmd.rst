@@ -1,6 +1,6 @@
 
-SET command
-===========
+SET Operation
+=============
 
 .. toctree::
    :maxdepth: 2

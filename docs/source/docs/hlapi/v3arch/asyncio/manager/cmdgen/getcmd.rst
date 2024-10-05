@@ -1,6 +1,6 @@
 
-GET command
-===========
+GET Operation
+=============
 
 .. toctree::
    :maxdepth: 2
