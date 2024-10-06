@@ -3,8 +3,8 @@
 .. toctree::
    :maxdepth: 2
 
-Common Operations
-=================
+Common Operations with High-Level API
+=====================================
 
 In this tutorial we will gradually build and run a few different
 SNMP command requests and notifications. We will be using PySNMP

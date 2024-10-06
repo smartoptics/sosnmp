@@ -114,6 +114,7 @@ Related Resources
 -----------------
 
 - `Support Options`_
+- :doc:`/docs/pysnmp-hlapi-tutorial`
+- :doc:`/docs/api-reference`
 - :doc:`/examples/index`
 - :doc:`/troubleshooting`
-- :doc:`/docs/api-reference`

@@ -26,4 +26,4 @@ Related Resources
 - `Support Options`_
 - :doc:`/quick-start`
 - :doc:`/troubleshooting`
-- :doc:`/faq`
+- :doc:`/faq/index`
