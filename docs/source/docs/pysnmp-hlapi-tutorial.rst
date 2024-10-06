@@ -8,7 +8,7 @@ Common Operations
 
 In this tutorial we will gradually build and run a few different
 SNMP command requests and notifications. We will be using PySNMP
-synchronous :doc:`high-level API </docs/api-reference>`
+asyncio based :doc:`high-level API </docs/api-reference>`
 which is the simplest to use.
 
 Creating SNMP Engine
@@ -40,7 +40,7 @@ Making SNMP Query
 -----------------
 
 We will send SNMP GET command to read a MIB object from SNMP agent.
-For that purpose we will call synchronous, high-level
+For that purpose we will call asyncio based, high-level
 :py:func:`~pysnmp.hlapi.v3arch.asyncio.getCmd` function.
 Other SNMP commands can be used in a vary similar way by calling
 corresponding functions.
@@ -261,12 +261,6 @@ Reading Scalar Value
 
 We are finally in a position to send SNMP query and hopefully receive
 something meaningful in response.
-
-The distinctive feature of synchronous API is that it is built around
-the idea of Python generator. Any function invocation ends up with a
-generator object. Iteration over the generator object performs actual
-SNMP communication. On each iteration SNMP message gets built and sent
-out, response is awaited, received and parsed.
 
 .. code-block:: python
 

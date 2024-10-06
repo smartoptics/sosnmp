@@ -39,7 +39,7 @@ the official PySNMP project.
    We consider the 5.1.0 release as a stepping stone to the 6.x releases,
    so please don't stay with them for long.
 
-   You should first attempt to upgrade to 6.0.13 release and see if things
+   You should next attempt to upgrade to 6.0.13 release and see if things
    work as expected.
 
    Note that you must use Python <3.12, as release 5.1.0 is not compatible
@@ -113,9 +113,9 @@ above. Ilya's changes for 4.4.13 release were merged as well.
 Upgrade to 6.2 Releases
 -----------------------
 
-The new sync API is added to enable synchronous I/O operations and easy
-migration from 4.x/5.x releases. The new API is based on asyncio and is
-compatible with Python 3.8 and later.
+The new sync API was added in 6.0 releases to enable synchronous I/O
+operations and easy migration from 4.x/5.x releases. The new API was based
+on asyncio and was compatible with Python 3.8 and later.
 
 We were hoping the new sync API would be stable enough to meet the quality
 expectation, but it turned out to be the opposite. So we decided to remove

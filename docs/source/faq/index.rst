@@ -15,11 +15,3 @@ to any PySNMP revision.
    :glob:
 
    /faq/*
-
-Related Resources
------------------
-
-- `Support Options`_
-- :doc:`/quick-start`
-- :doc:`/troubleshooting`
-- :doc:`/license`

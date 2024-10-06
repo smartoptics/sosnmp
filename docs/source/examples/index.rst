@@ -49,13 +49,15 @@ suitable for the most typical client-side operations. For that matter,
 only Command Generator and Notification Originator Applications are
 wrapped into a nearly one-line Python expression.
 
-The `hlapi` interfaces come in several flavours: one synchronous
+The `hlapi` interfaces used to come in several flavours: one synchronous
 and a bunch of asynchronous, adapted to work withing the event loops
-of popular asynchronous I/O frameworks. But now only asyncio based API is supported.
+of popular asynchronous I/O frameworks. But now only asyncio based API is
+supported.
 
 The primary reason for maintaining high-level API over both `v1arch` and
-`v3arch` is performance - `v3arch` machinery is much more functional and complicated
-internally, that translates to being heavier on resources and therefore slower.
+`v3arch` is performance - `v3arch` machinery is much more functional and
+complicated internally, that translates to being heavier on resources and
+therefore slower.
 
 The v3 architecture
 +++++++++++++++++++
@@ -188,10 +190,3 @@ you are welcome to search for it and possibly download one from our
 public MIB repository `mibs.pysnmp.com`_. Alternatively,
 you can configure PySNMP to fetch and cache required MIBs from there
 automatically.
-
-Related Resources
------------------
-
-- :doc:`/quick-start`
-- :doc:`/troubleshooting`
-- :doc:`/docs/api-reference`
