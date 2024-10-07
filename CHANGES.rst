@@ -1,3 +1,8 @@
+Revision 7.1.5, released on Oct 06, 2024
+----------------------------------------
+
+- The pysmi dependency is now optional.
+
 Revision 7.1.4, released on Sep 17, 2024
 ----------------------------------------
 
