@@ -95,14 +95,8 @@ If you are having trouble with PySNMP, please check the following section.
 Downloads
 ---------
 
-Best way is usually to install PySNMP using `PySNMP PyPI package`_.
-
-.. code-block:: bash
-
-   $ pip install pysnmp
-
-If that does not work for you for some reason, you might need to read the
-following pages.
+Please study the following pages to learn how to download versions of our
+PySNMP package, and what changes are included from their release notes.
 
 .. toctree::
    :maxdepth: 1
