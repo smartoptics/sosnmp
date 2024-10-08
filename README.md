@@ -28,7 +28,7 @@ Features
   compilation
 * Built-in instrumentation exposing protocol engine operations
 * Python eggs and py2exe friendly
-* 100% Python, works with Python 3.8+
+* 100% Python, works with Python 3.9+
 * MT-safe (if SnmpEngine is thread-local)
 
 Features, specific to SNMPv3 model include:

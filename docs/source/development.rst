@@ -92,11 +92,6 @@ development resources to meet it sooner.
 You could greater speed up the development of particular feature by
 sponsoring it. Please contact `LeXtudio Inc.`_ to discuss details.
 
-Contributions to the PySNMP source code is greatly appreciated as well.
-We require contributed code to run with Python 3.8 through the latest
-Python version (which is 3.12 at the time of this writing). Contributed
-code will be redistributed under the terms of the same license as PySNMP is.
-
 Related Resources
 -----------------
 

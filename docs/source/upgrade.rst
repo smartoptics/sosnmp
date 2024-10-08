@@ -172,6 +172,7 @@ Breaking changes are
   ``await UdpTransportTarget.create()``.
 - nextCmd and bulkCmd parameters and return types are revised.
 - walkCmd and bulkWalkCmd are updated accordingly.
+- Dropped Python 3.8 support.
 
 Related Resources
 -----------------

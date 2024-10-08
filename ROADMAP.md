@@ -28,7 +28,7 @@ Planned tasks are
 - [x] Introduced async DNS queries.
 - [x] Identified how the new GET NEXT and GET BULK related API should be
   designed.
-- [ ] Adapt to Python 3.8 end of life.
+- [x] Adapt to Python 3.8 end of life.
 - [ ] TODOs
 
 Breaking changes are
