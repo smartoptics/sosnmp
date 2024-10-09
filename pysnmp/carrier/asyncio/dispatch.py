@@ -44,12 +44,13 @@ from pysnmp.error import PySnmpError
 
 
 class AsyncioDispatcher(AbstractTransportDispatcher):
-    """AsyncioDispatcher based on asyncio event loop"""
+    """AsyncioDispatcher based on asyncio event loop."""
 
     loop: asyncio.AbstractEventLoop
     __transportCount: int
 
     def __init__(self, *args, **kwargs):
+        """Create an asyncio dispatcher object."""
         AbstractTransportDispatcher.__init__(self)
         self.__transportCount = 0
         if "timeout" in kwargs:
@@ -58,11 +59,13 @@ class AsyncioDispatcher(AbstractTransportDispatcher):
         self.loop = kwargs.pop("loop", asyncio.get_event_loop())
 
     async def handle_timeout(self):
+        """Handle timeout event."""
         while True:
             await asyncio.sleep(self.getTimerResolution())
             self.handleTimerTick(time())
 
     def runDispatcher(self, timeout: float = 0.0):
+        """Run the dispatcher loop."""
         if not self.loop.is_running():
             try:
                 if timeout > 0:
@@ -79,12 +82,14 @@ class AsyncioDispatcher(AbstractTransportDispatcher):
         super().closeDispatcher()
 
     def registerTransport(self, tDomain: Tuple[int, ...], transport: AbstractTransport):
+        """Register transport associated with given transport domain."""
         if self.loopingcall is None and self.getTimerResolution() > 0:
             self.loopingcall = asyncio.ensure_future(self.handle_timeout())
         AbstractTransportDispatcher.registerTransport(self, tDomain, transport)
         self.__transportCount += 1
 
     def unregisterTransport(self, tDomain: Tuple[int, ...]):
+        """Unregister transport associated with given transport domain."""
         t = AbstractTransportDispatcher.getTransport(self, tDomain)
         if t is not None:
             AbstractTransportDispatcher.unregisterTransport(self, tDomain)

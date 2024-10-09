@@ -31,6 +31,8 @@ except ImportError:
     from pysnmp.smi import error
 
     def addMibCompilerDecorator(errorMsg):
+        """Add MIB compiler decorator."""
+
         def addMibCompiler(mibBuilder, **kwargs):
             if not kwargs.get("ifAvailable"):
                 raise error.SmiError("MIB compiler not available: %s" % errorMsg)
@@ -42,6 +44,7 @@ except ImportError:
 else:
 
     def addMibCompiler(mibBuilder, **kwargs):
+        """Add MIB compiler to MIB builder."""
         if kwargs.get("ifNotAdded") and mibBuilder.getMibCompiler():
             return
 

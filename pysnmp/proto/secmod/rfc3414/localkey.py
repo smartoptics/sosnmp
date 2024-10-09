@@ -9,7 +9,8 @@ from hashlib import md5, sha1
 from pyasn1.type import univ
 
 
-def hashPassphrase(passphrase, hashFunc):
+def hashPassphrase(passphrase, hashFunc) -> univ.OctetString:
+    """Return hash of passphrase using hashFunc hash function."""
     passphrase = univ.OctetString(passphrase).asOctets()
     # noinspection PyDeprecation,PyCallingNonCallable
     hasher = hashFunc()
@@ -33,11 +34,13 @@ def hashPassphrase(passphrase, hashFunc):
     return univ.OctetString(digest)
 
 
-def passwordToKey(passphrase, snmpEngineId, hashFunc):
+def passwordToKey(passphrase, snmpEngineId, hashFunc) -> univ.OctetString:
+    """Return key from password."""
     return localizeKey(hashPassphrase(passphrase, hashFunc), snmpEngineId, hashFunc)
 
 
-def localizeKey(passKey, snmpEngineId, hashFunc):
+def localizeKey(passKey, snmpEngineId, hashFunc) -> univ.OctetString:
+    """Localize passKey with snmpEngineId using hashFunc hash function."""
     passKey = univ.OctetString(passKey).asOctets()
     # noinspection PyDeprecation,PyCallingNonCallable
     digest = hashFunc(passKey + snmpEngineId.asOctets() + passKey).digest()
@@ -45,26 +48,32 @@ def localizeKey(passKey, snmpEngineId, hashFunc):
 
 
 # RFC3414: A.2.1
-def hashPassphraseMD5(passphrase):
+def hashPassphraseMD5(passphrase) -> univ.OctetString:
+    """Return MD5 hash of passphrase."""
     return hashPassphrase(passphrase, md5)
 
 
 # RFC3414: A.2.2
-def hashPassphraseSHA(passphrase):
+def hashPassphraseSHA(passphrase) -> univ.OctetString:
+    """Return SHA-1 hash of passphrase."""
     return hashPassphrase(passphrase, sha1)
 
 
-def passwordToKeyMD5(passphrase, snmpEngineId):
+def passwordToKeyMD5(passphrase, snmpEngineId) -> univ.OctetString:
+    """Return MD5 key from password."""
     return localizeKey(hashPassphraseMD5(passphrase), snmpEngineId, md5)
 
 
-def passwordToKeySHA(passphrase, snmpEngineId):
+def passwordToKeySHA(passphrase, snmpEngineId) -> univ.OctetString:
+    """Return SHA-1 key from password."""
     return localizeKey(hashPassphraseSHA(passphrase), snmpEngineId, sha1)
 
 
-def localizeKeyMD5(passKey, snmpEngineId):
+def localizeKeyMD5(passKey, snmpEngineId) -> univ.OctetString:
+    """Localize passKey with snmpEngineId using MD5 hash function."""
     return localizeKey(passKey, snmpEngineId, md5)
 
 
-def localizeKeySHA(passKey, snmpEngineId):
+def localizeKeySHA(passKey, snmpEngineId) -> univ.OctetString:
+    """Localize passKey with snmpEngineId using SHA1 hash function."""
     return localizeKey(passKey, snmpEngineId, sha1)

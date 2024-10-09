@@ -8,4 +8,6 @@ from pysnmp import error
 
 
 class CarrierError(error.PySnmpError):
+    """Base class for all carrier-related exceptions."""
+
     pass

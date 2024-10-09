@@ -15,11 +15,32 @@ from pysnmp.proto.secmod.rfc7860.auth import hmacsha2
 
 
 class AbstractAesBlumenthal(aes.Aes):
+    """AES encryption with standard key localization."""
+
     SERVICE_ID = ()
     KEY_SIZE = 0
 
     # 3.1.2.1
-    def localizeKey(self, authProtocol, privKey, snmpEngineID):
+    def localizeKey(self, authProtocol, privKey, snmpEngineID) -> bytes:
+        """AES key localization algorithm.
+
+        This algorithm is used to localize an AES key to an authoritative
+        engine ID.
+
+        Parameters
+        ----------
+        authProtocol : tuple
+            The authentication protocol OID.
+        privKey : bytes
+            The privacy key.
+        snmpEngineID : bytes
+            The authoritative engine ID.
+
+        Returns
+        -------
+        bytes
+            The localized key.
+        """
         if authProtocol == hmacmd5.HmacMd5.SERVICE_ID:
             hashAlgo = md5
         elif authProtocol == hmacsha.HmacSha.SERVICE_ID:
@@ -60,7 +81,26 @@ class AbstractAesReeder(aes.Aes):
     KEY_SIZE = 0
 
     # 2.1 of https://tools.itef.org/pdf/draft_bluementhal-aes-usm-04.txt
-    def localizeKey(self, authProtocol, privKey, snmpEngineID):
+    def localizeKey(self, authProtocol, privKey, snmpEngineID) -> bytes:
+        """AES key localization algorithm.
+
+        This algorithm is used to localize an AES key to an authoritative
+        engine ID.
+
+        Parameters
+        ----------
+        authProtocol : tuple
+            The authentication protocol OID.
+        privKey : bytes
+            The privacy key.
+        snmpEngineID : bytes
+            The authoritative engine ID.
+
+        Returns
+        -------
+        bytes
+            The localized key.
+        """
         if authProtocol == hmacmd5.HmacMd5.SERVICE_ID:
             hashAlgo = md5
         elif authProtocol == hmacsha.HmacSha.SERVICE_ID:

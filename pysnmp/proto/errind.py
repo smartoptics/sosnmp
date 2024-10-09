@@ -7,34 +7,90 @@
 
 
 class ErrorIndication(Exception):
-    """SNMPv3 error-indication values"""
+    """SNMPv3 error-indication values."""
 
     def __init__(self, descr=None):
+        """Create an error indication object."""
         self.__value = self.__descr = (
             self.__class__.__name__[0].lower() + self.__class__.__name__[1:]
         )
         if descr:
             self.__descr = descr
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
+        """
+        Compare the instance's value with another value for equality.
+
+        Args:
+            other: The value to compare against the instance's value.
+
+        Returns:
+            bool: True if the instance's value is equal to the other value, False otherwise.
+        """
         return self.__value == other
 
-    def __ne__(self, other):
+    def __ne__(self, other) -> bool:
+        """
+        Compare the instance's value with another value for inequality.
+
+        Args:
+            other: The value to compare against the instance's value.
+
+        Returns:
+            bool: True if the instance's value is not equal to the other value, False otherwise.
+        """
         return self.__value != other
 
     def __lt__(self, other):
+        """
+        Compare the instance's value with another value for less than.
+
+        Args:
+            other: The value to compare against the instance's value.
+
+        Returns:
+            bool: True if the instance's value is less than the other value, False otherwise.
+        """
         return self.__value < other
 
     def __le__(self, other):
+        """
+        Compare the instance's value with another value for less than or equal to.
+
+        Args:
+            other: The value to compare against the instance's value.
+
+        Returns:
+            bool: True if the instance's value is less than or equal to the other value, False otherwise.
+        """
         return self.__value <= other
 
     def __gt__(self, other):
+        """
+        Compare the instance's value with another value for greater than.
+
+        Args:
+            other: The value to compare against the instance's value.
+
+        Returns:
+            bool: True if the instance's value is greater than the other value, False otherwise.
+        """
         return self.__value > other
 
     def __ge__(self, other):
+        """
+        Compare the instance's value with another value for greater than or equal to.
+
+        Args:
+            other: The value to compare against the instance's value.
+
+        Returns:
+            bool: True if the instance's value is greater than or equal to the other value, False otherwise.
+        """
         return self.__value >= other
 
     def __str__(self):
+        """Return error indication as a string."""
         return self.__descr
 
 
@@ -42,6 +98,8 @@ class ErrorIndication(Exception):
 
 
 class SerializationError(ErrorIndication):
+    """SNMP message serialization error."""
+
     pass
 
 
@@ -51,6 +109,8 @@ serializationError = SerializationError(  # noqa: N816
 
 
 class DeserializationError(ErrorIndication):
+    """SNMP message deserialization error."""
+
     pass
 
 
@@ -60,6 +120,8 @@ deserializationError = DeserializationError(  # noqa: N816
 
 
 class ParseError(DeserializationError):
+    """SNMP message parsing error."""
+
     pass
 
 
@@ -67,6 +129,8 @@ parseError = ParseError("SNMP message deserialization error")  # noqa: N816
 
 
 class UnsupportedMsgProcessingModel(ErrorIndication):
+    """Unsupported SNMP message processing model."""
+
     pass
 
 
@@ -76,6 +140,8 @@ unsupportedMsgProcessingModel = UnsupportedMsgProcessingModel(  # noqa: N816
 
 
 class UnknownPDUHandler(ErrorIndication):
+    """Unknown SNMP PDU handler."""
+
     pass
 
 
@@ -83,6 +149,8 @@ unknownPDUHandler = UnknownPDUHandler("Unhandled PDU type encountered")  # noqa:
 
 
 class UnsupportedPDUtype(ErrorIndication):
+    """Unsupported SNMP PDU type."""
+
     pass
 
 
@@ -92,6 +160,8 @@ unsupportedPDUtype = UnsupportedPDUtype(  # noqa: N816
 
 
 class RequestTimedOut(ErrorIndication):
+    """SNMP request timed out."""
+
     pass
 
 
@@ -101,6 +171,8 @@ requestTimedOut = RequestTimedOut(  # noqa: N816
 
 
 class EmptyResponse(ErrorIndication):
+    """Empty SNMP response message."""
+
     pass
 
 
@@ -108,6 +180,8 @@ emptyResponse = EmptyResponse("Empty SNMP response message")  # noqa: N816
 
 
 class NonReportable(ErrorIndication):
+    """SNMP report PDU generation not attempted."""
+
     pass
 
 
@@ -115,6 +189,8 @@ nonReportable = NonReportable("Report PDU generation not attempted")  # noqa: N8
 
 
 class DataMismatch(ErrorIndication):
+    """SNMP request/response parameters mismatch."""
+
     pass
 
 
@@ -122,6 +198,8 @@ dataMismatch = DataMismatch("SNMP request/response parameters mismatched")  # no
 
 
 class EngineIDMismatch(ErrorIndication):
+    """SNMP engine ID mismatch."""
+
     pass
 
 
@@ -129,6 +207,8 @@ engineIDMismatch = EngineIDMismatch("SNMP engine ID mismatch encountered")  # no
 
 
 class UnknownEngineID(ErrorIndication):
+    """Unknown SNMP engine ID."""
+
     pass
 
 
@@ -136,6 +216,8 @@ unknownEngineID = UnknownEngineID("Unknown SNMP engine ID encountered")  # noqa:
 
 
 class TooBig(ErrorIndication):
+    """SNMP message too big."""
+
     pass
 
 
@@ -143,6 +225,8 @@ tooBig = TooBig("SNMP message will be too big")  # noqa: N816
 
 
 class LoopTerminated(ErrorIndication):
+    """SNMP entities talk terminated."""
+
     pass
 
 
@@ -150,6 +234,8 @@ loopTerminated = LoopTerminated("Infinite SNMP entities talk terminated")  # noq
 
 
 class InvalidMsg(ErrorIndication):
+    """Invalid SNMP message header parameters."""
+
     pass
 
 
@@ -162,6 +248,8 @@ invalidMsg = InvalidMsg(  # noqa: N816
 
 
 class UnknownCommunityName(ErrorIndication):
+    """Unknown SNMP community name."""
+
     pass
 
 
@@ -171,6 +259,8 @@ unknownCommunityName = UnknownCommunityName(  # noqa: N816
 
 
 class NoEncryption(ErrorIndication):
+    """No encryption services configured."""
+
     pass
 
 
@@ -178,6 +268,8 @@ noEncryption = NoEncryption("No encryption services configured")  # noqa: N816
 
 
 class EncryptionError(ErrorIndication):
+    """SNMP message encryption error."""
+
     pass
 
 
@@ -185,6 +277,8 @@ encryptionError = EncryptionError("Ciphering services not available")  # noqa: N
 
 
 class DecryptionError(ErrorIndication):
+    """SNMP message decryption error."""
+
     pass
 
 
@@ -194,6 +288,8 @@ decryptionError = DecryptionError(  # noqa: N816
 
 
 class NoAuthentication(ErrorIndication):
+    """No authentication services configured."""
+
     pass
 
 
@@ -203,6 +299,8 @@ noAuthentication = NoAuthentication(  # noqa: N816
 
 
 class AuthenticationError(ErrorIndication):
+    """SNMP message authentication error."""
+
     pass
 
 
@@ -212,6 +310,8 @@ authenticationError = AuthenticationError(  # noqa: N816
 
 
 class AuthenticationFailure(ErrorIndication):
+    """SNMP message authentication failure."""
+
     pass
 
 
@@ -219,6 +319,8 @@ authenticationFailure = AuthenticationFailure("Authenticator mismatched")  # noq
 
 
 class UnsupportedAuthProtocol(ErrorIndication):
+    """Unsupported SNMP authentication protocol."""
+
     pass
 
 
@@ -228,6 +330,8 @@ unsupportedAuthProtocol = UnsupportedAuthProtocol(  # noqa: N816
 
 
 class UnsupportedPrivProtocol(ErrorIndication):
+    """Unsupported SNMP privacy protocol."""
+
     pass
 
 
@@ -237,6 +341,8 @@ unsupportedPrivProtocol = UnsupportedPrivProtocol(  # noqa: N816
 
 
 class UnknownSecurityName(ErrorIndication):
+    """Unknown SNMP security name."""
+
     pass
 
 
@@ -246,6 +352,8 @@ unknownSecurityName = UnknownSecurityName(  # noqa: N816
 
 
 class UnsupportedSecurityModel(ErrorIndication):
+    """Unsupported SNMP security model."""
+
     pass
 
 
@@ -255,6 +363,8 @@ unsupportedSecurityModel = UnsupportedSecurityModel(  # noqa: N816
 
 
 class UnsupportedSecurityLevel(ErrorIndication):
+    """Unsupported SNMP security level."""
+
     pass
 
 
@@ -264,6 +374,8 @@ unsupportedSecurityLevel = UnsupportedSecurityLevel(  # noqa: N816
 
 
 class NotInTimeWindow(ErrorIndication):
+    """SNMP message timing parameters not in windows of trust."""
+
     pass
 
 
@@ -273,6 +385,8 @@ notInTimeWindow = NotInTimeWindow(  # noqa: N816
 
 
 class UnknownUserName(ErrorIndication):
+    """Unknown SNMP user name."""
+
     pass
 
 
@@ -280,6 +394,8 @@ unknownUserName = UnknownUserName("Unknown USM user")  # noqa: N816
 
 
 class WrongDigest(ErrorIndication):
+    """Wrong SNMP PDU digest."""
+
     pass
 
 
@@ -287,6 +403,8 @@ wrongDigest = WrongDigest("Wrong SNMP PDU digest")  # noqa: N816
 
 
 class ReportPduReceived(ErrorIndication):
+    """Remote SNMP engine reported error."""
+
     pass
 
 
@@ -297,6 +415,8 @@ reportPduReceived = ReportPduReceived("Remote SNMP engine reported error")  # no
 
 
 class NoSuchView(ErrorIndication):
+    """No such MIB view currently exists."""
+
     pass
 
 
@@ -304,6 +424,8 @@ noSuchView = NoSuchView("No such MIB view currently exists")  # noqa: N816
 
 
 class NoAccessEntry(ErrorIndication):
+    """Access to MIB node denied."""
+
     pass
 
 
@@ -311,6 +433,8 @@ noAccessEntry = NoAccessEntry("Access to MIB node denied")  # noqa: N816
 
 
 class NoGroupName(ErrorIndication):
+    """No such VACM group configured."""
+
     pass
 
 
@@ -318,6 +442,8 @@ noGroupName = NoGroupName("No such VACM group configured")  # noqa: N816
 
 
 class NoSuchContext(ErrorIndication):
+    """No such SNMP context exists."""
+
     pass
 
 
@@ -325,6 +451,8 @@ noSuchContext = NoSuchContext("SNMP context now found")  # noqa: N816
 
 
 class NotInView(ErrorIndication):
+    """Requested OID is out of MIB view."""
+
     pass
 
 
@@ -332,6 +460,8 @@ notInView = NotInView("Requested OID is out of MIB view")  # noqa: N816
 
 
 class AccessAllowed(ErrorIndication):
+    """Access to MIB node allowed."""
+
     pass
 
 
@@ -339,6 +469,8 @@ accessAllowed = AccessAllowed()  # noqa: N816
 
 
 class OtherError(ErrorIndication):
+    """Unspecified SNMP engine error."""
+
     pass
 
 
@@ -349,6 +481,8 @@ otherError = OtherError("Unspecified SNMP engine error occurred")  # noqa: N816
 
 
 class OidNotIncreasing(ErrorIndication):
+    """OID not increasing."""
+
     pass
 
 

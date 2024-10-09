@@ -15,17 +15,24 @@ __all__ = ["AbstractMibInstrumController", "MibInstrumController"]
 
 
 class AbstractMibInstrumController:
+    """Abstract MIB instrumentation controller."""
+
     def readVars(self, *varBinds, **context):
+        """Read MIB variables."""
         raise error.NoSuchInstanceError(idx=0)
 
     def readNextVars(self, *varBinds, **context):
+        """Read next MIB variables."""
         raise error.EndOfMibViewError(idx=0)
 
     def writeVars(self, *varBinds, **context):
+        """Write MIB variables."""
         raise error.NoSuchObjectError(idx=0)
 
 
 class MibInstrumController(AbstractMibInstrumController):
+    """MIB instrumentation controller."""
+
     mibBuilder: MibBuilder
 
     fsmReadVar = {
@@ -62,11 +69,13 @@ class MibInstrumController(AbstractMibInstrumController):
     }
 
     def __init__(self, mibBuilder: MibBuilder):
+        """Create an MIB instrumentation controller instance."""
         self.mibBuilder = mibBuilder
         self.lastBuildId = -1
         self.lastBuildSyms = {}
 
-    def getMibBuilder(self):
+    def getMibBuilder(self) -> MibBuilder:
+        """Return MIB builder associated with this controller."""
         return self.mibBuilder
 
     # MIB indexing
@@ -91,7 +100,7 @@ class MibInstrumController(AbstractMibInstrumController):
             "MibTable",
         )
 
-        (mibTree,) = self.mibBuilder.importSymbols("SNMPv2-SMI", "iso")
+        (mibTree,) = self.mibBuilder.importSymbols("SNMPv2-SMI", "iso")  # type: ignore
 
         #
         # Management Instrumentation gets organized as follows:
@@ -193,11 +202,13 @@ class MibInstrumController(AbstractMibInstrumController):
     # MIB instrumentation
 
     def flipFlopFsm(self, fsmTable, *varBinds, **context):
+        """Flip-flop Finite State Machine."""
         self.__indexMib()
         debug.logger and debug.FLAG_INS and debug.logger(
             f"flipFlopFsm: input var-binds {varBinds!r}"
         )
-        (mibTree,) = self.mibBuilder.importSymbols("SNMPv2-SMI", "iso")
+        """Query MIB variables."""
+        (mibTree,) = self.mibBuilder.importSymbols("SNMPv2-SMI", "iso")  # type: ignore
         outputVarBinds = []
         state, status = "start", "ok"
         origExc = origTraceback = None
@@ -264,10 +275,13 @@ class MibInstrumController(AbstractMibInstrumController):
         return outputVarBinds
 
     def readVars(self, *varBinds, **context):
+        """Read MIB variables."""
         return self.flipFlopFsm(self.fsmReadVar, *varBinds, **context)
 
     def readNextVars(self, *varBinds, **context):
+        """Read next MIB variables."""
         return self.flipFlopFsm(self.fsmReadNextVar, *varBinds, **context)
 
     def writeVars(self, *varBinds, **context):
+        """Write MIB variables."""
         return self.flipFlopFsm(self.fsmWriteVar, *varBinds, **context)

@@ -4,18 +4,18 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+import asyncio
 from typing import AsyncGenerator
-from pysnmp.hlapi.transport import AbstractTransportTarget
-from pysnmp.hlapi.v1arch.asyncio.dispatch import SnmpDispatcher
-from pysnmp.hlapi.v1arch.asyncio.auth import *
+
 from pysnmp.hlapi import varbinds
-from pysnmp.hlapi.v1arch.asyncio.transport import *
+from pysnmp.hlapi.transport import AbstractTransportTarget
+from pysnmp.hlapi.v1arch.asyncio.auth import CommunityData
+from pysnmp.hlapi.v1arch.asyncio.dispatch import SnmpDispatcher
+from pysnmp.proto import api, errind
 from pysnmp.proto.rfc1902 import Integer32, Null
 from pysnmp.proto.rfc1905 import EndOfMibView, endOfMibView
-from pysnmp.smi.rfc1902 import *
-from pysnmp.proto import api, errind
+from pysnmp.smi.rfc1902 import ObjectType
 
-import asyncio
 
 __all__ = [
     "getCmd",
@@ -400,7 +400,7 @@ async def nextCmd(
             and errorIndication
             and isinstance(errorIndication, errind.OidNotIncreasing)
         ):
-            errorIndication = None  # TODO: fix this
+            errorIndication = None  # type: ignore # TODO: fix this
 
         errorStatus = pMod.apiPDU.getErrorStatus(rspPdu)
         errorIndex = pMod.apiPDU.getErrorIndex(rspPdu)
@@ -572,7 +572,7 @@ async def bulkCmd(
             and errorIndication
             and isinstance(errorIndication, errind.OidNotIncreasing)
         ):
-            errorIndication = None  # TODO: fix here
+            errorIndication = None  # type: ignore # TODO: fix here
 
         errorStatus = pMod.apiPDU.getErrorStatus(rspPdu)
         errorIndex = pMod.apiPDU.getErrorIndex(rspPdu)
@@ -730,7 +730,7 @@ async def walkCmd(
                 dispatcher,
                 authData,
                 transportTarget,
-                (varBind[0], Null("")),
+                (varBind[0], Null("")),  # type: ignore
                 **dict(lookupMib=options.get("lookupMib", True))
             )
             if (
@@ -773,7 +773,7 @@ async def walkCmd(
                 totalCalls += 1
         else:
             errorIndication = errorStatus = errorIndex = None
-            varBind = None
+            varBind = None  # type: ignore
 
         initialVarBinds: "tuple[ObjectType, ...]|None" = (
             yield errorIndication,

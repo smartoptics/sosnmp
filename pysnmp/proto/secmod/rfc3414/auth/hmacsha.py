@@ -7,7 +7,6 @@
 from hashlib import sha1
 
 from pyasn1.type import univ
-
 from pysnmp.proto import errind, error
 from pysnmp.proto.secmod.rfc3414 import localkey
 from pysnmp.proto.secmod.rfc3414.auth import base
@@ -20,22 +19,31 @@ FORTY_FOUR_ZEROS = (0,) * 44
 
 
 class HmacSha(base.AbstractAuthenticationService):
+    """The HMAC-SHA-1-96 authentication protocol.
+
+    https://tools.ietf.org/html/rfc3414#section-7.2.4
+    """
+
     SERVICE_ID = (1, 3, 6, 1, 6, 3, 10, 1, 1, 3)  # usmHMACSHAAuthProtocol
     IPAD = [0x36] * 64
     OPAD = [0x5C] * 64
 
-    def hashPassphrase(self, authKey):
+    def hashPassphrase(self, authKey) -> univ.OctetString:
+        """Hash a passphrase."""
         return localkey.hashPassphraseSHA(authKey)
 
-    def localizeKey(self, authKey, snmpEngineID):
+    def localizeKey(self, authKey, snmpEngineID) -> univ.OctetString:
+        """Localize a key."""
         return localkey.localizeKeySHA(authKey, snmpEngineID)
 
     @property
     def digestLength(self):
+        """Return digest length."""
         return 12
 
     # 7.3.1
     def authenticateOutgoingMsg(self, authKey, wholeMsg):
+        """Authenticate outgoing message."""
         # 7.3.1.1
         # Here we expect calling secmod to indicate where the digest
         # should be in the substrate. Also, it pre-sets digest placeholder
@@ -72,6 +80,7 @@ class HmacSha(base.AbstractAuthenticationService):
 
     # 7.3.2
     def authenticateIncomingMsg(self, authKey, authParameters, wholeMsg):
+        """Authenticate incoming message."""
         # 7.3.2.1 & 2
         if len(authParameters) != 12:
             raise error.StatusInformation(errorIndication=errind.authenticationError)

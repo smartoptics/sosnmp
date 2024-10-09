@@ -7,11 +7,11 @@
 from pyasn1.codec.ber import decoder, eoo
 from pyasn1.error import PyAsn1Error
 from pyasn1.type import univ
-
 from pysnmp.proto.error import ProtocolError
 
 
 def decodeMessageVersion(wholeMsg):
+    """Decode SNMP version from the message."""
     try:
         seq, wholeMsg = decoder.decode(
             wholeMsg,

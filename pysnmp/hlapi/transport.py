@@ -8,7 +8,7 @@ from typing import Tuple
 
 
 from pysnmp import error
-from pysnmp.carrier.base import AbstractTransport, AbstractTransportAddress
+from pysnmp.carrier.base import AbstractTransport
 from pysnmp.entity.engine import SnmpEngine
 
 __all__ = []

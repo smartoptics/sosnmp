@@ -42,10 +42,12 @@ class Slim:
     >>>
 
     """
+
     snmpDispatcher: SnmpDispatcher
     version: int
 
     def __init__(self, version: int = 2):
+        """Creates a slim SNMP wrapper object."""
         self.snmpDispatcher = SnmpDispatcher()
         if version not in (1, 2):
             raise PySnmpError(f"Not supported version {version}")
@@ -56,9 +58,11 @@ class Slim:
         self.snmpDispatcher.transportDispatcher.closeDispatcher()
 
     def __enter__(self):
+        """Returns the wrapper object."""
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """Closes the wrapper to release its resources."""
         self.close()
 
     async def get(

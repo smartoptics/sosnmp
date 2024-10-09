@@ -18,14 +18,19 @@ DOMAIN_NAME = SNMP_UDP6_DOMAIN = (1, 3, 6, 1, 2, 1, 100, 1, 2)
 
 
 class Udp6TransportAddress(tuple, AbstractTransportAddress):
+    """IPv6 transport address."""
+
     pass
 
 
 class Udp6AsyncioTransport(DgramAsyncioProtocol):
+    """UDP/IPv6 async socket transport."""
+
     SOCK_FAMILY = socket.has_ipv6 and socket.AF_INET6 or 0
     ADDRESS_TYPE = Udp6TransportAddress
 
     def normalizeAddress(self, transportAddress):
+        """Normalize IPv6 address."""
         if "%" in transportAddress[0]:  # strip zone ID
             return self.ADDRESS_TYPE(
                 (

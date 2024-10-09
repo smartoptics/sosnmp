@@ -7,7 +7,6 @@
 from hashlib import md5
 
 from pyasn1.type import univ
-
 from pysnmp.proto import errind, error
 from pysnmp.proto.secmod.rfc3414 import localkey
 from pysnmp.proto.secmod.rfc3414.auth import base
@@ -20,22 +19,31 @@ FORTY_EIGHT_ZEROS = (0,) * 48
 
 
 class HmacMd5(base.AbstractAuthenticationService):
+    """The HMAC-MD5-96 authentication protocol.
+
+    https://tools.ietf.org/html/rfc3414#section-6.2.4
+    """
+
     SERVICE_ID = (1, 3, 6, 1, 6, 3, 10, 1, 1, 2)  # usmHMACMD5AuthProtocol
     IPAD = [0x36] * 64
     OPAD = [0x5C] * 64
 
     def hashPassphrase(self, authKey):
+        """Hash a passphrase."""
         return localkey.hashPassphraseMD5(authKey)
 
     def localizeKey(self, authKey, snmpEngineID):
+        """Localize a key."""
         return localkey.localizeKeyMD5(authKey, snmpEngineID)
 
     @property
     def digestLength(self):
+        """Return digest length."""
         return 12
 
     # 6.3.1
     def authenticateOutgoingMsg(self, authKey, wholeMsg):
+        """Authenticate outgoing message."""
         # Here we expect calling secmod to indicate where the digest
         # should be in the substrate. Also, it pre-sets digest placeholder
         # so we hash wholeMsg out of the box.
@@ -75,6 +83,7 @@ class HmacMd5(base.AbstractAuthenticationService):
 
     # 6.3.2
     def authenticateIncomingMsg(self, authKey, authParameters, wholeMsg):
+        """Authenticate incoming message."""
         # 6.3.2.1 & 2
         if len(authParameters) != 12:
             raise error.StatusInformation(errorIndication=errind.authenticationError)

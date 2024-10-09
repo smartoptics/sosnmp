@@ -5,7 +5,6 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 from pyasn1.type import constraint, univ
-
 from pysnmp.proto import errind, rfc1901, rfc1902, rfc1905
 from pysnmp.proto.api import v1
 
@@ -49,21 +48,26 @@ apiVarBind = v1.apiVarBind  # noqa: N816
 
 
 class PDUAPI(v1.PDUAPI):
+    """SNMPv2c request PDU API."""
+
     _errorStatus = rfc1905.errorStatus.clone(0)
     _errorIndex = univ.Integer(0).subtype(
         subtypeSpec=constraint.ValueRangeConstraint(0, rfc1905.max_bindings)
     )
 
     def getResponse(self, reqPDU):
+        """Build response PDU."""
         rspPDU = ResponsePDU()
         self.setDefaults(rspPDU)
         self.setRequestID(rspPDU, self.getRequestID(reqPDU))
         return rspPDU
 
     def getVarBindTable(self, reqPDU, rspPDU):
+        """Get var-binds table from response PDU."""
         return [apiPDU.getVarBinds(rspPDU)]
 
     def getNextVarBinds(self, varBinds, origVarBinds=None):
+        """Get next var-binds."""
         errorIndication = None
         idx = nonNulls = len(varBinds)
         rspVarBinds = []
@@ -89,6 +93,7 @@ class PDUAPI(v1.PDUAPI):
         return errorIndication, rspVarBinds
 
     def setEndOfMibError(self, pdu, errorIndex):
+        """Set endOfMibView error."""
         varBindList = self.getVarBindList(pdu)
         varBindList[errorIndex - 1].setComponentByPosition(
             1,
@@ -99,6 +104,7 @@ class PDUAPI(v1.PDUAPI):
         )
 
     def setNoSuchInstanceError(self, pdu, errorIndex):
+        """Set noSuchInstance error."""
         varBindList = self.getVarBindList(pdu)
         varBindList[errorIndex - 1].setComponentByPosition(
             1,
@@ -113,10 +119,13 @@ apiPDU = PDUAPI()  # noqa: N816
 
 
 class BulkPDUAPI(PDUAPI):
+    """SNMPv2c bulk request PDU API."""
+
     _nonRepeaters = rfc1905.nonRepeaters.clone(0)
     _maxRepetitions = rfc1905.maxRepetitions.clone(10)
 
     def setDefaults(self, pdu):
+        """Set SNMPv2c bulk request defaults."""
         PDUAPI.setDefaults(self, pdu)
         pdu.setComponentByPosition(
             0,
@@ -144,21 +153,26 @@ class BulkPDUAPI(PDUAPI):
 
     @staticmethod
     def getNonRepeaters(pdu):
+        """Get non-repeaters component of the PDU."""
         return pdu.getComponentByPosition(1)
 
     @staticmethod
     def setNonRepeaters(pdu, value):
+        """Set non-repeaters component of the PDU."""
         pdu.setComponentByPosition(1, value)
 
     @staticmethod
     def getMaxRepetitions(pdu):
+        """Get max repetitions component of the PDU."""
         return pdu.getComponentByPosition(2)
 
     @staticmethod
     def setMaxRepetitions(pdu, value):
+        """Set max repetitions component of the PDU."""
         pdu.setComponentByPosition(2, value)
 
     def getVarBindTable(self, reqPDU, rspPDU):
+        """Get var-binds table from response PDU."""
         nonRepeaters = self.getNonRepeaters(reqPDU)
 
         reqVarBinds = self.getVarBinds(reqPDU)
@@ -191,6 +205,8 @@ apiBulkPDU = BulkPDUAPI()  # noqa: N816
 
 
 class TrapPDUAPI(v1.PDUAPI):
+    """SNMPv2c trap PDU API."""
+
     sysUpTime = (1, 3, 6, 1, 2, 1, 1, 3, 0)
     snmpTrapAddress = (1, 3, 6, 1, 6, 3, 18, 1, 3, 0)
     snmpTrapCommunity = (1, 3, 6, 1, 6, 3, 18, 1, 4, 0)
@@ -200,6 +216,7 @@ class TrapPDUAPI(v1.PDUAPI):
     _genTrap = ObjectIdentifier((1, 3, 6, 1, 6, 3, 1, 1, 5, 1))
 
     def setDefaults(self, pdu):
+        """Set SNMPv2c trap defaults."""
         v1.PDUAPI.setDefaults(self, pdu)
         varBinds = [
             (self.sysUpTime, self._zeroTime),
@@ -213,9 +230,12 @@ apiTrapPDU = TrapPDUAPI()  # noqa: N816
 
 
 class MessageAPI(v1.MessageAPI):
+    """SNMPv2c message API."""
+
     _version = rfc1901.version.clone(1)
 
     def setDefaults(self, msg):
+        """Set SNMP message defaults."""
         msg.setComponentByPosition(
             0,
             self._version,
@@ -233,6 +253,7 @@ class MessageAPI(v1.MessageAPI):
         return msg
 
     def getResponse(self, reqMsg):
+        """Build response message."""
         rspMsg = Message()
         self.setDefaults(rspMsg)
         self.setVersion(rspMsg, self.getVersion(reqMsg))

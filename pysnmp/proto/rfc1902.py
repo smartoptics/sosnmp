@@ -5,7 +5,6 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 from pyasn1.type import constraint, namedtype, namedval, tag, univ
-
 from pysnmp.proto import error, rfc1155
 
 __all__ = [
@@ -234,21 +233,26 @@ class OctetString(univ.OctetString):
     fixedLength = None
 
     def setFixedLength(self, value):
+        """Set fixed length."""
         self.fixedLength = value
         return self
 
     def isFixedLength(self):
+        """Return if fixed length."""
         return self.fixedLength is not None
 
     def getFixedLength(self):
+        """Return fixed length."""
         return self.fixedLength
 
     def clone(self, *args, **kwargs):
+        """Clone the data."""
         return univ.OctetString.clone(self, *args, **kwargs).setFixedLength(
             self.getFixedLength()
         )
 
     def subtype(self, *args, **kwargs):
+        """Subtype the data."""
         return univ.OctetString.subtype(self, *args, **kwargs).setFixedLength(
             self.getFixedLength()
         )
@@ -339,6 +343,7 @@ class IpAddress(OctetString):
     fixedLength = 4
 
     def prettyIn(self, value):
+        """Convert string to IP address."""
         if isinstance(value, str) and len(value) != 4:
             try:
                 value = [int(x) for x in value.split(".")]
@@ -350,6 +355,7 @@ class IpAddress(OctetString):
         return value
 
     def prettyOut(self, value):
+        """Convert IP address to a string."""
         if value:
             return ".".join(["%d" % x for x in self.__class__(value).asNumbers()])
         else:
@@ -653,6 +659,7 @@ class Bits(OctetString):
     namedValues = namedval.NamedValues()
 
     def __new__(cls, *args, **kwargs):
+        """Create a new instance of the class."""
         if "namedValues" in kwargs:
             Bits = cls.withNamedBits(**dict(kwargs.pop("namedValues")))
             return Bits(*args, **kwargs)
@@ -660,6 +667,7 @@ class Bits(OctetString):
         return OctetString.__new__(cls)
 
     def prettyIn(self, bits):
+        """Return raw bitstring."""
         if not isinstance(bits, (tuple, list)):
             return OctetString.prettyIn(self, bits)  # raw bitstring
         octets = []
@@ -674,6 +682,7 @@ class Bits(OctetString):
         return OctetString.prettyIn(self, octets)
 
     def prettyOut(self, value):
+        """Return named bits."""
         names = []
         ints = self.__class__(value).asNumbers()
         for i, v in enumerate(ints):

@@ -45,10 +45,12 @@ class ContextData:
     """
 
     def __init__(self, contextEngineId=None, contextName=b""):
+        """Create a context data object."""
         self.contextEngineId = contextEngineId
         self.contextName = contextName
 
     def __repr__(self):
+        """Return a string representation of the object."""
         return "{}(contextEngineId={!r}, contextName={!r})".format(
             self.__class__.__name__, self.contextEngineId, self.contextName
         )

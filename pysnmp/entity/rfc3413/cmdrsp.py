@@ -7,6 +7,7 @@
 import sys
 
 from pysnmp import debug
+from pysnmp.entity.engine import SnmpEngine
 from pysnmp.proto import errind, error, rfc1902, rfc1905, rfc3411
 from pysnmp.proto.api import v2c  # backend is always SMIv2 compliant
 from pysnmp.proto.proxy import rfc2576
@@ -15,6 +16,8 @@ from pysnmp.smi import error as smi_error
 
 # 3.2
 class CommandResponderBase:
+    """SNMP command responder base class."""
+
     ACM_ID = 3  # default MIB access control method to use
     SUPPORTED_PDU_TYPES = ()
 
@@ -39,7 +42,8 @@ class CommandResponderBase:
         smi_error.InconsistentNameError: "inconsistentName",
     }
 
-    def __init__(self, snmpEngine, snmpContext, cbCtx=None):
+    def __init__(self, snmpEngine: SnmpEngine, snmpContext, cbCtx=None):
+        """Create a responder object."""
         snmpEngine.msgAndPduDsp.registerContextEngineId(
             snmpContext.contextEngineId, self.SUPPORTED_PDU_TYPES, self.processPdu
         )
@@ -48,9 +52,11 @@ class CommandResponderBase:
         self.__pendingReqs = {}
 
     def handleMgmtOperation(self, snmpEngine, stateReference, contextName, PDU, acCtx):
+        """Handle incoming SNMP PDU."""
         pass
 
     def close(self, snmpEngine):
+        """Unregister responder object."""
         snmpEngine.msgAndPduDsp.unregisterContextEngineId(
             self.snmpContext.contextEngineId, self.SUPPORTED_PDU_TYPES
         )
@@ -59,6 +65,7 @@ class CommandResponderBase:
     def sendVarBinds(
         self, snmpEngine, stateReference, errorStatus, errorIndex, varBinds
     ):
+        """Send VarBinds."""
         (
             messageProcessingModel,
             securityModel,
@@ -86,6 +93,7 @@ class CommandResponderBase:
         self.sendPdu(snmpEngine, stateReference, PDU)
 
     def sendPdu(self, snmpEngine, stateReference, PDU):
+        """Send PDU."""
         (
             messageProcessingModel,
             securityModel,
@@ -138,6 +146,7 @@ class CommandResponderBase:
     _counter64Type = rfc1902.Counter64.tagSet
 
     def releaseStateInformation(self, stateReference):
+        """Release state information."""
         if stateReference in self.__pendingReqs:
             del self.__pendingReqs[stateReference]
 
@@ -155,6 +164,7 @@ class CommandResponderBase:
         maxSizeResponseScopedPDU,
         stateReference,
     ):
+        """Process incoming PDU."""
         # Agent-side API complies with SMIv2
         if messageProcessingModel == 0:
             origPdu = PDU
@@ -242,7 +252,8 @@ class CommandResponderBase:
         self.releaseStateInformation(stateReference)
 
     @classmethod
-    def verifyAccess(cls, viewType, varBind, **context):
+    def verifyAccess(cls, viewType, varBind, **context) -> "bool | None":
+        """Verify access rights for a single OID-value pair."""
         name, val = varBind
 
         snmpEngine = context["snmpEngine"]
@@ -320,10 +331,13 @@ class CommandResponderBase:
 
 
 class GetCommandResponder(CommandResponderBase):
+    """SNMP GET command responder."""
+
     SUPPORTED_PDU_TYPES = (rfc1905.GetRequestPDU.tagSet,)
 
     # rfc1905: 4.2.1
     def handleMgmtOperation(self, snmpEngine, stateReference, contextName, PDU):
+        """Handle incoming SNMP GetRequest-PDU."""
         # rfc1905: 4.2.1.1
         mgmtFun = self.snmpContext.getMibInstrum(contextName).readVars
         varBinds = v2c.apiPDU.getVarBinds(PDU)
@@ -337,10 +351,13 @@ class GetCommandResponder(CommandResponderBase):
 
 
 class NextCommandResponder(CommandResponderBase):
+    """SNMP GETNEXT command responder."""
+
     SUPPORTED_PDU_TYPES = (rfc1905.GetNextRequestPDU.tagSet,)
 
     # rfc1905: 4.2.2
     def handleMgmtOperation(self, snmpEngine, stateReference, contextName, PDU):
+        """Handle incoming SNMP GetNextRequest-PDU."""
         # rfc1905: 4.2.2.1
         mgmtFun = self.snmpContext.getMibInstrum(contextName).readNextVars
 
@@ -364,11 +381,14 @@ class NextCommandResponder(CommandResponderBase):
 
 
 class BulkCommandResponder(CommandResponderBase):
+    """SNMP GETBULK command responder."""
+
     SUPPORTED_PDU_TYPES = (rfc1905.GetBulkRequestPDU.tagSet,)
     maxVarBinds = 64
 
     # rfc1905: 4.2.3
     def handleMgmtOperation(self, snmpEngine, stateReference, contextName, PDU):
+        """Handle incoming SNMP GetBulkRequest-PDU."""
         nonRepeaters = v2c.apiBulkPDU.getNonRepeaters(PDU)
         if nonRepeaters < 0:
             nonRepeaters = 0
@@ -416,10 +436,13 @@ class BulkCommandResponder(CommandResponderBase):
 
 
 class SetCommandResponder(CommandResponderBase):
+    """SNMP SET command responder."""
+
     SUPPORTED_PDU_TYPES = (rfc1905.SetRequestPDU.tagSet,)
 
     # rfc1905: 4.2.5
     def handleMgmtOperation(self, snmpEngine, stateReference, contextName, PDU):
+        """Handle incoming SNMP SetRequest-PDU."""
         mgmtFun = self.snmpContext.getMibInstrum(contextName).writeVars
 
         varBinds = v2c.apiPDU.getVarBinds(PDU)

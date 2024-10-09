@@ -98,6 +98,7 @@ zeroInt = v1.Integer(0)  # noqa: N816
 
 
 def v1ToV2(v1Pdu, origV2Pdu=None, snmpTrapCommunity=""):
+    """Return SNMPv2 PDU given SNMPv1 PDU."""
     pduType = v1Pdu.tagSet
     v2Pdu = V1_TO_V2_PDU_MAP[pduType].clone()
 
@@ -183,6 +184,7 @@ def v1ToV2(v1Pdu, origV2Pdu=None, snmpTrapCommunity=""):
 
 
 def v2ToV1(v2Pdu, origV1Pdu=None):
+    """Return SNMPv1 PDU given SNMPv2 PDU."""
     debug.logger & debug.FLAG_PRX and debug.logger(
         "v2ToV1: v2Pdu %s" % v2Pdu.prettyPrint()
     )

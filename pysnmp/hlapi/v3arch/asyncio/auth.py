@@ -131,6 +131,7 @@ class CommunityData:
         tag=None,
         securityName=None,
     ):
+        """Create a community data object."""
         if mpModel is not None:
             self.mpModel = mpModel
             self.securityModel = mpModel + 1
@@ -161,9 +162,11 @@ class CommunityData:
             )
 
     def __hash__(self):
+        """Return a hash value of the object."""
         raise TypeError("%s is not hashable" % self.__class__.__name__)
 
     def __repr__(self):
+        """Return a string representation of the object."""
         return "{}(communityIndex={!r}, communityName=<COMMUNITY>, mpModel={!r}, contextEngineId={!r}, contextName={!r}, tag={!r}, securityName={!r})".format(
             self.__class__.__name__,
             self.communityIndex,
@@ -184,6 +187,7 @@ class CommunityData:
         tag=None,
         securityName=None,
     ):
+        """Clone the object with new parameters."""
         # a single arg is considered as a community name
         if communityName is None:
             communityName, communityIndex = communityIndex, None
@@ -400,6 +404,7 @@ class UsmUserData:
         authKeyType=USM_KEY_TYPE_PASSPHRASE,
         privKeyType=USM_KEY_TYPE_PASSPHRASE,
     ):
+        """Create a USM user data object."""
         self.userName = userName
         if securityName is None:
             self.securityName = userName
@@ -430,9 +435,11 @@ class UsmUserData:
         self.privKeyType = privKeyType
 
     def __hash__(self):
+        """Return a hash value of the object."""
         raise TypeError("%s is not hashable" % self.__class__.__name__)
 
     def __repr__(self):
+        """Return a string representation of the object."""
         return "{}(userName={!r}, authKey=<AUTHKEY>, privKey=<PRIVKEY>, authProtocol={!r}, privProtocol={!r}, securityEngineId={!r}, securityName={!r}, authKeyType={!r}, privKeyType={!r})".format(
             self.__class__.__name__,
             self.userName,
@@ -456,6 +463,7 @@ class UsmUserData:
         authKeyType=None,
         privKeyType=None,
     ):
+        """Clone the object with new parameters."""
         return self.__class__(
             userName is None and self.userName or userName,
             authKey is None and self.authKey or authKey,

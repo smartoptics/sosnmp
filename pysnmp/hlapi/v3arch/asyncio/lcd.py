@@ -33,11 +33,14 @@ class AbstractLcdConfigurator:
 
 
 class CommandGeneratorLcdConfigurator(AbstractLcdConfigurator):
+    """Local configuration data (LCD) for Command Generator."""
+
     cacheKeys = ["auth", "parm", "tran", "addr"]
 
     def configure(
         self, snmpEngine, authData, transportTarget, contextName=b"", **options
     ):
+        """Configure command generator targets on the SNMP engine."""
         cache = self._getCache(snmpEngine)
         if isinstance(authData, CommunityData):
             if authData.communityIndex not in cache["auth"]:
@@ -138,6 +141,7 @@ class CommandGeneratorLcdConfigurator(AbstractLcdConfigurator):
         return addrName, paramsName
 
     def unconfigure(self, snmpEngine, authData=None, contextName=b"", **options):
+        """Remove command generator targets from the SNMP engine."""
         cache = self._getCache(snmpEngine)
         if authData:
             if isinstance(authData, CommunityData):
@@ -221,6 +225,8 @@ class CommandGeneratorLcdConfigurator(AbstractLcdConfigurator):
 
 
 class NotificationOriginatorLcdConfigurator(AbstractLcdConfigurator):
+    """Local configuration data (LCD) for Notification Originator."""
+
     cacheKeys = ["auth", "name"]
     _cmdGenLcdCfg = CommandGeneratorLcdConfigurator()
 
@@ -233,6 +239,7 @@ class NotificationOriginatorLcdConfigurator(AbstractLcdConfigurator):
         contextName=None,
         **options,
     ):
+        """Configure notification targets on the SNMP engine."""
         cache = self._getCache(snmpEngine)
         notifyName = None
 
@@ -287,6 +294,7 @@ class NotificationOriginatorLcdConfigurator(AbstractLcdConfigurator):
         return notifyName
 
     def unconfigure(self, snmpEngine, authData=None, contextName=b"", **options):
+        """Remove notification targets from the SNMP engine."""
         cache = self._getCache(snmpEngine)
         if authData:
             authDataKey = (

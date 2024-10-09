@@ -9,7 +9,6 @@ import sys
 from hashlib import sha224, sha256, sha384, sha512
 
 from pyasn1.type import univ
-
 from pysnmp.proto import errind, error
 from pysnmp.proto.secmod.rfc3414 import localkey
 from pysnmp.proto.secmod.rfc3414.auth import base
@@ -19,6 +18,11 @@ from pysnmp.proto.secmod.rfc3414.auth import base
 
 
 class HmacSha2(base.AbstractAuthenticationService):
+    """The HMAC-SHA-2 authentication protocol.
+
+    https://tools.ietf.org/html/rfc7860#section-7.2.4
+    """
+
     SHA224_SERVICE_ID = (1, 3, 6, 1, 6, 3, 10, 1, 1, 4)  # usmHMAC128SHA224AuthProtocol
     SHA256_SERVICE_ID = (1, 3, 6, 1, 6, 3, 10, 1, 1, 5)  # usmHMAC192SHA256AuthProtocol
     SAH384_SERVICE_ID = (1, 3, 6, 1, 6, 3, 10, 1, 1, 6)  # usmHMAC256SHA384AuthProtocol
@@ -46,6 +50,7 @@ class HmacSha2(base.AbstractAuthenticationService):
     OPAD = [0x5C] * 64
 
     def __init__(self, oid):
+        """Create a HMAC-SHA2 authentication service."""
         if oid not in self.HASH_ALGORITHM:
             raise error.ProtocolError(
                 f"No SHA-2 authentication algorithm {oid} available"
@@ -55,17 +60,21 @@ class HmacSha2(base.AbstractAuthenticationService):
         self.__placeHolder = univ.OctetString((0,) * self.__digestLength).asOctets()
 
     def hashPassphrase(self, authKey):
+        """Hash a passphrase."""
         return localkey.hashPassphrase(authKey, self.__hashAlgo)
 
     def localizeKey(self, authKey, snmpEngineID):
+        """Localize a key."""
         return localkey.localizeKey(authKey, snmpEngineID, self.__hashAlgo)
 
     @property
     def digestLength(self):
+        """Return digest length."""
         return self.__digestLength
 
     # 7.3.1
     def authenticateOutgoingMsg(self, authKey, wholeMsg):
+        """Authenticate outgoing message."""
         # 7.3.1.1
         location = wholeMsg.find(self.__placeHolder)
         if location == -1:
@@ -88,6 +97,7 @@ class HmacSha2(base.AbstractAuthenticationService):
 
     # 7.3.2
     def authenticateIncomingMsg(self, authKey, authParameters, wholeMsg):
+        """Authenticate incoming message."""
         # 7.3.2.1 & 2
         if len(authParameters) != self.__digestLength:
             raise error.StatusInformation(errorIndication=errind.authenticationError)

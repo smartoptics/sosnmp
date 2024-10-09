@@ -31,15 +31,14 @@ class CommunityData:
     """
 
     def __init__(self, communityName, mpModel=1):
+        """Create a community data instance."""
         self.mpModel = mpModel
         self.communityName = communityName
 
     def __hash__(self):
+        """Return a hash value of the object."""
         return hash((self.communityName, self.mpModel))
 
     def __repr__(self):
-        return "{}(communityName=<COMMUNITY>, mpModel={!r})".format(
-            self.__class__.__name__,
-            self.communityName,
-            self.mpModel,
-        )
+        """Return a string representation of the object."""
+        return f"{self.__class__.__name__}(communityName={self.communityName!r}, mpModel={self.mpModel!r})"

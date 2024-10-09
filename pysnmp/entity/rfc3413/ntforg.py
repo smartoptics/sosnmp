@@ -20,9 +20,12 @@ getNextHandle = nextid.Integer(0x7FFFFFFF)  # noqa: N816
 
 
 class NotificationOriginator:
+    """Notification originator."""
+
     ACM_ID = 3  # default MIB access control method to use
 
     def __init__(self, **options):
+        """Create a Notification Originator application."""
         self.__pendingReqs = {}
         self.__pendingNotifications = {}
         self.snmpContext = options.pop("snmpContext", None)  # this is deprecated
@@ -30,7 +33,7 @@ class NotificationOriginator:
 
     def processResponsePdu(
         self,
-        snmpEngine,
+        snmpEngine: SnmpEngine,
         messageProcessingModel,
         securityModel,
         securityName,
@@ -43,6 +46,7 @@ class NotificationOriginator:
         sendPduHandle,
         cbInfo,
     ):
+        """Process SNMP PDU response."""
         sendRequestHandle, cbFun, cbCtx = cbInfo
 
         # 3.3.6d
@@ -192,6 +196,7 @@ class NotificationOriginator:
         cbFun=None,
         cbCtx=None,
     ):
+        """Send SNMP PDU to a target."""
         (
             transportDomain,
             transportAddress,
@@ -291,6 +296,7 @@ class NotificationOriginator:
     def processResponseVarBinds(
         self, snmpEngine, sendRequestHandle, errorIndication, pdu, cbCtx
     ):
+        """Process SNMP PDU response."""
         notificationHandle, cbFun, cbCtx = cbCtx
 
         self.__pendingNotifications[notificationHandle].remove(sendRequestHandle)
@@ -335,6 +341,23 @@ class NotificationOriginator:
         cbFun=None,
         cbCtx=None,
     ):
+        """Send SNMP notification to a target.
+
+        Args:
+            snmpEngine (SnmpEngine): SNMP engine that is sending the notification.
+            notificationTarget (str): Target name as configured at the SNMP engine.
+            contextEngineId (str): SNMP engine ID of the context to send notification in.
+            contextName (str): SNMP context name to send notification in.
+            varBinds (tuple): SNMP variable bindings to send.
+            cbFun (callable): Callback function to call when response is received.
+            cbCtx (object): General-purpose data passed to the callback function.
+
+        Returns:
+            int: Notification handle that can be used to cancel the notification.
+
+        Raises:
+            PySnmpError: If SNMP notification PDU requires SNMPv2-MIB::snmpTrapOID.0 to be present.
+        """
         debug.logger & debug.FLAG_APP and debug.logger(
             'sendVarBinds: notificationTarget {}, contextEngineId {}, contextName "{}", varBinds {}'.format(
                 notificationTarget,

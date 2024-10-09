@@ -8,7 +8,6 @@ import sys
 
 
 from pyasn1.error import PyAsn1Error
-
 from pysnmp import debug, nextid
 from pysnmp.error import PySnmpError
 from pysnmp.proto import cache, errind, error
@@ -28,6 +27,7 @@ class MsgAndPduDispatcher:
     def __init__(
         self, mibInstrumController: "instrum.MibInstrumController | None" = None
     ):
+        """Create a dispatcher object."""
         if mibInstrumController is None:
             self.mibInstrumController = instrum.MibInstrumController(
                 builder.MibBuilder()
@@ -57,6 +57,7 @@ class MsgAndPduDispatcher:
 
     # legacy
     def getTransportInfo(self, stateReference):
+        """Return transport info for a given stateReference."""
         if stateReference in self.__transportInfo:
             return self.__transportInfo[stateReference]
         else:
@@ -66,7 +67,7 @@ class MsgAndPduDispatcher:
 
     # 4.3.1
     def registerContextEngineId(self, contextEngineId, pduTypes, processPdu):
-        """Register application with dispatcher"""
+        """Register application with dispatcher."""
         # 4.3.2 -> no-op
 
         # 4.3.3
@@ -86,7 +87,7 @@ class MsgAndPduDispatcher:
 
     # 4.4.1
     def unregisterContextEngineId(self, contextEngineId, pduTypes):
-        """Unregister application with dispatcher"""
+        """Unregister application with dispatcher."""
         # 4.3.4
         if contextEngineId is None:
             # Default to local snmpEngineId
@@ -104,6 +105,7 @@ class MsgAndPduDispatcher:
         )
 
     def getRegisteredApp(self, contextEngineId, pduType):
+        """Return registered application."""
         k = (contextEngineId, pduType)
         if k in self.__appsRegistration:
             return self.__appsRegistration[k]
@@ -133,7 +135,7 @@ class MsgAndPduDispatcher:
         cbFun=None,
         cbCtx=None,
     ):
-        """PDU dispatcher -- prepare and serialize a request or notification"""
+        """PDU dispatcher -- prepare and serialize a request or notification."""
         # 4.1.1.2
         k = int(messageProcessingModel)
         if k in snmpEngine.messageProcessingSubsystems:
@@ -273,6 +275,7 @@ class MsgAndPduDispatcher:
         stateReference,
         statusInformation,
     ):
+        """PDU dispatcher -- prepare and serialize a response."""
         # Extract input values and initialize defaults
         k = int(messageProcessingModel)
         if k in snmpEngine.messageProcessingSubsystems:
@@ -357,7 +360,7 @@ class MsgAndPduDispatcher:
 
     # 4.2.1
     def receiveMessage(self, snmpEngine, transportDomain, transportAddress, wholeMsg):
-        """Message dispatcher -- de-serialize message into PDU"""
+        """Message dispatcher -- de-serialize message into PDU."""
         # 4.2.1.1
         (snmpInPkts,) = self.mibInstrumController.mibBuilder.importSymbols(  # type: ignore
             "__SNMPv2-MIB", "snmpInPkts"
@@ -645,6 +648,7 @@ class MsgAndPduDispatcher:
     def releaseStateInformation(
         self, snmpEngine, sendPduHandle, messageProcessingModel
     ):
+        """Release state information."""
         k = int(messageProcessingModel)
         if k in snmpEngine.messageProcessingSubsystems:
             mpHandler = snmpEngine.messageProcessingSubsystems[k]
@@ -700,4 +704,5 @@ class MsgAndPduDispatcher:
 
     # noinspection PyUnusedLocal
     def receiveTimerTick(self, snmpEngine, timeNow):
+        """Process cache timeouts."""
         self.__cache.expire(self.__expireRequest, snmpEngine)

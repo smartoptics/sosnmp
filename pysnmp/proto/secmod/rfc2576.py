@@ -8,7 +8,6 @@ import sys
 
 from pyasn1.codec.ber import encoder
 from pyasn1.error import PyAsn1Error
-
 from pysnmp import debug
 from pysnmp.carrier.asyncio.dgram import udp, udp6
 from pysnmp.proto import errind, error
@@ -17,6 +16,8 @@ from pysnmp.smi.error import NoSuchInstanceError
 
 
 class SnmpV1SecurityModel(base.AbstractSecurityModel):
+    """Create SNMPv1 security model."""
+
     SECURITY_MODEL_ID = 1
 
     # According to rfc2576, community name <-> contextEngineId/contextName
@@ -26,6 +27,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
     # in here.
 
     def __init__(self):
+        """Create SNMPv1 security model instance."""
         self.__transportBranchId = (
             self.__paramsBranchId
         ) = self.__communityBranchId = self.__securityBranchId = -1
@@ -451,6 +453,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
         securityLevel,
         scopedPDU,
     ):
+        """Generate a request message."""
         (msg,) = globalData
         contextEngineId, contextName, pdu = scopedPDU
 
@@ -504,6 +507,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
         securityStateReference,
         ctx,
     ):
+        """Generate a response message."""
         # rfc2576: 5.2.2
         (msg,) = globalData
         contextEngineId, contextName, pdu = scopedPDU
@@ -550,6 +554,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
         wholeMsg,
         msg,
     ):
+        """Process an incoming message."""
         # rfc2576: 5.2.1
         communityName, transportInformation = securityParameters
 
@@ -643,6 +648,8 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
 
 
 class SnmpV2cSecurityModel(SnmpV1SecurityModel):
+    """Create SNMPv2c security model."""
+
     SECURITY_MODEL_ID = 2
 
 

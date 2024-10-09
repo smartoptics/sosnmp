@@ -5,7 +5,6 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 from pyasn1.type import namedtype, namedval, tag, univ
-
 from pysnmp.proto import rfc1155
 
 __all__ = [
@@ -50,24 +49,32 @@ class _RequestBase(univ.Sequence):
 
 
 class GetRequestPDU(_RequestBase):
+    """GetRequest PDU."""
+
     tagSet = _RequestBase.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)
     )
 
 
 class GetNextRequestPDU(_RequestBase):
+    """GetNextRequest PDU."""
+
     tagSet = _RequestBase.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)
     )
 
 
 class GetResponsePDU(_RequestBase):
+    """GetResponse PDU."""
+
     tagSet = _RequestBase.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 2)
     )
 
 
 class SetRequestPDU(_RequestBase):
+    """SetRequest PDU."""
+
     tagSet = _RequestBase.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 3)
     )
@@ -87,6 +94,8 @@ genericTrap = univ.Integer().clone(  # noqa: N816
 
 
 class TrapPDU(univ.Sequence):
+    """Trap PDU."""
+
     tagSet = univ.Sequence.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 4)
     )

@@ -13,6 +13,7 @@ from pysnmp.smi.error import NoSuchInstanceError, SmiError
 
 
 def getTargetAddr(snmpEngine: SnmpEngine, snmpTargetAddrName):
+    """Return transport endpoint information for a given target."""
     mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
 
     (snmpTargetAddrEntry,) = mibBuilder.importSymbols(  # type: ignore
@@ -111,6 +112,7 @@ def getTargetAddr(snmpEngine: SnmpEngine, snmpTargetAddrName):
 
 
 def getTargetParams(snmpEngine: SnmpEngine, paramsName):
+    """Return security parameters for a given target."""
     mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
 
     (snmpTargetParamsEntry,) = mibBuilder.importSymbols(  # type: ignore
@@ -172,6 +174,7 @@ def getTargetParams(snmpEngine: SnmpEngine, paramsName):
 
 
 def getTargetInfo(snmpEngine: SnmpEngine, snmpTargetAddrName):
+    """Return transport endpoint and security parameters for a given target."""
     # Transport endpoint
     (
         snmpTargetAddrTDomain,
@@ -201,6 +204,7 @@ def getTargetInfo(snmpEngine: SnmpEngine, snmpTargetAddrName):
 
 
 def getNotificationInfo(snmpEngine: SnmpEngine, notificationTarget):
+    """Return notification tag and type for a given target."""
     mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
 
     (snmpNotifyEntry,) = mibBuilder.importSymbols(  # type: ignore
@@ -239,6 +243,7 @@ def getNotificationInfo(snmpEngine: SnmpEngine, notificationTarget):
 
 
 def getTargetNames(snmpEngine: SnmpEngine, tag):
+    """Return a list of target names associated with a given tag."""
     mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
 
     (snmpTargetAddrEntry,) = mibBuilder.importSymbols(  # type: ignore

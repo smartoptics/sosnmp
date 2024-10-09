@@ -11,13 +11,14 @@ from pysnmp.smi.error import NoSuchInstanceError
 
 # 3.2
 class Vacm:
-    """View-based Access Control Model"""
+    """View-based Access Control Model."""
 
     ACCESS_MODEL_ID = 3
 
     _powOfTwoSeq = (128, 64, 32, 16, 8, 4, 2, 1)
 
     def __init__(self):
+        """Create a VACM instance."""
         self._contextBranchId = -1
         self._groupNameBranchId = -1
         self._accessBranchId = -1
@@ -146,6 +147,23 @@ class Vacm:
         contextName,
         variableName,
     ):
+        """Check if access is allowed to requested MIB variable.
+
+        Implements VACM check as per RFC 3415.
+
+        Args:
+            snmpEngine (SnmpEngine): SNMP engine.
+            securityModel (int): SNMP security model ID.
+            securityName (str): SNMP security name.
+            securityLevel (int): SNMP security level.
+
+            viewType (str): SNMP view type ('read', 'write', 'notify').
+            contextName (str): SNMP context name.
+            variableName (tuple): SNMP variable name.
+
+        Raises:
+            StatusInformation: If access is denied.
+        """
         mibInstrumController = snmpEngine.msgAndPduDsp.mibInstrumController
 
         debug.logger & debug.FLAG_ACL and debug.logger(

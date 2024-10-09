@@ -8,7 +8,6 @@ import random
 from hashlib import md5, sha1
 
 from pyasn1.type import univ
-
 from pysnmp.proto import errind, error
 from pysnmp.proto.secmod.rfc3414 import localkey
 from pysnmp.proto.secmod.rfc3414.auth import hmacmd5, hmacsha
@@ -39,7 +38,23 @@ class Des3(base.AbstractEncryptionService):
     KEY_SIZE = 32
     local_int = random.randrange(0, 0xFFFFFFFF)
 
-    def hashPassphrase(self, authProtocol, privKey):
+    def hashPassphrase(self, authProtocol, privKey) -> bytes:
+        """Hash a passphrase.
+
+        This method hashes a passphrase using the authentication protocol.
+
+        Parameters
+        ----------
+        authProtocol : tuple
+            The authentication protocol OID.
+        privKey : bytes
+            The privacy key.
+
+        Returns
+        -------
+        bytes
+            The hashed passphrase.
+        """
         if authProtocol == hmacmd5.HmacMd5.SERVICE_ID:
             hashAlgo = md5
         elif authProtocol == hmacsha.HmacSha.SERVICE_ID:
@@ -51,7 +66,26 @@ class Des3(base.AbstractEncryptionService):
         return localkey.hashPassphrase(privKey, hashAlgo)
 
     # 2.1
-    def localizeKey(self, authProtocol, privKey, snmpEngineID):
+    def localizeKey(self, authProtocol, privKey, snmpEngineID) -> bytes:
+        """3-DES key localization algorithm.
+
+        This algorithm is used to localize a 3-DES key to an authoritative
+        engine ID.
+
+        Parameters
+        ----------
+        authProtocol : tuple
+            The authentication protocol OID.
+        privKey : bytes
+            The privacy key.
+        snmpEngineID : bytes
+            The authoritative engine ID.
+
+        Returns
+        -------
+        bytes
+            The localized key.
+        """
         if authProtocol == hmacmd5.HmacMd5.SERVICE_ID:
             hashAlgo = md5
         elif authProtocol == hmacsha.HmacSha.SERVICE_ID:
@@ -114,6 +148,7 @@ class Des3(base.AbstractEncryptionService):
 
     # 5.1.1.2
     def encryptData(self, encryptKey, privParameters, dataToEncrypt):
+        """Encrypt data."""
         if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.encryptionError)
 
@@ -141,6 +176,7 @@ class Des3(base.AbstractEncryptionService):
 
     # 5.1.1.3
     def decryptData(self, decryptKey, privParameters, encryptedData):
+        """Decrypt data."""
         if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.decryptionError)
         snmpEngineBoots, snmpEngineTime, salt = privParameters

@@ -12,18 +12,23 @@ from pysnmp.proto import error
 
 
 class Cache:
+    """SNMP securityData cache."""
+
     __stateReference = nextid.Integer(0xFFFFFF)
     __cacheEntries: Dict[int, Any]
 
     def __init__(self):
+        """Create a cache object."""
         self.__cacheEntries = {}
 
     def push(self, **securityData):
+        """Push securityData into cache."""
         stateReference = self.__stateReference()
         self.__cacheEntries[stateReference] = securityData
         return stateReference
 
     def pop(self, stateReference):
+        """Pop securityData from cache."""
         if stateReference in self.__cacheEntries:
             securityData = self.__cacheEntries[stateReference]
         else:
@@ -34,4 +39,5 @@ class Cache:
         return securityData
 
     def isEmpty(self):
+        """Return True if cache is empty."""
         return not bool(self.__cacheEntries)

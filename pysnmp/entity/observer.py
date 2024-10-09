@@ -24,11 +24,22 @@ class MetaObserver:
     """
 
     def __init__(self):
+        """Create a meta observer instance."""
         self.__observers = {}
         self.__contexts = {}
         self.__execpoints = {}
 
     def registerObserver(self, cbFun, *execpoints, **kwargs):
+        """Register a callback function to be invoked at specified execution points.
+
+        Args:
+            cbFun (callable): Callback function to be invoked.
+            execpoints (str): Execution point ID(s) to trigger the callback.
+            cbCtx (object): Arbitrary object to be passed to the callback.
+
+        Raises:
+            PySnmpError: If observer is already registered.
+        """
         if cbFun in self.__contexts:
             raise error.PySnmpError("duplicate observer %s" % cbFun)
         else:
@@ -39,6 +50,12 @@ class MetaObserver:
             self.__observers[execpoint].append(cbFun)
 
     def unregisterObserver(self, cbFun=None):
+        """Unregister a callback function.
+
+        Args:
+            cbFun (callable): Callback function to be unregistered. If not specified,
+                all observers will be unregistered.
+        """
         if cbFun is None:
             self.__observers.clear()
             self.__contexts.clear()
@@ -50,12 +67,23 @@ class MetaObserver:
                     del self.__observers[execpoint]
 
     def storeExecutionContext(self, snmpEngine, execpoint, variables):
+        """Store execution context at specified execution point.
+
+        Args:
+            execpoint (str): Execution point ID.
+            variables (dict): Local scope variables to store.
+        """
         self.__execpoints[execpoint] = variables
         if execpoint in self.__observers:
             for cbFun in self.__observers[execpoint]:
                 cbFun(snmpEngine, execpoint, variables, self.__contexts[cbFun])
 
     def clearExecutionContext(self, snmpEngine, *execpoints):
+        """Clear execution context at specified execution points.
+
+        Args:
+            execpoints (str): Execution point ID(s) to clear.
+        """
         if execpoints:
             for execpoint in execpoints:
                 del self.__execpoints[execpoint]
@@ -63,4 +91,12 @@ class MetaObserver:
             self.__execpoints.clear()
 
     def getExecutionContext(self, execpoint):
+        """Retrieve execution context at specified execution point.
+
+        Args:
+            execpoint (str): Execution point ID.
+
+        Returns:
+            dict: Local scope variables at the specified execution point.
+        """
         return self.__execpoints[execpoint]

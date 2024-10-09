@@ -15,6 +15,8 @@ from pysnmp.proto.proxy import rfc2576
 
 # 3.4
 class NotificationReceiver:
+    """Notification receiver."""
+
     SUPPORTED_PDU_TYPES = (
         v1.TrapPDU.tagSet,
         v2c.SNMPv2TrapPDU.tagSet,
@@ -22,6 +24,7 @@ class NotificationReceiver:
     )
 
     def __init__(self, snmpEngine, cbFun, cbCtx=None):
+        """Creates a Notification receiver instance."""
         snmpEngine.msgAndPduDsp.registerContextEngineId(
             b"", self.SUPPORTED_PDU_TYPES, self.processPdu  # '' is a wildcard
         )
@@ -38,6 +41,7 @@ class NotificationReceiver:
         )
 
     def close(self, snmpEngine):
+        """Unregisters a Notification receiver instance."""
         snmpEngine.msgAndPduDsp.unregisterContextEngineId(b"", self.SUPPORTED_PDU_TYPES)
         self.__cbFun = self.__cbCtx = None
 
@@ -55,6 +59,7 @@ class NotificationReceiver:
         maxSizeResponseScopedPDU,
         stateReference,
     ):
+        """Processes incoming SNMP PDU."""
         # Agent-side API complies with SMIv2
         if messageProcessingModel == 0:
             origPdu = PDU

@@ -5,16 +5,19 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 from pyasn1.type import univ
-
-
 from pysnmp import debug, error
+from pysnmp.entity.engine import SnmpEngine
+from pysnmp.smi.instrum import MibInstrumController
 
 
 class SnmpContext:
-    def __init__(self, snmpEngine, contextEngineId=None):
+    """Create a context object."""
+
+    def __init__(self, snmpEngine: SnmpEngine, contextEngineId=None):
+        """Create a context object."""
         (
             snmpEngineId,
-        ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+        ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(  # type: ignore
             "__SNMP-FRAMEWORK-MIB", "snmpEngineID"
         )
         if contextEngineId is None:
@@ -30,6 +33,7 @@ class SnmpContext:
         }
 
     def registerContextName(self, contextName, mibInstrum=None):
+        """Register a context name."""
         contextName = univ.OctetString(contextName).asOctets()
         if contextName in self.contextNames:
             raise error.PySnmpError("Duplicate contextName %s" % contextName)
@@ -42,6 +46,7 @@ class SnmpContext:
             self.contextNames[contextName] = mibInstrum
 
     def unregisterContextName(self, contextName):
+        """Unregister a context name."""
         contextName = univ.OctetString(contextName).asOctets()
         if contextName in self.contextNames:
             debug.logger & debug.FLAG_INS and debug.logger(
@@ -49,7 +54,8 @@ class SnmpContext:
             )
             del self.contextNames[contextName]
 
-    def getMibInstrum(self, contextName=b""):
+    def getMibInstrum(self, contextName=b"") -> MibInstrumController:
+        """Get MIB instrumentation for a context name."""
         contextName = univ.OctetString(contextName).asOctets()
         if contextName not in self.contextNames:
             debug.logger & debug.FLAG_INS and debug.logger(

@@ -4,18 +4,17 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+import asyncio
+
 from pysnmp.hlapi.transport import AbstractTransportTarget
-from pysnmp.hlapi.v1arch.asyncio.auth import *
+from pysnmp.hlapi.v1arch.asyncio.auth import CommunityData
 from pysnmp.hlapi.v1arch.asyncio.dispatch import SnmpDispatcher
-from pysnmp.hlapi.varbinds import *
-from pysnmp.hlapi.v1arch.asyncio.transport import *
+from pysnmp.hlapi.varbinds import NotificationOriginatorVarBinds, NotificationType
+from pysnmp.proto import api, errind, error
 from pysnmp.proto.api import v2c
 from pysnmp.proto.proxy import rfc2576
 from pysnmp.proto.rfc1902 import Integer32
-from pysnmp.smi.rfc1902 import *
-from pysnmp.proto import api, errind, error
-
-import asyncio
+from pysnmp.smi.rfc1902 import ObjectType
 
 __all__ = ["sendNotification"]
 
@@ -132,7 +131,6 @@ async def sendNotification(
     (None, 0, 0, [])
     >>>
     """
-
     sysUpTime = v2c.apiTrapPDU.sysUpTime
     snmpTrapOID = v2c.apiTrapPDU.snmpTrapOID
 

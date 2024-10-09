@@ -142,6 +142,8 @@ class __AbstractMibSource:
 
 
 class ZipMibSource(__AbstractMibSource):
+    """Zip MIB source."""
+
     def _init(self):
         try:
             p = __import__(self._srcName, globals(), locals(), ["__init__"])
@@ -205,6 +207,8 @@ class ZipMibSource(__AbstractMibSource):
 
 
 class DirMibSource(__AbstractMibSource):
+    """Directory MIB source."""
+
     def _init(self):
         self._srcName = os.path.normpath(self._srcName)
         return self
@@ -248,6 +252,8 @@ class DirMibSource(__AbstractMibSource):
 
 
 class MibBuilder:
+    """MIB builder."""
+
     DEFAULT_CORE_MIBS = os.pathsep.join(
         ("pysnmp.smi.mibs.instances", "pysnmp.smi.mibs")
     )
@@ -261,6 +267,7 @@ class MibBuilder:
     version = pysnmp_version
 
     def __init__(self):
+        """Create a MIB builder instance."""
         self.lastBuildId = self._autoName = 0
         sources = []
         for ev in "PYSNMP_MIB_PKGS", "PYSNMP_MIB_DIRS", "PYSNMP_MIB_DIR":
@@ -282,32 +289,37 @@ class MibBuilder:
     # MIB compiler management
 
     def getMibCompiler(self):
+        """Return MIB compiler."""
         return self.__mibCompiler
 
     def setMibCompiler(self, mibCompiler, destDir):
+        """Set MIB compiler."""
         self.addMibSources(DirMibSource(destDir))
         self.__mibCompiler = mibCompiler
         return self
 
     # MIB modules management
 
-    def addMibSources(self, *mibSources):
+    def addMibSources(self, *mibSources: __AbstractMibSource):
+        """Add MIB sources to the search path."""
         self.__mibSources.extend([s.init() for s in mibSources])
         debug.logger & debug.FLAG_BLD and debug.logger(
             f"addMibSources: new MIB sources {self.__mibSources}"
         )
 
-    def setMibSources(self, *mibSources):
+    def setMibSources(self, *mibSources: __AbstractMibSource):
+        """Set MIB sources to the search path."""
         self.__mibSources = [s.init() for s in mibSources]
         debug.logger & debug.FLAG_BLD and debug.logger(
             f"setMibSources: new MIB sources {self.__mibSources}"
         )
 
     def getMibSources(self):
+        """Get MIB sources from the search path."""
         return tuple(self.__mibSources)
 
     def loadModule(self, modName, **userCtx):
-        """Load and execute MIB modules as Python code"""
+        """Load and execute MIB modules as Python code."""
         for mibSource in self.__mibSources:
             debug.logger & debug.FLAG_BLD and debug.logger(
                 f"loadModule: trying {modName} at {mibSource}"
@@ -366,7 +378,7 @@ class MibBuilder:
         return self
 
     def loadModules(self, *modNames, **userCtx):
-        """Load (optionally, compiling) pysnmp MIB modules"""
+        """Load (optionally, compiling) pysnmp MIB modules."""
         # Build a list of available modules
         if not modNames:
             modNames = {}
@@ -413,6 +425,7 @@ class MibBuilder:
         return self
 
     def unloadModules(self, *modNames):
+        """Unload MIB modules."""
         if not modNames:
             modNames = list(self.mibSymbols.keys())
         for modName in modNames:
@@ -429,6 +442,7 @@ class MibBuilder:
         return self
 
     def importSymbols(self, modName, *symNames, **userCtx):
+        """Import MIB symbols."""
         if not modName:
             raise error.SmiError("importSymbols: empty MIB module name")
         r = ()
@@ -443,6 +457,7 @@ class MibBuilder:
         return r
 
     def exportSymbols(self, modName, *anonymousSyms, **namedSyms):
+        """Export MIB symbols."""
         if modName not in self.mibSymbols:
             self.mibSymbols[modName] = {}
         mibSymbols = self.mibSymbols[modName]
@@ -474,6 +489,7 @@ class MibBuilder:
         self.lastBuildId += 1
 
     def unexportSymbols(self, modName, *symNames):
+        """Unexport MIB symbols."""
         if modName not in self.mibSymbols:
             raise error.SmiError(f"No module {modName} at {self}")
         mibSymbols = self.mibSymbols[modName]

@@ -4,6 +4,37 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+"""
+This module provides debugging and logging utilities for the pysnmp library.
+
+Classes:
+    Printer: A class for controlling logging output.
+    Debug: A helper class for managing debug flags and logging messages.
+
+Functions:
+    __getattr__(attr: str): Handles deprecated attribute access and raises AttributeError for unknown attributes.
+    setLogger(value): Sets the global logger.
+    hexdump(octets): Returns a hexdump of the given octets.
+
+Constants:
+    FLAG_NONE: No flags set.
+    FLAG_IO: Input/Output flag.
+    FLAG_DSP: Dispatcher flag.
+    FLAG_MP: Message Processing flag.
+    FLAG_SM: Security Model flag.
+    FLAG_BLD: MIB Builder flag.
+    FLAG_MIB: MIB flag.
+    FLAG_INS: Instrumentation flag.
+    FLAG_ACL: Access Control List flag.
+    FLAG_PRX: Proxy flag.
+    FLAG_APP: Application flag.
+    FLAG_ALL: All flags set.
+    FLAG_MAP: A dictionary mapping flag names to their corresponding constants.
+
+Attributes:
+    NullHandler: A logging handler that does nothing.
+    logger: A global logger variable.
+"""
 import logging
 import warnings
 
@@ -63,7 +94,10 @@ FLAG_MAP = {
 
 
 class Printer:
+    """Logging control."""
+
     def __init__(self, logger=None, handler=None, formatter=None):
+        """Logging control."""
         if logger is None:
             logger = logging.getLogger("pysnmp")
         logger.setLevel(logging.DEBUG)
@@ -77,9 +111,11 @@ class Printer:
         self.__logger = logger
 
     def __call__(self, msg):
+        """Log a message."""
         self.__logger.debug(msg)
 
     def __str__(self):
+        """Return a string representation of the object."""
         return "<python built-in logging>"
 
 
@@ -87,9 +123,12 @@ NullHandler = logging.NullHandler
 
 
 class Debug:
+    """Logging control."""
+
     DEFAULT_PRINTER = None
 
     def __init__(self, *flags, **options):
+        """Helper class for logging control."""
         self._flags = FLAG_NONE
         if options.get("printer") is not None:
             self._printer = options.get("printer")
@@ -122,15 +161,19 @@ class Debug:
             )
 
     def __str__(self):
+        """Return a string representation of the object."""
         return f"logger {self._printer}, flags {self._flags:x}"
 
     def __call__(self, msg):
+        """Log a message."""
         self._printer(msg)
 
     def __and__(self, flag):
+        """Return a boolean value of the flag."""
         return self._flags & flag
 
     def __rand__(self, flag):
+        """Return a boolean value of the flag."""
         return flag & self._flags
 
 
@@ -140,11 +183,13 @@ logger = 0
 
 
 def setLogger(value):
+    """Set the global logger."""
     global logger
     logger = value
 
 
 def hexdump(octets):
+    """Return a hexdump of the given octets."""
     return " ".join(
         [
             "{}{:02X}".format(n % 16 == 0 and ("\n%.5d: " % n) or "", x)

@@ -40,9 +40,12 @@ class MibViewControllerManager:
 
 
 class CommandGeneratorVarBinds(MibViewControllerManager):
+    """Var-binds processor for Command Generator."""
+
     def makeVarBinds(
         self, userCache: Dict[str, Any], varBinds: Tuple[ObjectType, ...]
     ) -> Tuple[ObjectType, ...]:
+        """Return a tuple of ObjectType instances."""
         mibViewController = self.getMibViewController(userCache)
 
         resolvedVarBinds = []
@@ -75,6 +78,7 @@ class CommandGeneratorVarBinds(MibViewControllerManager):
         varBinds: Tuple[ObjectType, ...],
         lookupMib=True,
     ) -> Tuple[ObjectType, ...]:
+        """Return a tuple of ObjectType instances."""
         if lookupMib:
             mibViewController = self.getMibViewController(userCache)
             varBinds = tuple(
@@ -86,9 +90,12 @@ class CommandGeneratorVarBinds(MibViewControllerManager):
 
 
 class NotificationOriginatorVarBinds(MibViewControllerManager):
+    """Var-binds processor for Notification Originator."""
+
     def makeVarBinds(
         self, userCache: Dict[str, Any], varBinds: "tuple[NotificationType, ...]"
     ) -> "tuple[ObjectType, ...]":
+        """Return a tuple of ObjectType instances."""
         mibViewController = self.getMibViewController(userCache)
 
         # TODO: this shouldn't be needed
@@ -129,6 +136,7 @@ class NotificationOriginatorVarBinds(MibViewControllerManager):
         varBinds: "tuple[ObjectType, ...]",
         lookupMib=False,
     ) -> "tuple[ObjectType, ...]":
+        """Return a tuple of ObjectType instances."""
         if lookupMib:
             mibViewController = self.getMibViewController(userCache)
             varBinds = tuple(

@@ -5,7 +5,6 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 from pyasn1.type import constraint, namedtype, namedval, tag, univ
-
 from pysnmp.proto import rfc1902
 
 __all__ = [
@@ -38,11 +37,14 @@ unSpecified = UnSpecified("")  # noqa: N816
 
 
 class NoSuchObject(univ.Null):
+    """No Such Object exception."""
+
     tagSet = univ.Null.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0x00)
     )
 
     def prettyPrint(self, scope=0):
+        """Return a human-readable string representation of the exception."""
         return "No Such Object currently exists at this OID"
 
 
@@ -50,11 +52,14 @@ noSuchObject = NoSuchObject("")  # noqa: N816
 
 
 class NoSuchInstance(univ.Null):
+    """No Such Instance exception."""
+
     tagSet = univ.Null.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0x01)
     )
 
     def prettyPrint(self, scope=0):
+        """Return a human-readable string representation of the exception."""
         return "No Such Instance currently exists at this OID"
 
 
@@ -62,11 +67,14 @@ noSuchInstance = NoSuchInstance("")  # noqa: N816
 
 
 class EndOfMibView(univ.Null):
+    """End of MIB View exception."""
+
     tagSet = univ.Null.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0x02)
     )
 
     def prettyPrint(self, scope=0):
+        """Return a human-readable string representation of the exception."""
         return "No more variables left in this MIB View"
 
 
@@ -85,6 +93,8 @@ class _BindValue(univ.Choice):
 
 
 class VarBind(univ.Sequence):
+    """VarBind class."""
+
     componentType = namedtype.NamedTypes(
         namedtype.NamedType("name", rfc1902.ObjectName()),
         namedtype.NamedType("", _BindValue()),
@@ -92,6 +102,8 @@ class VarBind(univ.Sequence):
 
 
 class VarBindList(univ.SequenceOf):
+    """VarBindList class."""
+
     componentType = VarBind()
     subtypeSpec = univ.SequenceOf.subtypeSpec + constraint.ValueSizeConstraint(
         0, max_bindings
@@ -125,6 +137,8 @@ errorStatus = univ.Integer(  # noqa: N816
 
 # Base class for a non-bulk PDU
 class PDU(univ.Sequence):
+    """PDU class."""
+
     componentType = namedtype.NamedTypes(
         namedtype.NamedType("request-id", rfc1902.Integer32()),
         namedtype.NamedType("error-status", errorStatus),
@@ -148,6 +162,8 @@ maxRepetitions = univ.Integer().subtype(  # noqa: N816
 
 # Base class for bulk PDU
 class BulkPDU(univ.Sequence):
+    """BulkPDU class."""
+
     componentType = namedtype.NamedTypes(
         namedtype.NamedType("request-id", rfc1902.Integer32()),
         namedtype.NamedType("non-repeaters", nonRepeaters),
@@ -157,54 +173,72 @@ class BulkPDU(univ.Sequence):
 
 
 class GetRequestPDU(PDU):
+    """GetRequest PDU."""
+
     tagSet = PDU.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)
     )
 
 
 class GetNextRequestPDU(PDU):
+    """GetNextRequest PDU."""
+
     tagSet = PDU.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)
     )
 
 
 class ResponsePDU(PDU):
+    """Response PDU."""
+
     tagSet = PDU.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 2)
     )
 
 
 class SetRequestPDU(PDU):
+    """SetRequest PDU."""
+
     tagSet = PDU.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 3)
     )
 
 
 class GetBulkRequestPDU(BulkPDU):
+    """GetBulkRequest PDU."""
+
     tagSet = PDU.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 5)
     )
 
 
 class InformRequestPDU(PDU):
+    """InformRequest PDU."""
+
     tagSet = PDU.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 6)
     )
 
 
 class SNMPv2TrapPDU(PDU):
+    """SNMPv2Trap PDU."""
+
     tagSet = PDU.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 7)
     )
 
 
 class ReportPDU(PDU):
+    """Report PDU."""
+
     tagSet = PDU.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 8)
     )
 
 
 class PDUs(univ.Choice):
+    """PDUs class."""
+
     componentType = namedtype.NamedTypes(
         namedtype.NamedType("get-request", GetRequestPDU()),
         namedtype.NamedType("get-next-request", GetNextRequestPDU()),

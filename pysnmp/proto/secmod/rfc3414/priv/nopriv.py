@@ -9,16 +9,25 @@ from pysnmp.proto.secmod.rfc3414.priv import base
 
 
 class NoPriv(base.AbstractEncryptionService):
+    """No privacy protocol.
+
+    This class implements no privacy protocol.
+    """
+
     SERVICE_ID = (1, 3, 6, 1, 6, 3, 10, 1, 2, 1)  # usmNoPrivProtocol
 
     def hashPassphrase(self, authProtocol, privKey):
+        """Hash a passphrase."""
         return
 
     def localizeKey(self, authProtocol, privKey, snmpEngineID):
+        """Localize key."""
         return
 
     def encryptData(self, encryptKey, privParameters, dataToEncrypt):
+        """Encrypt data."""
         raise error.StatusInformation(errorIndication=errind.noEncryption)
 
     def decryptData(self, decryptKey, privParameters, encryptedData):
+        """Decrypt data."""
         raise error.StatusInformation(errorIndication=errind.noEncryption)

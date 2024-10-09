@@ -5,6 +5,7 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 from __future__ import annotations
+
 import sys
 from typing import TYPE_CHECKING
 
@@ -12,9 +13,7 @@ if TYPE_CHECKING:
     from pysnmp.entity.engine import SnmpEngine
 
 from pyasn1.codec.ber import decoder, eoo
-from pyasn1.error import PyAsn1Error
 from pyasn1.type import constraint, namedtype, univ
-
 from pysnmp import debug
 from pysnmp.proto import api, errind, error, rfc1905, rfc3411
 from pysnmp.proto.mpmod.base import AbstractMessageProcessingModel
@@ -27,6 +26,8 @@ pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_2C]  # noqa: N816
 
 
 class ScopedPDU(univ.Sequence):
+    """Scoped PDU syntax."""
+
     componentType = namedtype.NamedTypes(
         namedtype.NamedType("contextEngineId", univ.OctetString()),
         namedtype.NamedType("contextName", univ.OctetString()),
@@ -35,6 +36,8 @@ class ScopedPDU(univ.Sequence):
 
 
 class ScopedPduData(univ.Choice):
+    """Scoped PDU data syntax."""
+
     componentType = namedtype.NamedTypes(
         namedtype.NamedType("plaintext", ScopedPDU()),
         namedtype.NamedType("encryptedPDU", univ.OctetString()),
@@ -42,6 +45,8 @@ class ScopedPduData(univ.Choice):
 
 
 class HeaderData(univ.Sequence):
+    """SNMPv3 message header data syntax."""
+
     componentType = namedtype.NamedTypes(
         namedtype.NamedType(
             "msgID",
@@ -74,6 +79,8 @@ class HeaderData(univ.Sequence):
 
 
 class SNMPv3Message(univ.Sequence):
+    """SNMPv3 message syntax."""
+
     componentType = namedtype.NamedTypes(
         namedtype.NamedType(
             "msgVersion",
@@ -99,6 +106,8 @@ _snmpErrors = {  # noqa: N816
 
 
 class SnmpV3MessageProcessingModel(AbstractMessageProcessingModel):
+    """Implement SNMPv3 message processing model."""
+
     MESSAGE_PROCESSING_MODEL_ID = univ.Integer(3)  # SNMPv3
     SNMP_MSG_SPEC = SNMPv3Message
     _emptyStr = univ.OctetString("")
@@ -112,6 +121,7 @@ class SnmpV3MessageProcessingModel(AbstractMessageProcessingModel):
     }
 
     def __init__(self):
+        """Create SNMPv3 message processing model instance."""
         AbstractMessageProcessingModel.__init__(self)
         self.__scopedPDU = ScopedPDU()
         self.__engineIdCache = {}
@@ -119,6 +129,7 @@ class SnmpV3MessageProcessingModel(AbstractMessageProcessingModel):
         self.__expirationTimer = 0
 
     def getPeerEngineInfo(self, transportDomain, transportAddress):
+        """Return cached peer SNMP engine data."""
         k = transportDomain, transportAddress
         if k in self.__engineIdCache:
             return (
@@ -146,6 +157,7 @@ class SnmpV3MessageProcessingModel(AbstractMessageProcessingModel):
         expectResponse,
         sendPduHandle,
     ):
+        """Prepare SNMP message for dispatch."""
         (
             snmpEngineID,
         ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
@@ -366,9 +378,10 @@ class SnmpV3MessageProcessingModel(AbstractMessageProcessingModel):
         stateReference,
         statusInformation,
     ):
+        """Prepare SNMP message for response."""
         (
             snmpEngineID,
-        ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+        ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(  # type: ignore
             "__SNMP-FRAMEWORK-MIB", "snmpEngineID"
         )
         snmpEngineID = snmpEngineID.syntax
@@ -610,6 +623,7 @@ class SnmpV3MessageProcessingModel(AbstractMessageProcessingModel):
     def prepareDataElements(
         self, snmpEngine, transportDomain, transportAddress, wholeMsg
     ):
+        """Prepare SNMP message data elements."""
         # 7.2.2
         msg, restOfwholeMsg = decoder.decode(wholeMsg, asn1Spec=self._snmpMsgSpec)
 
@@ -1080,5 +1094,6 @@ class SnmpV3MessageProcessingModel(AbstractMessageProcessingModel):
         self.__expirationTimer += 1
 
     def receiveTimerTick(self, snmpEngine, timeNow):
+        """Process periodic timer tick."""
         self.__expireEnginesInfo()
         AbstractMessageProcessingModel.receiveTimerTick(self, snmpEngine, timeNow)

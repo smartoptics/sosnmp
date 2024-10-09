@@ -25,6 +25,7 @@ from pysnmp.proto.rfc3412 import MsgAndPduDispatcher
 from pysnmp.proto.secmod.base import AbstractSecurityModel
 from pysnmp.proto.secmod.rfc2576 import SnmpV1SecurityModel, SnmpV2cSecurityModel
 from pysnmp.proto.secmod.rfc3414 import SnmpUSMSecurityModel
+from pysnmp.smi.builder import MibBuilder
 
 __all__ = ["SnmpEngine"]
 
@@ -72,6 +73,7 @@ class SnmpEngine:
         maxMessageSize: int = 65507,
         msgAndPduDsp: "MsgAndPduDispatcher | None" = None,
     ):
+        """Create an SNMP engine object."""
         self.cache = {}
 
         self.observer = observer.MetaObserver()
@@ -175,6 +177,7 @@ class SnmpEngine:
                 )
 
     def __repr__(self):
+        """Return a string representation of the SNMP engine object."""
         return f"{self.__class__.__name__}(snmpEngineID={self.snmpEngineID!r})"
 
     def _close(self):
@@ -234,6 +237,7 @@ class SnmpEngine:
         transportDispatcher: AbstractTransportDispatcher,
         recvId: "tuple[int, ...] | str | None" = None,
     ):
+        """Register transport dispatcher."""
         if (
             self.transportDispatcher is not None
             and self.transportDispatcher is not transportDispatcher
@@ -245,23 +249,28 @@ class SnmpEngine:
             self.transportDispatcher = transportDispatcher
 
     def unregisterTransportDispatcher(self, recvId: "tuple[int, ...] | None" = None):
+        """Remove transport dispatcher."""
         if self.transportDispatcher is None:
             raise error.PySnmpError("Transport dispatcher not registered")
         self.transportDispatcher.unregisterRecvCbFun(recvId)
         self.transportDispatcher.unregisterTimerCbFun()
         self.transportDispatcher = None
 
-    def getMibBuilder(self):
+    def getMibBuilder(self) -> MibBuilder:
+        """Get MIB builder."""
         return self.msgAndPduDsp.mibInstrumController.mibBuilder
 
     # User app may attach opaque objects to SNMP Engine
     def setUserContext(self, **kwargs):
+        """Attach user context to the SNMP engine."""
         self.cache.update({"__%s" % k: kwargs[k] for k in kwargs})
 
     def getUserContext(self, arg) -> "dict[str, Any] | None":
+        """Get user context."""
         return self.cache.get("__%s" % arg)
 
     def delUserContext(self, arg):
+        """Delete user context."""
         try:
             del self.cache["__%s" % arg]
         except KeyError:

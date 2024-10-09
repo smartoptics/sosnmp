@@ -8,7 +8,6 @@ import sys
 
 from pyasn1.codec.ber import decoder, eoo
 from pyasn1.type import univ
-
 from pysnmp import debug
 from pysnmp.proto import errind, error, rfc3411
 from pysnmp.proto.api import v1, v2c
@@ -21,6 +20,8 @@ from pysnmp.proto.mpmod.base import AbstractMessageProcessingModel
 
 
 class SnmpV1MessageProcessingModel(AbstractMessageProcessingModel):
+    """Create a message processing model object."""
+
     MESSAGE_PROCESSING_MODEL_ID = univ.Integer(0)  # SNMPv1
     SNMP_MSG_SPEC = v1.Message
 
@@ -41,6 +42,7 @@ class SnmpV1MessageProcessingModel(AbstractMessageProcessingModel):
         expectResponse,
         sendPduHandle,
     ):
+        """Prepare SNMP message for dispatch."""
         mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
 
         (snmpEngineId,) = mibBuilder.importSymbols(
@@ -182,6 +184,7 @@ class SnmpV1MessageProcessingModel(AbstractMessageProcessingModel):
         stateReference,
         statusInformation,
     ):
+        """Prepare SNMP message for response."""
         mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
 
         (snmpEngineId,) = mibBuilder.importSymbols(
@@ -308,6 +311,7 @@ class SnmpV1MessageProcessingModel(AbstractMessageProcessingModel):
     def prepareDataElements(
         self, snmpEngine, transportDomain, transportAddress, wholeMsg
     ):
+        """Prepare SNMP message data elements."""
         mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
 
         # rfc3412: 7.2.2
@@ -614,5 +618,7 @@ class SnmpV1MessageProcessingModel(AbstractMessageProcessingModel):
 
 
 class SnmpV2cMessageProcessingModel(SnmpV1MessageProcessingModel):
+    """Create a message processing model object."""
+
     MESSAGE_PROCESSING_MODEL_ID = univ.Integer(1)  # SNMPv2c
     SNMP_MSG_SPEC = v2c.Message

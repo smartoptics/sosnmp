@@ -8,7 +8,6 @@ import sys
 
 from pyasn1.error import PyAsn1Error
 from pyasn1.type.base import AbstractSimpleAsn1Item
-
 from pysnmp import debug
 from pysnmp.proto import rfc1902, rfc1905
 from pysnmp.proto.api import v2c
@@ -85,6 +84,7 @@ class ObjectIdentity:
     ST_DIRTY, ST_CLEAN = 1, 2
 
     def __init__(self, *args, **kwargs):
+        """Create an ObjectIdentity instance."""
         self.__args = args
         self.__kwargs = kwargs
         self.__mibSourcesToAdd = self.__modNamesToLoad = None
@@ -189,12 +189,42 @@ class ObjectIdentity:
             raise SmiError("%s object not fully initialized" % self.__class__.__name__)
 
     def getMibNode(self):
+        """Returns MIB node object representing this MIB variable.
+
+        Returns
+        -------
+        : :py:class:`~pysnmp.smi.rfc1902.ObjectType`
+            class instance representing MIB variable.
+
+        Raises
+        ------
+        SmiError
+           If MIB variable conversion has not been performed.
+        """
         if self.__state & self.ST_CLEAN:
             return self.__mibNode
         else:
             raise SmiError("%s object not fully initialized" % self.__class__.__name__)
 
     def isFullyResolved(self):
+        """Returns `True` if MIB variable conversion has been performed.
+
+        Returns
+        -------
+        bool
+            `True` if MIB variable conversion has been performed.
+
+        Examples
+        --------
+        >>> objectIdentity = ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0)
+        >>> objectIdentity.isFullyResolved()
+        False
+        >>> objectIdentity.resolveWithMib(mibViewController)
+        >>> objectIdentity.isFullyResolved()
+        True
+        >>>
+
+        """
         return self.__state & self.ST_CLEAN
 
     #
@@ -556,6 +586,7 @@ class ObjectIdentity:
             raise SmiError("Non-OID, label or MIB symbol")
 
     def prettyPrint(self):
+        """Return a human-friendly representation of the object."""
         if self.__state & self.ST_CLEAN:
             s = rfc1902.OctetString()
             return "{}::{}{}{}".format(
@@ -575,6 +606,7 @@ class ObjectIdentity:
             raise SmiError("%s object not fully initialized" % self.__class__.__name__)
 
     def __repr__(self):
+        """Return a string representation of the object."""
         return "{}({})".format(
             self.__class__.__name__, ", ".join([repr(x) for x in self.__args])
         )
@@ -582,6 +614,7 @@ class ObjectIdentity:
     # Redirect some attrs access to the OID object to behave alike
 
     def __str__(self):
+        """Return a string representation of the object."""
         if self.__state & self.ST_CLEAN:
             return str(self.__oid)
         else:
@@ -590,6 +623,7 @@ class ObjectIdentity:
             )
 
     def __eq__(self, other):
+        """Compare OID with another OID."""
         if self.__state & self.ST_CLEAN:
             return self.__oid == other
         else:
@@ -598,6 +632,7 @@ class ObjectIdentity:
             )
 
     def __ne__(self, other):
+        """Compare OID with another OID."""
         if self.__state & self.ST_CLEAN:
             return self.__oid != other
         else:
@@ -606,6 +641,7 @@ class ObjectIdentity:
             )
 
     def __lt__(self, other):
+        """Compare OID with another OID."""
         if self.__state & self.ST_CLEAN:
             return self.__oid < other
         else:
@@ -614,6 +650,7 @@ class ObjectIdentity:
             )
 
     def __le__(self, other):
+        """Compare OID with another OID."""
         if self.__state & self.ST_CLEAN:
             return self.__oid <= other
         else:
@@ -622,6 +659,7 @@ class ObjectIdentity:
             )
 
     def __gt__(self, other):
+        """Compare OID with another OID."""
         if self.__state & self.ST_CLEAN:
             return self.__oid > other
         else:
@@ -630,6 +668,7 @@ class ObjectIdentity:
             )
 
     def __ge__(self, other):
+        """Compare OID with another OID."""
         if self.__state & self.ST_CLEAN:
             return self.__oid > other
         else:
@@ -638,6 +677,7 @@ class ObjectIdentity:
             )
 
     def __nonzero__(self):
+        """Return True if the OID is not empty."""
         if self.__state & self.ST_CLEAN:
             return self.__oid != 0
         else:
@@ -646,6 +686,7 @@ class ObjectIdentity:
             )
 
     def __bool__(self):
+        """Return True if the OID is not empty."""
         if self.__state & self.ST_CLEAN:
             return bool(self.__oid)
         else:
@@ -654,6 +695,7 @@ class ObjectIdentity:
             )
 
     def __getitem__(self, i):
+        """Return the i-th element of the OID."""
         if self.__state & self.ST_CLEAN:
             return self.__oid[i]
         else:
@@ -662,6 +704,7 @@ class ObjectIdentity:
             )
 
     def __len__(self):
+        """Return the length of the OID."""
         if self.__state & self.ST_CLEAN:
             return len(self.__oid)
         else:
@@ -670,6 +713,7 @@ class ObjectIdentity:
             )
 
     def __add__(self, other):
+        """Add OID to the right of the other object."""
         if self.__state & self.ST_CLEAN:
             return self.__oid + other
         else:
@@ -678,6 +722,7 @@ class ObjectIdentity:
             )
 
     def __radd__(self, other):
+        """Add OID to the left of the other object."""
         if self.__state & self.ST_CLEAN:
             return other + self.__oid
         else:
@@ -686,6 +731,7 @@ class ObjectIdentity:
             )
 
     def __hash__(self):
+        """Return a hash value of the object."""
         if self.__state & self.ST_CLEAN:
             return hash(self.__oid)
         else:
@@ -694,6 +740,7 @@ class ObjectIdentity:
             )
 
     def __getattr__(self, attr):
+        """Redirect some attrs access to the OID object to behave alike."""
         if self.__state & self.ST_CLEAN:
             if attr in (
                 "asTuple",
@@ -779,6 +826,7 @@ class ObjectType:
     ST_DIRTY, ST_CLEAN = 1, 2
 
     def __init__(self, objectIdentity, objectSyntax=rfc1905.unSpecified):
+        """Create an ObjectType instance."""
         if not isinstance(objectIdentity, ObjectIdentity):
             raise SmiError(
                 f"initializer should be ObjectIdentity instance, not {objectIdentity!r}"
@@ -787,20 +835,30 @@ class ObjectType:
         self.__state = self.ST_DIRTY
 
     def __getitem__(self, i):
+        """Return the i-th element of the ObjectType."""
         if self.__state & self.ST_CLEAN:
             return self.__args[i]
         else:
             raise SmiError("%s object not fully initialized" % self.__class__.__name__)
 
     def __str__(self):
+        """Return a string representation of the object."""
         return self.prettyPrint()
 
     def __repr__(self):
+        """Return a string representation of the object."""
         return "{}({})".format(
             self.__class__.__name__, ", ".join([repr(x) for x in self.__args])
         )
 
     def isFullyResolved(self):
+        """Returns `True` if MIB variable conversion has been performed.
+
+        Returns
+        -------
+        bool
+            `True` if MIB variable conversion has been performed.
+        """
         return self.__state & self.ST_CLEAN
 
     def addAsn1MibSource(self, *asn1Sources, **kwargs):
@@ -995,6 +1053,7 @@ class ObjectType:
         return self
 
     def prettyPrint(self):
+        """Return a human-friendly representation of the object."""
         if self.__state & self.ST_CLEAN:
             return "{} = {}".format(
                 self.__args[0].prettyPrint(), self.__args[1].prettyPrint()
@@ -1071,6 +1130,7 @@ class NotificationType:
     ST_DIRTY, ST_CLEAN = 1, 2
 
     def __init__(self, objectIdentity, instanceIndex=(), objects={}):
+        """Create a NotificationType instance."""
         if not isinstance(objectIdentity, ObjectIdentity):
             raise SmiError(
                 f"initializer should be ObjectIdentity instance, not {objectIdentity!r}"
@@ -1083,12 +1143,14 @@ class NotificationType:
         self.__state = self.ST_DIRTY
 
     def __getitem__(self, i):
+        """Return the i-th element of the NotificationType."""
         if self.__state & self.ST_CLEAN:
             return self.__varBinds[i]
         else:
             raise SmiError("%s object not fully initialized" % self.__class__.__name__)
 
     def __repr__(self):
+        """Return a string representation of the object."""
         return f"{self.__class__.__name__}({self.__objectIdentity!r}, {self.__instanceIndex!r}, {self.__objects!r})"
 
     def addVarBinds(self, *varBinds):
@@ -1217,6 +1279,7 @@ class NotificationType:
         return self
 
     def isFullyResolved(self):
+        """Return if the object is fully resolved."""
         return self.__state & self.ST_CLEAN
 
     def resolveWithMib(
@@ -1321,6 +1384,7 @@ class NotificationType:
         return self
 
     def prettyPrint(self):
+        """Return a human-friendly representation of the object."""
         if self.__state & self.ST_CLEAN:
             return " ".join(
                 [
@@ -1332,6 +1396,7 @@ class NotificationType:
             raise SmiError("%s object not fully initialized" % self.__class__.__name__)
 
     def toVarBinds(self) -> "tuple[ObjectType, ...]":
+        """Return a sequence of MIB variables."""
         if self.__state & self.ST_CLEAN:
             return tuple(self.__varBinds)
         else:

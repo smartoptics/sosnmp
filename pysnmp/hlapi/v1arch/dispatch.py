@@ -6,8 +6,7 @@
 #
 from time import time
 
-from pyasn1.codec.ber import encoder, decoder
-
+from pyasn1.codec.ber import decoder, encoder
 from pysnmp import debug
 from pysnmp.proto import api
 from pysnmp.proto import error
@@ -121,7 +120,7 @@ class AbstractSnmpDispatcher:
             mpModel = verdec.decodeMessageVersion(wholeMsg)
 
         except error.ProtocolError:
-            return null  # n.b the whole buffer gets dropped
+            return  # n.b the whole buffer gets dropped
 
         debug.logger & debug.FLAG_DSP and debug.logger(
             "receiveMessage: msgVersion %s, msg decoded" % mpModel

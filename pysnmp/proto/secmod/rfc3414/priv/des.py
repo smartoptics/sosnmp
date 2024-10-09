@@ -8,7 +8,6 @@ import random
 from hashlib import md5, sha1
 
 from pyasn1.type import univ
-
 from pysnmp.proto import errind, error
 from pysnmp.proto.secmod.rfc3414 import localkey
 from pysnmp.proto.secmod.rfc3414.auth import hmacmd5, hmacsha
@@ -30,12 +29,30 @@ random.seed()
 
 
 class Des(base.AbstractEncryptionService):
+    """DES for USM (RFC3414)."""
+
     SERVICE_ID = (1, 3, 6, 1, 6, 3, 10, 1, 2, 2)  # usmDESPrivProtocol
     KEY_SIZE = 16
 
     local_int = random.randrange(0, 0xFFFFFFFF)
 
-    def hashPassphrase(self, authProtocol, privKey):
+    def hashPassphrase(self, authProtocol, privKey) -> univ.OctetString:
+        """Hash a passphrase.
+
+        This method hashes a passphrase using the authentication protocol.
+
+        Parameters
+        ----------
+        authProtocol : tuple
+            The authentication protocol OID.
+        privKey : bytes
+            The privacy key.
+
+        Returns
+        -------
+        bytes
+            The hashed passphrase.
+        """
         if authProtocol == hmacmd5.HmacMd5.SERVICE_ID:
             hashAlgo = md5
         elif authProtocol == hmacsha.HmacSha.SERVICE_ID:
@@ -46,7 +63,26 @@ class Des(base.AbstractEncryptionService):
             raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
         return localkey.hashPassphrase(privKey, hashAlgo)
 
-    def localizeKey(self, authProtocol, privKey, snmpEngineID):
+    def localizeKey(self, authProtocol, privKey, snmpEngineID) -> bytes:
+        """Localize privacy key.
+
+        This method localizes privacy key using the authentication protocol
+        and the authoritative SNMP engine ID.
+
+        Parameters
+        ----------
+        authProtocol : tuple
+            The authentication protocol OID.
+        privKey : bytes
+            The privacy key.
+        snmpEngineID : bytes
+            The authoritative SNMP engine ID.
+
+        Returns
+        -------
+        bytes
+            The localized privacy key.
+        """
         if authProtocol == hmacmd5.HmacMd5.SERVICE_ID:
             hashAlgo = md5
         elif authProtocol == hmacsha.HmacSha.SERVICE_ID:
@@ -99,6 +135,7 @@ class Des(base.AbstractEncryptionService):
 
     # 8.2.4.1
     def encryptData(self, encryptKey, privParameters, dataToEncrypt):
+        """Encrypt data."""
         if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.encryptionError)
 
@@ -130,6 +167,7 @@ class Des(base.AbstractEncryptionService):
 
     # 8.2.4.2
     def decryptData(self, decryptKey, privParameters, encryptedData):
+        """Decrypt data."""
         if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.decryptionError)
 

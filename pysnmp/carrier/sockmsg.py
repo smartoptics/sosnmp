@@ -27,10 +27,14 @@ in_addr_t = uint32_t
 
 
 class in_addr(ctypes.Structure):
+    """Represent an IPv4 address."""
+
     _fields_ = [("s_addr", in_addr_t)]
 
 
 class in6_addr_U(ctypes.Union):
+    """Represent an IPv6 address."""
+
     _fields_ = [
         ("__u6_addr8", ctypes.c_uint8 * 16),
         ("__u6_addr16", ctypes.c_uint16 * 8),
@@ -39,12 +43,16 @@ class in6_addr_U(ctypes.Union):
 
 
 class in6_addr(ctypes.Structure):
+    """Represent an IPv6 address."""
+
     _fields_ = [
         ("__in6_u", in6_addr_U),
     ]
 
 
 class in_pktinfo(ctypes.Structure):
+    """Represent an IPv4 packet information."""
+
     _fields_ = [
         ("ipi_ifindex", ctypes.c_int),
         ("ipi_spec_dst", in_addr),
@@ -53,6 +61,8 @@ class in_pktinfo(ctypes.Structure):
 
 
 class in6_pktinfo(ctypes.Structure):
+    """Represent an IPv6 packet information."""
+
     _fields_ = [
         ("ipi6_addr", in6_addr),
         ("ipi6_ifindex", ctypes.c_uint),
@@ -60,6 +70,11 @@ class in6_pktinfo(ctypes.Structure):
 
 
 def getRecvFrom(addressType):
+    """Return a function that receives data from a socket and returns the data and the address of the sender.
+
+    The address is an instance of addressType.
+    """
+
     def recvfrom(s, sz):
         _to = None
 
@@ -89,6 +104,11 @@ def getRecvFrom(addressType):
 
 
 def getSendTo(addressType):
+    """Return a function that sends data to a socket and returns the number of bytes sent.
+
+    The address is an instance of addressType.
+    """
+
     def sendto(s, _data, _to):
         ancdata = []
         if type(_to) == addressType:

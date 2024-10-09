@@ -5,6 +5,57 @@
 # Copyright (c) 2022-2024, LeXtudio Inc. <support@lextudio.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+"""
+This module provides constants and backward-compatible protocol IDs for SNMP authentication and privacy protocols, as well as key material types used in the User-based Security Model (USM).
+
+Constants:
+    USM_AUTH_NONE: No Authentication Protocol.
+    USM_AUTH_HMAC96_MD5: The HMAC-MD5-96 Digest Authentication Protocol.
+    USM_AUTH_HMAC96_SHA: The HMAC-SHA-96 Digest Authentication Protocol AKA SHA-1.
+    USM_AUTH_HMAC128_SHA224: The HMAC-SHA-2 Digest Authentication Protocols.
+    USM_AUTH_HMAC192_SHA256: The HMAC-SHA-2 Digest Authentication Protocols.
+    USM_AUTH_HMAC256_SHA384: The HMAC-SHA-2 Digest Authentication Protocols.
+    USM_AUTH_HMAC384_SHA512: The HMAC-SHA-2 Digest Authentication Protocols.
+    USM_PRIV_NONE: No Privacy Protocol.
+    USM_PRIV_CBC56_DES: The CBC-DES Symmetric Encryption Protocol.
+    USM_PRIV_CBC168_3DES: The 3DES-EDE Symmetric Encryption Protocol.
+    USM_PRIV_CFB128_AES: The CFB128-AES-128 Symmetric Encryption Protocol.
+    USM_PRIV_CFB192_AES: The CFB128-AES-192 Symmetric Encryption Protocol with Reeder key localization.
+    USM_PRIV_CFB256_AES: The CFB128-AES-256 Symmetric Encryption Protocol with Reeder key localization.
+    USM_PRIV_CFB192_AES_BLUMENTHAL: The CFB128-AES-192 Symmetric Encryption Protocol.
+    USM_PRIV_CFB256_AES_BLUMENTHAL: The CFB128-AES-256 Symmetric Encryption Protocol.
+    USM_KEY_TYPE_PASSPHRASE: USM key material type - plain-text pass phrase.
+    USM_KEY_TYPE_MASTER: USM key material type - hashed pass-phrase AKA master key.
+    USM_KEY_TYPE_LOCALIZED: USM key material type - hashed pass-phrase hashed with Context SNMP Engine ID.
+
+Backward-compatible protocol IDs:
+    usmNoAuthProtocol: Alias for USM_AUTH_NONE.
+    usmHMACMD5AuthProtocol: Alias for USM_AUTH_HMAC96_MD5.
+    usmHMACSHAAuthProtocol: Alias for USM_AUTH_HMAC96_SHA.
+    usmHMAC128SHA224AuthProtocol: Alias for USM_AUTH_HMAC128_SHA224.
+    usmHMAC192SHA256AuthProtocol: Alias for USM_AUTH_HMAC192_SHA256.
+    usmHMAC256SHA384AuthProtocol: Alias for USM_AUTH_HMAC256_SHA384.
+    usmHMAC384SHA512AuthProtocol: Alias for USM_AUTH_HMAC384_SHA512.
+    usmNoPrivProtocol: Alias for USM_PRIV_NONE.
+    usmDESPrivProtocol: Alias for USM_PRIV_CBC56_DES.
+    usm3DESEDEPrivProtocol: Alias for USM_PRIV_CBC168_3DES.
+    usmAesCfb128Protocol: Alias for USM_PRIV_CFB128_AES.
+    usmAesCfb192Protocol: Alias for USM_PRIV_CFB192_AES.
+    usmAesCfb256Protocol: Alias for USM_PRIV_CFB256_AES.
+    usmAesBlumenthalCfb192Protocol: Alias for USM_PRIV_CFB192_AES_BLUMENTHAL.
+    usmAesBlumenthalCfb256Protocol: Alias for USM_PRIV_CFB256_AES_BLUMENTHAL.
+    usmKeyTypePassphrase: Alias for USM_KEY_TYPE_PASSPHRASE.
+    usmKeyTypeMaster: Alias for USM_KEY_TYPE_MASTER.
+    usmKeyTypeLocalized: Alias for USM_KEY_TYPE_LOCALIZED.
+
+Deprecated Attributes:
+    A dictionary mapping old attribute names to new attribute names.
+
+Functions:
+    __getattr__(attr: str):
+        Handles access to deprecated attributes, issuing a warning and returning
+        the new attribute if available, or raising an AttributeError if not.
+"""
 import warnings
 
 from pysnmp.entity.engine import *

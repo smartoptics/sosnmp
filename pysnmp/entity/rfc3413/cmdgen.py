@@ -7,8 +7,6 @@
 import sys
 
 from pyasn1.type import univ
-
-
 from pysnmp import debug, error, nextid
 from pysnmp.entity.engine import SnmpEngine
 from pysnmp.entity.rfc3413 import config
@@ -21,9 +19,12 @@ getNextHandle = nextid.Integer(0x7FFFFFFF)  # noqa: N816
 
 
 class CommandGenerator:
+    """SNMP command generator."""
+
     _null = univ.Null("")
 
     def __init__(self, **options):
+        """Create a command generator object."""
         self.__options = options
         self.__pendingReqs = {}
 
@@ -42,6 +43,7 @@ class CommandGenerator:
         sendPduHandle,
         cbCtx,
     ):
+        """Process SNMP response."""
         origSendRequestHandle, cbFun, cbCtx = cbCtx
 
         # 3.1.1
@@ -199,6 +201,7 @@ class CommandGenerator:
         cbFun,
         cbCtx,
     ):
+        """Send SNMP PDU."""
         (
             transportDomain,
             transportAddress,
@@ -284,9 +287,12 @@ class CommandGenerator:
 
 
 class GetCommandGenerator(CommandGenerator):
+    """SNMP GET command generator."""
+
     def processResponseVarBinds(
         self, snmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
     ):
+        """Process SNMP GET response."""
         cbFun, cbCtx = cbCtx
 
         cbFun(
@@ -309,6 +315,7 @@ class GetCommandGenerator(CommandGenerator):
         cbFun,
         cbCtx=None,
     ):
+        """Send SNMP GET request."""
         reqPDU = v2c.GetRequestPDU()
         v2c.apiPDU.setDefaults(reqPDU)
 
@@ -326,9 +333,12 @@ class GetCommandGenerator(CommandGenerator):
 
 
 class SetCommandGenerator(CommandGenerator):
+    """SNMP SET command generator."""
+
     def processResponseVarBinds(
         self, snmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
     ):
+        """Process SNMP SET response."""
         cbFun, cbCtx = cbCtx
 
         cbFun(
@@ -351,6 +361,7 @@ class SetCommandGenerator(CommandGenerator):
         cbFun,
         cbCtx=None,
     ):
+        """Send SNMP SET request."""
         reqPDU = v2c.SetRequestPDU()
         v2c.apiPDU.setDefaults(reqPDU)
 
@@ -368,9 +379,12 @@ class SetCommandGenerator(CommandGenerator):
 
 
 class NextCommandGeneratorSingleRun(CommandGenerator):
+    """Single-run SNMP GETNEXT command generator."""
+
     def processResponseVarBinds(
         self, snmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
     ):
+        """Process SNMP GETNEXT response."""
         targetName, contextEngineId, contextName, reqPDU, cbFun, cbCtx = cbCtx
 
         cbFun(
@@ -393,6 +407,7 @@ class NextCommandGeneratorSingleRun(CommandGenerator):
         cbFun,
         cbCtx=None,
     ):
+        """Send SNMP GETNEXT request."""
         reqPDU = v2c.GetNextRequestPDU()
         v2c.apiPDU.setDefaults(reqPDU)
 
@@ -410,9 +425,12 @@ class NextCommandGeneratorSingleRun(CommandGenerator):
 
 
 class NextCommandGenerator(NextCommandGeneratorSingleRun):
+    """SNMP GETNEXT command generator."""
+
     def processResponseVarBinds(
         self, snmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
     ):
+        """Process SNMP GETNEXT response."""
         targetName, contextEngineId, contextName, reqPDU, cbFun, cbCtx = cbCtx
 
         if errorIndication:
@@ -446,9 +464,12 @@ class NextCommandGenerator(NextCommandGeneratorSingleRun):
 
 
 class BulkCommandGeneratorSingleRun(CommandGenerator):
+    """Single-run SNMP GETBULK command generator."""
+
     def processResponseVarBinds(
         self, snmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
     ):
+        """Process SNMP GETBULK response."""
         (
             targetName,
             nonRepeaters,
@@ -482,6 +503,7 @@ class BulkCommandGeneratorSingleRun(CommandGenerator):
         cbFun,
         cbCtx=None,
     ):
+        """Send SNMP GETBULK request."""
         reqPDU = v2c.GetBulkRequestPDU()
         v2c.apiBulkPDU.setDefaults(reqPDU)
 
@@ -511,9 +533,12 @@ class BulkCommandGeneratorSingleRun(CommandGenerator):
 
 
 class BulkCommandGenerator(BulkCommandGeneratorSingleRun):
+    """Bulk SNMP GET command generator."""
+
     def processResponseVarBinds(
         self, snmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
     ):
+        """Process SNMP GETBULK response."""
         (
             targetName,
             nonRepeaters,

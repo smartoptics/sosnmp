@@ -44,10 +44,14 @@ DOMAIN_NAME = SNMP_UDP_DOMAIN = (1, 3, 6, 1, 6, 1, 1)
 
 
 class UdpTransportAddress(tuple, AbstractTransportAddress):
+    """UDP transport address."""
+
     pass
 
 
 class UdpAsyncioTransport(DgramAsyncioProtocol):
+    """UDP async transport."""
+
     SOCK_FAMILY = socket.AF_INET
     ADDRESS_TYPE = UdpTransportAddress
 

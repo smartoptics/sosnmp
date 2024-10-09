@@ -13,7 +13,6 @@ import time
 from pyasn1.codec.ber import decoder, encoder, eoo
 from pyasn1.error import PyAsn1Error
 from pyasn1.type import constraint, namedtype, univ
-
 from pysnmp import debug
 from pysnmp.proto import api, errind, error, rfc1155, rfc3411
 from pysnmp.proto.secmod.base import AbstractSecurityModel
@@ -32,6 +31,8 @@ pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_2C]  # noqa: N816
 
 
 class UsmSecurityParameters(rfc1155.TypeCoercionHackMixIn, univ.Sequence):
+    """Create a User-based Security Model (USM) security parameters object."""
+
     componentType = namedtype.NamedTypes(
         namedtype.NamedType("msgAuthoritativeEngineId", univ.OctetString()),
         namedtype.NamedType(
@@ -58,6 +59,23 @@ class UsmSecurityParameters(rfc1155.TypeCoercionHackMixIn, univ.Sequence):
 
 
 class SnmpUSMSecurityModel(AbstractSecurityModel):
+    """The User-based Security Model (USM) implements a security model based on a notion of a principal.
+
+    A principal is a unique entity that can be authenticated
+    and for which authorization information can be determined. The principal is
+    identified by a securityName. The securityName is a text string that uniquely
+    identifies the principal within the context of the securityDomain. The security
+    domain is a collection of principals that share a common security policy. The
+    security policy is a set of rules that govern the access to resources within the
+    security domain. The security policy is enforced by the security services. The
+    security services are the mechanisms that enforce the security policy. The
+    security services are provided by the security model. The security model is a
+    collection of security services that are provided by the SNMP engine. The USM
+    provides the following security services: authentication, privacy, and access
+    control. The USM is based on the use of the HMAC-MD5-96 and HMAC-SHA-96
+    authentication protocols and the CBC-DES and CFB128-AES-128 privacy protocols.
+    """
+
     SECURITY_MODEL_ID = 3
     AUTH_SERVICES = {
         hmacmd5.HmacMd5.SERVICE_ID: hmacmd5.HmacMd5(),
@@ -93,6 +111,7 @@ class SnmpUSMSecurityModel(AbstractSecurityModel):
     wildcardSecurityEngineId = pMod.OctetString(hexValue="0000000000")
 
     def __init__(self):
+        """Create a USM security model object."""
         AbstractSecurityModel.__init__(self)
         self.__securityParametersSpec = UsmSecurityParameters()
         self.__timeline = {}
@@ -874,6 +893,7 @@ class SnmpUSMSecurityModel(AbstractSecurityModel):
         securityLevel,
         scopedPDU,
     ):
+        """Generate SNMP request message."""
         return self.__generateRequestOrResponseMsg(
             snmpEngine,
             messageProcessingModel,
@@ -902,6 +922,7 @@ class SnmpUSMSecurityModel(AbstractSecurityModel):
         securityStateReference,
         ctx,
     ):
+        """Generate SNMP response message."""
         return self.__generateRequestOrResponseMsg(
             snmpEngine,
             messageProcessingModel,
@@ -928,6 +949,7 @@ class SnmpUSMSecurityModel(AbstractSecurityModel):
         wholeMsg,
         msg,
     ):
+        """Process incoming SNMP message."""
         mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
 
         # 3.2.9 -- moved up here to be able to report
@@ -1523,4 +1545,5 @@ class SnmpUSMSecurityModel(AbstractSecurityModel):
         self.__expirationTimer += 1
 
     def receiveTimerTick(self, snmpEngine, timeNow):
+        """Receive timer ticks from the transport layer."""
         self.__expireTimelineInfo()

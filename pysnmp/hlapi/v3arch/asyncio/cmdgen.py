@@ -38,11 +38,11 @@ from typing import AsyncGenerator
 
 from pysnmp.entity.engine import SnmpEngine
 from pysnmp.entity.rfc3413 import cmdgen
+from pysnmp.hlapi import varbinds
 from pysnmp.hlapi.v3arch.asyncio.auth import CommunityData, UsmUserData
 from pysnmp.hlapi.v3arch.asyncio.context import ContextData
 from pysnmp.hlapi.v3arch.asyncio.lcd import CommandGeneratorLcdConfigurator
 from pysnmp.hlapi.v3arch.asyncio.transport import AbstractTransportTarget
-from pysnmp.hlapi import varbinds
 from pysnmp.proto import errind
 from pysnmp.proto.rfc1902 import Integer32, Null
 from pysnmp.proto.rfc1905 import EndOfMibView, endOfMibView

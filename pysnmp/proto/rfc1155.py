@@ -6,7 +6,6 @@
 #
 from pyasn1.error import PyAsn1Error
 from pyasn1.type import constraint, namedtype, tag, univ
-
 from pysnmp.proto import error
 from pysnmp.smi.error import SmiError
 
@@ -22,12 +21,15 @@ __all__ = [
 
 
 class IpAddress(univ.OctetString):
+    """IP address."""
+
     tagSet = univ.OctetString.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x00)
     )
     subtypeSpec = univ.OctetString.subtypeSpec + constraint.ValueSizeConstraint(4, 4)
 
     def prettyIn(self, value):
+        """Return a pretty-formatted IP address."""
         if isinstance(value, str) and len(value) != 4:
             try:
                 value = [int(x) for x in value.split(".")]
@@ -38,6 +40,7 @@ class IpAddress(univ.OctetString):
         return univ.OctetString.prettyIn(self, value)
 
     def prettyOut(self, value):
+        """Return a pretty-printed IP address."""
         if value:
             return ".".join(["%d" % x for x in self.__class__(value).asNumbers()])
         else:
@@ -45,6 +48,8 @@ class IpAddress(univ.OctetString):
 
 
 class Counter(univ.Integer):
+    """Counter."""
+
     tagSet = univ.Integer.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x01)
     )
@@ -54,6 +59,8 @@ class Counter(univ.Integer):
 
 
 class NetworkAddress(univ.Choice):
+    """Network address."""
+
     componentType = namedtype.NamedTypes(namedtype.NamedType("internet", IpAddress()))
 
     def clone(self, value=univ.noValue, **kwargs):
@@ -92,6 +99,7 @@ class NetworkAddress(univ.Choice):
     #          indicates an IpAddress);"
 
     def cloneFromName(self, value, impliedFlag, parentRow, parentIndices):
+        """Clone this instance from a tuple of sub-identifiers."""
         kind = value[0]
         clone = self.clone()
         if kind == 1:
@@ -101,6 +109,16 @@ class NetworkAddress(univ.Choice):
             raise SmiError(f"unknown NetworkAddress type {kind!r}")
 
     def cloneAsName(self, impliedFlag, parentRow, parentIndices):
+        """Return a tuple of sub-identifiers representing this instance.
+
+        :param bool impliedFlag: (Unused) whether the value is implied.
+        :param parentRow: (Unused) the parent row.
+        :param parentIndices: (Unused) the parent indices.
+        :return: the sub-identifiers.
+        :rtype: :py:obj:`tuple`
+        :raise: :py:obj:`pysnmp.smi.error.SmiError`:
+            if the type of the component value is not allowed for this Choice instance.
+        """
         kind = self.getName()
         component = self.getComponent()
         if kind == "internet":
@@ -110,6 +128,8 @@ class NetworkAddress(univ.Choice):
 
 
 class Gauge(univ.Integer):
+    """Gauge."""
+
     tagSet = univ.Integer.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x02)
     )
@@ -119,6 +139,8 @@ class Gauge(univ.Integer):
 
 
 class TimeTicks(univ.Integer):
+    """TimeTicks."""
+
     tagSet = univ.Integer.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x03)
     )
@@ -128,12 +150,16 @@ class TimeTicks(univ.Integer):
 
 
 class Opaque(univ.OctetString):
+    """Opaque."""
+
     tagSet = univ.OctetString.tagSet.tagImplicitly(
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x04)
     )
 
 
 class ObjectName(univ.ObjectIdentifier):
+    """Object name."""
+
     pass
 
 

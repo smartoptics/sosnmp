@@ -8,7 +8,6 @@ import random
 from hashlib import md5, sha1
 
 from pyasn1.type import univ
-
 from pysnmp.proto import errind, error
 from pysnmp.proto.secmod.rfc3414 import localkey
 from pysnmp.proto.secmod.rfc3414.auth import hmacmd5, hmacsha
@@ -33,6 +32,11 @@ random.seed()
 
 
 class Aes(base.AbstractEncryptionService):
+    """AES encryption protocol.
+
+    https://tools.ietf.org/html/rfc3826
+    """
+
     SERVICE_ID = (1, 3, 6, 1, 6, 3, 10, 1, 2, 4)  # usmAesCfb128Protocol
     KEY_SIZE = 16
     local_int = random.randrange(0, 0xFFFFFFFFFFFFFFFF)
@@ -79,7 +83,8 @@ class Aes(base.AbstractEncryptionService):
 
         return privKey[: self.KEY_SIZE].asOctets(), univ.OctetString(iv).asOctets()
 
-    def hashPassphrase(self, authProtocol, privKey):
+    def hashPassphrase(self, authProtocol, privKey) -> univ.OctetString:
+        """Hash a passphrase."""
         if authProtocol == hmacmd5.HmacMd5.SERVICE_ID:
             hashAlgo = md5
         elif authProtocol == hmacsha.HmacSha.SERVICE_ID:
@@ -90,7 +95,8 @@ class Aes(base.AbstractEncryptionService):
             raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
         return localkey.hashPassphrase(privKey, hashAlgo)
 
-    def localizeKey(self, authProtocol, privKey, snmpEngineID):
+    def localizeKey(self, authProtocol, privKey, snmpEngineID) -> univ.OctetString:
+        """Localize a key."""
         if authProtocol == hmacmd5.HmacMd5.SERVICE_ID:
             hashAlgo = md5
         elif authProtocol == hmacsha.HmacSha.SERVICE_ID:
@@ -104,6 +110,7 @@ class Aes(base.AbstractEncryptionService):
 
     # 3.2.4.1
     def encryptData(self, encryptKey, privParameters, dataToEncrypt):
+        """Encrypt data."""
         if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.encryptionError)
 
@@ -129,6 +136,7 @@ class Aes(base.AbstractEncryptionService):
 
     # 3.2.4.2
     def decryptData(self, decryptKey, privParameters, encryptedData):
+        """Decrypt data."""
         if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.decryptionError)
 

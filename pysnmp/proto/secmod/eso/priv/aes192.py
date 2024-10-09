@@ -8,7 +8,7 @@ from pysnmp.proto.secmod.eso.priv import aesbase
 
 
 class AesBlumenthal192(aesbase.AbstractAesBlumenthal):
-    """AES 192 bit encryption (Internet draft)
+    """AES 192 bit encryption (Internet draft).
 
     Reeder AES encryption:
 
@@ -20,7 +20,7 @@ class AesBlumenthal192(aesbase.AbstractAesBlumenthal):
 
 
 class Aes192(aesbase.AbstractAesReeder):
-    """AES 192 bit encryption (Internet draft)
+    """AES 192 bit encryption (Internet draft).
 
     Reeder AES encryption with non-standard key localization algorithm
     borrowed from Reeder 3DES draft:

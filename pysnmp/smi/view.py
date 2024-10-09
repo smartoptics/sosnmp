@@ -4,8 +4,6 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-import sys
-
 from pysnmp import debug
 from pysnmp.smi import error
 from pysnmp.smi.indices import OidOrderedDict, OrderedDict
@@ -17,7 +15,10 @@ instanceTypes = (object,)  # noqa: N816
 
 
 class MibViewController:
+    """Create a MIB view controller."""
+
     def __init__(self, mibBuilder):
+        """Create a MIB view controller."""
         self.mibBuilder = mibBuilder
         self.lastBuildId = -1
         self.__mibSymbolsIdx = OrderedDict()
@@ -25,6 +26,7 @@ class MibViewController:
     # Indexing part
 
     def indexMib(self):
+        """Re-index MIB view."""
         if self.lastBuildId == self.mibBuilder.lastBuildId:
             return
 
@@ -148,6 +150,7 @@ class MibViewController:
     # Module management
 
     def getOrderedModuleName(self, index):
+        """Return module name by index."""
         self.indexMib()
         modNames = self.__mibSymbolsIdx.keys()
         if modNames:
@@ -155,12 +158,15 @@ class MibViewController:
         raise error.SmiError("No modules loaded at %s" % self)
 
     def getFirstModuleName(self):
+        """Return first module name."""
         return self.getOrderedModuleName(0)
 
     def getLastModuleName(self):
+        """Return last module name."""
         return self.getOrderedModuleName(-1)
 
     def getNextModuleName(self, modName):
+        """Return next module name."""
         self.indexMib()
         try:
             return self.__mibSymbolsIdx.nextKey(modName)
@@ -170,7 +176,7 @@ class MibViewController:
     # MIB tree node management
 
     def __getOidLabel(self, nodeName, oidToLabelIdx, labelToOidIdx):
-        """getOidLabel(nodeName) -> (oid, label, suffix)"""
+        """getOidLabel(nodeName) -> (oid, label, suffix)."""
         if not nodeName:
             return nodeName, nodeName, ()
         if nodeName in labelToOidIdx:
@@ -192,6 +198,7 @@ class MibViewController:
         return oid, label, suffix
 
     def getNodeNameByOid(self, nodeName, modName=""):
+        """Return node name by OID."""
         self.indexMib()
         if modName in self.__mibSymbolsIdx:
             mibMod = self.__mibSymbolsIdx[modName]
@@ -210,6 +217,7 @@ class MibViewController:
         return oid, label, suffix
 
     def getNodeNameByDesc(self, nodeName, modName=""):
+        """Return node name by MIB symbol."""
         self.indexMib()
         if modName in self.__mibSymbolsIdx:
             mibMod = self.__mibSymbolsIdx[modName]
@@ -227,6 +235,7 @@ class MibViewController:
         return self.getNodeNameByOid(oid, modName)
 
     def getNodeName(self, nodeName, modName=""):
+        """Return node name by OID or MIB symbol."""
         # nodeName may be either an absolute OID/label or a
         # ( MIB-symbol, su, ff, ix)
         try:
@@ -239,6 +248,7 @@ class MibViewController:
             return self.getNodeNameByOid(oid + suffix + nodeName[1:], modName)
 
     def getOrderedNodeName(self, index, modName=""):
+        """Return node name by index."""
         self.indexMib()
         if modName in self.__mibSymbolsIdx:
             mibMod = self.__mibSymbolsIdx[modName]
@@ -257,12 +267,15 @@ class MibViewController:
         return oid, label, ()
 
     def getFirstNodeName(self, modName=""):
+        """Return first node name."""
         return self.getOrderedNodeName(0, modName)
 
     def getLastNodeName(self, modName=""):
+        """Return last node name."""
         return self.getOrderedNodeName(-1, modName)
 
     def getNextNodeName(self, nodeName, modName=""):
+        """Return next node name."""
         oid, label, suffix = self.getNodeName(nodeName, modName)
         try:
             return self.getNodeName(
@@ -275,6 +288,7 @@ class MibViewController:
             )
 
     def getParentNodeName(self, nodeName, modName=""):
+        """Return parent node name."""
         oid, label, suffix = self.getNodeName(nodeName, modName)
         if len(oid) < 2:
             raise error.NoSuchObjectError(
@@ -283,12 +297,14 @@ class MibViewController:
         return oid[:-1], label[:-1], oid[-1:] + suffix
 
     def getNodeLocation(self, nodeName, modName=""):
+        """Return module name, node name, and suffix."""
         oid, label, suffix = self.getNodeName(nodeName, modName)
         return self.__mibSymbolsIdx[""]["oidToModIdx"][oid], label[-1], suffix
 
     # MIB type management
 
     def getTypeName(self, typeName, modName=""):
+        """Return type name by MIB symbol."""
         self.indexMib()
         if modName in self.__mibSymbolsIdx:
             mibMod = self.__mibSymbolsIdx[modName]
@@ -303,6 +319,7 @@ class MibViewController:
         return m, typeName
 
     def getOrderedTypeName(self, index, modName=""):
+        """Return type name by index."""
         self.indexMib()
         if modName in self.__mibSymbolsIdx:
             mibMod = self.__mibSymbolsIdx[modName]
@@ -316,12 +333,15 @@ class MibViewController:
         return mibMod["typeToModIdx"][t], t
 
     def getFirstTypeName(self, modName=""):
+        """Get first type name."""
         return self.getOrderedTypeName(0, modName)
 
     def getLastTypeName(self, modName=""):
+        """Get last type name."""
         return self.getOrderedTypeName(-1, modName)
 
     def getNextType(self, typeName, modName=""):
+        """Get next type name."""
         m, t = self.getTypeName(typeName, modName)
         try:
             return self.__mibSymbolsIdx[m]["typeToModIdx"].nextKey(t)
