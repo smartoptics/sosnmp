@@ -300,14 +300,14 @@ class MibBuilder:
 
     # MIB modules management
 
-    def addMibSources(self, *mibSources: __AbstractMibSource):
+    def addMibSources(self, *mibSources: "ZipMibSource | DirMibSource"):
         """Add MIB sources to the search path."""
         self.__mibSources.extend([s.init() for s in mibSources])
         debug.logger & debug.FLAG_BLD and debug.logger(
             f"addMibSources: new MIB sources {self.__mibSources}"
         )
 
-    def setMibSources(self, *mibSources: __AbstractMibSource):
+    def setMibSources(self, *mibSources: "ZipMibSource | DirMibSource"):
         """Set MIB sources to the search path."""
         self.__mibSources = [s.init() for s in mibSources]
         debug.logger & debug.FLAG_BLD and debug.logger(
