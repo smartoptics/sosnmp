@@ -1,3 +1,12 @@
+Revision 7.1.6, released on Oct 12, 2024
+----------------------------------------
+
+- Method names are revised to be PEP 8 compliant. Compatibility layer is
+  added to support most of the old method names, but will be removed in the
+  next major release, 8.0.
+- Python 3.8 support is dropped.
+- Python 3.13 support is added.
+
 Revision 7.1.5, released on Oct 06, 2024
 ----------------------------------------
 

@@ -59,7 +59,7 @@ async def get_cmd(
         Class instance representing asynio-based asynchronous event loop and
         associated state information.
 
-    authData: :py:class:`~pysnmp.hlapi.v1arch.CommunityData`
+    authData: :py:class:`~pysnmp.hlapi.v1arch.asyncio.CommunityData`
         Class instance representing SNMPv1/v2c credentials.
 
     transportTarget: :py:class:`~pysnmp.hlapi.v1arch.asyncio.UdpTransportTarget` or
@@ -190,7 +190,7 @@ async def set_cmd(
         Class instance representing asynio-based asynchronous event loop and
         associated state information.
 
-    authData: :py:class:`~pysnmp.hlapi.v1arch.CommunityData`
+    authData: :py:class:`~pysnmp.hlapi.v1arch.asyncio.CommunityData`
         Class instance representing SNMPv1/v2c credentials.
 
     transportTarget: :py:class:`~pysnmp.hlapi.v1arch.asyncio.UdpTransportTarget` or
@@ -321,7 +321,7 @@ async def next_cmd(
         Class instance representing asynio-based asynchronous event loop and
         associated state information.
 
-    authData: :py:class:`~pysnmp.hlapi.v1arch.CommunityData`
+    authData: :py:class:`~pysnmp.hlapi.v1arch.asyncio.CommunityData`
         Class instance representing SNMPv1/v2c credentials.
 
     transportTarget: :py:class:`~pysnmp.hlapi.v1arch.asyncio.UdpTransportTarget` or
@@ -471,7 +471,7 @@ async def bulk_cmd(
         Class instance representing asynio-based asynchronous event loop and
         associated state information.
 
-    authData: :py:class:`~pysnmp.hlapi.v1arch.CommunityData`
+    authData: :py:class:`~pysnmp.hlapi.v1arch.asyncio.CommunityData`
         Class instance representing SNMPv1/v2c credentials.
 
     transportTarget: :py:class:`~pysnmp.hlapi.v1arch.asyncio.UdpTransportTarget` or

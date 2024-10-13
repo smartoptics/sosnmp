@@ -248,7 +248,7 @@ Community-based
 +++++++++++++++
 
 Security Parameters object is Security Model specific. The
-:py:class:`~pysnmp.hlapi.v1arch.CommunityData`
+:py:class:`~pysnmp.hlapi.v1arch.asyncio.CommunityData`
 class is used for configuring Community-Based Security Model of SNMPv1/SNMPv2c.
 
 .. toctree::

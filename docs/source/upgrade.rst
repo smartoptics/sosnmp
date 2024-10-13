@@ -15,8 +15,8 @@ releases from old releases such as 4.x and 5.x.
    is the time to remove them and switch to the official PySNMP packages,
    which are maintained by LeXtudio Inc. as well.
 
-   We will keep the ``-lextudio`` packages for a while to ensure a smooth
-   transition for users who are still using them.
+   We already deprecated the ``-lextudio`` packages so users must migrate
+   to the official packages as soon as possible.
 
 Upgrade to 5.x Releases
 -----------------------
@@ -162,6 +162,7 @@ The goals are
 
 - Adapt to async DNS queries.
 - Rework on GET NEXT and GET BULK related API surface.
+- Apply more PEP 8 required changes.
 
 Breaking changes are
 
@@ -172,6 +173,10 @@ Breaking changes are
 - ``next_cmd`` and ``bulk_cmd`` parameters and return types are revised.
 - ``walk_cmd`` and ``bulk_walk_cmd`` are updated accordingly.
 - Dropped Python 3.8 support.
+- Due to method name changes to meet PEP 8, old names are marked as
+  deprecated. While most of them are still working due to the compatibility
+  layer, you should switch to the new names as soon as possible. **The
+  compatibility layer will be removed in the next major release, 8.0.**
 
 Related Resources
 -----------------
