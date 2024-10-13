@@ -11,7 +11,7 @@ from tests.manager_context import MANAGER_PORT, ManagerContextManager
 async def test_send_trap_enterprise_specific():
     async with ManagerContextManager() as (_, message_count):
         snmpEngine = SnmpEngine()
-        errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
+        errorIndication, errorStatus, errorIndex, varBinds = await send_notification(
             snmpEngine,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", MANAGER_PORT)),
@@ -19,7 +19,7 @@ async def test_send_trap_enterprise_specific():
             "trap",
             NotificationType(
                 ObjectIdentity("1.3.6.1.4.1.20408.4.1.1.2.432")
-            ).addVarBinds(
+            ).add_varbinds(
                 (v2c.apiTrapPDU.sysUpTime, TimeTicks(12345)),
                 ("1.3.6.1.2.1.1.1.0", OctetString("my system")),
                 (v2c.apiTrapPDU.snmpTrapAddress, IpAddress("127.0.0.1")),
@@ -30,7 +30,7 @@ async def test_send_trap_enterprise_specific():
             ),
         )
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
         await asyncio.sleep(1)
         assert message_count == [1]
 
@@ -39,15 +39,15 @@ async def test_send_trap_enterprise_specific():
 async def test_send_trap_generic():
     async with ManagerContextManager() as (_, message_count):
         snmpEngine = SnmpEngine()
-        errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
+        errorIndication, errorStatus, errorIndex, varBinds = await send_notification(
             snmpEngine,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", MANAGER_PORT)),
             ContextData(),
             "trap",
             NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2"))
-            .loadMibs("SNMPv2-MIB")
-            .addVarBinds(
+            .load_mibs("SNMPv2-MIB")
+            .add_varbinds(
                 (
                     "1.3.6.1.6.3.1.1.4.3.0",
                     "1.3.6.1.4.1.20408.4.1.1.2",
@@ -56,7 +56,7 @@ async def test_send_trap_generic():
             ),
         )
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
         await asyncio.sleep(1)
         assert message_count == [1]
 
@@ -66,10 +66,10 @@ async def test_send_trap_custom_mib():
     async with ManagerContextManager() as (_, message_count):
         snmpEngine = SnmpEngine()
         mibBuilder = snmpEngine.get_mib_builder()
-        (sysUpTime,) = mibBuilder.importSymbols("__SNMPv2-MIB", "sysUpTime")
+        (sysUpTime,) = mibBuilder.import_symbols("__SNMPv2-MIB", "sysUpTime")
         sysUpTime.syntax = TimeTicks(12345)
 
-        errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
+        errorIndication, errorStatus, errorIndex, varBinds = await send_notification(
             snmpEngine,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", MANAGER_PORT)),
@@ -77,7 +77,7 @@ async def test_send_trap_custom_mib():
             "trap",
             NotificationType(
                 ObjectIdentity("NET-SNMP-EXAMPLES-MIB", "netSnmpExampleNotification")
-            ).addVarBinds(
+            ).add_varbinds(
                 ObjectType(
                     ObjectIdentity(
                         "NET-SNMP-EXAMPLES-MIB", "netSnmpExampleHeartbeatRate"
@@ -87,6 +87,6 @@ async def test_send_trap_custom_mib():
             ),
         )
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
         await asyncio.sleep(1)
         assert message_count == [1]

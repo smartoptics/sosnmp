@@ -22,29 +22,31 @@ async def start_agent(
     snmpEngine = engine.SnmpEngine()
 
     # Set up transport endpoint
-    config.addTransport(
+    config.add_transport(
         snmpEngine,
         udp.DOMAIN_NAME,
-        udp.UdpTransport().openServerMode(("localhost", AGENT_PORT)),
+        udp.UdpTransport().open_server_mode(("localhost", AGENT_PORT)),
     )
 
     if enable_ipv6:
-        config.addTransport(
+        config.add_transport(
             snmpEngine,
             udp6.DOMAIN_NAME,
-            udp6.Udp6Transport().openServerMode(("localhost", AGENT_PORT)),
+            udp6.Udp6Transport().open_server_mode(("localhost", AGENT_PORT)),
         )
 
     # Set up community data
-    config.addV1System(snmpEngine, "public", "public")
+    config.add_v1_system(snmpEngine, "public", "public")
     # Add SNMP v3 user
-    config.addV3User(
+    config.add_v3_user(
         snmpEngine, "usr-none-none", config.USM_AUTH_NONE, config.USM_PRIV_NONE
     )
 
-    config.addV3User(snmpEngine, "usr-sha-none", config.USM_AUTH_HMAC96_SHA, "authkey1")
+    config.add_v3_user(
+        snmpEngine, "usr-sha-none", config.USM_AUTH_HMAC96_SHA, "authkey1"
+    )
 
-    config.addV3User(
+    config.add_v3_user(
         snmpEngine,
         "usr-sha-aes",
         config.USM_AUTH_HMAC96_SHA,
@@ -53,7 +55,7 @@ async def start_agent(
         "privkey1",
     )
 
-    config.addV3User(
+    config.add_v3_user(
         snmpEngine,
         "usr-sha-aes256",
         config.USM_AUTH_HMAC96_SHA,
@@ -63,21 +65,21 @@ async def start_agent(
     )
 
     # Allow read MIB access for this user / securityModels at VACM
-    config.addVacmUser(snmpEngine, 1, "public", "noAuthNoPriv", (1, 3, 6), (1, 3, 6))
-    config.addVacmUser(snmpEngine, 2, "public", "noAuthNoPriv", (1, 3, 6), (1, 3, 6))
-    config.addVacmUser(snmpEngine, 3, "usr-none-none", "noAuthNoPriv", (1, 3, 6))
-    config.addVacmUser(snmpEngine, 3, "usr-sha-none", "authNoPriv", (1, 3, 6))
-    config.addVacmUser(snmpEngine, 3, "usr-sha-aes", "authPriv", (1, 3, 6))
-    config.addVacmUser(snmpEngine, 3, "usr-sha-aes256", "authPriv", (1, 3, 6))
+    config.add_vacm_user(snmpEngine, 1, "public", "noAuthNoPriv", (1, 3, 6), (1, 3, 6))
+    config.add_vacm_user(snmpEngine, 2, "public", "noAuthNoPriv", (1, 3, 6), (1, 3, 6))
+    config.add_vacm_user(snmpEngine, 3, "usr-none-none", "noAuthNoPriv", (1, 3, 6))
+    config.add_vacm_user(snmpEngine, 3, "usr-sha-none", "authNoPriv", (1, 3, 6))
+    config.add_vacm_user(snmpEngine, 3, "usr-sha-aes", "authPriv", (1, 3, 6))
+    config.add_vacm_user(snmpEngine, 3, "usr-sha-aes256", "authPriv", (1, 3, 6))
 
     # Configure SNMP context
     snmpContext = context.SnmpContext(snmpEngine)
 
     if enable_custom_objects:
         # --- create custom Managed Object Instances ---
-        mibBuilder = snmpContext.getMibInstrum().getMibBuilder()
+        mibBuilder = snmpContext.get_mib_instrum().get_mib_builder()
 
-        MibScalar, MibScalarInstance = mibBuilder.importSymbols(
+        MibScalar, MibScalarInstance = mibBuilder.import_symbols(
             "SNMPv2-SMI", "MibScalar", "MibScalarInstance"
         )
 
@@ -99,7 +101,7 @@ async def start_agent(
                 print(f"SET operation received. New value: {value}")
                 return self.getSyntax().clone(value)
 
-        mibBuilder.exportSymbols(
+        mibBuilder.export_symbols(
             "__MY_MIB",
             MibScalar((1, 3, 6, 1, 4, 1, 60069, 9, 1), v2c.OctetString()),
             SlowMibScalarInstance(
@@ -118,14 +120,14 @@ async def start_agent(
     if enable_table_creation:
         # --- define custom SNMP Table within a newly defined EXAMPLE-MIB ---
 
-        mibBuilder = snmpContext.getMibInstrum().getMibBuilder()
+        mibBuilder = snmpContext.get_mib_instrum().get_mib_builder()
 
         (
             MibTable,
             MibTableRow,
             MibTableColumn,
             MibScalarInstance,
-        ) = mibBuilder.importSymbols(
+        ) = mibBuilder.import_symbols(
             "SNMPv2-SMI",
             "MibTable",
             "MibTableRow",
@@ -133,9 +135,9 @@ async def start_agent(
             "MibScalarInstance",
         )
 
-        (RowStatus,) = mibBuilder.importSymbols("SNMPv2-TC", "RowStatus")
+        (RowStatus,) = mibBuilder.import_symbols("SNMPv2-TC", "RowStatus")
 
-        mibBuilder.exportSymbols(
+        mibBuilder.export_symbols(
             "__EXAMPLE-MIB",
             # table object
             exampleTable=MibTable((1, 3, 6, 6, 1)).setMaxAccess("read-create"),
@@ -170,7 +172,7 @@ async def start_agent(
             exampleTableColumn2,
             exampleTableColumn3,
             exampleTableStatus,
-        ) = mibBuilder.importSymbols(
+        ) = mibBuilder.import_symbols(
             "__EXAMPLE-MIB",
             "exampleTableEntry",
             "exampleTableColumn2",
@@ -178,8 +180,8 @@ async def start_agent(
             "exampleTableStatus",
         )
         rowInstanceId = exampleTableEntry.getInstIdFromIndices("example record one")
-        mibInstrumentation = snmpContext.getMibInstrum()
-        mibInstrumentation.writeVars(
+        mibInstrumentation = snmpContext.get_mib_instrum()
+        mibInstrumentation.write_variables(
             (exampleTableColumn2.name + rowInstanceId, "my string value"),
             (exampleTableColumn3.name + rowInstanceId, 123456),
             (exampleTableStatus.name + rowInstanceId, "createAndGo"),
@@ -192,9 +194,9 @@ async def start_agent(
     cmdrsp.SetCommandResponder(snmpEngine, snmpContext)
 
     # Start the event loop
-    snmpEngine.transportDispatcher.jobStarted(1)
+    snmpEngine.transport_dispatcher.job_started(1)
 
-    snmpEngine.openDispatcher()
+    snmpEngine.open_dispatcher()
 
     # Wait for the agent to start
     await asyncio.sleep(1)
@@ -234,5 +236,5 @@ class AgentContextManager:
         return self.agent
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        self.agent.transportDispatcher.jobFinished(1)
-        self.agent.closeDispatcher()
+        self.agent.transport_dispatcher.job_finished(1)
+        self.agent.close_dispatcher()

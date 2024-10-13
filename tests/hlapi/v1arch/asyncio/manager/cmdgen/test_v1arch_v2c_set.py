@@ -9,7 +9,7 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 async def test_v2_set():
     async with AgentContextManager():
         snmpDispatcher = SnmpDispatcher()
-        errorIndication, errorStatus, errorIndex, varBinds = await setCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await set_cmd(
             snmpDispatcher,
             CommunityData("public"),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -23,4 +23,4 @@ async def test_v2_set():
         assert varBinds[0][1].prettyPrint() == "Shanghai"
         assert isinstance(varBinds[0][1], OctetString)
 
-        snmpDispatcher.transportDispatcher.closeDispatcher()
+        snmpDispatcher.transportDispatcher.close_dispatcher()

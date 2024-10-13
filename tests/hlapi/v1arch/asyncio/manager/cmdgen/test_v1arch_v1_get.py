@@ -12,7 +12,7 @@ async def test_v1_get():
     async with AgentContextManager():
         snmpDispatcher = SnmpDispatcher()
 
-        iterator = await getCmd(
+        iterator = await get_cmd(
             snmpDispatcher,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -31,7 +31,7 @@ async def test_v1_get():
         name = pysnmp_errorStatus.namedValues.getName(errorStatus)
         assert name == "noError"
 
-        snmpDispatcher.transportDispatcher.closeDispatcher()
+        snmpDispatcher.transportDispatcher.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -39,7 +39,7 @@ async def test_v1_get_ipv6():
     async with AgentContextManager(enable_ipv6=True):
         snmpDispatcher = SnmpDispatcher()
 
-        iterator = await getCmd(
+        iterator = await get_cmd(
             snmpDispatcher,
             CommunityData("public", mpModel=0),
             await Udp6TransportTarget.create(("localhost", AGENT_PORT)),
@@ -58,7 +58,7 @@ async def test_v1_get_ipv6():
         name = pysnmp_errorStatus.namedValues.getName(errorStatus)
         assert name == "noError"
 
-        snmpDispatcher.transportDispatcher.closeDispatcher()
+        snmpDispatcher.transportDispatcher.close_dispatcher()
 
 
 # TODO:
@@ -85,7 +85,7 @@ async def test_v1_get_ipv6():
 #     except asyncio.TimeoutError:
 #         assert False, "Test case timed out"
 #     finally:
-#         snmpDispatcher.transportDispatcher.closeDispatcher()
+#         snmpDispatcher.transportDispatcher.close_dispatcher()
 
 
 # @pytest.mark.asyncio
@@ -114,14 +114,14 @@ async def test_v1_get_ipv6():
 #         except asyncio.TimeoutError:
 #             assert False, "Test case timed out"
 #         finally:
-#             snmpDispatcher.transportDispatcher.closeDispatcher()
+#             snmpDispatcher.transportDispatcher.close_dispatcher()
 
 
 @pytest.mark.asyncio
 async def test_v1_get_no_access_object():
     async with AgentContextManager(enable_custom_objects=True):
         snmpDispatcher = SnmpDispatcher()
-        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
             snmpDispatcher,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(
@@ -131,4 +131,4 @@ async def test_v1_get_no_access_object():
         )
         assert errorIndication is None
         assert errorStatus.prettyPrint() == "noSuchName"  # v1 does not have noAccess
-        snmpDispatcher.transportDispatcher.closeDispatcher()
+        snmpDispatcher.transportDispatcher.close_dispatcher()

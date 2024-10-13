@@ -25,7 +25,7 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 async def test_v2_next():
     async with AgentContextManager():
         snmpDispatcher = SnmpDispatcher()
-        errorIndication, errorStatus, errorIndex, varBinds = await nextCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await next_cmd(
             snmpDispatcher,
             CommunityData("public"),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -38,4 +38,4 @@ async def test_v2_next():
         assert len(varBinds) == 1
         assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysObjectID.0"
 
-        snmpDispatcher.transportDispatcher.closeDispatcher()
+        snmpDispatcher.transportDispatcher.close_dispatcher()

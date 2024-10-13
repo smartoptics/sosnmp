@@ -10,7 +10,7 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 async def test_v2c_bulk(num_bulk):
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
-        errorIndication, errorStatus, errorIndex, varBinds = await bulkCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await bulk_cmd(
             snmpEngine,
             CommunityData("public"),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -30,13 +30,13 @@ async def test_v2c_bulk(num_bulk):
         if num_bulk > 2:
             assert varBinds[2][0].prettyPrint() == "SNMPv2-MIB::sysContact.0"
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
 async def test_v2c_bulk_non_exist():
     snmpEngine = SnmpEngine()
-    errorIndication, errorStatus, errorIndex, varBinds = await bulkCmd(
+    errorIndication, errorStatus, errorIndex, varBinds = await bulk_cmd(
         snmpEngine,
         CommunityData("public"),
         await UdpTransportTarget.create(
@@ -49,7 +49,7 @@ async def test_v2c_bulk_non_exist():
     )
 
     assert isinstance(errorIndication, RequestTimedOut)
-    snmpEngine.closeDispatcher()
+    snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -61,7 +61,7 @@ async def test_v2c_bulk_multiple_input():
     ]
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
-        errorIndication, errorStatus, errorIndex, varBinds = await bulkCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await bulk_cmd(
             snmpEngine,
             CommunityData("public"),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),

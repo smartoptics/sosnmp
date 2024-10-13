@@ -15,7 +15,7 @@ async def test_usm_sha_aes256():
             authProtocol=USM_AUTH_HMAC96_SHA,
             privProtocol=USM_PRIV_CFB256_AES,
         )
-        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
             snmpEngine,
             authData,
             await UdpTransportTarget.create(("localhost", AGENT_PORT), retries=0),
@@ -29,7 +29,7 @@ async def test_usm_sha_aes256():
         assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysDescr.0"
         isinstance(varBinds[0][1], OctetString)
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -43,7 +43,7 @@ async def test_usm_sha_aes256_wrong_auth():
             authProtocol=USM_AUTH_HMAC96_MD5,  # wrongly use usmHMACMD5AuthProtocol
             privProtocol=USM_PRIV_CFB256_AES,
         )
-        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
             snmpEngine,
             authData,
             await UdpTransportTarget.create(("localhost", AGENT_PORT), retries=0),
@@ -54,7 +54,7 @@ async def test_usm_sha_aes256_wrong_auth():
         assert isinstance(errorIndication, WrongDigest)
         assert str(errorIndication) == "Wrong SNMP PDU digest"
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -68,7 +68,7 @@ async def test_usm_sha_aes256_wrong_user():
             authProtocol=USM_AUTH_HMAC96_SHA,
             privProtocol=USM_PRIV_CFB256_AES,
         )
-        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
             snmpEngine,
             authData,
             await UdpTransportTarget.create(("localhost", AGENT_PORT), retries=0),
@@ -79,4 +79,4 @@ async def test_usm_sha_aes256_wrong_user():
         assert isinstance(errorIndication, UnknownUserName)
         assert str(errorIndication) == "Unknown USM user"
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()

@@ -7,7 +7,7 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 async def test_v1_set():
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
-        errorIndication, errorStatus, errorIndex, varBinds = await setCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await set_cmd(
             snmpEngine,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -22,7 +22,7 @@ async def test_v1_set():
         assert varBinds[0][1].prettyPrint() == "Shanghai"
         assert isinstance(varBinds[0][1], OctetString)
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -31,7 +31,7 @@ async def test_v1_set_table_creation():
         snmpEngine = SnmpEngine()
 
         # Perform a SNMP walk to get all object counts
-        objects = walkCmd(
+        objects = walk_cmd(
             snmpEngine,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -44,7 +44,7 @@ async def test_v1_set_table_creation():
 
         object_counts = len(objects_list)
 
-        errorIndication, errorStatus, errorIndex, varBinds = await setCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await set_cmd(
             snmpEngine,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -61,7 +61,7 @@ async def test_v1_set_table_creation():
         assert varBinds[0][1].prettyPrint() == "My value"
         assert isinstance(varBinds[0][1], OctetString)
 
-        errorIndication, errorStatus, errorIndex, varBinds = await setCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await set_cmd(
             snmpEngine,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -77,7 +77,7 @@ async def test_v1_set_table_creation():
         # assert isinstance(varBinds[0][1], Integer)
 
         # Perform a SNMP walk to get all object counts
-        objects = walkCmd(
+        objects = walk_cmd(
             snmpEngine,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),

@@ -59,7 +59,7 @@ async def test_v1_next():
                 "localhost",  # "demo.pysnmp.com",
                 AGENT_PORT,  # 161,
                 ObjectType(
-                    ObjectIdentity("SNMPv2-MIB", "sysDescr", 0).loadMibs("PYSNMP-MIB")
+                    ObjectIdentity("SNMPv2-MIB", "sysDescr", 0).load_mibs("PYSNMP-MIB")
                 ),
             )
 

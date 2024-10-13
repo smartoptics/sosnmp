@@ -9,7 +9,7 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 async def test_v2c_bulk(num_bulk):
     async with AgentContextManager():
         snmpDispatcher = SnmpDispatcher()
-        errorIndication, errorStatus, errorIndex, varBinds = await bulkCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await bulk_cmd(
             snmpDispatcher,
             CommunityData("public"),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -28,7 +28,7 @@ async def test_v2c_bulk(num_bulk):
         if num_bulk > 2:
             assert varBinds[2][0].prettyPrint() == "SNMPv2-MIB::sysContact.0"
 
-        snmpDispatcher.transportDispatcher.closeDispatcher()
+        snmpDispatcher.transportDispatcher.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -40,7 +40,7 @@ async def test_v2c_bulk_multiple_input():
     )
     async with AgentContextManager():
         snmpDispatcher = SnmpDispatcher()
-        errorIndication, errorStatus, errorIndex, varBinds = await bulkCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await bulk_cmd(
             snmpDispatcher,
             CommunityData("public"),
             await UdpTransportTarget.create(("demo.pysnmp.com", 161)),

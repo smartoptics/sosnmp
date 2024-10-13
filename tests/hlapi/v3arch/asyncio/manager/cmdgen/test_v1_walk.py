@@ -9,7 +9,7 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 async def test_v1_walk():
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
-        objects = walkCmd(
+        objects = walk_cmd(
             snmpEngine,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -35,7 +35,7 @@ async def test_v1_walk():
 
         assert len(objects_list) == 267
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -43,7 +43,7 @@ async def test_v1_walk_mib():
     async with AgentContextManager():
         mib_builder = MibBuilder()
         mib_view_controller = MibViewController(mib_builder)
-        mib_builder.loadModules(
+        mib_builder.load_modules(
             "SNMP-COMMUNITY-MIB",
             "PYSNMP-MIB",
             "PYSNMP-USM-MIB",
@@ -52,7 +52,7 @@ async def test_v1_walk_mib():
 
         snmpEngine = SnmpEngine()
         snmpEngine.cache["mibViewController"] = mib_view_controller
-        objects = walkCmd(
+        objects = walk_cmd(
             snmpEngine,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -93,14 +93,14 @@ async def test_v1_walk_mib():
             ):
                 assert content.count(".") == 1  # fully resolved.
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
 async def test_v1_walk_subtree():
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
-        objects = walkCmd(
+        objects = walk_cmd(
             snmpEngine,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -127,4 +127,4 @@ async def test_v1_walk_subtree():
 
         assert len(objects_list) == 8
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()

@@ -13,7 +13,7 @@ async def test_usm_sha_none():
             "authkey1",
             authProtocol=USM_AUTH_HMAC96_SHA,
         )
-        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
             snmpEngine,
             authData,
             await UdpTransportTarget.create(("localhost", AGENT_PORT), retries=0),
@@ -27,7 +27,7 @@ async def test_usm_sha_none():
         assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysDescr.0"
         isinstance(varBinds[0][1], OctetString)
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -39,7 +39,7 @@ async def test_usm_sha_none_wrong_auth():
             "authkey1",
             authProtocol=USM_AUTH_HMAC96_MD5,  # wrongly use usmHMACMD5AuthProtocol
         )
-        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
             snmpEngine,
             authData,
             await UdpTransportTarget.create(("localhost", AGENT_PORT), retries=0),
@@ -50,7 +50,7 @@ async def test_usm_sha_none_wrong_auth():
         assert isinstance(errorIndication, WrongDigest)
         assert str(errorIndication) == "Wrong SNMP PDU digest"
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -62,7 +62,7 @@ async def test_usm_sha_none_wrong_user():
             "authkey1",
             authProtocol=USM_AUTH_HMAC96_SHA,
         )
-        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
             snmpEngine,
             authData,
             await UdpTransportTarget.create(("localhost", AGENT_PORT), retries=0),
@@ -73,4 +73,4 @@ async def test_usm_sha_none_wrong_user():
         assert isinstance(errorIndication, UnknownUserName)
         assert str(errorIndication) == "Unknown USM user"
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()

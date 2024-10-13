@@ -23,21 +23,21 @@ async def start_manager(
     # Transport setup
 
     # UDP over IPv4
-    config.addTransport(
+    config.add_transport(
         snmpEngine,
         udp.DOMAIN_NAME,
-        udp.UdpTransport().openServerMode(("localhost", MANAGER_PORT)),
+        udp.UdpTransport().open_server_mode(("localhost", MANAGER_PORT)),
     )
 
     # SNMPv1/2c setup
 
     # SecurityName <-> CommunityName mapping
-    config.addV1System(snmpEngine, "public", "public")
+    config.add_v1_system(snmpEngine, "public", "public")
 
     # SNMPv3/USM setup
 
     # user: usr-md5-des, auth: MD5, priv DES
-    config.addV3User(
+    config.add_v3_user(
         snmpEngine,
         "usr-md5-des",
         config.USM_AUTH_HMAC96_MD5,
@@ -48,7 +48,7 @@ async def start_manager(
 
     # user: usr-md5-des, auth: MD5, priv DES, securityEngineId: 8000000001020304
     # this USM entry is used for TRAP receiving purposes
-    config.addV3User(
+    config.add_v3_user(
         snmpEngine,
         "usr-md5-des",
         config.USM_AUTH_HMAC96_MD5,
@@ -60,7 +60,7 @@ async def start_manager(
 
     # user: usr-none-none, auth: NONE, priv: NONE
     # this USM entry is used for TRAP receiving purposes
-    config.addV3User(
+    config.add_v3_user(
         snmpEngine,
         "usr-none-none",
         config.USM_AUTH_NONE,
@@ -79,9 +79,9 @@ async def start_manager(
     receiver = ntfrcv.NotificationReceiver(snmpEngine, cbFun)
 
     # Run I/O dispatcher which would receive queries and send confirmations
-    snmpEngine.transportDispatcher.jobStarted(1)  # this job would never finish
+    snmpEngine.transport_dispatcher.job_started(1)  # this job would never finish
 
-    snmpEngine.openDispatcher()
+    snmpEngine.open_dispatcher()
 
     # Wait for the manager to start
     await asyncio.sleep(1)
@@ -116,5 +116,5 @@ class ManagerContextManager:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         self.receiver.close(self.manager)
 
-        self.manager.transportDispatcher.jobFinished(1)
-        self.manager.closeDispatcher()
+        self.manager.transport_dispatcher.job_finished(1)
+        self.manager.close_dispatcher()

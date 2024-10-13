@@ -5,21 +5,21 @@ def test_configure_mib_viewer_and_resolve_pdu_varbinds():
     # Assemble MIB browser
     mibBuilder = builder.MibBuilder()
     mibViewController = view.MibViewController(mibBuilder)
-    compiler.addMibCompiler(
+    compiler.add_mib_compiler(
         mibBuilder,
         sources=["file:///usr/share/snmp/mibs", "https://mibs.pysnmp.com/asn1/@mib@"],
     )
 
     # Pre-load MIB modules we expect to work with
-    mibBuilder.loadModules("SNMPv2-MIB", "SNMP-COMMUNITY-MIB")
+    mibBuilder.load_modules("SNMPv2-MIB", "SNMP-COMMUNITY-MIB")
 
     # Check that the MIB browser is correctly configured
     assert isinstance(mibBuilder, builder.MibBuilder)
     assert isinstance(mibViewController, view.MibViewController)
 
     # Check that the expected MIB modules are loaded
-    assert mibBuilder.loadModules("SNMPv2-MIB") is not None
-    assert mibBuilder.loadModules("SNMP-COMMUNITY-MIB") is not None
+    assert mibBuilder.load_modules("SNMPv2-MIB") is not None
+    assert mibBuilder.load_modules("SNMP-COMMUNITY-MIB") is not None
 
     # Define expected var-binds
     expected_varbinds = [
@@ -38,7 +38,7 @@ def test_configure_mib_viewer_and_resolve_pdu_varbinds():
     # Run var-binds through MIB resolver
     # You may want to catch and ignore resolution errors here
     varBinds = [
-        rfc1902.ObjectType(rfc1902.ObjectIdentity(x[0]), x[1]).resolveWithMib(
+        rfc1902.ObjectType(rfc1902.ObjectIdentity(x[0]), x[1]).resolve_with_mib(
             mibViewController
         )
         for x in varBinds
@@ -54,22 +54,22 @@ def test_configure_mib_viewer_and_resolve_pdu_varbinds_full():
     # Assemble MIB browser
     mibBuilder = builder.MibBuilder()
     mibViewController = view.MibViewController(mibBuilder)
-    compiler.addMibCompiler(
+    compiler.add_mib_compiler(
         mibBuilder,
         sources=["file:///usr/share/snmp/mibs", "https://mibs.pysnmp.com/asn1/@mib@"],
     )
 
     # Pre-load MIB modules we expect to work with
-    mibBuilder.loadModules("SNMPv2-MIB", "SNMP-COMMUNITY-MIB", "PYSNMP-MIB")
+    mibBuilder.load_modules("SNMPv2-MIB", "SNMP-COMMUNITY-MIB", "PYSNMP-MIB")
 
     # Check that the MIB browser is correctly configured
     assert isinstance(mibBuilder, builder.MibBuilder)
     assert isinstance(mibViewController, view.MibViewController)
 
     # Check that the expected MIB modules are loaded
-    assert mibBuilder.loadModules("SNMPv2-MIB") is not None
-    assert mibBuilder.loadModules("SNMP-COMMUNITY-MIB") is not None
-    assert mibBuilder.loadModules("PYSNMP-MIB") is not None
+    assert mibBuilder.load_modules("SNMPv2-MIB") is not None
+    assert mibBuilder.load_modules("SNMP-COMMUNITY-MIB") is not None
+    assert mibBuilder.load_modules("PYSNMP-MIB") is not None
 
     # Define expected var-binds
     expected_varbinds = [
@@ -88,7 +88,7 @@ def test_configure_mib_viewer_and_resolve_pdu_varbinds_full():
     # Run var-binds through MIB resolver
     # You may want to catch and ignore resolution errors here
     varBinds = [
-        rfc1902.ObjectType(rfc1902.ObjectIdentity(x[0]), x[1]).resolveWithMib(
+        rfc1902.ObjectType(rfc1902.ObjectIdentity(x[0]), x[1]).resolve_with_mib(
             mibViewController
         )
         for x in varBinds

@@ -7,7 +7,7 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 async def test_v2_walk():  # some agents have different v2 GET NEXT behavior
     async with AgentContextManager():
         snmpDispatcher = SnmpDispatcher()
-        objects = walkCmd(
+        objects = walk_cmd(
             snmpDispatcher,
             CommunityData("public"),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -32,14 +32,14 @@ async def test_v2_walk():  # some agents have different v2 GET NEXT behavior
 
         assert len(objects_list) == 267
 
-        snmpDispatcher.transportDispatcher.closeDispatcher()
+        snmpDispatcher.transportDispatcher.close_dispatcher()
 
 
 @pytest.mark.asyncio
 async def test_v2_walk_subtree():
     async with AgentContextManager():
         snmpDispatcher = SnmpDispatcher()
-        objects = walkCmd(
+        objects = walk_cmd(
             snmpDispatcher,
             CommunityData("public"),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -65,4 +65,4 @@ async def test_v2_walk_subtree():
 
         assert len(objects_list) == 8
 
-        snmpDispatcher.transportDispatcher.closeDispatcher()
+        snmpDispatcher.transportDispatcher.close_dispatcher()

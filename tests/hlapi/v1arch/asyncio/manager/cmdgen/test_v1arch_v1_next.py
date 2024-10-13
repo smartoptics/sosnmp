@@ -25,12 +25,12 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 async def test_v1_next():
     async with AgentContextManager():
         snmpDispatcher = SnmpDispatcher()
-        errorIndication, errorStatus, errorIndex, varBinds = await nextCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await next_cmd(
             snmpDispatcher,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
             ObjectType(
-                ObjectIdentity("SNMPv2-MIB", "sysDescr", 0).loadMibs("PYSNMP-MIB")
+                ObjectIdentity("SNMPv2-MIB", "sysDescr", 0).load_mibs("PYSNMP-MIB")
             ),
         )
 
@@ -44,4 +44,4 @@ async def test_v1_next():
         )  # IMPORTANT: MIB is needed to resolve this name
         assert type(varBinds[0][1]).__name__ == "ObjectIdentity"
 
-        snmpDispatcher.transportDispatcher.closeDispatcher()
+        snmpDispatcher.transportDispatcher.close_dispatcher()

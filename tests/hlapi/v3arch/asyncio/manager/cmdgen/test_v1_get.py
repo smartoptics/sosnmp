@@ -12,7 +12,7 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 async def test_v1_get():
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
-        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
             snmpEngine,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -27,14 +27,14 @@ async def test_v1_get():
         assert varBinds[0][1].prettyPrint().startswith("PySNMP engine version")
         assert isinstance(varBinds[0][1], OctetString)
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
 async def test_v1_get_ipv6():
     async with AgentContextManager(enable_ipv6=True):
         snmpEngine = SnmpEngine()
-        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
             snmpEngine,
             CommunityData("public", mpModel=0),
             await Udp6TransportTarget.create(("localhost", AGENT_PORT)),
@@ -49,7 +49,7 @@ async def test_v1_get_ipv6():
         assert varBinds[0][1].prettyPrint().startswith("PySNMP engine version")
         assert isinstance(varBinds[0][1], OctetString)
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 def test_v1_get_timeout_invalid_target():
@@ -57,7 +57,7 @@ def test_v1_get_timeout_invalid_target():
     snmpEngine = SnmpEngine()
 
     async def run_get():
-        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
             snmpEngine,
             CommunityData("community_string"),
             await UdpTransportTarget.create(("1.2.3.4", 161), timeout=1, retries=0),
@@ -76,7 +76,7 @@ def test_v1_get_timeout_invalid_target():
     except asyncio.TimeoutError:
         assert False, "Test case timed out"
     finally:
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -85,7 +85,7 @@ async def test_v1_get_timeout_slow_object():
         snmpEngine = SnmpEngine()
 
         async def run_get():
-            errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+            errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
                 snmpEngine,
                 CommunityData("public", mpModel=0),
                 await UdpTransportTarget.create(
@@ -106,14 +106,14 @@ async def test_v1_get_timeout_slow_object():
         except asyncio.TimeoutError:
             assert False, "Test case timed out"
         finally:
-            snmpEngine.closeDispatcher()
+            snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
 async def test_v1_get_no_access_object():
     async with AgentContextManager(enable_custom_objects=True):
         snmpEngine = SnmpEngine()
-        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
             snmpEngine,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(
@@ -124,4 +124,4 @@ async def test_v1_get_no_access_object():
         )
         assert errorIndication is None
         assert errorStatus.prettyPrint() == "noSuchName"  # v1 does not have noAccess
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()

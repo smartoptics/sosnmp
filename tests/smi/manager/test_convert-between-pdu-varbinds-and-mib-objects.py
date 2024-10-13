@@ -7,6 +7,6 @@ def test_addAsn1MibSource():
     mibBuilder = builder.MibBuilder()
     mibView = view.MibViewController(mibBuilder)
     mibVar = rfc1902.ObjectIdentity("IF-MIB", "ifInOctets", 1)
-    mibVar.addAsn1MibSource("https://mibs.pysnmp.com/asn1/@mib@")
-    mibVar.resolveWithMib(mibView)
+    mibVar.add_asn1_mib_source("https://mibs.pysnmp.com/asn1/@mib@")
+    mibVar.resolve_with_mib(mibView)
     assert mibVar.prettyPrint() == "IF-MIB::ifInOctets.1"

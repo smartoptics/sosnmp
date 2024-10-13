@@ -1,6 +1,6 @@
 import pytest
 from pysnmp.entity.engine import SnmpEngine
-from pysnmp.hlapi.v1arch.asyncio.cmdgen import setCmd, walkCmd
+from pysnmp.hlapi.v1arch.asyncio.cmdgen import set_cmd, walk_cmd
 from pysnmp.hlapi.v1arch.asyncio.dispatch import SnmpDispatcher
 from pysnmp.hlapi.v1arch.asyncio.transport import UdpTransportTarget
 from pysnmp.hlapi.v1arch.asyncio.auth import CommunityData
@@ -14,7 +14,7 @@ async def test_v1_set():
     async with AgentContextManager():
         snmpDispatcher = SnmpDispatcher()
 
-        iterator = await setCmd(
+        iterator = await set_cmd(
             snmpDispatcher,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -30,7 +30,7 @@ async def test_v1_set():
         assert varBinds[0][1].prettyPrint() == "Shanghai"
         assert isinstance(varBinds[0][1], OctetString)
 
-        snmpDispatcher.transportDispatcher.closeDispatcher()
+        snmpDispatcher.transportDispatcher.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -39,7 +39,7 @@ async def test_v1_set_table_creation():
         snmpDispatcher = SnmpDispatcher()
 
         # Perform a SNMP walk to get all object counts
-        objects = walkCmd(
+        objects = walk_cmd(
             snmpDispatcher,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -51,7 +51,7 @@ async def test_v1_set_table_creation():
 
         object_counts = len(objects_list)
 
-        errorIndication, errorStatus, errorIndex, varBinds = await setCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await set_cmd(
             snmpDispatcher,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -67,7 +67,7 @@ async def test_v1_set_table_creation():
         assert varBinds[0][1].prettyPrint() == "My value"
         assert type(varBinds[0][1]).__name__ == "OctetString"
 
-        errorIndication, errorStatus, errorIndex, varBinds = await setCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await set_cmd(
             snmpDispatcher,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -82,7 +82,7 @@ async def test_v1_set_table_creation():
         # assert isinstance(varBinds[0][1], Integer)
 
         # Perform a SNMP walk to get all object counts
-        objects = walkCmd(
+        objects = walk_cmd(
             snmpDispatcher,
             CommunityData("public", mpModel=0),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -94,4 +94,4 @@ async def test_v1_set_table_creation():
 
         assert len(objects_list) == object_counts + 4
 
-        snmpDispatcher.transportDispatcher.closeDispatcher()
+        snmpDispatcher.transportDispatcher.close_dispatcher()

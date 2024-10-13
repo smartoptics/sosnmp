@@ -7,7 +7,7 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 async def test_v2_get():
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
-        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
             snmpEngine,
             CommunityData("public"),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -22,14 +22,14 @@ async def test_v2_get():
         assert varBinds[0][1].prettyPrint().startswith("PySNMP engine version")
         assert isinstance(varBinds[0][1], OctetString)
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
 async def test_v2_get_no_access_object():
     async with AgentContextManager(enable_custom_objects=True):
         snmpEngine = SnmpEngine()
-        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
             snmpEngine,
             CommunityData("public"),
             await UdpTransportTarget.create(
@@ -41,14 +41,14 @@ async def test_v2_get_no_access_object():
 
         assert errorIndication is None
         assert errorStatus.prettyPrint() == "noAccess"  # v2c and v3 use noAccess
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
 async def test_v2_get_legacy_object():
     async with AgentContextManager(enable_custom_objects=True):
         snmpEngine = SnmpEngine()
-        errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+        errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
             snmpEngine,
             CommunityData("public"),
             await UdpTransportTarget.create(
@@ -62,4 +62,4 @@ async def test_v2_get_legacy_object():
         assert (
             errorStatus.prettyPrint() == "noAccess"
         )  # PySMI <1.3.0 generates such objects
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()

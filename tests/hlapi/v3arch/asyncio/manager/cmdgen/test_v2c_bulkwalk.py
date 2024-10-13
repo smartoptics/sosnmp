@@ -9,7 +9,7 @@ from tests.agent_context import AGENT_PORT, AgentContextManager
 async def test_v2c_get_table_bulk(max_repetitions):
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
-        objects = bulkWalkCmd(
+        objects = bulk_walk_cmd(
             snmpEngine,
             CommunityData("public"),
             # await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -38,7 +38,7 @@ async def test_v2c_get_table_bulk(max_repetitions):
 
         assert len(objects_list) == 60 / max_repetitions
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -46,7 +46,7 @@ async def test_v2c_get_table_bulk_0_4_subtree():
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
         index = 0
-        async for errorIndication, errorStatus, errorIndex, varBinds in bulkWalkCmd(
+        async for errorIndication, errorStatus, errorIndex, varBinds in bulk_walk_cmd(
             snmpEngine,
             CommunityData("public"),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -78,7 +78,7 @@ async def test_v2c_get_table_bulk_0_4_subtree():
 
         assert index == 7
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -86,7 +86,7 @@ async def test_v2c_get_table_bulk_0_1_subtree():
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
         index = 0
-        async for errorIndication, errorStatus, errorIndex, varBinds in bulkWalkCmd(
+        async for errorIndication, errorStatus, errorIndex, varBinds in bulk_walk_cmd(
             snmpEngine,
             CommunityData("public"),
             await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -115,7 +115,7 @@ async def test_v2c_get_table_bulk_0_1_subtree():
 
         assert index == 28
 
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -123,7 +123,7 @@ async def test_v2c_get_table_bulk_0_7():
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
         max_repetitions = 7
-        objects = bulkWalkCmd(
+        objects = bulk_walk_cmd(
             snmpEngine,
             CommunityData("public"),
             # await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -151,14 +151,14 @@ async def test_v2c_get_table_bulk_0_7():
         # assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysName.0"
 
         assert len(objects_list) == 9
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
 async def test_v2c_get_table_bulk_0_8():
     snmpEngine = SnmpEngine()
     max_repetitions = 8
-    objects = bulkWalkCmd(
+    objects = bulk_walk_cmd(
         snmpEngine,
         CommunityData("public"),
         # await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -186,7 +186,7 @@ async def test_v2c_get_table_bulk_0_8():
     # assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysName.0"
 
     assert len(objects_list) == 8
-    snmpEngine.closeDispatcher()
+    snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -194,7 +194,7 @@ async def test_v2c_get_table_bulk_0_31():
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
         max_repetitions = 31
-        objects = bulkWalkCmd(
+        objects = bulk_walk_cmd(
             snmpEngine,
             CommunityData("public"),
             # await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -222,7 +222,7 @@ async def test_v2c_get_table_bulk_0_31():
         # assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysName.0"
 
         assert len(objects_list) == 2
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -230,7 +230,7 @@ async def test_v2c_get_table_bulk_0_60():
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
         max_repetitions = 60
-        objects = bulkWalkCmd(
+        objects = bulk_walk_cmd(
             snmpEngine,
             CommunityData("public"),
             # await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -251,7 +251,7 @@ async def test_v2c_get_table_bulk_0_60():
         assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysObjectID.0"
 
         assert len(objects_list) == 1
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -259,7 +259,7 @@ async def test_v2c_get_table_bulk_0_5_subtree():
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
         max_repetitions = 5
-        objects = bulkWalkCmd(
+        objects = bulk_walk_cmd(
             snmpEngine,
             CommunityData("public"),
             # await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -284,7 +284,7 @@ async def test_v2c_get_table_bulk_0_5_subtree():
         assert len(varBinds) == 1
 
         assert len(objects_list) == 4
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -292,7 +292,7 @@ async def test_v2c_get_table_bulk_0_6_subtree():
     async with AgentContextManager():
         snmpEngine = SnmpEngine()
         max_repetitions = 6
-        objects = bulkWalkCmd(
+        objects = bulk_walk_cmd(
             snmpEngine,
             CommunityData("public"),
             # await UdpTransportTarget.create(("localhost", AGENT_PORT)),
@@ -317,4 +317,4 @@ async def test_v2c_get_table_bulk_0_6_subtree():
         assert len(varBinds) == 4
 
         assert len(objects_list) == 3
-        snmpEngine.closeDispatcher()
+        snmpEngine.close_dispatcher()
