@@ -35,6 +35,7 @@
 #
 import asyncio
 from typing import AsyncGenerator
+import warnings
 
 from pysnmp.entity.engine import SnmpEngine
 from pysnmp.entity.rfc3413 import cmdgen
@@ -77,7 +78,7 @@ async def get_cmd(
     transportTarget: AbstractTransportTarget,
     contextData: ContextData,
     *varBinds: ObjectType,
-    **options
+    **options,
 ) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType, ...]]":
     r"""Creates a generator to perform SNMP GET query.
 
@@ -198,7 +199,7 @@ async def set_cmd(
     transportTarget: AbstractTransportTarget,
     contextData: ContextData,
     *varBinds: ObjectType,
-    **options
+    **options,
 ) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType, ...]]":
     r"""Creates a generator to perform SNMP SET query.
 
@@ -319,7 +320,7 @@ async def next_cmd(
     transportTarget: AbstractTransportTarget,
     contextData: ContextData,
     *varBinds: ObjectType,
-    **options
+    **options,
 ) -> "tuple[errind.ErrorIndication, Integer32 | str | int, Integer32 | int, tuple[ObjectType, ...]]":
     r"""Creates a generator to perform SNMP GETNEXT query.
 
@@ -458,7 +459,7 @@ async def bulk_cmd(
     nonRepeaters: int,
     maxRepetitions: int,
     *varBinds: ObjectType,
-    **options
+    **options,
 ) -> "tuple[errind.ErrorIndication, Integer32 | str | int, Integer32 | int, tuple[ObjectType, ...]]":
     r"""Creates a generator to perform SNMP GETBULK query.
 
@@ -626,7 +627,7 @@ async def walk_cmd(
     transportTarget: AbstractTransportTarget,
     contextData: ContextData,
     varBind: ObjectType,
-    **options
+    **options,
 ) -> AsyncGenerator[
     "tuple[errind.ErrorIndication | None, Integer32 | str | int | None, Integer32 | int | None, tuple[ObjectType, ...]]",
     None,
@@ -742,7 +743,7 @@ async def walk_cmd(
                 transportTarget,
                 contextData,
                 (varBind[0], Null("")),
-                **dict(lookupMib=options.get("lookupMib", True))
+                **dict(lookupMib=options.get("lookupMib", True)),
             )
             if (
                 ignoreNonIncreasingOid
@@ -815,7 +816,7 @@ async def bulk_walk_cmd(
     nonRepeaters: int,
     maxRepetitions: int,
     varBind: ObjectType,
-    **options
+    **options,
 ) -> AsyncGenerator[
     "tuple[errind.ErrorIndication | None, Integer32 | str | int | None, Integer32 | int | None, tuple[ObjectType, ...]]",
     None,
@@ -953,7 +954,7 @@ async def bulk_walk_cmd(
                 nonRepeaters,
                 maxRepetitions,
                 *[ObjectType(varBinds[-1][0], Null(""))],
-                **dict(lookupMib=options.get("lookupMib", True))
+                **dict(lookupMib=options.get("lookupMib", True)),
             )
 
             if (
@@ -1039,10 +1040,23 @@ async def bulk_walk_cmd(
 
 
 # Compatibility API
-getCmd = get_cmd  # noqa: N816
-setCmd = set_cmd  # noqa: N816
-nextCmd = next_cmd  # noqa: N816
-bulkCmd = bulk_cmd  # noqa: N816
-walkCmd = walk_cmd  # noqa: N816
-bulkWalkCmd = bulk_walk_cmd  # noqa: N816
-isEndOfMib = is_end_of_mib  # noqa: N816
+deprecated_attributes = {
+    "getCmd": "get_cmd",
+    "setCmd": "set_cmd",
+    "nextCmd": "next_cmd",
+    "bulkCmd": "bulk_cmd",
+    "walkCmd": "walk_cmd",
+    "bulkWalkCmd": "bulk_walk_cmd",
+    "isEndOfMib": "is_end_of_mib",
+}
+
+
+def __getattr__(attr: str):
+    if new_attr := deprecated_attributes.get(attr):
+        warnings.warn(
+            f"{attr} is deprecated. Please use {new_attr} instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return globals()[new_attr]
+    raise AttributeError(f"module '{__name__}' has no attribute '{attr}'")

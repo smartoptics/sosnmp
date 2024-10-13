@@ -13,6 +13,7 @@ import traceback
 from errno import ENOENT
 from importlib.machinery import BYTECODE_SUFFIXES, SOURCE_SUFFIXES
 from importlib.util import MAGIC_NUMBER as PY_MAGIC_NUMBER
+import warnings
 
 from pysnmp import debug, version as pysnmp_version
 from pysnmp.smi import error
@@ -512,6 +513,24 @@ class MibBuilder:
         self.lastBuildId += 1
 
     # Compatibility API
-    importSymbols = import_symbols  # noqa: N815
-    exportSymbols = export_symbols  # noqa: N815
-    unexportSymbols = unexport_symbols  # noqa: N815
+    deprecated_attributes = {
+        "importSymbols": "import_symbols",
+        "exportSymbols": "export_symbols",
+        "unexportSymbols": "unexport_symbols",
+        "loadModules": "load_modules",
+        "addMibSources": "add_mib_sources",
+    }
+
+    def __getattr__(self, attr):
+        """Redirect some attrs access to the OID object to behave alike."""
+        if new_attr := self.deprecated_attributes.get(attr):
+            warnings.warn(
+                f"{attr} is deprecated. Please use {new_attr} instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return getattr(self, new_attr)
+
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+        )

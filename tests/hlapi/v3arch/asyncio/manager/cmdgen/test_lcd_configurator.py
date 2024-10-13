@@ -6,10 +6,10 @@ from pysnmp.hlapi.v3arch.asyncio import *
 from pysnmp.hlapi.v3arch.asyncio.lcd import CommandGeneratorLcdConfigurator
 
 
-@mock.patch("pysnmp.entity.config.addV3User")
-@mock.patch("pysnmp.entity.config.delV3User")
+@mock.patch("pysnmp.entity.config.add_v3_user")
+@mock.patch("pysnmp.entity.config.delete_v3_user")
 @pytest.mark.asyncio
-async def test_usm_auth_cache_cleared(delV3User, addV3User):
+async def test_usm_auth_cache_cleared(delete_v3_user, add_v3_user):
     """
     Ensure auth cache is cleared when auth data is changed.
     """
@@ -27,7 +27,7 @@ async def test_usm_auth_cache_cleared(delV3User, addV3User):
     lcd = CommandGeneratorLcdConfigurator()
     initialAuthData = UsmUserData(**authDataValues)
     lcd.configure(snmpEngine, initialAuthData, transportTarget)
-    addV3User.assert_called_with(
+    add_v3_user.assert_called_with(
         snmpEngine,
         initialAuthData.userName,
         initialAuthData.authProtocol,
@@ -41,10 +41,10 @@ async def test_usm_auth_cache_cleared(delV3User, addV3User):
     )
 
     # Ensure we do not add/delete if nothing changes
-    addV3User.reset_mock()
+    add_v3_user.reset_mock()
     lcd.configure(snmpEngine, initialAuthData, transportTarget)
-    addV3User.assert_not_called()
-    delV3User.assert_not_called()
+    add_v3_user.assert_not_called()
+    delete_v3_user.assert_not_called()
 
     changeAuthValues = {
         "authKey": "authKey2",
@@ -54,20 +54,20 @@ async def test_usm_auth_cache_cleared(delV3User, addV3User):
     }
 
     for field, value in changeAuthValues.items():
-        addV3User.reset_mock()
-        delV3User.reset_mock()
+        add_v3_user.reset_mock()
+        delete_v3_user.reset_mock()
 
         authDataValues[field] = value
         authData = UsmUserData(**authDataValues)
         lcd.configure(snmpEngine, authData, transportTarget)
 
-        delV3User.assert_called_with(
+        delete_v3_user.assert_called_with(
             snmpEngine,
             authData.userName,
             authData.securityEngineId,
         )
 
-        addV3User.assert_called_with(
+        add_v3_user.assert_called_with(
             snmpEngine,
             authData.userName,
             authData.authProtocol,

@@ -6,6 +6,7 @@
 #
 import sys
 import traceback
+import warnings
 
 from pysnmp import debug
 from pysnmp.smi import error
@@ -285,3 +286,24 @@ class MibInstrumController(AbstractMibInstrumController):
     def write_variables(self, *varBinds, **context):
         """Write MIB variables."""
         return self.flip_flop_fsm(self.fsm_write_variable, *varBinds, **context)
+
+    # compatibility API
+    # Old to new attribute mapping
+    deprecated_attributes = {
+        "getMibBuilder": "get_mib_builder",
+        "readVars": "read_variables",
+        "readNextVars": "read_next_variables",
+        "writeVars": "write_variables",
+    }
+
+    def __getattr__(self, attr: str):
+        if new_attr := self.deprecated_attributes.get(attr):
+            warnings.warn(
+                f"{attr} is deprecated. Please use {new_attr} instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return getattr(self, new_attr)
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+        )

@@ -5,6 +5,7 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import sys
+import warnings
 
 from pyasn1.error import PyAsn1Error
 from pyasn1.type.base import AbstractSimpleAsn1Item
@@ -742,6 +743,19 @@ class ObjectIdentity:
                 "%s object not properly initialized" % self.__class__.__name__
             )
 
+    # Compatibility with PySNMP older versions
+    deprecated_attributes = {
+        "getOid": "get_oid",
+        "getMibSymbol": "get_mib_symbol",
+        "getMibNode": "get_mib_node",
+        "getLabel": "get_label",
+        "isFullyResolved": "is_fully_resolved",
+        "addAsn1MibSource": "add_asn1_mib_source",
+        "addMibSource": "add_mib_source",
+        "loadMibs": "load_mibs",
+        "resolveWithMib": "resolve_with_mib",
+    }
+
     def __getattr__(self, attr):
         """Redirect some attrs access to the OID object to behave alike."""
         if self.__state & self.ST_CLEAN:
@@ -761,6 +775,14 @@ class ObjectIdentity:
                 return getattr(self.__oid, attr)
             raise AttributeError(attr)
         else:
+            if new_attr := self.deprecated_attributes.get(attr):
+                warnings.warn(
+                    f"{attr} is deprecated. Please use {new_attr} instead.",
+                    DeprecationWarning,
+                    stacklevel=2,
+                )
+                return getattr(self, new_attr)
+
             raise SmiError(
                 f"{self.__class__.__name__} object not properly initialized for accessing {attr}"
             )
@@ -1066,6 +1088,33 @@ class ObjectType:
             )
         else:
             raise SmiError("%s object not fully initialized" % self.__class__.__name__)
+
+    # Compatibility with PySNMP older versions
+    deprecated_attributes = {
+        "getOid": "get_oid",
+        "getMibSymbol": "get_mib_symbol",
+        "getMibNode": "get_mib_node",
+        "getLabel": "get_label",
+        "isFullyResolved": "is_fully_resolved",
+        "addAsn1MibSource": "add_asn1_mib_source",
+        "addMibSource": "add_mib_source",
+        "loadMibs": "load_mibs",
+        "resolveWithMib": "resolve_with_mib",
+    }
+
+    def __getattr__(self, attr):
+        """Redirect some attrs access to the OID object to behave alike."""
+        if new_attr := self.deprecated_attributes.get(attr):
+            warnings.warn(
+                f"{attr} is deprecated. Please use {new_attr} instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return getattr(self, new_attr)
+
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+        )
 
 
 class NotificationType:
@@ -1407,3 +1456,24 @@ class NotificationType:
             return tuple(self.__varBinds)
         else:
             raise SmiError("%s object not fully initialized" % self.__class__.__name__)
+
+    # Old to new attribute mapping
+    deprecated_attributes = {
+        "addVarBinds": "add_varbinds",
+        "addAsn1MibSource": "add_asn1_mib_source",
+        "addMibSource": "add_mib_source",
+        "loadMibs": "load_mibs",
+    }
+
+    def __getattr__(self, attr: str):
+        if new_attr := self.deprecated_attributes.get(attr):
+            warnings.warn(
+                f"{attr} is deprecated. Please use {new_attr} instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return getattr(self, new_attr)
+
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+        )

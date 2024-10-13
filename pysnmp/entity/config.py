@@ -44,6 +44,18 @@ deprecated_attributes = {
     "usmKeyTypeLocalized": "USM_KEY_TYPE_LOCALIZED",
     "authServices": "AUTH_SERVICES",
     "privServices": "PRIV_SERVICES",
+    "addV1System": "add_v1_system",
+    "delV1System": "delete_v1_system",
+    "addV3User": "add_v3_user",
+    "delV3User": "delete_v3_user",
+    "addTransport": "add_transport",
+    "delTransport": "delete_transport",
+    "addTargetParams": "add_target_parameters",
+    "delTargetParams": "delete_target_parameters",
+    "addTargetAddr": "add_target_address",
+    "delTargetAddr": "delete_target_address",
+    "addVacmUser": "add_vacm_user",
+    "delVacmUser": "delete_vacm_user",
 }
 
 

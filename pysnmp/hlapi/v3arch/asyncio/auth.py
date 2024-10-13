@@ -476,6 +476,27 @@ class UsmUserData:
             privKeyType is None and self.privKeyType or USM_KEY_TYPE_PASSPHRASE,
         )
 
+    # Compatibility API
+    deprecated_attributes = {
+        "authKey": "authentication_key",
+        "privKey": "privacy_key",
+        "authProtocol": "authentication_protocol",
+        "privProtocol": "privacy_protocol",
+    }
+
+    def __getattr__(self, attr: str):
+        if new_attr := self.deprecated_attributes.get(attr):
+            warnings.warn(
+                f"{attr} is deprecated. Please use {new_attr} instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return getattr(self, new_attr)
+
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+        )
+
 
 # Backward-compatible protocol IDs
 

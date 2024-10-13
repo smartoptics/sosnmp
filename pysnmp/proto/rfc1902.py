@@ -4,6 +4,7 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+import warnings
 from pyasn1.type import constraint, namedtype, namedval, tag, univ
 from pysnmp.proto import error, rfc1155
 
@@ -272,9 +273,24 @@ class OctetString(univ.OctetString):
         return X
 
     # Compatibility API
-    setFixedLength = set_fixed_length  # noqa: N815
-    isFixedLength = is_fixed_length  # noqa: N815
-    getFixedLength = get_fixed_length  # noqa: N815
+    deprecated_attributes = {
+        "setFixedLength": "set_fixed_length",
+        "isFixedLength": "is_fixed_length",
+        "getFixedLength": "get_fixed_length",
+    }
+
+    def __getattr__(self, attr: str):
+        if new_attr := self.deprecated_attributes.get(attr):
+            warnings.warn(
+                f"{attr} is deprecated. Please use {new_attr} instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return getattr(self, new_attr)
+
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+        )
 
 
 class ObjectIdentifier(univ.ObjectIdentifier):

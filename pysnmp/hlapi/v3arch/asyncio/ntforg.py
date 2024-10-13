@@ -9,6 +9,7 @@
 #          Zachary Lorusso <zlorusso@gmail.com>
 #
 import asyncio
+import warnings
 
 
 from pysnmp.entity.engine import SnmpEngine
@@ -33,7 +34,7 @@ async def send_notification(
     contextData: ContextData,
     notifyType: str,
     *varBinds: NotificationType,
-    **options
+    **options,
 ):
     r"""Creates a generator to send SNMP notification.
 
@@ -185,4 +186,17 @@ async def send_notification(
 
 
 # Compatibility API
-sendNotification = send_notification  # noqa: N816
+deprecated_attributes = {
+    "sendNotification": "send_notification",
+}
+
+
+def __getattr__(attr: str):
+    if new_attr := deprecated_attributes.get(attr):
+        warnings.warn(
+            f"{attr} is deprecated. Please use {new_attr} instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return globals()[new_attr]
+    raise AttributeError(f"module '{__name__}' has no attribute '{attr}'")

@@ -6,6 +6,7 @@
 #
 import os
 import sys
+import warnings
 
 from pysnmp.smi.builder import MibBuilder
 
@@ -69,9 +70,27 @@ else:
                 PyFileBorrower(x, genTexts=mibBuilder.loadTexts)
                 for x in getReadersFromUrls(
                     *kwargs.get("borrowers") or DEFAULT_BORROWERS,
-                    **dict(lowcaseMatching=False)
+                    **dict(lowcaseMatching=False),
                 )
             ]
         )
 
         mibBuilder.set_mib_compiler(compiler, kwargs.get("destination") or DEFAULT_DEST)
+
+
+# Compatibility API
+deprecated_attributes = {
+    "addMibCompiler": "add_mib_compiler",
+    "addMibCompilerDecorator": "add_mib_compiler_decorator",
+}
+
+
+def __getattr__(attr: str):
+    if new_attr := deprecated_attributes.get(attr):
+        warnings.warn(
+            f"{attr} is deprecated. Please use {new_attr} instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return globals()[new_attr]
+    raise AttributeError(f"module '{__name__}' has no attribute '{attr}'")

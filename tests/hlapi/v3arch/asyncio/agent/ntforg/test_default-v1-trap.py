@@ -65,7 +65,7 @@ async def test_send_trap_generic():
 async def test_send_trap_custom_mib():
     async with ManagerContextManager() as (_, message_count):
         snmpEngine = SnmpEngine()
-        mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+        mibBuilder = snmpEngine.get_mib_builder()
         (sysUpTime,) = mibBuilder.importSymbols("__SNMPv2-MIB", "sysUpTime")
         sysUpTime.syntax = TimeTicks(12345)
 

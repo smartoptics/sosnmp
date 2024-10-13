@@ -9,6 +9,7 @@ import shutil
 import sys
 import tempfile
 from typing import Any, Dict
+import warnings
 
 
 from pyasn1.type import univ
@@ -279,3 +280,24 @@ class SnmpEngine:
             del self.cache["__%s" % arg]
         except KeyError:
             pass
+
+    # compatibility with legacy code
+    # Old to new attribute mapping
+    deprecated_attributes = {
+        "transportDispatcher": "transport_dispatcher",
+        "openDispatcher": "open_dispatcher",
+        "closeDispatcher": "close_dispatcher",
+        "msgAndPduDsp": "message_dispatcher",
+    }
+
+    def __getattr__(self, attr: str):
+        if new_attr := self.deprecated_attributes.get(attr):
+            warnings.warn(
+                f"{attr} is deprecated. Please use {new_attr} instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return getattr(self, new_attr)
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+        )

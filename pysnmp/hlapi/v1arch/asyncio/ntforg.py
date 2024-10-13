@@ -5,6 +5,7 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import asyncio
+import warnings
 
 from pysnmp.hlapi.transport import AbstractTransportTarget
 from pysnmp.hlapi.v1arch.asyncio.auth import CommunityData
@@ -27,7 +28,7 @@ async def send_notification(
     transportTarget: AbstractTransportTarget,
     notifyType: str,
     *varBinds: NotificationType,
-    **options
+    **options,
 ) -> "tuple[errind.ErrorIndication, Integer32 | int, Integer32 | int, tuple[ObjectType, ...]]":
     r"""Creates a generator to send SNMP notification.
 
@@ -256,4 +257,17 @@ async def send_notification(
 
 
 # Compatibility API
-sendNotification = send_notification  # noqa: N816
+deprecated_attributes = {
+    "sendNotification": "send_notification",
+}
+
+
+def __getattr__(attr: str):
+    if new_attr := deprecated_attributes.get(attr):
+        warnings.warn(
+            f"{attr} is deprecated. Please use {new_attr} instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return globals()[new_attr]
+    raise AttributeError(f"module '{__name__}' has no attribute '{attr}'")

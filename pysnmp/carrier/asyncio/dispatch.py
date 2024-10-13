@@ -38,6 +38,7 @@ import sys
 import traceback
 from time import time
 from typing import Tuple
+import warnings
 
 from pysnmp.carrier.base import AbstractTransport, AbstractTransportDispatcher
 from pysnmp.error import PySnmpError
@@ -101,3 +102,25 @@ class AsyncioDispatcher(AbstractTransportDispatcher):
         if self.__transport_count == 0 and not self.loopingcall.done():
             self.loopingcall.cancel()
             self.loopingcall = None
+
+    # compatibility with legacy code
+    # Old to new attribute mapping
+    deprecated_attributes = {
+        "jobStarted": "job_started",
+        "jobFinished": "job_finished",
+        "runDispatcher": "run_dispatcher",
+        "registerTransport": "register_transport",
+        "closeDispatcher": "close_dispatcher",
+    }
+
+    def __getattr__(self, attr: str):
+        if new_attr := self.deprecated_attributes.get(attr):
+            warnings.warn(
+                f"{attr} is deprecated. Please use {new_attr} instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return getattr(self, new_attr)
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+        )

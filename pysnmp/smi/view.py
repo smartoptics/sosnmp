@@ -4,6 +4,7 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+import warnings
 from pysnmp import debug
 from pysnmp.smi import error
 from pysnmp.smi.builder import MibBuilder
@@ -350,3 +351,39 @@ class MibViewController:
             raise error.NoSuchObjectError(
                 str=f"No type next to {modName}::{typeName} at {self}"
             )
+
+    # Compatibility API
+    deprecated_attributes = {
+        "getOrderedModuleName": "get_ordered_module_name",
+        "getFirstModuleName": "get_first_module_name",
+        "getLastModuleName": "get_last_module_name",
+        "getNextModuleName": "get_next_module_name",
+        "getNodeNameByOid": "get_node_name_by_oid",
+        "getNodeNameByDesc": "get_node_name_by_desc",
+        "getNodeName": "get_node_name",
+        "getOrderedNodeName": "get_ordered_node_name",
+        "getFirstNodeName": "get_first_node_name",
+        "getLastNodeName": "get_last_node_name",
+        "getNextNodeName": "get_next_node_name",
+        "getParentNodeName": "get_parent_node_name",
+        "getNodeLocation": "get_node_location",
+        "getTypeName": "get_type_name",
+        "getOrderedTypeName": "get_ordered_type_name",
+        "getFirstTypeName": "get_first_type_name",
+        "getLastTypeName": "get_last_type_name",
+        "getNextType": "get_next_type",
+    }
+
+    def __getattr__(self, attr):
+        """Redirect some attrs access to the OID object to behave alike."""
+        if new_attr := self.deprecated_attributes.get(attr):
+            warnings.warn(
+                f"{attr} is deprecated. Please use {new_attr} instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return getattr(self, new_attr)
+
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+        )

@@ -6,6 +6,7 @@
 #
 import sys
 from typing import TYPE_CHECKING
+import warnings
 
 
 from pyasn1.error import PyAsn1Error
@@ -712,3 +713,28 @@ class MsgAndPduDispatcher:
     def receive_timer_tick(self, snmpEngine: "SnmpEngine", timeNow):
         """Process cache timeouts."""
         self.__cache.expire(self.__expire_request, snmpEngine)
+
+    # Old to new attribute mapping
+    deprecated_attributes = {
+        "mibInstrumController": "mib_instrum_controller",
+        "registerContextEngineId": "register_context_engine_id",
+        "unregisterContextEngineId": "unregister_context_engine_id",
+        "getRegisteredApp": "get_registered_app",
+        "sendPdu": "send_pdu",
+        "returnResponsePdu": "return_response_pdu",
+        "receiveMessage": "receive_message",
+        "releaseStateInformation": "release_state_information",
+    }
+
+    def __getattr__(self, attr: str):
+        if new_attr := self.deprecated_attributes.get(attr):
+            warnings.warn(
+                f"{attr} is deprecated. Please use {new_attr} instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return getattr(self, new_attr)
+
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+        )

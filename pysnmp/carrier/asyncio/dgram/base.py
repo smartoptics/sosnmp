@@ -74,6 +74,7 @@ import asyncio
 import sys
 import traceback
 from socket import socket
+import warnings
 
 from pysnmp import debug
 from pysnmp.carrier import error
@@ -215,3 +216,25 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
         if not isinstance(transportAddress, self.ADDRESS_TYPE):
             transportAddress = self.ADDRESS_TYPE(transportAddress)
         return transportAddress
+
+    # Old to new attribute mapping
+    deprecated_attributes = {
+        "openClientMode": "open_client_mode",
+        "openServerMode": "open_server_mode",
+        "closeTransport": "close_transport",
+        "sendMessage": "send_message",
+        "normalizeAddr": "normalize_address",
+    }
+
+    def __getattr__(self, attr: str):
+        if new_attr := self.deprecated_attributes.get(attr):
+            warnings.warn(
+                f"{attr} is deprecated. Please use {new_attr} instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return getattr(self, new_attr)
+
+        raise AttributeError(
+            f"class '{self.__class__.__name__}' has no attribute '{attr}'"
+        )

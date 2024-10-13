@@ -4,6 +4,7 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+import warnings
 from pyasn1.type import univ
 from pysnmp import debug, error
 from pysnmp.entity.engine import SnmpEngine
@@ -69,3 +70,21 @@ class SnmpContext:
                 f"getMibInstrum: contextName {contextName!r}, mibInstum {self.context_names[contextName]!r}"
             )
             return self.context_names[contextName]
+
+    # compatibility with legacy code
+    # Old to new attribute mapping
+    deprecated_attributes = {
+        "getMibInstrum": "get_mib_instrum",
+    }
+
+    def __getattr__(self, attr: str):
+        if new_attr := self.deprecated_attributes.get(attr):
+            warnings.warn(
+                f"{attr} is deprecated. Please use {new_attr} instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return getattr(self, new_attr)
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+        )

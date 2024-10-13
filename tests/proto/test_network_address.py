@@ -33,7 +33,7 @@ def test_verifyComponent_normal():
     t = TypeCoercionHackMixIn()
     t._componentType = [NamedType("internet", IpAddress("10.10.10.10"))]
 
-    t._verifyComponent(0, IpAddress("10.2.3.4"))
+    t._verify_component(0, IpAddress("10.2.3.4"))
 
 
 def test_verifyComponent_invalidIdx():
@@ -41,4 +41,4 @@ def test_verifyComponent_invalidIdx():
     t._componentType = [NamedType("internet", IpAddress("10.10.10.10"))]
 
     with pytest.raises(Exception):
-        t._verifyComponent(1, IpAddress("10.2.3.4"))
+        t._verify_component(1, IpAddress("10.2.3.4"))
