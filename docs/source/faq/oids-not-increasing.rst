@@ -2,7 +2,7 @@
 Dealing with the "OID not increasing" error
 -------------------------------------------
 
-Q. I'm walking a particular Agent with the `walkCmd()` or `bulkWalkCmd()`
+Q. I'm walking a particular Agent with the `walk_cmd()` or `bulk_walk_cmd()`
    functions. It works for some OIDs, but invariably fails at certain
    OID with the *OID not increasing* error. What does it mean and
    how do I fix that?
@@ -19,7 +19,7 @@ A. The Agent you are talking to seems to be broken. The
 
    If you have to work with a broken Agent and can terminate the
    GETNEXT/GETBULK command at some point, you can pass the
-   `ignoreNonIncreasingOid=True` keyword parameter to the `walkCmd()` or `bulkWalkCmd()`
+   `ignoreNonIncreasingOid=True` keyword parameter to the `walk_cmd()` or `bulk_walk_cmd()`
    to disable OID verification at the Manager side.
 
 .. code-block:: python
@@ -28,7 +28,7 @@ A. The Agent you are talking to seems to be broken. The
     async for (errorIndication,
          errorStatus,
          errorIndex,
-         varBinds) in walkCmd(snmpEngine,
+         varBinds) in walk_cmd(snmpEngine,
                               CommunityData('public'),
                               await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
                               ContextData(),

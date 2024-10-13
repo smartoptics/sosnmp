@@ -55,7 +55,7 @@ class Slim:
 
     def close(self):
         """Closes the wrapper to release its resources."""
-        self.__snmp_dispatcher.transportDispatcher.close_dispatcher()
+        self.__snmp_dispatcher.transport_dispatcher.close_dispatcher()
 
     def __enter__(self):
         """Returns the wrapper object."""

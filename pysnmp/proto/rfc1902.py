@@ -83,10 +83,10 @@ class Integer32(univ.Integer):
         Integer32(2)
         >>> int(Integer32(321))
         321
-        >>> SmallInteger = Integer32.withRange(1,3)
+        >>> SmallInteger = Integer32.with_range(1,3)
         >>> SmallInteger(1)
         Integer32(1)
-        >>> DiscreetInteger = Integer32.withValues(4, 8, 1)
+        >>> DiscreetInteger = Integer32.with_values(4, 8, 1)
         >>> DiscreetInteger(4)
         Integer32(4)
         >>>
@@ -157,7 +157,7 @@ class Integer(Integer32):
         Integer(2)
         >>> int(Integer(321))
         321
-        >>> SomeState = Integer.withNamedValues(enable=1, disable=0)
+        >>> SomeState = Integer.with_named_values(enable=1, disable=0)
         >>> SomeState(1)
         Integer('enable')
         >>> int(SomeState('disable'))
@@ -218,7 +218,7 @@ class OctetString(univ.OctetString):
         OctetString('some apples and oranges')
         >>> str(OctetString('some apples'))
         'some apples'
-        >>> SomeString = OctetString.withSize(3, 12)
+        >>> SomeString = OctetString.with_size(3, 12)
         >>> str(SomeString(hexValue='deadbeef'))
         '\xde\xad\xbe\xef'
         >>>
@@ -666,7 +666,7 @@ class Bits(OctetString):
     Examples
     --------
         >>> from pysnmp.proto.rfc1902 import *
-        >>> SomeBits = Bits.withNamedBits(apple=0, orange=1, peach=2)
+        >>> SomeBits = Bits.with_named_bits(apple=0, orange=1, peach=2)
         >>> SomeBits(('apple', 'orange')).prettyPrint()
         'apple, orange'
         >>> SomeBits(('apple', 'orange'))

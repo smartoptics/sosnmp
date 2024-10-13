@@ -31,7 +31,7 @@ async def test_v1_get():
         name = pysnmp_errorStatus.namedValues.getName(errorStatus)
         assert name == "noError"
 
-        snmpDispatcher.transportDispatcher.close_dispatcher()
+        snmpDispatcher.transport_dispatcher.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -58,7 +58,7 @@ async def test_v1_get_ipv6():
         name = pysnmp_errorStatus.namedValues.getName(errorStatus)
         assert name == "noError"
 
-        snmpDispatcher.transportDispatcher.close_dispatcher()
+        snmpDispatcher.transport_dispatcher.close_dispatcher()
 
 
 # TODO:
@@ -67,7 +67,7 @@ async def test_v1_get_ipv6():
 #     snmpDispatcher = SnmpDispatcher()
 
 #     async def run_get():
-#         errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+#         errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
 #             snmpDispatcher,
 #             CommunityData("community_string"),
 #             await UdpTransportTarget.create(("1.2.3.4", 161), timeout=1, retries=0),
@@ -85,7 +85,7 @@ async def test_v1_get_ipv6():
 #     except asyncio.TimeoutError:
 #         assert False, "Test case timed out"
 #     finally:
-#         snmpDispatcher.transportDispatcher.close_dispatcher()
+#         snmpDispatcher.transport_dispatcher.close_dispatcher()
 
 
 # @pytest.mark.asyncio
@@ -94,7 +94,7 @@ async def test_v1_get_ipv6():
 #         snmpDispatcher = SnmpDispatcher()
 
 #         async def run_get():
-#             errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+#             errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
 #                 snmpDispatcher,
 #                 CommunityData("public", mpModel=0),
 #                 await UdpTransportTarget.create(
@@ -114,7 +114,7 @@ async def test_v1_get_ipv6():
 #         except asyncio.TimeoutError:
 #             assert False, "Test case timed out"
 #         finally:
-#             snmpDispatcher.transportDispatcher.close_dispatcher()
+#             snmpDispatcher.transport_dispatcher.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -131,4 +131,4 @@ async def test_v1_get_no_access_object():
         )
         assert errorIndication is None
         assert errorStatus.prettyPrint() == "noSuchName"  # v1 does not have noAccess
-        snmpDispatcher.transportDispatcher.close_dispatcher()
+        snmpDispatcher.transport_dispatcher.close_dispatcher()

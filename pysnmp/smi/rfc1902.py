@@ -62,7 +62,7 @@ class ObjectIdentity:
     Notes
     -----
         Actual conversion between MIB variable representation formats occurs
-        upon :py:meth:`~pysnmp.smi.rfc1902.ObjectIdentity.resolveWithMib`
+        upon :py:meth:`~pysnmp.smi.rfc1902.ObjectIdentity.resolve_with_mib`
         invocation.
 
     Examples
@@ -116,8 +116,8 @@ class ObjectIdentity:
         Examples
         --------
         >>> objectIdentity = ObjectIdentity('1.3.6.1.2.1.1.1.0')
-        >>> objectIdentity.resolveWithMib(mibViewController)
-        >>> objectIdentity.getMibSymbol()
+        >>> objectIdentity.resolve_with_mib(mibViewController)
+        >>> objectIdentity.get_mib_symbol()
         ('SNMPv2-MIB', 'sysDescr', (0,))
         >>>
 
@@ -143,8 +143,8 @@ class ObjectIdentity:
         Examples
         --------
         >>> objectIdentity = ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0)
-        >>> objectIdentity.resolveWithMib(mibViewController)
-        >>> objectIdentity.getOid()
+        >>> objectIdentity.resolve_with_mib(mibViewController)
+        >>> objectIdentity.get_oid()
         ObjectName('1.3.6.1.2.1.1.1.0')
         >>>
 
@@ -179,8 +179,8 @@ class ObjectIdentity:
         Examples
         --------
         >>> objectIdentity = ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0)
-        >>> objectIdentity.resolveWithMib(mibViewController)
-        >>> objectIdentity.getOid()
+        >>> objectIdentity.resolve_with_mib(mibViewController)
+        >>> objectIdentity.get_oid()
         ('iso', 'org', 'dod', 'internet', 'mgmt', 'mib-2', 'system', 'sysDescr')
         >>>
 
@@ -219,10 +219,10 @@ class ObjectIdentity:
         Examples
         --------
         >>> objectIdentity = ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0)
-        >>> objectIdentity.isFullyResolved()
+        >>> objectIdentity.is_fully_resolved()
         False
-        >>> objectIdentity.resolveWithMib(mibViewController)
-        >>> objectIdentity.isFullyResolved()
+        >>> objectIdentity.resolve_with_mib(mibViewController)
+        >>> objectIdentity.is_fully_resolved()
         True
         >>>
 
@@ -257,7 +257,7 @@ class ObjectIdentity:
 
         Examples
         --------
-        >>> ObjectIdentity('SNMPv2-MIB', 'sysDescr').addAsn1MibSource('https://mibs.pysnmp.com/asn1/@mib@')
+        >>> ObjectIdentity('SNMPv2-MIB', 'sysDescr').add_asn1_mib_source('https://mibs.pysnmp.com/asn1/@mib@')
         ObjectIdentity('SNMPv2-MIB', 'sysDescr')
         >>>
 
@@ -296,7 +296,7 @@ class ObjectIdentity:
 
         Examples
         --------
-        >>> ObjectIdentity('SNMPv2-MIB', 'sysDescr').addMibSource('/opt/pysnmp/mibs', 'pysnmp_mibs')
+        >>> ObjectIdentity('SNMPv2-MIB', 'sysDescr').add_mib_source('/opt/pysnmp/mibs', 'pysnmp_mibs')
         ObjectIdentity('SNMPv2-MIB', 'sysDescr')
         >>>
 
@@ -324,7 +324,7 @@ class ObjectIdentity:
 
         Examples
         --------
-        >>> ObjectIdentity('SNMPv2-MIB', 'sysDescr').loadMibs('IF-MIB', 'TCP-MIB')
+        >>> ObjectIdentity('SNMPv2-MIB', 'sysDescr').load_mibs('IF-MIB', 'TCP-MIB')
         ObjectIdentity('SNMPv2-MIB', 'sysDescr')
         >>>
 
@@ -380,7 +380,7 @@ class ObjectIdentity:
         Examples
         --------
         >>> objectIdentity = ObjectIdentity('SNMPv2-MIB', 'sysDescr')
-        >>> objectIdentity.resolveWithMib(mibViewController)
+        >>> objectIdentity.resolve_with_mib(mibViewController)
         ObjectIdentity('SNMPv2-MIB', 'sysDescr')
         >>>
 
@@ -835,7 +835,7 @@ class ObjectType:
     Notes
     -----
         Actual conversion between MIB variable representation formats occurs
-        upon :py:meth:`~pysnmp.smi.rfc1902.ObjectType.resolveWithMib`
+        upon :py:meth:`~pysnmp.smi.rfc1902.ObjectType.resolve_with_mib`
         invocation.
 
     Examples
@@ -910,7 +910,7 @@ class ObjectType:
 
         Examples
         --------
-        >>> ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr')).addAsn1MibSource('https://mibs.pysnmp.com/asn1/@mib@')
+        >>> ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr')).add_asn1_mib_source('https://mibs.pysnmp.com/asn1/@mib@')
         ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr'))
         >>>
 
@@ -942,7 +942,7 @@ class ObjectType:
 
         Examples
         --------
-        >>> ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr')).addMibSource('/opt/pysnmp/mibs', 'pysnmp_mibs')
+        >>> ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr')).add_mib_source('/opt/pysnmp/mibs', 'pysnmp_mibs')
         ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr'))
         >>>
 
@@ -966,7 +966,7 @@ class ObjectType:
 
         Examples
         --------
-        >>> ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr')).loadMibs('IF-MIB', 'TCP-MIB')
+        >>> ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr')).load_mibs('IF-MIB', 'TCP-MIB')
         ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr'))
         >>>
 
@@ -1003,15 +1003,15 @@ class ObjectType:
         Notes
         -----
         Calling this method involves
-        :py:meth:`~pysnmp.smi.rfc1902.ObjectIdentity.resolveWithMib`
+        :py:meth:`~pysnmp.smi.rfc1902.ObjectIdentity.resolve_with_mib`
         method invocation.
 
         Examples
         --------
         >>> from pysmi.hlapi.v3arch.asyncio import varbinds
-        >>> mibViewController = varbinds.MibViewControllerManager.getMibViewController(engine.cache)
+        >>> mibViewController = varbinds.MibViewControllerManager.get_mib_view_controller(engine.cache)
         >>> objectType = ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr'), 'Linux i386')
-        >>> objectType.resolveWithMib(mibViewController)
+        >>> objectType.resolve_with_mib(mibViewController)
         ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr'), DisplayString('Linux i386'))
         >>> str(objectType)
         'SNMPv2-MIB::sysDescr."0" = Linux i386'
@@ -1024,7 +1024,7 @@ class ObjectType:
         object_identity: ObjectIdentity = self.__args[0]
         object_identity.resolve_with_mib(mibViewController)
 
-        MibScalar, MibTableColumn = mibViewController.mibBuilder.import_symbols(
+        MibScalar, MibTableColumn = mibViewController.mibBuilder.import_symbols(  # type: ignore
             "SNMPv2-SMI", "MibScalar", "MibTableColumn"
         )
 
@@ -1169,7 +1169,7 @@ class NotificationType:
     Notes
     -----
         Actual notification type and MIB variables look up occurs
-        upon :py:meth:`~pysnmp.smi.rfc1902.NotificationType.resolveWithMib`
+        upon :py:meth:`~pysnmp.smi.rfc1902.NotificationType.resolve_with_mib`
         invocation.
 
     Examples
@@ -1231,7 +1231,7 @@ class NotificationType:
         Examples
         --------
         >>> nt = NotificationType(ObjectIdentity('IP-MIB', 'linkDown'))
-        >>> nt.addVarBinds(ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0)))
+        >>> nt.add_varbinds(ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0)))
         NotificationType(ObjectIdentity('IP-MIB', 'linkDown'), (), {})
         >>>
 
@@ -1269,7 +1269,7 @@ class NotificationType:
 
         Examples
         --------
-        >>> NotificationType(ObjectIdentity('IF-MIB', 'linkDown'), (), {}).addAsn1MibSource('https://mibs.pysnmp.com/asn1/@mib@')
+        >>> NotificationType(ObjectIdentity('IF-MIB', 'linkDown'), (), {}).add_asn1_mib_source('https://mibs.pysnmp.com/asn1/@mib@')
         NotificationType(ObjectIdentity('IF-MIB', 'linkDown'), (), {})
         >>>
 
@@ -1301,7 +1301,7 @@ class NotificationType:
 
         Examples
         --------
-        >>> NotificationType(ObjectIdentity('IF-MIB', 'linkDown'), (), {}).addMibSource('/opt/pysnmp/mibs', 'pysnmp_mibs')
+        >>> NotificationType(ObjectIdentity('IF-MIB', 'linkDown'), (), {}).add_mib_source('/opt/pysnmp/mibs', 'pysnmp_mibs')
         NotificationType(ObjectIdentity('IF-MIB', 'linkDown'), (), {})
         >>>
 
@@ -1325,7 +1325,7 @@ class NotificationType:
 
         Examples
         --------
-        >>> NotificationType(ObjectIdentity('IF-MIB', 'linkDown'), (), {}).loadMibs('IF-MIB', 'TCP-MIB')
+        >>> NotificationType(ObjectIdentity('IF-MIB', 'linkDown'), (), {}).load_mibs('IF-MIB', 'TCP-MIB')
         NotificationType(ObjectIdentity('IF-MIB', 'linkDown'), (), {})
         >>>
 
@@ -1368,7 +1368,7 @@ class NotificationType:
         Calling this method might cause the following sequence of
         events (exact details depends on many factors):
 
-        * :py:meth:`pysnmp.smi.rfc1902.ObjectIdentity.resolveWithMib` is called
+        * :py:meth:`pysnmp.smi.rfc1902.ObjectIdentity.resolve_with_mib` is called
         * MIB variables names are read from NOTIFICATION-TYPE->OBJECTS clause,
           :py:class:`~pysnmp.smi.rfc1902.ObjectType` instances are created
           from MIB variable OID and `indexInstance` suffix.
@@ -1378,7 +1378,7 @@ class NotificationType:
         Examples
         --------
         >>> notificationType = NotificationType(ObjectIdentity('IF-MIB', 'linkDown'))
-        >>> notificationType.resolveWithMib(mibViewController)
+        >>> notificationType.resolve_with_mib(mibViewController)
         NotificationType(ObjectIdentity('IF-MIB', 'linkDown'), (), {})
         >>>
 

@@ -17,20 +17,20 @@ A. Yes, it can do that. The Manager will verify the values you pass to SET
 
 .. code-block:: python
 
-    errorIndication, errorStatus, errorIndex, varBinds = await cmdGen.setCmd(
+    errorIndication, errorStatus, errorIndex, varBinds = await cmdGen.set_cmd(
         cmdgen.CommunityData('public'),
         await cmdgen.UdpTransportTarget(('localhost', 161)),
         ( cmdgen.MibVariable('SNMPv2-MIB', 'sysName', 0), 'new system name' )
     )
 
 To verify the response values, you should pass at least lookupValues flag
-to CommandGenerator \*cmd() method you use. In the following example
+to CommandGenerator \*_cmd() method you use. In the following example
 PySNMP will make sure that Agent-supplied value for SNMPv2-MIB::sysName
 Managed Object satisfies MIB constraints (if any).
 
 .. code-block:: python
 
-    errorIndication, errorStatus, errorIndex, varBinds = await cmdGen.getCmd(
+    errorIndication, errorStatus, errorIndex, varBinds = await cmdGen.get_cmd(
         cmdgen.CommunityData('public'),
         await cmdgen.UdpTransportTarget(('localhost', 161)),
         cmdgen.MibVariable('SNMPv2-MIB', 'sysName', 0),

@@ -32,7 +32,7 @@ async def test_v1_walk():
 
         assert len(objects_list) == 267
 
-        snmpDispatcher.transportDispatcher.close_dispatcher()
+        snmpDispatcher.transport_dispatcher.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -65,4 +65,4 @@ async def test_v1_walk_subtree():
 
         assert len(objects_list) == 8
 
-        snmpDispatcher.transportDispatcher.close_dispatcher()
+        snmpDispatcher.transport_dispatcher.close_dispatcher()

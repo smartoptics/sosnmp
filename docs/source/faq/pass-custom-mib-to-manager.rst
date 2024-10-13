@@ -28,8 +28,8 @@ A. Starting from PySNMP 4.3.x, plain-text (ASN.1) MIBs can be
     from pysnmp import hlapi
     from pysnmp.smi import compiler
     engine = hlapi.Engine()
-    builder = engine.getMibBuilder()
-    compiler.addMibCompiler(builder, sources=[
+    builder = engine.get_mib_builder()
+    compiler.add_mib_compiler(builder, sources=[
         '/usr/share/snmp/mibs',
         os.path.expanduser('~/.snmp/mibs'),
         'https://mibs.pysnmp.com/asn1/@mib@',
@@ -44,9 +44,9 @@ add the directory to your MibBuilder's MibSources.
 
 .. code::
 
-    builder = engine.getMibBuilder()
+    builder = engine.get_mib_builder()
     # Make ./mibs available to all OIDs that are created
     # e.g. with "MIB-NAME-MIB::identifier"
-    builder.addMibSources(builder_module.DirMibSource(
+    builder.add_mib_sources(builder_module.DirMibSource(
         os.path.join( HERE, 'mibs')
     ))

@@ -84,6 +84,6 @@ cmdgen.NextCommandGenerator().send_varbinds(
 )
 
 # Run I/O dispatcher which would send pending queries and process responses
-snmpEngine.openDispatcher(3)
+snmpEngine.oepn_dispatcher(3)
 
 snmpEngine.close_dispatcher()

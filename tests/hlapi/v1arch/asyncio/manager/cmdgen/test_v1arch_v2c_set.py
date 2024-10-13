@@ -23,4 +23,4 @@ async def test_v2_set():
         assert varBinds[0][1].prettyPrint() == "Shanghai"
         assert isinstance(varBinds[0][1], OctetString)
 
-        snmpDispatcher.transportDispatcher.close_dispatcher()
+        snmpDispatcher.transport_dispatcher.close_dispatcher()

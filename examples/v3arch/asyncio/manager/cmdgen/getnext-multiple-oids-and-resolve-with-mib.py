@@ -27,7 +27,7 @@ snmpEngine = engine.SnmpEngine()
 # This call will fail if PySMI is not present on the system
 compiler.add_mib_compiler(snmpEngine.get_mib_builder())
 # ... alternatively, this call will not complain on missing PySMI
-# compiler.addMibCompiler(snmpEngine.getMibBuilder(), ifAvailable=True)
+# compiler.addMibCompiler(snmpEngine.get_mib_builder(), ifAvailable=True)
 
 # Used for MIB objects resolution
 mibViewController = view.MibViewController(snmpEngine.get_mib_builder())
@@ -59,7 +59,7 @@ config.add_target_address(
 
 # Error/response receiver
 # noinspection PyUnusedLocal,PyUnusedLocal,PyUnusedLocal
-def cbFun(
+def __callback(
     snmpEngine,
     sendRequestHandle,
     errorIndication,
@@ -102,10 +102,10 @@ cmdgen.NextCommandGenerator().send_varbinds(
             mibViewController
         ),
     ],
-    cbFun,
+    __callback,
 )
 
 # Run I/O dispatcher which would send pending queries and process responses
-snmpEngine.openDispatcher(3)
+snmpEngine.open_dispatcher(3)
 
 snmpEngine.close_dispatcher()

@@ -38,4 +38,4 @@ async def test_v2_next():
         assert len(varBinds) == 1
         assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysObjectID.0"
 
-        snmpDispatcher.transportDispatcher.close_dispatcher()
+        snmpDispatcher.transport_dispatcher.close_dispatcher()

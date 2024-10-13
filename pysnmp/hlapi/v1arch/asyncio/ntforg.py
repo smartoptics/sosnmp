@@ -120,7 +120,7 @@ async def send_notification(
     >>> from pysnmp.hlapi.v1arch.asyncio import *
     >>>
     >>> async def run():
-    ...     errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
+    ...     errorIndication, errorStatus, errorIndex, varBinds = await send_notification(
     ...         SnmpDispatcher(),
     ...         CommunityData('public'),
     ...         await UdpTransportTarget.create(('demo.pysnmp.com', 162)),

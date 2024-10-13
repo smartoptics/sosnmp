@@ -44,4 +44,4 @@ async def test_v1_next():
         )  # IMPORTANT: MIB is needed to resolve this name
         assert type(varBinds[0][1]).__name__ == "ObjectIdentity"
 
-        snmpDispatcher.transportDispatcher.close_dispatcher()
+        snmpDispatcher.transport_dispatcher.close_dispatcher()

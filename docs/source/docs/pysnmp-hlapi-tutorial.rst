@@ -41,17 +41,17 @@ Making SNMP Query
 
 We will send SNMP GET command to read a MIB object from SNMP agent.
 For that purpose we will call asyncio based, high-level
-:py:func:`~pysnmp.hlapi.v3arch.asyncio.getCmd` function.
+:py:func:`~pysnmp.hlapi.v3arch.asyncio.get_cmd` function.
 Other SNMP commands can be used in a vary similar way by calling
 corresponding functions.
 
 .. code-block:: python
 
    >>> from pysnmp.hlapi.v3arch.asyncio import *
-   >>> [ x for x in dir() if 'Cmd' in x]
-   ['bulkCmd', 'getCmd', 'nextCmd', 'setCmd']
-   >>> getCmd
-   <function getCmd at 0x222b330>
+   >>> [ x for x in dir() if 'cmd' in x]
+   ['bulk_cmd', 'get_cmd', 'next_cmd', 'set_cmd']
+   >>> get_cmd
+   <function get_cmd at 0x222b330>
 
 Choosing SNMP Protocol and Credentials
 --------------------------------------
@@ -99,7 +99,7 @@ insecure, it's still the most popular SNMP version in use.
 
    >>> from pysnmp.hlapi.v3arch.asyncio import *
    >>>
-   >>> g = await getCmd(SnmpEngine(), CommunityData('public'),
+   >>> g = await get_cmd(SnmpEngine(), CommunityData('public'),
    ...
 
 Setting Transport and Target
@@ -116,7 +116,7 @@ SNMP LCD in form of properly initialized
 
    >>> from pysnmp.hlapi.v3arch.asyncio import *
    >>>
-   >>> g = await getCmd(SnmpEngine(),
+   >>> g = await get_cmd(SnmpEngine(),
    ...            CommunityData('public'),
    ...            await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...
@@ -139,7 +139,7 @@ For this example we will use the 'empty' context (default).
 
    >>> from pysnmp.hlapi.v3arch.asyncio import *
    >>>
-   >>> g = await getCmd(SnmpEngine(),
+   >>> g = await get_cmd(SnmpEngine(),
    ...            CommunityData('public'),
    ...            await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...            ContextData(),
@@ -238,7 +238,7 @@ in `RFC3418`_ ``SNMPv2-MIB`` module.
 .. code-block:: python
 
    >>> from pysnmp.hlapi.v3arch.asyncio import *
-   >>> g = await getCmd(SnmpEngine(),
+   >>> g = await get_cmd(SnmpEngine(),
    ...            CommunityData('public'),
    ...            await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...            ContextData(),
@@ -266,7 +266,7 @@ something meaningful in response.
 
    >>> from pysnmp.hlapi.v3arch.asyncio import *
    >>>
-   >>> g = await getCmd(SnmpEngine(),
+   >>> g = await get_cmd(SnmpEngine(),
    ...            CommunityData('public'),
    ...            await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...            ContextData(),
@@ -362,7 +362,7 @@ Let's read TCP-MIB::tcpConnectionState object for a TCP connection:
 
    >>> from pysnmp.hlapi.v3arch.asyncio import *
    >>>
-   >>> g = await getCmd(SnmpEngine(),
+   >>> g = await get_cmd(SnmpEngine(),
    ...            CommunityData('public'),
    ...            await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...            ContextData(),
@@ -378,13 +378,13 @@ SNMP Command Operations
 SNMP allows you to request a MIB object that is "next" to the given
 one. That way you can read MIB objects you are not aware about in
 advance. MIB objects are conceptually sorted by their OIDs.
-This feature is implemented by the :py:func:`~pysnmp.hlapi.v3arch.asyncio.nextCmd`
+This feature is implemented by the :py:func:`~pysnmp.hlapi.v3arch.asyncio.next_cmd`
 function.
 
 .. code-block:: python
 
    >>> from pysnmp.hlapi.v3arch.asyncio import *
-   >>> g =  await nextCmd(SnmpEngine(),
+   >>> g =  await next_cmd(SnmpEngine(),
    ...             CommunityData('public'),
    ...             await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...             ContextData(),
@@ -393,7 +393,7 @@ function.
    (None, 0, 0, [ObjectType(ObjectIdentity('1.3.6.1.2.1.1.1.0'), DisplayString('SunOS zeus.pysnmp.com'))])
 
 Iteration over the generator object "walk" over SNMP agent's MIB objects
-requires :py:func:`~pysnmp.hlapi.v3arch.asyncio.walkCmd` function to be
+requires :py:func:`~pysnmp.hlapi.v3arch.asyncio.walk_cmd` function to be
 called.
 
 SNMPv2c introduced significant optimization to the *GETNEXT* command -
@@ -403,7 +403,7 @@ non-repeaters and max-repetitions parameters can be used to influence
 MIB objects batching.
 
 PySNMP hides this *GETBULK* optimization at the protocol level, the
-:py:func:`~pysnmp.hlapi.v3arch.asyncio.bulkWalkCmd` function exposes the
+:py:func:`~pysnmp.hlapi.v3arch.asyncio.bulk_walk_cmd` function exposes the
 same generator API as *getNext()* for convenience.
 
 .. code-block:: python
@@ -411,7 +411,7 @@ same generator API as *getNext()* for convenience.
    >>> from pysnmp.hlapi.v3arch.asyncio import *
    >>>
    >>> N, R = 0, 25
-   >>> g = await bulkCmd(SnmpEngine(),
+   >>> g = await bulk_cmd(SnmpEngine(),
    ...             CommunityData('public'),
    ...             await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...             ContextData(),
@@ -430,7 +430,7 @@ of MIB objects.
 
    >>> from pysnmp.hlapi.v3arch.asyncio import *
    >>>
-   >>> g = await nextCmd(SnmpEngine(),
+   >>> g = await next_cmd(SnmpEngine(),
    ...             CommunityData('public'),
    ...             await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...             ContextData(),
@@ -447,7 +447,7 @@ values in exactly the same order as they were in request message.
 
    >>> from pysnmp.hlapi.v3arch.asyncio import *
    >>>
-   >>> g = await getCmd(SnmpEngine(),
+   >>> g = await get_cmd(SnmpEngine(),
    ...            CommunityData('public'),
    ...            await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...            ContextData(),
@@ -463,14 +463,14 @@ somewhat demanding (due to locking and transactional behavior
 requirements). So vendors tend to leave it out thus rendering
 managed entity being read-only.
 
-PySNMP supports *SET* uniformly through :py:func:`~pysnmp.hlapi.v3arch.asyncio.setCmd`
+PySNMP supports *SET* uniformly through :py:func:`~pysnmp.hlapi.v3arch.asyncio.set_cmd`
 function.
 
 .. code-block:: python
 
    >>> from pysnmp.hlapi.v3arch.asyncio import *
    >>>
-   >>> g = await setCmd(SnmpEngine(),
+   >>> g = await set_cmd(SnmpEngine(),
    ...            CommunityData('public'),
    ...            await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
    ...            ContextData(),
@@ -534,7 +534,7 @@ or acknowledgement is sent.
 
    >>> from pysnmp.hlapi.v3arch.asyncio import *
    >>>
-   >>> g = await sendNotification(SnmpEngine(),
+   >>> g = await send_notification(SnmpEngine(),
    ...                      CommunityData('public'),
    ...                      await UdpTransportTarget.create(('demo.pysnmp.com', 162)),
    ...                      ContextData(),
@@ -552,7 +552,7 @@ well as for agent-to-manager.
 
    >>> from pysnmp.hlapi.v3arch.asyncio import *
    >>>
-   >>> g = await sendNotification(SnmpEngine(),
+   >>> g = await send_notification(SnmpEngine(),
    ...                      CommunityData('public'),
    ...                      await UdpTransportTarget.create(('demo.pysnmp.com', 162)),
    ...                      ContextData(),
@@ -582,7 +582,7 @@ object OIDs to current values.
    ...        ObjectIdentifier('1.3.6.1.2.1.2.2.1.7.123'): 'testing',
    ...        ObjectIdentifier('1.3.6.1.2.1.2.2.1.8.123'): 'up'}
    >>>
-   >>> g = await sendNotification(SnmpEngine(),
+   >>> g = await send_notification(SnmpEngine(),
    ...                      CommunityData('public'),
    ...                      await UdpTransportTarget.create(('demo.pysnmp.com', 162)),
    ...                      ContextData(),

@@ -28,7 +28,7 @@ async def test_v2c_bulk(num_bulk):
         if num_bulk > 2:
             assert varBinds[2][0].prettyPrint() == "SNMPv2-MIB::sysContact.0"
 
-        snmpDispatcher.transportDispatcher.close_dispatcher()
+        snmpDispatcher.transport_dispatcher.close_dispatcher()
 
 
 @pytest.mark.asyncio

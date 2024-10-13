@@ -45,7 +45,7 @@ async def run():
         for varBind in varBinds:
             print(" = ".join([x.prettyPrint() for x in varBind]))
 
-    snmpDispatcher.transportDispatcher.close_dispatcher()
+    snmpDispatcher.transport_dispatcher.close_dispatcher()
 
 
 asyncio.run(run())

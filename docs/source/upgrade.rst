@@ -166,12 +166,11 @@ The goals are
 Breaking changes are
 
 - Transport type construction API is completely changed to support
-  async DNS queries.
-
-  For example, calls to ``UdpTransportTarget()`` need to move to
-  ``await UdpTransportTarget.create()``.
-- nextCmd and bulkCmd parameters and return types are revised.
-- walkCmd and bulkWalkCmd are updated accordingly.
+  async DNS queries. For example, to create transport targets now users
+  need to write ``await UdpTransportTarget.create()`` instead of
+  ``UdpTransportTarget()``.
+- ``next_cmd`` and ``bulk_cmd`` parameters and return types are revised.
+- ``walk_cmd`` and ``bulk_walk_cmd`` are updated accordingly.
 - Dropped Python 3.8 support.
 
 Related Resources

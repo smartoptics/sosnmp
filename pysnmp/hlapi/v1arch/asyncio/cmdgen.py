@@ -113,7 +113,7 @@ async def get_cmd(
     >>> from pysnmp.hlapi.v1arch.asyncio import *
     >>>
     >>> async def run():
-    ...     errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+    ...     errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
     ...         SnmpDispatcher(),
     ...         CommunityData('public'),
     ...         await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
@@ -244,7 +244,7 @@ async def set_cmd(
     >>> from pysnmp.hlapi.v1arch.asyncio import *
     >>>
     >>> async def run():
-    ...     errorIndication, errorStatus, errorIndex, varBinds = await setCmd(
+    ...     errorIndication, errorStatus, errorIndex, varBinds = await set_cmd(
     ...         SnmpDispatcher(),
     ...         CommunityData('public'),
     ...         await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
@@ -378,7 +378,7 @@ async def next_cmd(
     >>> from pysnmp.hlapi.v1arch.asyncio import *
     >>>
     >>> async def run():
-    ...     errorIndication, errorStatus, errorIndex, varBinds = await nextCmd(
+    ...     errorIndication, errorStatus, errorIndex, varBinds = await next_cmd(
     ...         SnmpDispatcher(),
     ...         CommunityData('public'),
     ...         await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
@@ -550,7 +550,7 @@ async def bulk_cmd(
     >>> from pysnmp.hlapi.v1arch.asyncio import *
     >>>
     >>> async def run():
-    ...     errorIndication, errorStatus, errorIndex, varBinds = await bulkCmd(
+    ...     errorIndication, errorStatus, errorIndex, varBinds = await bulk_cmd(
     ...         SnmpDispatcher(),
     ...         CommunityData('public'),
     ...         await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
@@ -694,7 +694,7 @@ async def walk_cmd(
 
     Notes
     -----
-    The `walkCmd` generator will be exhausted on any of the following
+    The `walk_cmd` generator will be exhausted on any of the following
     conditions:
 
     * SNMP engine error occurs thus `errorIndication` is `True`
@@ -712,7 +712,7 @@ async def walk_cmd(
     Examples
     --------
     >>> from pysnmp.hlapi.v1arch.asyncio import *
-    >>> g = await walkCmd(SnmpEngine(),
+    >>> g = await walk_cmd(SnmpEngine(),
     ...             CommunityData('public'),
     ...             await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
     ...             ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr')))
@@ -887,7 +887,7 @@ async def bulk_walk_cmd(
 
     Notes
     -----
-    The `bulkWalkCmd` generator will be exhausted on any of the following
+    The `bulk_walk_cmd` generator will be exhausted on any of the following
     conditions:
 
     * SNMP engine error occurs thus `errorIndication` is `True`
@@ -909,7 +909,7 @@ async def bulk_walk_cmd(
     Examples
     --------
     >>> from pysnmp.hlapi.v1arch.asyncio import *
-    >>> g = await bulkWalkCmd(SnmpEngine(),
+    >>> g = await bulk_walk_cmd(SnmpEngine(),
     ...             CommunityData('public'),
     ...             await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
     ...             0, 25,

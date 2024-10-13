@@ -29,6 +29,7 @@ Planned tasks are
 - [x] Identified how the new GET NEXT and GET BULK related API should be
   designed.
 - [x] Adapt to Python 3.8 end of life.
+- [x] PEP 8 cleanup on method names.
 - [ ] TODOs
 
 Breaking changes are
@@ -38,8 +39,8 @@ Breaking changes are
 
   For example, calls to ``UdpTransportTarget()`` need to move to
   ``await UdpTransportTarget.create()``.
-- nextCmd and bulkCmd parameters and return types are revised.
-- walkCmd and bulkWalkCmd are updated accordingly.
+- ``next_cmd`` and ``bulk_cmd`` parameters and return types are revised.
+- ``walk_cmd`` and ``bulk_walk_cmd`` are updated accordingly.
 
 ## 8.0 Releases
 

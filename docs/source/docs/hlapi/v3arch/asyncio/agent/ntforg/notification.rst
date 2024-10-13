@@ -5,4 +5,4 @@ TRAP/INFORM Operation
 .. toctree::
    :maxdepth: 2
 
-.. autofunction:: pysnmp.hlapi.v3arch.asyncio.sendNotification
+.. autofunction:: pysnmp.hlapi.v3arch.asyncio.send_notification

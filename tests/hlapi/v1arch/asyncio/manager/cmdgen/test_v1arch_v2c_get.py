@@ -21,7 +21,7 @@ async def test_v2_get():
         assert varBinds[0][1].prettyPrint().startswith("PySNMP engine version")
         assert isinstance(varBinds[0][1], OctetString)
 
-        snmpDispatcher.transportDispatcher.close_dispatcher()
+        snmpDispatcher.transport_dispatcher.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -39,7 +39,7 @@ async def test_v2_get_no_access_object():
 
         assert errorIndication is None
         assert errorStatus.prettyPrint() == "noAccess"  # v2c and v3 use noAccess
-        snmpDispatcher.transportDispatcher.close_dispatcher()
+        snmpDispatcher.transport_dispatcher.close_dispatcher()
 
 
 @pytest.mark.asyncio
@@ -59,4 +59,4 @@ async def test_v2_get_legacy_object():
         assert (
             errorStatus.prettyPrint() == "noAccess"
         )  # PySMI <1.3.0 generates such objects
-        snmpDispatcher.transportDispatcher.close_dispatcher()
+        snmpDispatcher.transport_dispatcher.close_dispatcher()

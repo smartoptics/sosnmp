@@ -55,19 +55,19 @@ Methods:
     connection_lost(exc):
         Cleans up after connection is lost.
 
-    openClientMode(iface=None, allow_broadcast=False):
+    open_client_mode(iface=None, allow_broadcast=False):
         Opens client mode.
 
-    openServerMode(iface=None, sock=None):
+    open_server_mode(iface=None, sock=None):
         Opens server mode.
 
-    closeTransport():
+    close_transport():
         Closes the transport.
 
-    sendMessage(outgoingMessage, transportAddress):
+    send_message(outgoingMessage, transportAddress):
         Sends a message to the transport.
 
-    normalizeAddress(transportAddress):
+    normalize_address(transportAddress):
         Returns a transport address object.
 """
 import asyncio

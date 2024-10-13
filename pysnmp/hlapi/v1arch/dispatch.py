@@ -5,6 +5,7 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 from time import time
+import warnings
 
 from pyasn1.codec.ber import decoder, encoder
 from pysnmp import debug
@@ -36,34 +37,33 @@ class AbstractSnmpDispatcher:
     """
 
     PROTO_DISPATCHER = None
+    transport_dispatcher: AbstractTransportDispatcher
 
-    def __init__(self, transportDispatcher: AbstractTransportDispatcher = None):
+    def __init__(self, transportDispatcher: AbstractTransportDispatcher = None):  # type: ignore
         if transportDispatcher:
-            self.transportDispatcher = transportDispatcher
+            self.transport_dispatcher = transportDispatcher
 
         else:
-            self.transportDispatcher = self.PROTO_DISPATCHER()
+            self.transport_dispatcher = self.PROTO_DISPATCHER()
 
-        self._automaticDispatcher = transportDispatcher is not self.transportDispatcher
+        self._automaticDispatcher = transportDispatcher is not self.transport_dispatcher
         self._configuredTransports = set()
 
         self._pendingReqs = {}
 
-        self.transportDispatcher.register_recv_callback(self._recv_callback)
-        self.transportDispatcher.register_timer_callback(self._timer_callback)
+        self.transport_dispatcher.register_recv_callback(self._recv_callback)
+        self.transport_dispatcher.register_timer_callback(self._timer_callback)
 
         self.cache = {}
 
     def __repr__(self):
-        return (
-            f"{self.__class__.__name__}(transportDispatcher={self.transportDispatcher})"
-        )
+        return f"{self.__class__.__name__}(transportDispatcher={self.transport_dispatcher})"
 
     def close(self):
-        self.transportDispatcher.unregister_recv_callback()
-        self.transportDispatcher.unregister_timer_callback()
+        self.transport_dispatcher.unregister_recv_callback()
+        self.transport_dispatcher.unregister_timer_callback()
         if self._automaticDispatcher:
-            self.transportDispatcher.close()
+            self.transport_dispatcher.close()
 
         for requestId, stateInfo in self._pendingReqs.items():
             cbFun = stateInfo["cbFun"]
@@ -86,7 +86,7 @@ class AbstractSnmpDispatcher:
             self._automaticDispatcher
             and transportTarget.TRANSPORT_DOMAIN not in self._configuredTransports
         ):
-            self.transportDispatcher.register_transport(
+            self.transport_dispatcher.register_transport(
                 transportTarget.TRANSPORT_DOMAIN,
                 transportTarget.PROTO_TRANSPORT().open_client_mode(),
             )
@@ -112,7 +112,7 @@ class AbstractSnmpDispatcher:
             retries=0,
         )
 
-        self.transportDispatcher.send_message(
+        self.transport_dispatcher.send_message(
             outgoingMsg,
             transportTarget.TRANSPORT_DOMAIN,
             transportTarget.transport_address,
@@ -123,7 +123,7 @@ class AbstractSnmpDispatcher:
         ) or reqPdu.__class__ is getattr(pMod, "TrapPDU", None):
             return requestId
 
-        self.transportDispatcher.job_started(id(self))
+        self.transport_dispatcher.job_started(id(self))
 
         return requestId
 
@@ -154,7 +154,7 @@ class AbstractSnmpDispatcher:
             except KeyError:
                 continue
 
-            self.transportDispatcher.job_finished(id(self))
+            self.transport_dispatcher.job_finished(id(self))
 
             cbFun = stateInfo["cbFun"]
             cbCtx = stateInfo["cbCtx"]
@@ -185,7 +185,7 @@ class AbstractSnmpDispatcher:
                         None,
                         cbCtx,
                     )
-                    self.transportDispatcher.job_finished(id(self))
+                    self.transport_dispatcher.job_finished(id(self))
                     continue
 
             stateInfo["retries"] += 1
@@ -193,8 +193,27 @@ class AbstractSnmpDispatcher:
 
             outgoingMsg = stateInfo["outgoingMsg"]
 
-            self.transportDispatcher.send_message(
+            self.transport_dispatcher.send_message(
                 outgoingMsg,
                 transportTarget.TRANSPORT_DOMAIN,
                 transportTarget.transport_address,
             )
+
+    # compatibility with legacy code
+    # Old to new attribute mapping
+    deprecated_attributes = {
+        "transportDispatcher": "transport_dispatcher",
+        "sendPdu": "send_pdu",
+    }
+
+    def __getattr__(self, attr: str):
+        if new_attr := self.deprecated_attributes.get(attr):
+            warnings.warn(
+                f"{attr} is deprecated. Please use {new_attr} instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return getattr(self, new_attr)
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+        )

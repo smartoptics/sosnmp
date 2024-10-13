@@ -55,7 +55,7 @@ async def run(varBinds):
         if is_end_of_mib(varBinds):
             break
 
-    snmpDispatcher.transportDispatcher.close_dispatcher()
+    snmpDispatcher.transport_dispatcher.close_dispatcher()
 
 
 asyncio.run(run([ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr"))]))
