@@ -12,18 +12,18 @@ from pysnmp.error import PySnmpError
 from pysnmp.smi.error import NoSuchInstanceError, SmiError
 
 
-def getTargetAddr(snmpEngine: SnmpEngine, snmpTargetAddrName):
+def get_target_address(snmpEngine: SnmpEngine, snmpTargetAddrName):
     """Return transport endpoint information for a given target."""
-    mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+    mibBuilder = snmpEngine.get_mib_builder()
 
-    (snmpTargetAddrEntry,) = mibBuilder.importSymbols(  # type: ignore
+    (snmpTargetAddrEntry,) = mibBuilder.import_symbols(  # type: ignore
         "SNMP-TARGET-MIB", "snmpTargetAddrEntry"
     )
 
-    cache: "dict[str, Any] | None" = snmpEngine.getUserContext("getTargetAddr")
+    cache: "dict[str, Any] | None" = snmpEngine.get_user_context("getTargetAddr")
     if cache is None:
         cache = {"id": -1}
-        snmpEngine.setUserContext(getTargetAddr=cache)
+        snmpEngine.set_user_context(getTargetAddr=cache)
 
     if cache["id"] != snmpTargetAddrEntry.branchVersionId:
         cache["nameToTargetMap"] = {}
@@ -37,7 +37,7 @@ def getTargetAddr(snmpEngine: SnmpEngine, snmpTargetAddrName):
             snmpTargetAddrTimeout,
             snmpTargetAddrRetryCount,
             snmpTargetAddrParams,
-        ) = mibBuilder.importSymbols(  # type: ignore
+        ) = mibBuilder.import_symbols(  # type: ignore
             "SNMP-TARGET-MIB",
             "snmpTargetAddrTDomain",
             "snmpTargetAddrTAddress",
@@ -45,7 +45,7 @@ def getTargetAddr(snmpEngine: SnmpEngine, snmpTargetAddrName):
             "snmpTargetAddrRetryCount",
             "snmpTargetAddrParams",
         )
-        (snmpSourceAddrTAddress,) = mibBuilder.importSymbols("PYSNMP-SOURCE-MIB", "snmpSourceAddrTAddress")  # type: ignore
+        (snmpSourceAddrTAddress,) = mibBuilder.import_symbols("PYSNMP-SOURCE-MIB", "snmpSourceAddrTAddress")  # type: ignore
 
         tblIdx = snmpTargetAddrEntry.getInstIdFromIndices(snmpTargetAddrName)
 
@@ -71,9 +71,9 @@ def getTargetAddr(snmpEngine: SnmpEngine, snmpTargetAddrName):
         except NoSuchInstanceError:
             raise SmiError("Target %s not configured to LCD" % snmpTargetAddrName)
 
-        if snmpEngine.transportDispatcher is None:
+        if snmpEngine.transport_dispatcher is None:
             raise PySnmpError("TransportDispatcher not set")
-        transport = snmpEngine.transportDispatcher.getTransport(snmpTargetAddrTDomain)
+        transport = snmpEngine.transport_dispatcher.get_transport(snmpTargetAddrTDomain)
 
         if (
             snmpTargetAddrTDomain[: len(config.SNMP_UDP_DOMAIN)]
@@ -81,22 +81,22 @@ def getTargetAddr(snmpEngine: SnmpEngine, snmpTargetAddrName):
         ):
             (
                 SnmpUDPAddress,
-            ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(  # type: ignore
+            ) = snmpEngine.get_mib_builder().import_symbols(  # type: ignore
                 "SNMPv2-TM", "SnmpUDPAddress"
             )
             addr = transport.ADDRESS_TYPE(  # type: ignore
                 SnmpUDPAddress(snmpTargetAddrTAddress)
-            ).setLocalAddress(SnmpUDPAddress(snmpSourceAddrTAddress))
+            ).set_local_address(SnmpUDPAddress(snmpSourceAddrTAddress))
         elif (
             snmpTargetAddrTDomain[: len(config.SNMP_UDP6_DOMAIN)]
             == config.SNMP_UDP6_DOMAIN
         ):
-            (TransportAddressIPv6,) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(  # type: ignore
+            (TransportAddressIPv6,) = snmpEngine.get_mib_builder().import_symbols(  # type: ignore
                 "TRANSPORT-ADDRESS-MIB", "TransportAddressIPv6"
             )
             addr = transport.ADDRESS_TYPE(  # type: ignore
                 TransportAddressIPv6(snmpTargetAddrTAddress)
-            ).setLocalAddress(TransportAddressIPv6(snmpSourceAddrTAddress))
+            ).set_local_address(TransportAddressIPv6(snmpSourceAddrTAddress))
 
         nameToTargetMap[snmpTargetAddrName] = (
             snmpTargetAddrTDomain,
@@ -111,18 +111,18 @@ def getTargetAddr(snmpEngine: SnmpEngine, snmpTargetAddrName):
     return nameToTargetMap[snmpTargetAddrName]
 
 
-def getTargetParams(snmpEngine: SnmpEngine, paramsName):
+def get_target_parameters(snmpEngine: SnmpEngine, paramsName):
     """Return security parameters for a given target."""
-    mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+    mibBuilder = snmpEngine.get_mib_builder()
 
-    (snmpTargetParamsEntry,) = mibBuilder.importSymbols(  # type: ignore
+    (snmpTargetParamsEntry,) = mibBuilder.import_symbols(  # type: ignore
         "SNMP-TARGET-MIB", "snmpTargetParamsEntry"
     )
 
-    cache: "dict[str, Any] | None" = snmpEngine.getUserContext("getTargetParams")
+    cache: "dict[str, Any] | None" = snmpEngine.get_user_context("getTargetParams")
     if cache is None:
         cache = {"id": -1}
-        snmpEngine.setUserContext(getTargetParams=cache)
+        snmpEngine.set_user_context(getTargetParams=cache)
 
     if cache["id"] != snmpTargetParamsEntry.branchVersionId:
         cache["nameToParamsMap"] = {}
@@ -135,7 +135,7 @@ def getTargetParams(snmpEngine: SnmpEngine, paramsName):
             snmpTargetParamsSecurityModel,
             snmpTargetParamsSecurityName,
             snmpTargetParamsSecurityLevel,
-        ) = mibBuilder.importSymbols(  # type: ignore
+        ) = mibBuilder.import_symbols(  # type: ignore
             "SNMP-TARGET-MIB",
             "snmpTargetParamsMPModel",
             "snmpTargetParamsSecurityModel",
@@ -173,7 +173,7 @@ def getTargetParams(snmpEngine: SnmpEngine, paramsName):
     return nameToParamsMap[paramsName]
 
 
-def getTargetInfo(snmpEngine: SnmpEngine, snmpTargetAddrName):
+def get_target_info(snmpEngine: SnmpEngine, snmpTargetAddrName):
     """Return transport endpoint and security parameters for a given target."""
     # Transport endpoint
     (
@@ -182,14 +182,14 @@ def getTargetInfo(snmpEngine: SnmpEngine, snmpTargetAddrName):
         snmpTargetAddrTimeout,
         snmpTargetAddrRetryCount,
         snmpTargetAddrParams,
-    ) = getTargetAddr(snmpEngine, snmpTargetAddrName)
+    ) = get_target_address(snmpEngine, snmpTargetAddrName)
 
     (
         snmpTargetParamsMPModel,
         snmpTargetParamsSecurityModel,
         snmpTargetParamsSecurityName,
         snmpTargetParamsSecurityLevel,
-    ) = getTargetParams(snmpEngine, snmpTargetAddrParams)
+    ) = get_target_parameters(snmpEngine, snmpTargetAddrParams)
 
     return (
         snmpTargetAddrTDomain,
@@ -203,18 +203,18 @@ def getTargetInfo(snmpEngine: SnmpEngine, snmpTargetAddrName):
     )
 
 
-def getNotificationInfo(snmpEngine: SnmpEngine, notificationTarget):
+def get_notification_info(snmpEngine: SnmpEngine, notificationTarget):
     """Return notification tag and type for a given target."""
-    mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+    mibBuilder = snmpEngine.get_mib_builder()
 
-    (snmpNotifyEntry,) = mibBuilder.importSymbols(  # type: ignore
+    (snmpNotifyEntry,) = mibBuilder.import_symbols(  # type: ignore
         "SNMP-NOTIFICATION-MIB", "snmpNotifyEntry"
     )
 
-    cache: "dict[str, Any] | None" = snmpEngine.getUserContext("getNotificationInfo")
+    cache: "dict[str, Any] | None" = snmpEngine.get_user_context("getNotificationInfo")
     if cache is None:
         cache = {"id": -1}
-        snmpEngine.setUserContext(getNotificationInfo=cache)
+        snmpEngine.set_user_context(getNotificationInfo=cache)
 
     if cache["id"] != snmpNotifyEntry.branchVersionId:
         cache["targetToNotifyMap"] = {}  # type: ignore
@@ -222,7 +222,7 @@ def getNotificationInfo(snmpEngine: SnmpEngine, notificationTarget):
     targetToNotifyMap = cache["targetToNotifyMap"]
 
     if notificationTarget not in targetToNotifyMap:
-        (snmpNotifyTag, snmpNotifyType) = mibBuilder.importSymbols(  # type: ignore
+        (snmpNotifyTag, snmpNotifyType) = mibBuilder.import_symbols(  # type: ignore
             "SNMP-NOTIFICATION-MIB", "snmpNotifyTag", "snmpNotifyType"
         )
 
@@ -242,18 +242,18 @@ def getNotificationInfo(snmpEngine: SnmpEngine, notificationTarget):
     return targetToNotifyMap[notificationTarget]
 
 
-def getTargetNames(snmpEngine: SnmpEngine, tag):
+def get_target_names(snmpEngine: SnmpEngine, tag):
     """Return a list of target names associated with a given tag."""
-    mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+    mibBuilder = snmpEngine.get_mib_builder()
 
-    (snmpTargetAddrEntry,) = mibBuilder.importSymbols(  # type: ignore
+    (snmpTargetAddrEntry,) = mibBuilder.import_symbols(  # type: ignore
         "SNMP-TARGET-MIB", "snmpTargetAddrEntry"
     )
 
-    cache: "dict[str, Any] | None" = snmpEngine.getUserContext("getTargetNames")
+    cache: "dict[str, Any] | None" = snmpEngine.get_user_context("getTargetNames")
     if cache is None:
         cache = {"id": -1}
-        snmpEngine.setUserContext(getTargetNames=cache)
+        snmpEngine.set_user_context(getTargetNames=cache)
 
     if cache["id"] == snmpTargetAddrEntry.branchVersionId:
         tagToTargetsMap = cache["tagToTargetsMap"]
@@ -266,7 +266,7 @@ def getTargetNames(snmpEngine: SnmpEngine, tag):
             SnmpTagValue,
             snmpTargetAddrName,
             snmpTargetAddrTagList,
-        ) = mibBuilder.importSymbols(  # type: ignore
+        ) = mibBuilder.import_symbols(  # type: ignore
             "SNMP-TARGET-MIB",
             "SnmpTagValue",
             "snmpTargetAddrName",

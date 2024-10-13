@@ -73,24 +73,28 @@ async def run():
     transportDispatcher = AsyncioDispatcher()
 
     # Setup a custom data routing function to select snmpEngine by transportDomain
-    transportDispatcher.registerRoutingCbFun(lambda td, ta, d: ta[1] % 3 and "A" or "B")
+    transportDispatcher.register_routing_callback(
+        lambda td, ta, d: ta[1] % 3 and "A" or "B"
+    )
 
     snmpEngineA = SnmpEngine()
     snmpEngineIDA = snmpEngineA.snmpEngineID
     print("snmpEngineA ID: %s" % snmpEngineIDA.prettyPrint())
-    snmpEngineA.registerTransportDispatcher(transportDispatcher, "A")
+    snmpEngineA.register_transport_dispatcher(transportDispatcher, "A")
 
     snmpEngineB = SnmpEngine()
     snmpEngineIDB = snmpEngineB.snmpEngineID
     print("snmpEngineB ID: %s" % snmpEngineIDB.prettyPrint())
-    snmpEngineB.registerTransportDispatcher(transportDispatcher, "B")
+    snmpEngineB.register_transport_dispatcher(transportDispatcher, "B")
 
     for authData, transportTarget, varBinds in TARGETS:
         snmpEngine = (
-            transportTarget.getTransportInfo()[1][1] % 3 and snmpEngineA or snmpEngineB
+            transportTarget.get_transport_info()[1][1] % 3
+            and snmpEngineA
+            or snmpEngineB
         )
 
-        (errorIndication, errorStatus, errorIndex, varBindTable) = await getCmd(
+        (errorIndication, errorStatus, errorIndex, varBindTable) = await get_cmd(
             snmpEngine, authData, transportTarget, ContextData(), *varBinds
         )
         print(
@@ -117,7 +121,7 @@ async def run():
             for varBind in varBindTable:
                 print(" = ".join([x.prettyPrint() for x in varBind]))
 
-    transportDispatcher.runDispatcher(5)
+    transportDispatcher.run_dispatcher(5)
 
 
 asyncio.run(run())

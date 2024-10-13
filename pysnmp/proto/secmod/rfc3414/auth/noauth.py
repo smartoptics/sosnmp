@@ -17,19 +17,19 @@ class NoAuth(base.AbstractAuthenticationService):
 
     SERVICE_ID = (1, 3, 6, 1, 6, 3, 10, 1, 1, 1)  # usmNoAuthProtocol
 
-    def hashPassphrase(self, authKey):
+    def hash_passphrase(self, authKey):
         """Hash a passphrase."""
         return
 
-    def localizeKey(self, authKey, snmpEngineID):
+    def localize_key(self, authKey, snmpEngineID):
         """Localize a key."""
         return
 
     # 7.2.4.2
-    def authenticateOutgoingMsg(self, authKey, wholeMsg):
+    def authenticate_outgoing_message(self, authKey, wholeMsg):
         """Authenticate outgoing message."""
         raise error.StatusInformation(errorIndication=errind.noAuthentication)
 
-    def authenticateIncomingMsg(self, authKey, authParameters, wholeMsg):
+    def authenticate_incoming_message(self, authKey, authParameters, wholeMsg):
         """Authenticate incoming message."""
         raise error.StatusInformation(errorIndication=errind.noAuthentication)

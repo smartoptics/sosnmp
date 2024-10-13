@@ -24,13 +24,13 @@ from pysnmp.proto.api import v2c as pMod
 
 # Build PDU
 reqPDU = pMod.InformRequestPDU()
-pMod.apiTrapPDU.setDefaults(reqPDU)
+pMod.apiTrapPDU.set_defaults(reqPDU)
 
 # Build message
 trapMsg = pMod.Message()
-pMod.apiMessage.setDefaults(trapMsg)
-pMod.apiMessage.setCommunity(trapMsg, "public")
-pMod.apiMessage.setPDU(trapMsg, reqPDU)
+pMod.apiMessage.set_defaults(trapMsg)
+pMod.apiMessage.set_community(trapMsg, "public")
+pMod.apiMessage.set_pdu(trapMsg, reqPDU)
 
 
 # noinspection PyUnusedLocal,PyUnusedLocal
@@ -39,44 +39,44 @@ def cbRecvFun(
 ):
     while wholeMsg:
         rspMsg, wholeMsg = decoder.decode(wholeMsg, asn1Spec=pMod.Message())
-        rspPDU = pMod.apiMessage.getPDU(rspMsg)
+        rspPDU = pMod.apiMessage.get_pdu(rspMsg)
         # Match response to request
-        if pMod.apiPDU.getRequestID(reqPDU) == pMod.apiPDU.getRequestID(rspPDU):
+        if pMod.apiPDU.get_request_id(reqPDU) == pMod.apiPDU.get_request_id(rspPDU):
             # Check for SNMP errors reported
-            errorStatus = pMod.apiPDU.getErrorStatus(rspPDU)
+            errorStatus = pMod.apiPDU.get_error_status(rspPDU)
             if errorStatus:
                 print(errorStatus.prettyPrint())
             else:
                 print("INFORM message delivered, response var-binds follow")
-                for oid, val in pMod.apiPDU.getVarBinds(rspPDU):
+                for oid, val in pMod.apiPDU.get_varbinds(rspPDU):
                     print(f"{oid.prettyPrint()} = {val.prettyPrint()}")
-            transportDispatcher.jobFinished(1)
+            transportDispatcher.job_finished(1)
     return wholeMsg
 
 
 transportDispatcher = AsyncioDispatcher()
 
-transportDispatcher.registerRecvCbFun(cbRecvFun)
+transportDispatcher.register_recv_callback(cbRecvFun)
 
 # UDP/IPv4
-transportDispatcher.registerTransport(
-    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
+transportDispatcher.register_transport(
+    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().open_client_mode()
 )
-transportDispatcher.sendMessage(
+transportDispatcher.send_message(
     encoder.encode(trapMsg), udp.DOMAIN_NAME, ("demo.pysnmp.com", 162)
 )
 transportDispatcher.jobStarted(1)
 
 # UDP/IPv6
-# transportDispatcher.registerTransport(
-#    udp6.domainName, udp6.Udp6AsyncioTransport().openClientMode()
+# transportDispatcher.register_transport(
+#    udp6.domainName, udp6.Udp6AsyncioTransport().open_client_mode()
 # )
-# transportDispatcher.sendMessage(
+# transportDispatcher.send_message(
 #    encoder.encode(trapMsg), udp6.domainName, ('::1', 162)
 # )
-# transportDispatcher.jobStarted(1)
+# transportDispatcher.job_started(1)
 
 # Dispatcher will finish as all scheduled messages are sent
-transportDispatcher.runDispatcher(3)
+transportDispatcher.run_dispatcher(3)
 
-transportDispatcher.closeDispatcher()
+transportDispatcher.close_dispatcher()

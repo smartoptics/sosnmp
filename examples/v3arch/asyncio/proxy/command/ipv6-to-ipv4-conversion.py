@@ -41,21 +41,21 @@ snmpEngine = engine.SnmpEngine()
 # Agent section
 
 # UDP over IPv6
-config.addTransport(
-    snmpEngine, udp6.DOMAIN_NAME, udp6.Udp6Transport().openServerMode(("::1", 161))
+config.add_transport(
+    snmpEngine, udp6.DOMAIN_NAME, udp6.Udp6Transport().open_server_mode(("::1", 161))
 )
 
 # Manager section
 
 # UDP over IPv4
-config.addTransport(snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().openClientMode())
+config.add_transport(snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().open_client_mode())
 
 #
 # SNMPv1/2c setup (Agent role)
 #
 
 # SecurityName <-> CommunityName mapping
-config.addV1System(snmpEngine, "1-my-area", "public")
+config.add_v1_system(snmpEngine, "1-my-area", "public")
 
 #
 # SNMPv1/v2c setup (Manager role)
@@ -64,16 +64,16 @@ config.addV1System(snmpEngine, "1-my-area", "public")
 # to let it match first in snmpCommunityTable on response processing.
 #
 
-config.addV1System(snmpEngine, "0-distant-area", "public", transportTag="remote")
+config.add_v1_system(snmpEngine, "0-distant-area", "public", transportTag="remote")
 
 #
 # Transport target used by Manager
 #
 
-config.addTargetParams(
+config.add_target_parameters(
     snmpEngine, "distant-agent-auth", "0-distant-area", "noAuthNoPriv", 1
 )
-config.addTargetAddr(
+config.add_target_address(
     snmpEngine,
     "distant-agent",
     udp.DOMAIN_NAME,
@@ -84,7 +84,7 @@ config.addTargetAddr(
 )
 
 # Default SNMP context
-config.addContext(snmpEngine, "")
+config.add_context(snmpEngine, "")
 
 
 class CommandResponder(cmdrsp.CommandResponderBase):
@@ -97,7 +97,9 @@ class CommandResponder(cmdrsp.CommandResponderBase):
     SUPPORTED_PDU_TYPES = cmdGenMap.keys()  # This app will handle these PDUs
 
     # SNMP request relay
-    def handleMgmtOperation(self, snmpEngine, stateReference, contextName, PDU, acInfo):
+    def handle_management_operation(
+        self, snmpEngine, stateReference, contextName, PDU, acInfo
+    ):
         cbCtx = stateReference, PDU
         contextEngineId = None  # address authoritative SNMP Engine
         try:
@@ -121,21 +123,21 @@ class CommandResponder(cmdrsp.CommandResponderBase):
         stateReference, reqPDU = cbCtx
 
         if errorIndication:
-            PDU = v2c.apiPDU.getResponse(reqPDU)
-            PDU.setErrorStatus(PDU, 5)
+            PDU = v2c.apiPDU.get_response(reqPDU)
+            PDU.set_error_status(PDU, 5)
 
-        self.sendPdu(snmpEngine, stateReference, PDU)
+        self.send_pdu(snmpEngine, stateReference, PDU)
 
-        self.releaseStateInformation(stateReference)
+        self.release_state_information(stateReference)
 
 
 CommandResponder(snmpEngine, context.SnmpContext(snmpEngine))
 
-snmpEngine.transportDispatcher.jobStarted(1)  # this job would never finish
+snmpEngine.transport_dispatcher.job_started(1)  # this job would never finish
 
 # Run I/O dispatcher which would receive queries and send responses
 try:
-    snmpEngine.openDispatcher()
+    snmpEngine.open_dispatcher()
 except:
-    snmpEngine.closeDispatcher()
+    snmpEngine.close_dispatcher()
     raise

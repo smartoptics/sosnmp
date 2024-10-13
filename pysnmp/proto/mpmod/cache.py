@@ -11,8 +11,8 @@ from pysnmp.proto import error
 class Cache:
     """SNMP message cache."""
 
-    __stateReference = nextid.Integer(0xFFFFFF)
-    __msgID = nextid.Integer(0xFFFFFF)
+    __state_reference = nextid.Integer(0xFFFFFF)
+    __message_id = nextid.Integer(0xFFFFFF)
 
     def __init__(self):
         """Create a cache object."""
@@ -25,11 +25,11 @@ class Cache:
 
     # Server mode cache handling
 
-    def newStateReference(self):
+    def new_state_reference(self):
         """Generate a new state reference."""
-        return self.__stateReference()
+        return self.__state_reference()
 
-    def pushByStateRef(self, stateReference, **msgInfo):
+    def push_by_state_reference(self, stateReference, **msgInfo):
         """Push state information."""
         if stateReference in self.__stateReferenceIndex:
             raise error.ProtocolError(
@@ -45,7 +45,7 @@ class Cache:
             self.__expirationQueue[expireAt]["stateReference"] = {}
         self.__expirationQueue[expireAt]["stateReference"][stateReference] = 1
 
-    def popByStateRef(self, stateReference):
+    def pop_by_state_reference(self, stateReference):
         """Release state information."""
         if stateReference in self.__stateReferenceIndex:
             cacheInfo = self.__stateReferenceIndex[stateReference]
@@ -60,11 +60,11 @@ class Cache:
 
     # Client mode cache handling
 
-    def newMsgID(self):
+    def new_message_id(self):
         """Generate a new message ID."""
-        return self.__msgID()
+        return self.__message_id()
 
-    def pushByMsgId(self, msgId, **msgInfo):
+    def push_by_message_id(self, msgId, **msgInfo):
         """Cache state information."""
         if msgId in self.__msgIdIndex:
             raise error.ProtocolError(f"Cache dup for msgId={msgId} at {self}")
@@ -80,7 +80,7 @@ class Cache:
             self.__expirationQueue[expireAt]["msgId"] = {}
         self.__expirationQueue[expireAt]["msgId"][msgId] = 1
 
-    def popByMsgId(self, msgId):
+    def pop_by_message_id(self, msgId):
         """Release state information."""
         if msgId in self.__msgIdIndex:
             cacheInfo = self.__msgIdIndex[msgId]
@@ -93,12 +93,12 @@ class Cache:
         del self.__expirationQueue[expireAt]["msgId"][msgId]
         return cacheEntry
 
-    def popBySendPduHandle(self, sendPduHandle):
+    def pop_by_send_pdu_handle(self, sendPduHandle):
         """Release state information."""
         if sendPduHandle in self.__sendPduHandleIdx:
-            self.popByMsgId(self.__sendPduHandleIdx[sendPduHandle])
+            self.pop_by_message_id(self.__sendPduHandleIdx[sendPduHandle])
 
-    def expireCaches(self):
+    def expire_caches(self):
         """Expire pending messages."""
         # Uses internal clock to expire pending messages
         if self.__expirationTimer in self.__expirationQueue:

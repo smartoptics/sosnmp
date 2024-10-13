@@ -33,7 +33,7 @@ pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_1]
 
 # Build PDU
 trapPDU = pMod.TrapPDU()
-pMod.apiTrapPDU.setDefaults(trapPDU)
+pMod.apiTrapPDU.set_defaults(trapPDU)
 
 # Traps have quite different semantics across proto versions
 if pMod == api.PROTOCOL_MODULES[api.SNMP_VERSION_1]:
@@ -42,27 +42,27 @@ if pMod == api.PROTOCOL_MODULES[api.SNMP_VERSION_1]:
 
 # Build message
 trapMsg = pMod.Message()
-pMod.apiMessage.setDefaults(trapMsg)
-pMod.apiMessage.setCommunity(trapMsg, "public")
-pMod.apiMessage.setPDU(trapMsg, trapPDU)
+pMod.apiMessage.set_defaults(trapMsg)
+pMod.apiMessage.set_community(trapMsg, "public")
+pMod.apiMessage.set_pdu(trapMsg, trapPDU)
 
 transportDispatcher = AsyncioDispatcher()
 
 # UDP/IPv4
-transportDispatcher.registerTransport(
-    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
+transportDispatcher.register_transport(
+    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().open_client_mode()
 )
-transportDispatcher.sendMessage(
+transportDispatcher.send_message(
     encoder.encode(trapMsg), udp.DOMAIN_NAME, ("demo.pysnmp.com", 162)
 )
 
 # UDP/IPv6
 transportDispatcher.registerTransport(
-    udp6.DOMAIN_NAME, udp6.Udp6AsyncioTransport().openClientMode()
+    udp6.DOMAIN_NAME, udp6.Udp6AsyncioTransport().open_client_mode()
 )
 transportDispatcher.sendMessage(encoder.encode(trapMsg), udp6.DOMAIN_NAME, ("::1", 162))
 
 # Dispatcher will finish as all scheduled messages are sent
 transportDispatcher.runDispatcher(3)
 
-transportDispatcher.closeDispatcher()
+transportDispatcher.close_dispatcher()

@@ -5,6 +5,8 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import sys
+from typing import TYPE_CHECKING
+
 
 from pyasn1.codec.ber import encoder
 from pyasn1.error import PyAsn1Error
@@ -13,6 +15,9 @@ from pysnmp.carrier.asyncio.dgram import udp, udp6
 from pysnmp.proto import errind, error
 from pysnmp.proto.secmod import base
 from pysnmp.smi.error import NoSuchInstanceError
+
+if TYPE_CHECKING:
+    from pysnmp.entity.engine import SnmpEngine
 
 
 class SnmpV1SecurityModel(base.AbstractSecurityModel):
@@ -42,16 +47,16 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
         """
         pass
 
-    def _sec2com(self, snmpEngine, securityName, contextEngineId, contextName):
-        (
-            snmpTargetParamsSecurityName,
-        ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+    def _sec2com(
+        self, snmpEngine: "SnmpEngine", securityName, contextEngineId, contextName
+    ):
+        (snmpTargetParamsSecurityName,) = snmpEngine.get_mib_builder().import_symbols(
             "SNMP-TARGET-MIB", "snmpTargetParamsSecurityName"
         )
         if self.__paramsBranchId != snmpTargetParamsSecurityName.branchVersionId:
             (
                 snmpTargetParamsSecurityModel,
-            ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+            ) = snmpEngine.get_mib_builder().import_symbols(
                 "SNMP-TARGET-MIB", "snmpTargetParamsSecurityModel"
             )
 
@@ -93,9 +98,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
             # invalidate next map as it include this one
             self.__securityBranchId = -1
 
-        (
-            snmpCommunityName,
-        ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+        (snmpCommunityName,) = snmpEngine.get_mib_builder().import_symbols(
             "SNMP-COMMUNITY-MIB", "snmpCommunityName"
         )
         if self.__securityBranchId != snmpCommunityName.branchVersionId:
@@ -103,7 +106,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
                 snmpCommunitySecurityName,
                 snmpCommunityContextEngineId,
                 snmpCommunityContextName,
-            ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+            ) = snmpEngine.get_mib_builder().import_symbols(
                 "SNMP-COMMUNITY-MIB",
                 "snmpCommunitySecurityName",
                 "snmpCommunityContextEngineID",
@@ -162,10 +165,8 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
         except KeyError:
             raise error.StatusInformation(errorIndication=errind.unknownCommunityName)
 
-    def _com2sec(self, snmpEngine, communityName, transportInformation):
-        (
-            snmpTargetAddrTAddress,
-        ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+    def _com2sec(self, snmpEngine: "SnmpEngine", communityName, transportInformation):
+        (snmpTargetAddrTAddress,) = snmpEngine.get_mib_builder().import_symbols(
             "SNMP-TARGET-MIB", "snmpTargetAddrTAddress"
         )
         if self.__transportBranchId != snmpTargetAddrTAddress.branchVersionId:
@@ -173,7 +174,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
                 SnmpTagValue,
                 snmpTargetAddrTDomain,
                 snmpTargetAddrTagList,
-            ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+            ) = snmpEngine.get_mib_builder().import_symbols(
                 "SNMP-TARGET-MIB",
                 "SnmpTagValue",
                 "snmpTargetAddrTDomain",
@@ -204,9 +205,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
                 targetAddrTDomain = tuple(targetAddrTDomain)
 
                 if targetAddrTDomain[: len(udp.SNMP_UDP_DOMAIN)] == udp.SNMP_UDP_DOMAIN:
-                    (
-                        SnmpUDPAddress,
-                    ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+                    (SnmpUDPAddress,) = snmpEngine.get_mib_builder().import_symbols(
                         "SNMPv2-TM", "SnmpUDPAddress"
                     )
                     targetAddrTAddress = tuple(SnmpUDPAddress(targetAddrTAddress))
@@ -216,7 +215,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
                 ):
                     (
                         TransportAddressIPv6,
-                    ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+                    ) = snmpEngine.get_mib_builder().import_symbols(
                         "TRANSPORT-ADDRESS-MIB", "TransportAddressIPv6"
                     )
                     targetAddrTAddress = tuple(TransportAddressIPv6(targetAddrTAddress))
@@ -256,16 +255,14 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
                 )
             )
 
-        (
-            snmpTargetParamsSecurityName,
-        ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+        (snmpTargetParamsSecurityName,) = snmpEngine.get_mib_builder().import_symbols(
             "SNMP-TARGET-MIB", "snmpTargetParamsSecurityName"
         )
 
         if self.__paramsBranchId != snmpTargetParamsSecurityName.branchVersionId:
             (
                 snmpTargetParamsSecurityModel,
-            ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+            ) = snmpEngine.get_mib_builder().import_symbols(
                 "SNMP-TARGET-MIB", "snmpTargetParamsSecurityModel"
             )
 
@@ -313,9 +310,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
                 )
             )
 
-        (
-            snmpCommunityName,
-        ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+        (snmpCommunityName,) = snmpEngine.get_mib_builder().import_symbols(
             "SNMP-COMMUNITY-MIB", "snmpCommunityName"
         )
         if self.__communityBranchId != snmpCommunityName.branchVersionId:
@@ -324,7 +319,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
                 snmpCommunityContextEngineId,
                 snmpCommunityContextName,
                 snmpCommunityTransportTag,
-            ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+            ) = snmpEngine.get_mib_builder().import_symbols(
                 "SNMP-COMMUNITY-MIB",
                 "snmpCommunitySecurityName",
                 "snmpCommunityContextEngineID",
@@ -441,9 +436,9 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
 
         raise error.StatusInformation(errorIndication=errind.unknownCommunityName)
 
-    def generateRequestMsg(
+    def generate_request_message(
         self,
-        snmpEngine,
+        snmpEngine: "SnmpEngine",
         messageProcessingModel,
         globalData,
         maxMessageSize,
@@ -493,9 +488,9 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
             )
             raise error.StatusInformation(errorIndication=errind.serializationError)
 
-    def generateResponseMsg(
+    def generate_response_message(
         self,
-        snmpEngine,
+        snmpEngine: "SnmpEngine",
         messageProcessingModel,
         globalData,
         maxMessageSize,
@@ -543,9 +538,9 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
             )
             raise error.StatusInformation(errorIndication=errind.serializationError)
 
-    def processIncomingMsg(
+    def process_incoming_message(
         self,
-        snmpEngine,
+        snmpEngine: "SnmpEngine",
         messageProcessingModel,
         maxMessageSize,
         securityParameters,
@@ -562,10 +557,10 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
             communityName=communityName, transportInformation=transportInformation
         )
 
-        snmpEngine.observer.storeExecutionContext(
+        snmpEngine.observer.store_execution_context(
             snmpEngine, "rfc2576.processIncomingMsg:writable", scope
         )
-        snmpEngine.observer.clearExecutionContext(
+        snmpEngine.observer.clear_execution_context(
             snmpEngine, "rfc2576.processIncomingMsg:writable"
         )
 
@@ -577,9 +572,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
             )
 
         except error.StatusInformation:
-            (
-                snmpInBadCommunityNames,
-            ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+            (snmpInBadCommunityNames,) = snmpEngine.get_mib_builder().import_symbols(
                 "__SNMPv2-MIB", "snmpInBadCommunityNames"
             )
             snmpInBadCommunityNames.syntax += 1
@@ -587,15 +580,13 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
                 errorIndication=errind.unknownCommunityName, communityName=communityName
             )
 
-        (
-            snmpEngineID,
-        ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+        (snmpEngineID,) = snmpEngine.get_mib_builder().import_symbols(
             "__SNMP-FRAMEWORK-MIB", "snmpEngineID"
         )
 
         securityEngineID = snmpEngineID.syntax
 
-        snmpEngine.observer.storeExecutionContext(
+        snmpEngine.observer.store_execution_context(
             snmpEngine,
             "rfc2576.processIncomingMsg",
             dict(
@@ -607,7 +598,7 @@ class SnmpV1SecurityModel(base.AbstractSecurityModel):
                 contextName=contextName,
             ),
         )
-        snmpEngine.observer.clearExecutionContext(
+        snmpEngine.observer.clear_execution_context(
             snmpEngine, "rfc2576.processIncomingMsg"
         )
 

@@ -39,11 +39,11 @@ unSpecified = UnSpecified("")  # noqa: N816
 class NoSuchObject(univ.Null):
     """No Such Object exception."""
 
-    tagSet = univ.Null.tagSet.tagImplicitly(
+    tagSet = univ.Null.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0x00)
     )
 
-    def prettyPrint(self, scope=0):
+    def prettyPrint(self, scope=0):  # noqa: N802
         """Return a human-readable string representation of the exception."""
         return "No Such Object currently exists at this OID"
 
@@ -54,11 +54,11 @@ noSuchObject = NoSuchObject("")  # noqa: N816
 class NoSuchInstance(univ.Null):
     """No Such Instance exception."""
 
-    tagSet = univ.Null.tagSet.tagImplicitly(
+    tagSet = univ.Null.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0x01)
     )
 
-    def prettyPrint(self, scope=0):
+    def prettyPrint(self, scope=0):  # noqa: N802
         """Return a human-readable string representation of the exception."""
         return "No Such Instance currently exists at this OID"
 
@@ -69,11 +69,11 @@ noSuchInstance = NoSuchInstance("")  # noqa: N816
 class EndOfMibView(univ.Null):
     """End of MIB View exception."""
 
-    tagSet = univ.Null.tagSet.tagImplicitly(
+    tagSet = univ.Null.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0x02)
     )
 
-    def prettyPrint(self, scope=0):
+    def prettyPrint(self, scope=0):  # noqa: N802
         """Return a human-readable string representation of the exception."""
         return "No more variables left in this MIB View"
 
@@ -83,7 +83,7 @@ endOfMibView = EndOfMibView("")  # noqa: N816
 
 # Made a separate class for better readability
 class _BindValue(univ.Choice):
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("value", rfc1902.ObjectSyntax()),
         namedtype.NamedType("unSpecified", unSpecified),
         namedtype.NamedType("noSuchObject", noSuchObject),
@@ -95,7 +95,7 @@ class _BindValue(univ.Choice):
 class VarBind(univ.Sequence):
     """VarBind class."""
 
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("name", rfc1902.ObjectName()),
         namedtype.NamedType("", _BindValue()),
     )
@@ -104,10 +104,10 @@ class VarBind(univ.Sequence):
 class VarBindList(univ.SequenceOf):
     """VarBindList class."""
 
-    componentType = VarBind()
+    componentType = VarBind()  # noqa: N815
     subtypeSpec = univ.SequenceOf.subtypeSpec + constraint.ValueSizeConstraint(
         0, max_bindings
-    )
+    )  # noqa: N815
 
 
 errorStatus = univ.Integer(  # noqa: N816
@@ -139,7 +139,7 @@ errorStatus = univ.Integer(  # noqa: N816
 class PDU(univ.Sequence):
     """PDU class."""
 
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("request-id", rfc1902.Integer32()),
         namedtype.NamedType("error-status", errorStatus),
         namedtype.NamedType(
@@ -164,7 +164,7 @@ maxRepetitions = univ.Integer().subtype(  # noqa: N816
 class BulkPDU(univ.Sequence):
     """BulkPDU class."""
 
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("request-id", rfc1902.Integer32()),
         namedtype.NamedType("non-repeaters", nonRepeaters),
         namedtype.NamedType("max-repetitions", maxRepetitions),
@@ -175,7 +175,7 @@ class BulkPDU(univ.Sequence):
 class GetRequestPDU(PDU):
     """GetRequest PDU."""
 
-    tagSet = PDU.tagSet.tagImplicitly(
+    tagSet = PDU.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)
     )
 
@@ -183,7 +183,7 @@ class GetRequestPDU(PDU):
 class GetNextRequestPDU(PDU):
     """GetNextRequest PDU."""
 
-    tagSet = PDU.tagSet.tagImplicitly(
+    tagSet = PDU.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)
     )
 
@@ -191,7 +191,7 @@ class GetNextRequestPDU(PDU):
 class ResponsePDU(PDU):
     """Response PDU."""
 
-    tagSet = PDU.tagSet.tagImplicitly(
+    tagSet = PDU.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 2)
     )
 
@@ -199,7 +199,7 @@ class ResponsePDU(PDU):
 class SetRequestPDU(PDU):
     """SetRequest PDU."""
 
-    tagSet = PDU.tagSet.tagImplicitly(
+    tagSet = PDU.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 3)
     )
 
@@ -207,7 +207,7 @@ class SetRequestPDU(PDU):
 class GetBulkRequestPDU(BulkPDU):
     """GetBulkRequest PDU."""
 
-    tagSet = PDU.tagSet.tagImplicitly(
+    tagSet = PDU.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 5)
     )
 
@@ -215,7 +215,7 @@ class GetBulkRequestPDU(BulkPDU):
 class InformRequestPDU(PDU):
     """InformRequest PDU."""
 
-    tagSet = PDU.tagSet.tagImplicitly(
+    tagSet = PDU.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 6)
     )
 
@@ -223,7 +223,7 @@ class InformRequestPDU(PDU):
 class SNMPv2TrapPDU(PDU):
     """SNMPv2Trap PDU."""
 
-    tagSet = PDU.tagSet.tagImplicitly(
+    tagSet = PDU.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 7)
     )
 
@@ -231,7 +231,7 @@ class SNMPv2TrapPDU(PDU):
 class ReportPDU(PDU):
     """Report PDU."""
 
-    tagSet = PDU.tagSet.tagImplicitly(
+    tagSet = PDU.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 8)
     )
 
@@ -239,7 +239,7 @@ class ReportPDU(PDU):
 class PDUs(univ.Choice):
     """PDUs class."""
 
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("get-request", GetRequestPDU()),
         namedtype.NamedType("get-next-request", GetNextRequestPDU()),
         namedtype.NamedType("get-bulk-request", GetBulkRequestPDU()),

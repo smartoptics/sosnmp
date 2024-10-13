@@ -20,13 +20,13 @@ from pysnmp.hlapi.v3arch.asyncio.lcd import NotificationOriginatorLcdConfigurato
 from pysnmp.hlapi.varbinds import NotificationOriginatorVarBinds
 from pysnmp.smi.rfc1902 import NotificationType
 
-__all__ = ["sendNotification"]
+__all__ = ["send_notification", "sendNotification"]
 
 VB_PROCESSOR = NotificationOriginatorVarBinds()
 LCD = NotificationOriginatorLcdConfigurator()
 
 
-async def sendNotification(
+async def send_notification(
     snmpEngine: SnmpEngine,
     authData: "CommunityData | UsmUserData",
     transportTarget: AbstractTransportTarget,
@@ -132,8 +132,8 @@ async def sendNotification(
 
     """
 
-    def __cbFun(
-        snmpEngine,
+    def __callback(
+        snmpEngine: SnmpEngine,
         sendRequestHandle,
         errorIndication,
         errorStatus,
@@ -145,7 +145,7 @@ async def sendNotification(
         if future.cancelled():
             return
         try:
-            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+            varBindsUnmade = VB_PROCESSOR.unmake_varbinds(
                 snmpEngine.cache, varBinds, lookupMib
             )
         except Exception as e:
@@ -161,24 +161,28 @@ async def sendNotification(
 
     future = asyncio.get_running_loop().create_future()
 
-    ntforg.NotificationOriginator().sendVarBinds(
+    ntforg.NotificationOriginator().send_varbinds(
         snmpEngine,
         notifyName,
         contextData.contextEngineId,
         contextData.contextName,
-        VB_PROCESSOR.makeVarBinds(snmpEngine.cache, varBinds),
-        __cbFun,
+        VB_PROCESSOR.make_varbinds(snmpEngine.cache, varBinds),
+        __callback,
         (options.get("lookupMib", True), future),
     )
 
     if notifyType == "trap":
 
-        def __trapFun(future):
+        def __trap_function(future):
             if future.cancelled():
                 return
             future.set_result((None, 0, 0, []))
 
         loop = asyncio.get_event_loop()
-        loop.call_soon(__trapFun, future)
+        loop.call_soon(__trap_function, future)
 
     return await future
+
+
+# Compatibility API
+sendNotification = send_notification  # noqa: N816

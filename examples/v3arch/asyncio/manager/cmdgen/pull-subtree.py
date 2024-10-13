@@ -30,11 +30,11 @@ snmpEngine = engine.SnmpEngine()
 #
 
 # user: usr-none-none, auth: none, priv: none
-config.addV3User(
+config.add_v3_user(
     snmpEngine,
     "usr-none-none",
 )
-config.addTargetParams(snmpEngine, "my-creds", "usr-none-none", "noAuthNoPriv")
+config.add_target_parameters(snmpEngine, "my-creds", "usr-none-none", "noAuthNoPriv")
 
 #
 # Setup transport endpoint and bind it with security settings yielding
@@ -42,10 +42,10 @@ config.addTargetParams(snmpEngine, "my-creds", "usr-none-none", "noAuthNoPriv")
 #
 
 # UDP/IPv4
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().open_client_mode()
 )
-config.addTargetAddr(
+config.add_target_address(
     snmpEngine, "my-router", udp.DOMAIN_NAME, ("127.0.0.1", 161), "my-creds"
 )
 
@@ -79,7 +79,7 @@ def cbFun(
 
 
 # Prepare initial request to be sent
-cmdgen.NextCommandGenerator().sendVarBinds(
+cmdgen.NextCommandGenerator().send_varbinds(
     snmpEngine,
     "my-router",
     None,
@@ -91,4 +91,4 @@ cmdgen.NextCommandGenerator().sendVarBinds(
 # Run I/O dispatcher which would send pending queries and process responses
 snmpEngine.openDispatcher(3)
 
-snmpEngine.closeDispatcher()
+snmpEngine.close_dispatcher()

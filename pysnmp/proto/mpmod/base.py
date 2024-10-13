@@ -4,8 +4,13 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+from typing import TYPE_CHECKING
+
 from pysnmp.proto import error
 from pysnmp.proto.mpmod import cache
+
+if TYPE_CHECKING:
+    from pysnmp.entity.engine import SnmpEngine
 
 
 class AbstractMessageProcessingModel:
@@ -18,9 +23,9 @@ class AbstractMessageProcessingModel:
         self._snmpMsgSpec = self.SNMP_MSG_SPEC()  # local copy
         self._cache = cache.Cache()
 
-    def prepareOutgoingMessage(
+    def prepare_outgoing_message(
         self,
-        snmpEngine,
+        snmpEngine: "SnmpEngine",
         transportDomain,
         transportAddress,
         messageProcessingModel,
@@ -37,9 +42,9 @@ class AbstractMessageProcessingModel:
         """Prepare SNMP message for dispatch."""
         raise error.ProtocolError("method not implemented")
 
-    def prepareResponseMessage(
+    def prepare_response_message(
         self,
-        snmpEngine,
+        snmpEngine: "SnmpEngine",
         messageProcessingModel,
         securityModel,
         securityName,
@@ -55,19 +60,19 @@ class AbstractMessageProcessingModel:
         """Prepare SNMP message for response."""
         raise error.ProtocolError("method not implemented")
 
-    def prepareDataElements(
-        self, snmpEngine, transportDomain, transportAddress, wholeMsg
+    def prepare_data_elements(
+        self, snmpEngine: "SnmpEngine", transportDomain, transportAddress, wholeMsg
     ):
         """Prepare SNMP message data elements."""
         raise error.ProtocolError("method not implemented")
 
-    def releaseStateInformation(self, sendPduHandle):
+    def release_state_information(self, sendPduHandle):
         """Release state information."""
         try:
-            self._cache.popBySendPduHandle(sendPduHandle)
+            self._cache.pop_by_send_pdu_handle(sendPduHandle)
         except error.ProtocolError:
             pass  # XXX maybe these should all follow some scheme?
 
-    def receiveTimerTick(self, snmpEngine, timeNow):
+    def receive_timer_tick(self, snmpEngine: "SnmpEngine", timeNow):
         """Process a timer tick."""
-        self._cache.expireCaches()
+        self._cache.expire_caches()

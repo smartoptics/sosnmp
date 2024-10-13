@@ -13,7 +13,7 @@ from pysnmp.smi.rfc1902 import NotificationType, ObjectIdentity, ObjectType
 __all__ = ["CommandGeneratorVarBinds", "NotificationOriginatorVarBinds"]
 
 
-def isEndOfMib(var_binds):  # noqa: N816
+def is_end_of_mib(var_binds):  # noqa: N816
     """
     Check if the given variable bindings indicate the end of the MIB.
 
@@ -23,12 +23,12 @@ def isEndOfMib(var_binds):  # noqa: N816
     Returns:
     bool: True if it is the end of the MIB, False otherwise.
     """
-    return not v2c.apiPDU.getNextVarBinds(var_binds)[1]
+    return not v2c.apiPDU.get_next_varbinds(var_binds)[1]
 
 
 class MibViewControllerManager:
     @staticmethod
-    def getMibViewController(userCache):
+    def get_mib_view_controller(userCache):
         try:
             mibViewController = userCache["mibViewController"]
 
@@ -42,11 +42,11 @@ class MibViewControllerManager:
 class CommandGeneratorVarBinds(MibViewControllerManager):
     """Var-binds processor for Command Generator."""
 
-    def makeVarBinds(
+    def make_varbinds(
         self, userCache: Dict[str, Any], varBinds: Tuple[ObjectType, ...]
     ) -> Tuple[ObjectType, ...]:
         """Return a tuple of ObjectType instances."""
-        mibViewController = self.getMibViewController(userCache)
+        mibViewController = self.get_mib_view_controller(userCache)
 
         resolvedVarBinds = []
 
@@ -67,12 +67,12 @@ class CommandGeneratorVarBinds(MibViewControllerManager):
                 varBind = ObjectType(ObjectIdentity(varBind[0]), varBind[1])
 
             resolvedVarBinds.append(
-                varBind.resolveWithMib(mibViewController, ignoreErrors=False)
+                varBind.resolve_with_mib(mibViewController, ignoreErrors=False)
             )
 
         return tuple(resolvedVarBinds)
 
-    def unmakeVarBinds(
+    def unmake_varbinds(
         self,
         userCache: Dict[str, Any],
         varBinds: Tuple[ObjectType, ...],
@@ -80,9 +80,11 @@ class CommandGeneratorVarBinds(MibViewControllerManager):
     ) -> Tuple[ObjectType, ...]:
         """Return a tuple of ObjectType instances."""
         if lookupMib:
-            mibViewController = self.getMibViewController(userCache)
+            mibViewController = self.get_mib_view_controller(userCache)
             varBinds = tuple(
-                ObjectType(ObjectIdentity(x[0]), x[1]).resolveWithMib(mibViewController)
+                ObjectType(ObjectIdentity(x[0]), x[1]).resolve_with_mib(
+                    mibViewController
+                )
                 for x in varBinds
             )
 
@@ -92,26 +94,26 @@ class CommandGeneratorVarBinds(MibViewControllerManager):
 class NotificationOriginatorVarBinds(MibViewControllerManager):
     """Var-binds processor for Notification Originator."""
 
-    def makeVarBinds(
+    def make_varbinds(
         self, userCache: Dict[str, Any], varBinds: "tuple[NotificationType, ...]"
     ) -> "tuple[ObjectType, ...]":
         """Return a tuple of ObjectType instances."""
-        mibViewController = self.getMibViewController(userCache)
+        mibViewController = self.get_mib_view_controller(userCache)
 
         # TODO: this shouldn't be needed
         if isinstance(varBinds, NotificationType):
-            return varBinds.resolveWithMib(
+            return varBinds.resolve_with_mib(
                 mibViewController, ignoreErrors=False
-            ).toVarBinds()
+            ).to_varbinds()
 
         resolvedVarBinds: "list[ObjectType]" = []
 
         for varBind in varBinds:
             if isinstance(varBind, NotificationType):
                 resolvedVarBinds.extend(
-                    varBind.resolveWithMib(
+                    varBind.resolve_with_mib(
                         mibViewController, ignoreErrors=False
-                    ).toVarBinds()
+                    ).to_varbinds()
                 )
                 continue
 
@@ -125,12 +127,12 @@ class NotificationOriginatorVarBinds(MibViewControllerManager):
                 varBind = ObjectType(ObjectIdentity(varBind[0]), varBind[1])
 
             resolvedVarBinds.append(
-                varBind.resolveWithMib(mibViewController, ignoreErrors=False)
+                varBind.resolve_with_mib(mibViewController, ignoreErrors=False)
             )
 
         return tuple(resolvedVarBinds)
 
-    def unmakeVarBinds(
+    def unmake_varbinds(
         self,
         userCache: Dict[str, Any],
         varBinds: "tuple[ObjectType, ...]",
@@ -138,9 +140,11 @@ class NotificationOriginatorVarBinds(MibViewControllerManager):
     ) -> "tuple[ObjectType, ...]":
         """Return a tuple of ObjectType instances."""
         if lookupMib:
-            mibViewController = self.getMibViewController(userCache)
+            mibViewController = self.get_mib_view_controller(userCache)
             varBinds = tuple(
-                ObjectType(ObjectIdentity(x[0]), x[1]).resolveWithMib(mibViewController)
+                ObjectType(ObjectIdentity(x[0]), x[1]).resolve_with_mib(
+                    mibViewController
+                )
                 for x in varBinds
             )
         return varBinds

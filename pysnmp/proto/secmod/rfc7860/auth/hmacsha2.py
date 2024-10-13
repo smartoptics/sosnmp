@@ -59,21 +59,21 @@ class HmacSha2(base.AbstractAuthenticationService):
         self.__digestLength = self.DIGEST_LENGTH[oid]
         self.__placeHolder = univ.OctetString((0,) * self.__digestLength).asOctets()
 
-    def hashPassphrase(self, authKey):
+    def hash_passphrase(self, authKey):
         """Hash a passphrase."""
-        return localkey.hashPassphrase(authKey, self.__hashAlgo)
+        return localkey.hash_passphrase(authKey, self.__hashAlgo)
 
-    def localizeKey(self, authKey, snmpEngineID):
+    def localize_key(self, authKey, snmpEngineID):
         """Localize a key."""
-        return localkey.localizeKey(authKey, snmpEngineID, self.__hashAlgo)
+        return localkey.localize_key(authKey, snmpEngineID, self.__hashAlgo)
 
     @property
-    def digestLength(self):
+    def digest_length(self):
         """Return digest length."""
         return self.__digestLength
 
     # 7.3.1
-    def authenticateOutgoingMsg(self, authKey, wholeMsg):
+    def authenticate_outgoing_message(self, authKey, wholeMsg):
         """Authenticate outgoing message."""
         # 7.3.1.1
         location = wholeMsg.find(self.__placeHolder)
@@ -96,7 +96,7 @@ class HmacSha2(base.AbstractAuthenticationService):
         return wholeHead + mac + wholeTail
 
     # 7.3.2
-    def authenticateIncomingMsg(self, authKey, authParameters, wholeMsg):
+    def authenticate_incoming_message(self, authKey, authParameters, wholeMsg):
         """Authenticate incoming message."""
         # 7.3.2.1 & 2
         if len(authParameters) != self.__digestLength:

@@ -5,12 +5,12 @@ from pysnmp.smi import builder, view, compiler
 mibBuilder = builder.MibBuilder()
 
 # Optionally compile MIBs
-compiler.addMibCompiler(mibBuilder, sources=["/usr/share/snmp/mibs"])
+compiler.add_mib_compiler(mibBuilder, sources=["/usr/share/snmp/mibs"])
 
 mibBuilder.loadTexts = True
 
 # Load MIB modules
-mibBuilder.loadModules("SNMPv2-MIB")
+mibBuilder.load_modules("SNMPv2-MIB")
 # mibBuilder.addMibSources(builder.DirMibSource('/Users/lextm/pysnmp.com/pysnmp/mibs'))
 # mibBuilder.loadModule('LEXTUDIO-MIB')
 
@@ -21,10 +21,10 @@ mibViewController = view.MibViewController(mibBuilder)
 oid = ObjectIdentifier("1.3.6.1.2.1.1.3.0")
 
 # Get the MIB name and symbol name for the OID
-modName, symName, suffix = mibViewController.getNodeLocation(oid)
+modName, symName, suffix = mibViewController.get_node_location(oid)
 
 # Get the MIB node for the OID
-(mibNode,) = mibBuilder.importSymbols(modName, symName)
+(mibNode,) = mibBuilder.import_symbols(modName, symName)
 
 # Get the description of the MIB node
 description = mibNode.getDescription()

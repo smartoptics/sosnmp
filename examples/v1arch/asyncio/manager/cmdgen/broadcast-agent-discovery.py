@@ -35,58 +35,58 @@ pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_2C]
 
 # Build PDU
 reqPDU = pMod.GetRequestPDU()
-pMod.apiPDU.setDefaults(reqPDU)
-pMod.apiPDU.setVarBinds(
+pMod.apiPDU.set_defaults(reqPDU)
+pMod.apiPDU.set_varbinds(
     reqPDU, (("1.3.6.1.2.1.1.1.0", pMod.Null("")), ("1.3.6.1.2.1.1.3.0", pMod.Null("")))
 )
 
 # Build message
 reqMsg = pMod.Message()
-pMod.apiMessage.setDefaults(reqMsg)
-pMod.apiMessage.setCommunity(reqMsg, "public")
-pMod.apiMessage.setPDU(reqMsg, reqPDU)
+pMod.apiMessage.set_defaults(reqMsg)
+pMod.apiMessage.set_community(reqMsg, "public")
+pMod.apiMessage.set_pdu(reqMsg, reqPDU)
 
 
 # noinspection PyUnusedLocal,PyUnusedLocal
-def cbRecvFun(
+def __callback(
     transportDispatcher, transportDomain, transportAddress, wholeMsg, reqPDU=reqPDU
 ):
     while wholeMsg:
         rspMsg, wholeMsg = decoder.decode(wholeMsg, asn1Spec=pMod.Message())
-        rspPDU = pMod.apiMessage.getPDU(rspMsg)
+        rspPDU = pMod.apiMessage.get_pdu(rspMsg)
         # Match response to request
-        if pMod.apiPDU.getRequestID(reqPDU) == pMod.apiPDU.getRequestID(rspPDU):
+        if pMod.apiPDU.get_request_id(reqPDU) == pMod.apiPDU.get_request_id(rspPDU):
             # Check for SNMP errors reported
-            errorStatus = pMod.apiPDU.getErrorStatus(rspPDU)
+            errorStatus = pMod.apiPDU.get_error_status(rspPDU)
             if errorStatus:
                 print(errorStatus.prettyPrint())
             else:
-                for oid, val in pMod.apiPDU.getVarBinds(rspPDU):
+                for oid, val in pMod.apiPDU.get_varbinds(rspPDU):
                     print(f"{oid.prettyPrint()} = {val.prettyPrint()}")
-            transportDispatcher.jobFinished(1)
+            transportDispatcher.job_finished(1)
     return wholeMsg
 
 
 transportDispatcher = AsyncioDispatcher()
 
-transportDispatcher.registerRecvCbFun(cbRecvFun)
+transportDispatcher.register_recv_callback(__callback)
 
 # UDP/IPv4
-udpSocketTransport = udp.UdpAsyncioTransport().openClientMode(allow_broadcast=True)
-transportDispatcher.registerTransport(udp.DOMAIN_NAME, udpSocketTransport)
+udpSocketTransport = udp.UdpAsyncioTransport().open_client_mode(allow_broadcast=True)
+transportDispatcher.register_transport(udp.DOMAIN_NAME, udpSocketTransport)
 
 # Pass message to dispatcher
-transportDispatcher.sendMessage(
+transportDispatcher.send_message(
     encoder.encode(reqMsg), udp.DOMAIN_NAME, ("255.255.255.255", 161)
 )
 
 # wait for a maximum of 10 responses or time out
-transportDispatcher.jobStarted(1, maxNumberResponses)
+transportDispatcher.job_started(1, maxNumberResponses)
 
 # Dispatcher will finish as all jobs counter reaches zero
 try:
-    transportDispatcher.runDispatcher(maxWaitForResponses)
+    transportDispatcher.run_dispatcher(maxWaitForResponses)
 except:
     raise
 finally:
-    transportDispatcher.closeDispatcher()
+    transportDispatcher.close_dispatcher()

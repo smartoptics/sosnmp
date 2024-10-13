@@ -32,17 +32,17 @@ sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
 sock.bind(("::1", 161))
 # This option is not available on many scenarios
 sock.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, socket.IPV6_V6ONLY)
-config.addTransport(
-    snmpEngine, udp6.DOMAIN_NAME, udp6.Udp6Transport().openServerMode(sock=sock)
+config.add_transport(
+    snmpEngine, udp6.DOMAIN_NAME, udp6.Udp6Transport().open_server_mode(sock=sock)
 )
 
 # SNMPv2c setup
 
 # SecurityName <-> CommunityName mapping.
-config.addV1System(snmpEngine, "my-area", "public")
+config.add_v1_system(snmpEngine, "my-area", "public")
 
 # Allow full MIB access for this user / securityModels at VACM
-config.addVacmUser(
+config.add_vacm_user(
     snmpEngine, 2, "my-area", "noAuthNoPriv", (1, 3, 6, 1, 2, 1), (1, 3, 6, 1, 2, 1)
 )
 
@@ -56,11 +56,11 @@ cmdrsp.NextCommandResponder(snmpEngine, snmpContext)
 cmdrsp.BulkCommandResponder(snmpEngine, snmpContext)
 
 # Register an imaginary never-ending job to keep I/O dispatcher running forever
-snmpEngine.transportDispatcher.jobStarted(1)
+snmpEngine.transport_dispatcher.job_started(1)
 
 # Run I/O dispatcher which would receive queries and send responses
 try:
-    snmpEngine.openDispatcher()
+    snmpEngine.open_dispatcher()
 except:
-    snmpEngine.closeDispatcher()
+    snmpEngine.close_dispatcher()
     raise

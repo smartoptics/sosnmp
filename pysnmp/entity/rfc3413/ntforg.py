@@ -31,7 +31,7 @@ class NotificationOriginator:
         self.snmpContext = options.pop("snmpContext", None)  # this is deprecated
         self.__options = options
 
-    def processResponsePdu(
+    def process_response_pdu(
         self,
         snmpEngine: SnmpEngine,
         messageProcessingModel,
@@ -69,7 +69,7 @@ class NotificationOriginator:
             origDiscoveryRetries,
         ) = self.__pendingReqs.pop(sendPduHandle)
 
-        snmpEngine.transportDispatcher.jobFinished(id(self))
+        snmpEngine.transport_dispatcher.job_finished(id(self))
 
         if statusInformation:
             debug.logger & debug.FLAG_APP and debug.logger(
@@ -102,12 +102,12 @@ class NotificationOriginator:
             timeoutInTicks = (
                 float(origTimeout)
                 / 100
-                / snmpEngine.transportDispatcher.getTimerResolution()
+                / snmpEngine.transport_dispatcher.get_timer_resolution()
             )
 
             # User-side API assumes SMIv2
             if messageProcessingModel == 0:
-                reqPDU = rfc2576.v2ToV1(origPdu)
+                reqPDU = rfc2576.v2_to_v1(origPdu)
                 pduVersion = 0
             else:
                 reqPDU = origPdu
@@ -115,7 +115,7 @@ class NotificationOriginator:
 
             # 3.3.6a
             try:
-                sendPduHandle = snmpEngine.msgAndPduDsp.sendPdu(
+                sendPduHandle = snmpEngine.message_dispatcher.send_pdu(
                     snmpEngine,
                     origTransportDomain,
                     origTransportAddress,
@@ -129,7 +129,7 @@ class NotificationOriginator:
                     reqPDU,
                     True,
                     timeoutInTicks,
-                    self.processResponsePdu,
+                    self.process_response_pdu,
                     (sendRequestHandle, cbFun, cbCtx),
                 )
             except error.StatusInformation:
@@ -148,7 +148,7 @@ class NotificationOriginator:
                 )
                 return
 
-            snmpEngine.transportDispatcher.jobStarted(id(self))
+            snmpEngine.transport_dispatcher.job_started(id(self))
 
             debug.logger & debug.FLAG_APP and debug.logger(
                 "processResponsePdu: sendRequestHandle %s, sendPduHandle %s, timeout %d, retry %d of %d"
@@ -182,13 +182,13 @@ class NotificationOriginator:
         # 3.3.6c
         # User-side API assumes SMIv2
         if messageProcessingModel == 0:
-            PDU = rfc2576.v1ToV2(PDU, origPdu)
+            PDU = rfc2576.v1_to_v2(PDU, origPdu)
 
         cbFun(snmpEngine, sendRequestHandle, None, PDU, cbCtx)
 
-    def sendPdu(
+    def send_pdu(
         self,
-        snmpEngine,
+        snmpEngine: SnmpEngine,
         targetName,
         contextEngineId,
         contextName,
@@ -203,18 +203,18 @@ class NotificationOriginator:
             timeout,
             retryCount,
             params,
-        ) = config.getTargetAddr(snmpEngine, targetName)
+        ) = config.get_target_address(snmpEngine, targetName)
 
         (
             messageProcessingModel,
             securityModel,
             securityName,
             securityLevel,
-        ) = config.getTargetParams(snmpEngine, params)
+        ) = config.get_target_parameters(snmpEngine, params)
 
         # User-side API assumes SMIv2
         if messageProcessingModel == 0:
-            reqPDU = rfc2576.v2ToV1(pdu)
+            reqPDU = rfc2576.v2_to_v1(pdu)
             pduVersion = 0
         else:
             reqPDU = pdu
@@ -226,13 +226,13 @@ class NotificationOriginator:
             timeoutInTicks = (
                 float(timeout)
                 / 100
-                / snmpEngine.transportDispatcher.getTimerResolution()
+                / snmpEngine.transport_dispatcher.get_timer_resolution()
             )
 
             sendRequestHandle = getNextHandle()
 
             # 3.3.6a
-            sendPduHandle = snmpEngine.msgAndPduDsp.sendPdu(
+            sendPduHandle = snmpEngine.message_dispatcher.send_pdu(
                 snmpEngine,
                 transportDomain,
                 transportAddress,
@@ -246,7 +246,7 @@ class NotificationOriginator:
                 reqPDU,
                 True,
                 timeoutInTicks,
-                self.processResponsePdu,
+                self.process_response_pdu,
                 (sendRequestHandle, cbFun, cbCtx),
             )
 
@@ -270,9 +270,9 @@ class NotificationOriginator:
                 0,
                 0,
             )
-            snmpEngine.transportDispatcher.jobStarted(id(self))
+            snmpEngine.transport_dispatcher.job_started(id(self))
         else:
-            snmpEngine.msgAndPduDsp.sendPdu(
+            snmpEngine.message_dispatcher.send_pdu(
                 snmpEngine,
                 transportDomain,
                 transportAddress,
@@ -293,8 +293,8 @@ class NotificationOriginator:
 
         return sendRequestHandle
 
-    def processResponseVarBinds(
-        self, snmpEngine, sendRequestHandle, errorIndication, pdu, cbCtx
+    def process_response_varbinds(
+        self, snmpEngine: SnmpEngine, sendRequestHandle, errorIndication, pdu, cbCtx
     ):
         """Process SNMP PDU response."""
         notificationHandle, cbFun, cbCtx = cbCtx
@@ -321,9 +321,9 @@ class NotificationOriginator:
                 snmpEngine,
                 sendRequestHandle,
                 errorIndication,
-                pdu and v2c.apiPDU.getErrorStatus(pdu) or 0,
-                pdu and v2c.apiPDU.getErrorIndex(pdu, muteErrors=True) or 0,
-                pdu and v2c.apiPDU.getVarBinds(pdu) or (),
+                pdu and v2c.apiPDU.get_error_status(pdu) or 0,
+                pdu and v2c.apiPDU.get_error_index(pdu, muteErrors=True) or 0,
+                pdu and v2c.apiPDU.get_varbinds(pdu) or (),
                 cbCtx,
             )
 
@@ -331,7 +331,7 @@ class NotificationOriginator:
     # Higher-level API to Notification Originator. Supports multiple
     # targets, automatic var-binding formation and is fully LCD-driven.
     #
-    def sendVarBinds(
+    def send_varbinds(
         self,
         snmpEngine: SnmpEngine,
         notificationTarget,
@@ -367,16 +367,16 @@ class NotificationOriginator:
             )
         )
 
-        mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+        mibBuilder = snmpEngine.get_mib_builder()
 
         if contextName:
-            (__SnmpAdminString,) = mibBuilder.importSymbols(
+            (__SnmpAdminString,) = mibBuilder.import_symbols(
                 "SNMP-FRAMEWORK-MIB", "SnmpAdminString"
             )
             contextName = __SnmpAdminString(contextName)
 
         # 3.3
-        notifyTag, notifyType = config.getNotificationInfo(
+        notifyTag, notifyType = config.get_notification_info(
             snmpEngine, notificationTarget
         )
 
@@ -390,7 +390,7 @@ class NotificationOriginator:
         inputVarBinds = [(v2c.ObjectIdentifier(x), y) for (x, y) in varBinds]
 
         # 3.3.2 & 3.3.3
-        snmpTrapOID, sysUpTime = mibBuilder.importSymbols(
+        snmpTrapOID, sysUpTime = mibBuilder.import_symbols(
             "__SNMPv2-MIB", "snmpTrapOID", "sysUpTime"
         )
 
@@ -436,20 +436,20 @@ class NotificationOriginator:
             f"sendVarBinds: final varBinds {varBinds}"
         )
 
-        for targetAddrName in config.getTargetNames(snmpEngine, notifyTag):
+        for targetAddrName in config.get_target_names(snmpEngine, notifyTag):
             (
                 transportDomain,
                 transportAddress,
                 timeout,
                 retryCount,
                 params,
-            ) = config.getTargetAddr(snmpEngine, targetAddrName)
+            ) = config.get_target_address(snmpEngine, targetAddrName)
             (
                 messageProcessingModel,
                 securityModel,
                 securityName,
                 securityLevel,
-            ) = config.getTargetParams(snmpEngine, params)
+            ) = config.get_target_parameters(snmpEngine, params)
 
             # 3.3.1 XXX
             # XXX filtering's yet to be implemented
@@ -474,7 +474,7 @@ class NotificationOriginator:
                 if varName in (sysUpTime, snmpTrapOID):
                     continue
                 try:
-                    snmpEngine.accessControlModel[self.ACM_ID].isAccessAllowed(
+                    snmpEngine.access_control_model[self.ACM_ID].is_access_allowed(
                         snmpEngine,
                         securityModel,
                         securityName,
@@ -504,18 +504,18 @@ class NotificationOriginator:
             else:
                 raise error.ProtocolError("Unknown notify-type %r", notifyType)
 
-            v2c.apiPDU.setDefaults(pdu)
-            v2c.apiPDU.setVarBinds(pdu, inputVarBinds)
+            v2c.apiPDU.set_defaults(pdu)
+            v2c.apiPDU.set_varbinds(pdu, inputVarBinds)
 
             # 3.3.5
             try:
-                sendRequestHandle = self.sendPdu(
+                sendRequestHandle = self.send_pdu(
                     snmpEngine,
                     targetAddrName,
                     contextEngineId,
                     contextName,
                     pdu,
-                    self.processResponseVarBinds,
+                    self.process_response_varbinds,
                     (notificationHandle, cbFun, cbCtx),
                 )
 

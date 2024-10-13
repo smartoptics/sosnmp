@@ -88,7 +88,7 @@ for mibVar in mibInstr:
     mibInstrIdx[mibVar.name] = mibVar
 
 
-def cbFun(transportDispatcher, transportDomain, transportAddress, wholeMsg):
+def __callback(transportDispatcher, transportDomain, transportAddress, wholeMsg):
     while wholeMsg:
         msgVer = api.decodeMessageVersion(wholeMsg)
         if msgVer in api.PROTOCOL_MODULES:
@@ -100,41 +100,41 @@ def cbFun(transportDispatcher, transportDomain, transportAddress, wholeMsg):
             wholeMsg,
             asn1Spec=pMod.Message(),
         )
-        rspMsg = pMod.apiMessage.getResponse(reqMsg)
-        rspPDU = pMod.apiMessage.getPDU(rspMsg)
-        reqPDU = pMod.apiMessage.getPDU(reqMsg)
+        rspMsg = pMod.apiMessage.get_response(reqMsg)
+        rspPDU = pMod.apiMessage.get_pdu(rspMsg)
+        reqPDU = pMod.apiMessage.get_pdu(reqMsg)
         varBinds = []
         pendingErrors = []
         errorIndex = 0
         # GETNEXT PDU
         if reqPDU.isSameTypeWith(pMod.GetNextRequestPDU()):
             # Produce response var-binds
-            for oid, val in pMod.apiPDU.getVarBinds(reqPDU):
+            for oid, val in pMod.apiPDU.get_varbinds(reqPDU):
                 errorIndex = errorIndex + 1
                 # Search next OID to report
                 nextIdx = bisect.bisect(mibInstr, oid)
                 if nextIdx == len(mibInstr):
                     # Out of MIB
                     varBinds.append((oid, val))
-                    pendingErrors.append((pMod.apiPDU.setEndOfMibError, errorIndex))
+                    pendingErrors.append((pMod.apiPDU.set_end_of_mib_error, errorIndex))
                 else:
                     # Report value if OID is found
                     varBinds.append((mibInstr[nextIdx].name, mibInstr[nextIdx](msgVer)))
         elif reqPDU.isSameTypeWith(pMod.GetRequestPDU()):
-            for oid, val in pMod.apiPDU.getVarBinds(reqPDU):
+            for oid, val in pMod.apiPDU.get_varbinds(reqPDU):
                 if oid in mibInstrIdx:
                     varBinds.append((oid, mibInstrIdx[oid](msgVer)))
                 else:
                     # No such instance
                     varBinds.append((oid, val))
                     pendingErrors.append(
-                        (pMod.apiPDU.setNoSuchInstanceError, errorIndex)
+                        (pMod.apiPDU.set_no_such_instance_error, errorIndex)
                     )
                     break
         else:
             # Report unsupported request type
-            pMod.apiPDU.setErrorStatus(rspPDU, "genErr")
-        pMod.apiPDU.setVarBinds(rspPDU, varBinds)
+            pMod.apiPDU.set_error_status(rspPDU, "genErr")
+        pMod.apiPDU.set_varbinds(rspPDU, varBinds)
         # Commit possible error indices to response PDU
         for f, i in pendingErrors:
             f(rspPDU, i)
@@ -145,28 +145,28 @@ def cbFun(transportDispatcher, transportDomain, transportAddress, wholeMsg):
 
 
 transportDispatcher = AsyncioDispatcher()
-transportDispatcher.registerRecvCbFun(cbFun)
+transportDispatcher.register_recv_callback(__callback)
 
 # UDP/IPv4
-transportDispatcher.registerTransport(
-    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openServerMode(("localhost", 161))
+transportDispatcher.register_transport(
+    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().open_server_mode(("localhost", 161))
 )
 
 # UDP/IPv6
-transportDispatcher.registerTransport(
-    udp6.DOMAIN_NAME, udp6.Udp6AsyncioTransport().openServerMode(("::1", 161))
+transportDispatcher.register_transport(
+    udp6.DOMAIN_NAME, udp6.Udp6AsyncioTransport().open_server_mode(("::1", 161))
 )
 
-transportDispatcher.jobStarted(1)
+transportDispatcher.job_started(1)
 
 try:
     print("This program needs to run as root/administrator to monitor port 161.")
     print("Started. Press Ctrl-C to stop")
     # Dispatcher will never finish as job#1 never reaches zero
-    transportDispatcher.runDispatcher()
+    transportDispatcher.run_dispatcher()
 
 except KeyboardInterrupt:
     print("Shutting down...")
 
 finally:
-    transportDispatcher.closeDispatcher()
+    transportDispatcher.close_dispatcher()

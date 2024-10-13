@@ -27,14 +27,14 @@ from pysnmp.hlapi.v1arch.asyncio import *
 async def run():
     snmpDispatcher = SnmpDispatcher()
 
-    iterator = await sendNotification(
+    iterator = await send_notification(
         snmpDispatcher,
         CommunityData("public", mpModel=0),
         await UdpTransportTarget.create(("demo.pysnmp.com", 162)),
         "trap",
         NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2"))
-        .loadMibs("SNMPv2-MIB")
-        .addVarBinds(
+        .load_mibs("SNMPv2-MIB")
+        .add_varbinds(
             ("1.3.6.1.6.3.1.1.4.3.0", "1.3.6.1.4.1.20408.4.1.1.2"),
             ("1.3.6.1.2.1.1.1.0", OctetString("my system")),
         ),
@@ -45,7 +45,7 @@ async def run():
     if errorIndication:
         print(errorIndication)
 
-    snmpDispatcher.transportDispatcher.closeDispatcher()
+    snmpDispatcher.transportDispatcher.close_dispatcher()
 
 
 asyncio.run(run())

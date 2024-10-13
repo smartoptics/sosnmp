@@ -19,12 +19,12 @@ mibBuilder = builder.MibBuilder()
 
 # Optionally set an alternative path to compiled MIBs
 print("Setting MIB sources...")
-mibBuilder.addMibSources(builder.DirMibSource("/opt/pysnmp_mibs"))
-print(mibBuilder.getMibSources())
+mibBuilder.add_mib_sources(builder.DirMibSource("/opt/pysnmp_mibs"))
+print(mibBuilder.get_mib_sources())
 print("done")
 
 print("Loading MIB modules..."),
-mibBuilder.loadModules(
+mibBuilder.load_modules(
     "SNMPv2-MIB", "SNMP-FRAMEWORK-MIB", "SNMP-COMMUNITY-MIB", "IP-MIB"
 )
 print("done")
@@ -34,28 +34,28 @@ mibView = view.MibViewController(mibBuilder)
 print("done")
 
 print("MIB symbol name lookup by OID: "),
-oid, label, suffix = mibView.getNodeName((1, 3, 6, 1, 2, 1, 1, 1))
+oid, label, suffix = mibView.get_node_name((1, 3, 6, 1, 2, 1, 1, 1))
 print(oid, label, suffix)
 
 print("MIB symbol name lookup by label: "),
-oid, label, suffix = mibView.getNodeName((1, 3, 6, 1, 2, "mib-2", 1, "sysDescr"))
+oid, label, suffix = mibView.get_node_name((1, 3, 6, 1, 2, "mib-2", 1, "sysDescr"))
 print(oid, label, suffix)
 
 print("MIB symbol name lookup by symbol description: "),
-oid, label, suffix = mibView.getNodeName(("sysDescr",))
-oid, label, suffix = mibView.getNodeName(("snmpEngineID",), "SNMP-FRAMEWORK-MIB")
+oid, label, suffix = mibView.get_node_name(("sysDescr",))
+oid, label, suffix = mibView.get_node_name(("snmpEngineID",), "SNMP-FRAMEWORK-MIB")
 print(oid, label, suffix)
 
 print("MIB object value pretty print: "),
-(mibNode,) = mibBuilder.importSymbols("SNMP-FRAMEWORK-MIB", "snmpEngineID")
+(mibNode,) = mibBuilder.import_symbols("SNMP-FRAMEWORK-MIB", "snmpEngineID")
 print(mibNode.syntax.prettyPrint())
 
 print("MIB symbol location lookup by name: "),
-modName, symName, suffix = mibView.getNodeLocation(("snmpCommunityEntry",))
+modName, symName, suffix = mibView.get_node_location(("snmpCommunityEntry",))
 print(symName, modName)
 
 print("MIB node lookup by location: "),
-(rowNode,) = mibBuilder.importSymbols(modName, symName)
+(rowNode,) = mibBuilder.import_symbols(modName, symName)
 print(rowNode)
 
 print("Conceptual table index value to oid conversion: "),
@@ -65,21 +65,21 @@ print("Conceptual table index oid to value conversion: "),
 print(rowNode.getIndicesFromInstId(oid))
 
 print("MIB tree traversal")
-oid, label, suffix = mibView.getFirstNodeName()
+oid, label, suffix = mibView.get_first_node_name()
 while 1:
     try:
-        modName, nodeDesc, suffix = mibView.getNodeLocation(oid)
+        modName, nodeDesc, suffix = mibView.get_node_location(oid)
         print(f"{modName}::{nodeDesc} == {oid}")
-        oid, label, suffix = mibView.getNextNodeName(oid)
+        oid, label, suffix = mibView.get_next_node_name(oid)
     except error.NoSuchObjectError:
         break
 
 print("Modules traversal")
-modName = mibView.getFirstModuleName()
+modName = mibView.get_first_module_name()
 while 1:
     if modName:
         print(modName)
     try:
-        modName = mibView.getNextModuleName(modName)
+        modName = mibView.get_next_module_name(modName)
     except error.SmiError:
         break

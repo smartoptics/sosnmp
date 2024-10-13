@@ -41,17 +41,17 @@ snmpEngine = engine.SnmpEngine()
 # Agent section
 
 # UDP over IPv4
-config.addTransport(
+config.add_transport(
     snmpEngine,
     udp.DOMAIN_NAME + (1,),
-    udp.UdpTransport().openServerMode(("127.0.0.1", 161)),
+    udp.UdpTransport().open_server_mode(("127.0.0.1", 161)),
 )
 
 # Manager section
 
 # UDP over IPv4
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME + (2,), udp.UdpTransport().openClientMode()
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME + (2,), udp.UdpTransport().open_client_mode()
 )
 
 #
@@ -59,25 +59,25 @@ config.addTransport(
 #
 
 # SecurityName <-> CommunityName mapping
-config.addV1System(snmpEngine, "my-area", "public")
+config.add_v1_system(snmpEngine, "my-area", "public")
 
 #
 # SNMPv1 setup (Manager role)
 #
 
 # SecurityName <-> CommunityName <-> Transport mapping
-config.addV1System(snmpEngine, "distant-area", "public", transportTag="distant")
+config.add_v1_system(snmpEngine, "distant-area", "public", transportTag="distant")
 
 #
 # Transport target used by Manager
 #
 
 # Specify security settings per SecurityName (SNMPv1 - 0, SNMPv2c - 1)
-config.addTargetParams(
+config.add_target_parameters(
     snmpEngine, "distant-agent-auth", "distant-area", "noAuthNoPriv", 0
 )
 
-config.addTargetAddr(
+config.add_target_address(
     snmpEngine,
     "distant-agent",
     udp.DOMAIN_NAME + (2,),
@@ -88,7 +88,7 @@ config.addTargetAddr(
 )
 
 # Default SNMP context
-config.addContext(snmpEngine, "")
+config.add_context(snmpEngine, "")
 
 
 class CommandResponder(cmdrsp.CommandResponderBase):
@@ -101,7 +101,9 @@ class CommandResponder(cmdrsp.CommandResponderBase):
     SUPPORTED_PDU_TYPES = cmdGenMap.keys()  # This app will handle these PDUs
 
     # SNMP request relay
-    def handleMgmtOperation(self, snmpEngine, stateReference, contextName, PDU, acInfo):
+    def handle_management_operation(
+        self, snmpEngine, stateReference, contextName, PDU, acInfo
+    ):
         cbCtx = stateReference, PDU
         contextEngineId = None  # address authoritative SNMP Engine
         try:
@@ -125,21 +127,21 @@ class CommandResponder(cmdrsp.CommandResponderBase):
         stateReference, reqPDU = cbCtx
 
         if errorIndication:
-            PDU = v2c.apiPDU.getResponse(reqPDU)
-            PDU.setErrorStatus(PDU, 5)
+            PDU = v2c.apiPDU.get_response(reqPDU)
+            PDU.set_error_status(PDU, 5)
 
-        self.sendPdu(snmpEngine, stateReference, PDU)
+        self.send_pdu(snmpEngine, stateReference, PDU)
 
-        self.releaseStateInformation(stateReference)
+        self.release_state_information(stateReference)
 
 
 CommandResponder(snmpEngine, context.SnmpContext(snmpEngine))
 
-snmpEngine.transportDispatcher.jobStarted(1)  # this job would never finish
+snmpEngine.transport_dispatcher.job_started(1)  # this job would never finish
 
 # Run I/O dispatcher which would receive queries and send responses
 try:
-    snmpEngine.openDispatcher()
+    snmpEngine.open_dispatcher()
 except:
-    snmpEngine.closeDispatcher()
+    snmpEngine.close_dispatcher()
     raise

@@ -15,6 +15,7 @@ from pysnmp.proto import rfc1902, rfc1905
 from pysnmp.proto.secmod.eso.priv import aes192, aes256, des3
 from pysnmp.proto.secmod.rfc3414.auth import hmacmd5, hmacsha, noauth
 from pysnmp.proto.secmod.rfc3414.priv import des, nopriv
+from pysnmp.proto.secmod.rfc3414.service import SnmpUSMSecurityModel
 from pysnmp.proto.secmod.rfc3826.priv import aes
 from pysnmp.proto.secmod.rfc7860.auth import hmacsha2
 
@@ -94,49 +95,24 @@ USM_KEY_TYPE_MASTER = 1
 USM_KEY_TYPE_LOCALIZED = 2
 
 # Auth services
-AUTH_SERVICES = {
-    hmacmd5.HmacMd5.SERVICE_ID: hmacmd5.HmacMd5(),
-    hmacsha.HmacSha.SERVICE_ID: hmacsha.HmacSha(),
-    hmacsha2.HmacSha2.SHA224_SERVICE_ID: hmacsha2.HmacSha2(
-        hmacsha2.HmacSha2.SHA224_SERVICE_ID
-    ),
-    hmacsha2.HmacSha2.SHA256_SERVICE_ID: hmacsha2.HmacSha2(
-        hmacsha2.HmacSha2.SHA256_SERVICE_ID
-    ),
-    hmacsha2.HmacSha2.SAH384_SERVICE_ID: hmacsha2.HmacSha2(
-        hmacsha2.HmacSha2.SAH384_SERVICE_ID
-    ),
-    hmacsha2.HmacSha2.SHA512_SERVICE_ID: hmacsha2.HmacSha2(
-        hmacsha2.HmacSha2.SHA512_SERVICE_ID
-    ),
-    noauth.NoAuth.SERVICE_ID: noauth.NoAuth(),
-}
+AUTH_SERVICES = SnmpUSMSecurityModel.AUTH_SERVICES
 
 # Privacy services
-PRIV_SERVICES = {
-    des.Des.SERVICE_ID: des.Des(),
-    des3.Des3.SERVICE_ID: des3.Des3(),
-    aes.Aes.SERVICE_ID: aes.Aes(),
-    aes192.AesBlumenthal192.SERVICE_ID: aes192.AesBlumenthal192(),
-    aes256.AesBlumenthal256.SERVICE_ID: aes256.AesBlumenthal256(),
-    aes192.Aes192.SERVICE_ID: aes192.Aes192(),  # non-standard
-    aes256.Aes256.SERVICE_ID: aes256.Aes256(),  # non-standard
-    nopriv.NoPriv.SERVICE_ID: nopriv.NoPriv(),
-}
+PRIV_SERVICES = SnmpUSMSecurityModel.PRIV_SERVICES
 
 
-def __cookV1SystemInfo(snmpEngine: SnmpEngine, communityIndex):
-    mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+def __cook_v1_system_info(snmpEngine: SnmpEngine, communityIndex):
+    mibBuilder = snmpEngine.get_mib_builder()
 
-    (snmpEngineID,) = mibBuilder.importSymbols("__SNMP-FRAMEWORK-MIB", "snmpEngineID")
-    (snmpCommunityEntry,) = mibBuilder.importSymbols(
+    (snmpEngineID,) = mibBuilder.import_symbols("__SNMP-FRAMEWORK-MIB", "snmpEngineID")  # type: ignore
+    (snmpCommunityEntry,) = mibBuilder.import_symbols(  # type: ignore
         "SNMP-COMMUNITY-MIB", "snmpCommunityEntry"
     )
     tblIdx = snmpCommunityEntry.getInstIdFromIndices(communityIndex)
     return snmpCommunityEntry, tblIdx, snmpEngineID
 
 
-def addV1System(
+def add_v1_system(
     snmpEngine: SnmpEngine,
     communityIndex: str,
     communityName: str,
@@ -146,7 +122,7 @@ def addV1System(
     securityName=None,
 ):
     """Register SNMPv1 and v2c community."""
-    (snmpCommunityEntry, tblIdx, snmpEngineID) = __cookV1SystemInfo(
+    (snmpCommunityEntry, tblIdx, snmpEngineID) = __cook_v1_system_info(
         snmpEngine, communityIndex
     )
 
@@ -160,11 +136,11 @@ def addV1System(
 
     securityName = securityName is not None and securityName or communityIndex
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpCommunityEntry.name + (8,) + tblIdx, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpCommunityEntry.name + (1,) + tblIdx, communityIndex),
         (snmpCommunityEntry.name + (2,) + tblIdx, communityName),
         (
@@ -195,12 +171,12 @@ def addV1System(
     )
 
 
-def delV1System(snmpEngine, communityIndex):
+def delete_v1_system(snmpEngine: SnmpEngine, communityIndex):
     """Unregister SNMPv1 and v2c community."""
-    (snmpCommunityEntry, tblIdx, snmpEngineID) = __cookV1SystemInfo(
+    (snmpCommunityEntry, tblIdx, snmpEngineID) = __cook_v1_system_info(
         snmpEngine, communityIndex
     )
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpCommunityEntry.name + (8,) + tblIdx, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
@@ -210,20 +186,20 @@ def delV1System(snmpEngine, communityIndex):
     )
 
 
-def __cookV3UserInfo(snmpEngine, securityName, securityEngineId):
-    mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+def __cook_v3_user_info(snmpEngine: SnmpEngine, securityName, securityEngineId):
+    mibBuilder = snmpEngine.get_mib_builder()
 
-    (snmpEngineID,) = mibBuilder.importSymbols("__SNMP-FRAMEWORK-MIB", "snmpEngineID")
+    (snmpEngineID,) = mibBuilder.import_symbols("__SNMP-FRAMEWORK-MIB", "snmpEngineID")  # type: ignore
 
     if securityEngineId is None:
         securityEngineId = snmpEngineID.syntax
     else:
         securityEngineId = snmpEngineID.syntax.clone(securityEngineId)
 
-    (usmUserEntry,) = mibBuilder.importSymbols("SNMP-USER-BASED-SM-MIB", "usmUserEntry")
+    (usmUserEntry,) = mibBuilder.import_symbols("SNMP-USER-BASED-SM-MIB", "usmUserEntry")  # type: ignore
     tblIdx1 = usmUserEntry.getInstIdFromIndices(securityEngineId, securityName)
 
-    (pysnmpUsmSecretEntry,) = mibBuilder.importSymbols(
+    (pysnmpUsmSecretEntry,) = mibBuilder.import_symbols(  # type: ignore
         "PYSNMP-USM-MIB", "pysnmpUsmSecretEntry"
     )
     tblIdx2 = pysnmpUsmSecretEntry.getInstIdFromIndices(securityName)
@@ -231,8 +207,8 @@ def __cookV3UserInfo(snmpEngine, securityName, securityEngineId):
     return securityEngineId, usmUserEntry, tblIdx1, pysnmpUsmSecretEntry, tblIdx2
 
 
-def addV3User(
-    snmpEngine,
+def add_v3_user(
+    snmpEngine: SnmpEngine,
     userName,
     authProtocol=USM_AUTH_NONE,
     authKey=None,
@@ -244,7 +220,7 @@ def addV3User(
     privKeyType=USM_KEY_TYPE_PASSPHRASE,
 ):
     """Register SNMPv3 user."""
-    mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+    mibBuilder = snmpEngine.get_mib_builder()
 
     if securityName is None:
         securityName = userName
@@ -255,20 +231,20 @@ def addV3User(
         tblIdx1,
         pysnmpUsmSecretEntry,
         tblIdx2,
-    ) = __cookV3UserInfo(snmpEngine, securityName, securityEngineId)
+    ) = __cook_v3_user_info(snmpEngine, securityName, securityEngineId)
 
     # Load augmenting table before creating new row in base one
-    (pysnmpUsmKeyEntry,) = mibBuilder.importSymbols(
+    (pysnmpUsmKeyEntry,) = mibBuilder.import_symbols(  # type: ignore
         "PYSNMP-USM-MIB", "pysnmpUsmKeyEntry"
     )
 
     # Load clone-from (may not be needed)
-    (zeroDotZero,) = mibBuilder.importSymbols("SNMPv2-SMI", "zeroDotZero")
+    (zeroDotZero,) = mibBuilder.import_symbols("SNMPv2-SMI", "zeroDotZero")  # type: ignore
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (usmUserEntry.name + (13,) + tblIdx1, "destroy"), **dict(snmpEngine=snmpEngine)
     )
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (usmUserEntry.name + (2,) + tblIdx1, userName),
         (usmUserEntry.name + (3,) + tblIdx1, securityName),
         (usmUserEntry.name + (4,) + tblIdx1, zeroDotZero.name),
@@ -284,7 +260,7 @@ def addV3User(
     if privProtocol not in PRIV_SERVICES:
         raise error.PySnmpError(f"Unknown privacy protocol {privProtocol}")
 
-    (pysnmpUsmKeyType,) = mibBuilder.importSymbols(
+    (pysnmpUsmKeyType,) = mibBuilder.import_symbols(  # type: ignore
         "__PYSNMP-USM-MIB", "pysnmpUsmKeyType"
     )
 
@@ -297,10 +273,10 @@ def addV3User(
     masterAuthKey = localAuthKey = authKey
 
     if authKeyType < USM_KEY_TYPE_MASTER:  # pass phrase is given
-        masterAuthKey = AUTH_SERVICES[authProtocol].hashPassphrase(authKey or b"")
+        masterAuthKey = AUTH_SERVICES[authProtocol].hash_passphrase(authKey or b"")
 
     if authKeyType < USM_KEY_TYPE_LOCALIZED:  # pass phrase or master key is given
-        localAuthKey = AUTH_SERVICES[authProtocol].localizeKey(
+        localAuthKey = AUTH_SERVICES[authProtocol].localize_key(
             masterAuthKey, securityEngineId
         )
 
@@ -313,56 +289,56 @@ def addV3User(
     masterPrivKey = localPrivKey = privKey
 
     if privKeyType < USM_KEY_TYPE_MASTER:  # pass phrase is given
-        masterPrivKey = PRIV_SERVICES[privProtocol].hashPassphrase(
+        masterPrivKey = PRIV_SERVICES[privProtocol].hash_passphrase(
             authProtocol, privKey or b""
         )
 
     if privKeyType < USM_KEY_TYPE_LOCALIZED:  # pass phrase or master key is given
-        localPrivKey = PRIV_SERVICES[privProtocol].localizeKey(
+        localPrivKey = PRIV_SERVICES[privProtocol].localize_key(
             authProtocol, masterPrivKey, securityEngineId
         )
 
     # Commit only the keys we have
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (pysnmpUsmKeyEntry.name + (1,) + tblIdx1, localAuthKey),
         (pysnmpUsmKeyEntry.name + (2,) + tblIdx1, localPrivKey),
         **dict(snmpEngine=snmpEngine),
     )
 
     if authKeyType < USM_KEY_TYPE_LOCALIZED:
-        snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+        snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
             (pysnmpUsmKeyEntry.name + (3,) + tblIdx1, masterAuthKey),
             **dict(snmpEngine=snmpEngine),
         )
 
     if privKeyType < USM_KEY_TYPE_LOCALIZED:
-        snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+        snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
             (pysnmpUsmKeyEntry.name + (4,) + tblIdx1, masterPrivKey),
             **dict(snmpEngine=snmpEngine),
         )
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (pysnmpUsmSecretEntry.name + (4,) + tblIdx2, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
 
     # Commit plain-text pass-phrases if we have them
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (pysnmpUsmSecretEntry.name + (4,) + tblIdx2, "createAndGo"),
         **dict(snmpEngine=snmpEngine),
     )
 
     if authKeyType < USM_KEY_TYPE_MASTER:
-        snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+        snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
             (pysnmpUsmSecretEntry.name + (1,) + tblIdx2, userName),
             (pysnmpUsmSecretEntry.name + (2,) + tblIdx2, authKey),
             **dict(snmpEngine=snmpEngine),
         )
 
     if privKeyType < USM_KEY_TYPE_MASTER:
-        snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+        snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
             (pysnmpUsmSecretEntry.name + (1,) + tblIdx2, userName),
             (pysnmpUsmSecretEntry.name + (3,) + tblIdx2, privKey),
             **dict(snmpEngine=snmpEngine),
@@ -392,8 +368,8 @@ def addV3User(
     )
 
 
-def delV3User(
-    snmpEngine,
+def delete_v3_user(
+    snmpEngine: SnmpEngine,
     userName,
     securityEngineId=None,
 ):
@@ -404,13 +380,13 @@ def delV3User(
         tblIdx1,
         pysnmpUsmSecretEntry,
         tblIdx2,
-    ) = __cookV3UserInfo(snmpEngine, userName, securityEngineId)
+    ) = __cook_v3_user_info(snmpEngine, userName, securityEngineId)
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (usmUserEntry.name + (13,) + tblIdx1, "destroy"), **dict(snmpEngine=snmpEngine)
     )
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (pysnmpUsmSecretEntry.name + (4,) + tblIdx2, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
@@ -429,22 +405,24 @@ def delV3User(
     )
 
     while varBinds:
-        varBinds = snmpEngine.msgAndPduDsp.mibInstrumController.readNextVars(
-            *varBinds, **dict(snmpEngine=snmpEngine)
+        varBinds = (
+            snmpEngine.message_dispatcher.mib_instrum_controller.read_next_variables(
+                *varBinds, **dict(snmpEngine=snmpEngine)
+            )
         )
         if varBinds[0][1].isSameTypeWith(rfc1905.endOfMibView):
             break
         if varBinds[0][0][: len(initialVarBinds[0][0])] != initialVarBinds[0][0]:
             break
         elif varBinds[2][1] == tblIdx1:  # cloned from this entry
-            delV3User(snmpEngine, varBinds[1][1], varBinds[0][1])
+            delete_v3_user(snmpEngine, varBinds[1][1], varBinds[0][1])
             varBinds = initialVarBinds
 
 
-def __cookTargetParamsInfo(snmpEngine, name):
-    mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+def __cook_target_parameters_info(snmpEngine: SnmpEngine, name):
+    mibBuilder = snmpEngine.get_mib_builder()
 
-    (snmpTargetParamsEntry,) = mibBuilder.importSymbols(
+    (snmpTargetParamsEntry,) = mibBuilder.import_symbols(  # type: ignore
         "SNMP-TARGET-MIB", "snmpTargetParamsEntry"
     )
     tblIdx = snmpTargetParamsEntry.getInstIdFromIndices(name)
@@ -452,7 +430,9 @@ def __cookTargetParamsInfo(snmpEngine, name):
 
 
 # mpModel: 0 == SNMPv1, 1 == SNMPv2c, 3 == SNMPv3
-def addTargetParams(snmpEngine, name, securityName, securityLevel, mpModel=3):
+def add_target_parameters(
+    snmpEngine: SnmpEngine, name, securityName, securityLevel, mpModel=3
+):
     """Register target parameters."""
     if mpModel == 0:
         securityModel = 1
@@ -463,13 +443,13 @@ def addTargetParams(snmpEngine, name, securityName, securityLevel, mpModel=3):
     else:
         raise error.PySnmpError("Unknown MP model %s" % mpModel)
 
-    snmpTargetParamsEntry, tblIdx = __cookTargetParamsInfo(snmpEngine, name)
+    snmpTargetParamsEntry, tblIdx = __cook_target_parameters_info(snmpEngine, name)
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpTargetParamsEntry.name + (7,) + tblIdx, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpTargetParamsEntry.name + (1,) + tblIdx, name),
         (snmpTargetParamsEntry.name + (2,) + tblIdx, mpModel),
         (snmpTargetParamsEntry.name + (3,) + tblIdx, securityModel),
@@ -480,29 +460,29 @@ def addTargetParams(snmpEngine, name, securityName, securityLevel, mpModel=3):
     )
 
 
-def delTargetParams(snmpEngine: SnmpEngine, name: str):
+def delete_target_parameters(snmpEngine: SnmpEngine, name: str):
     """Delete target parameters."""
-    snmpTargetParamsEntry, tblIdx = __cookTargetParamsInfo(snmpEngine, name)
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpTargetParamsEntry, tblIdx = __cook_target_parameters_info(snmpEngine, name)
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpTargetParamsEntry.name + (7,) + tblIdx, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
 
 
-def __cookTargetAddrInfo(snmpEngine: SnmpEngine, addrName: str):
-    mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+def __cook_target_address_info(snmpEngine: SnmpEngine, addrName: str):
+    mibBuilder = snmpEngine.get_mib_builder()
 
-    (snmpTargetAddrEntry,) = mibBuilder.importSymbols(
+    (snmpTargetAddrEntry,) = mibBuilder.import_symbols(  # type: ignore
         "SNMP-TARGET-MIB", "snmpTargetAddrEntry"
     )
-    (snmpSourceAddrEntry,) = mibBuilder.importSymbols(
+    (snmpSourceAddrEntry,) = mibBuilder.import_symbols(  # type: ignore
         "PYSNMP-SOURCE-MIB", "snmpSourceAddrEntry"
     )
     tblIdx = snmpTargetAddrEntry.getInstIdFromIndices(addrName)
     return snmpTargetAddrEntry, snmpSourceAddrEntry, tblIdx
 
 
-def addTargetAddr(
+def add_target_address(
     snmpEngine: SnmpEngine,
     addrName: str,
     transportDomain: "tuple[int, ...]",
@@ -514,20 +494,20 @@ def addTargetAddr(
     sourceAddress=None,
 ):
     """Register target address."""
-    mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+    mibBuilder = snmpEngine.get_mib_builder()
 
-    (snmpTargetAddrEntry, snmpSourceAddrEntry, tblIdx) = __cookTargetAddrInfo(
+    (snmpTargetAddrEntry, snmpSourceAddrEntry, tblIdx) = __cook_target_address_info(
         snmpEngine, addrName
     )
 
     if transportDomain[: len(SNMP_UDP_DOMAIN)] == SNMP_UDP_DOMAIN:
-        (SnmpUDPAddress,) = mibBuilder.importSymbols("SNMPv2-TM", "SnmpUDPAddress")
+        (SnmpUDPAddress,) = mibBuilder.import_symbols("SNMPv2-TM", "SnmpUDPAddress")  # type: ignore
         transportAddress = SnmpUDPAddress(transportAddress)
         if sourceAddress is None:
             sourceAddress = ("0.0.0.0", 0)
         sourceAddress = SnmpUDPAddress(sourceAddress)
     elif transportDomain[: len(SNMP_UDP6_DOMAIN)] == SNMP_UDP6_DOMAIN:
-        (TransportAddressIPv6,) = mibBuilder.importSymbols(
+        (TransportAddressIPv6,) = mibBuilder.import_symbols(  # type: ignore
             "TRANSPORT-ADDRESS-MIB", "TransportAddressIPv6"
         )
         transportAddress = TransportAddressIPv6(transportAddress)
@@ -535,11 +515,11 @@ def addTargetAddr(
             sourceAddress = ("::", 0)
         sourceAddress = TransportAddressIPv6(sourceAddress)
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpTargetAddrEntry.name + (9,) + tblIdx, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpTargetAddrEntry.name + (1,) + tblIdx, addrName),
         (snmpTargetAddrEntry.name + (2,) + tblIdx, transportDomain),
         (snmpTargetAddrEntry.name + (3,) + tblIdx, transportAddress),
@@ -553,138 +533,138 @@ def addTargetAddr(
     )
 
 
-def delTargetAddr(snmpEngine: SnmpEngine, addrName: str):
+def delete_target_address(snmpEngine: SnmpEngine, addrName: str):
     """Delete target address."""
-    (snmpTargetAddrEntry, snmpSourceAddrEntry, tblIdx) = __cookTargetAddrInfo(
+    (snmpTargetAddrEntry, snmpSourceAddrEntry, tblIdx) = __cook_target_address_info(
         snmpEngine, addrName
     )
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpTargetAddrEntry.name + (9,) + tblIdx, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
 
 
-def addTransport(
+def add_transport(
     snmpEngine: SnmpEngine,
     transportDomain: "tuple[int, ...]",
     transport: AbstractTransport,
 ):
     """Register transport with dispatcher."""
-    if snmpEngine.transportDispatcher:
-        if not transport.isCompatibleWithDispatcher(snmpEngine.transportDispatcher):
+    if snmpEngine.transport_dispatcher:
+        if not transport.is_compatible_with_dispatcher(snmpEngine.transport_dispatcher):
             raise error.PySnmpError(
-                f"Transport {transport!r} is not compatible with dispatcher {snmpEngine.transportDispatcher!r}"
+                f"Transport {transport!r} is not compatible with dispatcher {snmpEngine.transport_dispatcher!r}"
             )
     else:
         protoTransportDispatcher = transport.PROTO_TRANSPORT_DISPATCHER
         if protoTransportDispatcher is not None:
-            snmpEngine.registerTransportDispatcher(protoTransportDispatcher())
+            snmpEngine.register_transport_dispatcher(protoTransportDispatcher())
             # here we note that we have created transportDispatcher automatically
-            snmpEngine.setUserContext(automaticTransportDispatcher=0)
+            snmpEngine.set_user_context(automaticTransportDispatcher=0)
 
-    if snmpEngine.transportDispatcher:
-        snmpEngine.transportDispatcher.registerTransport(transportDomain, transport)
-        automaticTransportDispatcher = snmpEngine.getUserContext(
+    if snmpEngine.transport_dispatcher:
+        snmpEngine.transport_dispatcher.register_transport(transportDomain, transport)
+        automaticTransportDispatcher = snmpEngine.get_user_context(
             "automaticTransportDispatcher"
         )
         if automaticTransportDispatcher is not None:
-            snmpEngine.setUserContext(
+            snmpEngine.set_user_context(
                 automaticTransportDispatcher=automaticTransportDispatcher + 1
             )
 
 
-def getTransport(snmpEngine: SnmpEngine, transportDomain: "tuple[int, ...]"):
+def get_transport(snmpEngine: SnmpEngine, transportDomain: "tuple[int, ...]"):
     """Return transport from dispatcher."""
-    if not snmpEngine.transportDispatcher:
+    if not snmpEngine.transport_dispatcher:
         return
     try:
-        return snmpEngine.transportDispatcher.getTransport(transportDomain)
+        return snmpEngine.transport_dispatcher.get_transport(transportDomain)
     except error.PySnmpError:
         return
 
 
-def delTransport(snmpEngine: SnmpEngine, transportDomain: "tuple[int, ...]"):
+def delete_transport(snmpEngine: SnmpEngine, transportDomain: "tuple[int, ...]"):
     """Remove transport from dispatcher."""
-    if not snmpEngine.transportDispatcher:
+    if not snmpEngine.transport_dispatcher:
         return
-    transport = getTransport(snmpEngine, transportDomain)
-    snmpEngine.transportDispatcher.unregisterTransport(transportDomain)
+    transport = get_transport(snmpEngine, transportDomain)
+    snmpEngine.transport_dispatcher.unregister_transport(transportDomain)
     # automatically shutdown automatically created transportDispatcher
-    automaticTransportDispatcher = snmpEngine.getUserContext(
+    automaticTransportDispatcher = snmpEngine.get_user_context(
         "automaticTransportDispatcher"
     )
     if automaticTransportDispatcher is not None:
         automaticTransportDispatcher -= 1
-        snmpEngine.setUserContext(
+        snmpEngine.set_user_context(
             automaticTransportDispatcher=automaticTransportDispatcher
         )
         if not automaticTransportDispatcher:
-            snmpEngine.closeDispatcher()
-            snmpEngine.delUserContext(automaticTransportDispatcher)
+            snmpEngine.close_dispatcher()
+            snmpEngine.delete_user_context(automaticTransportDispatcher)
     return transport
 
 
-addSocketTransport = addTransport  # noqa: N816
-delSocketTransport = delTransport  # noqa: N816
+addSocketTransport = add_transport  # noqa: N816
+delSocketTransport = delete_transport  # noqa: N816
 
 
 # VACM shortcuts
 
 
-def __cookVacmContextInfo(snmpEngine, contextName):
-    mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
-    (vacmContextEntry,) = mibBuilder.importSymbols(
+def __cook_vacm_context_info(snmpEngine: SnmpEngine, contextName):
+    mibBuilder = snmpEngine.get_mib_builder()
+    (vacmContextEntry,) = mibBuilder.import_symbols(  # type: ignore
         "SNMP-VIEW-BASED-ACM-MIB", "vacmContextEntry"
     )
     tblIdx = vacmContextEntry.getInstIdFromIndices(contextName)
     return vacmContextEntry, tblIdx
 
 
-def addContext(snmpEngine, contextName):
+def add_context(snmpEngine: SnmpEngine, contextName):
     """Setup VACM context."""
-    vacmContextEntry, tblIdx = __cookVacmContextInfo(snmpEngine, contextName)
+    vacmContextEntry, tblIdx = __cook_vacm_context_info(snmpEngine, contextName)
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (vacmContextEntry.name + (2,) + tblIdx, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (vacmContextEntry.name + (1,) + tblIdx, contextName),
         (vacmContextEntry.name + (2,) + tblIdx, "createAndGo"),
         **dict(snmpEngine=snmpEngine),
     )
 
 
-def delContext(snmpEngine, contextName):
+def delete_context(snmpEngine: SnmpEngine, contextName):
     """Delete VACM context."""
-    vacmContextEntry, tblIdx = __cookVacmContextInfo(snmpEngine, contextName)
+    vacmContextEntry, tblIdx = __cook_vacm_context_info(snmpEngine, contextName)
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (vacmContextEntry.name + (2,) + tblIdx, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
 
 
-def __cookVacmGroupInfo(snmpEngine, securityModel, securityName):
-    mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+def __cook_vacm_group_info(snmpEngine: SnmpEngine, securityModel, securityName):
+    mibBuilder = snmpEngine.get_mib_builder()
 
-    (vacmSecurityToGroupEntry,) = mibBuilder.importSymbols(
+    (vacmSecurityToGroupEntry,) = mibBuilder.import_symbols(  # type: ignore
         "SNMP-VIEW-BASED-ACM-MIB", "vacmSecurityToGroupEntry"
     )
     tblIdx = vacmSecurityToGroupEntry.getInstIdFromIndices(securityModel, securityName)
     return vacmSecurityToGroupEntry, tblIdx
 
 
-def addVacmGroup(snmpEngine, groupName, securityModel, securityName):
+def add_vacm_group(snmpEngine: SnmpEngine, groupName, securityModel, securityName):
     """Setup VACM group."""
-    (vacmSecurityToGroupEntry, tblIdx) = __cookVacmGroupInfo(
+    (vacmSecurityToGroupEntry, tblIdx) = __cook_vacm_group_info(
         snmpEngine, securityModel, securityName
     )
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (vacmSecurityToGroupEntry.name + (5,) + tblIdx, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (vacmSecurityToGroupEntry.name + (1,) + tblIdx, securityModel),
         (vacmSecurityToGroupEntry.name + (2,) + tblIdx, securityName),
         (vacmSecurityToGroupEntry.name + (3,) + tblIdx, groupName),
@@ -693,23 +673,23 @@ def addVacmGroup(snmpEngine, groupName, securityModel, securityName):
     )
 
 
-def delVacmGroup(snmpEngine, securityModel, securityName):
+def delete_vacm_group(snmpEngine: SnmpEngine, securityModel, securityName):
     """Delete VACM group."""
-    vacmSecurityToGroupEntry, tblIdx = __cookVacmGroupInfo(
+    vacmSecurityToGroupEntry, tblIdx = __cook_vacm_group_info(
         snmpEngine, securityModel, securityName
     )
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (vacmSecurityToGroupEntry.name + (5,) + tblIdx, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
 
 
-def __cookVacmAccessInfo(
-    snmpEngine, groupName, contextName, securityModel, securityLevel
+def __cook_vacm_access_info(
+    snmpEngine: SnmpEngine, groupName, contextName, securityModel, securityLevel
 ):
-    mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+    mibBuilder = snmpEngine.get_mib_builder()
 
-    (vacmAccessEntry,) = mibBuilder.importSymbols(
+    (vacmAccessEntry,) = mibBuilder.import_symbols(  # type: ignore
         "SNMP-VIEW-BASED-ACM-MIB", "vacmAccessEntry"
     )
     tblIdx = vacmAccessEntry.getInstIdFromIndices(
@@ -718,8 +698,8 @@ def __cookVacmAccessInfo(
     return vacmAccessEntry, tblIdx
 
 
-def addVacmAccess(
-    snmpEngine,
+def add_vacm_access(
+    snmpEngine: SnmpEngine,
     groupName,
     contextPrefix,
     securityModel,
@@ -730,14 +710,14 @@ def addVacmAccess(
     notifyView,
 ):
     """Setup VACM access."""
-    vacmAccessEntry, tblIdx = __cookVacmAccessInfo(
+    vacmAccessEntry, tblIdx = __cook_vacm_access_info(
         snmpEngine, groupName, contextPrefix, securityModel, securityLevel
     )
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (vacmAccessEntry.name + (9,) + tblIdx, "destroy"), **dict(snmpEngine=snmpEngine)
     )
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (vacmAccessEntry.name + (1,) + tblIdx, contextPrefix),
         (vacmAccessEntry.name + (2,) + tblIdx, securityModel),
         (vacmAccessEntry.name + (3,) + tblIdx, securityLevel),
@@ -750,30 +730,34 @@ def addVacmAccess(
     )
 
 
-def delVacmAccess(snmpEngine, groupName, contextPrefix, securityModel, securityLevel):
+def delete_vacm_access(
+    snmpEngine: SnmpEngine, groupName, contextPrefix, securityModel, securityLevel
+):
     """Delete VACM access."""
-    vacmAccessEntry, tblIdx = __cookVacmAccessInfo(
+    vacmAccessEntry, tblIdx = __cook_vacm_access_info(
         snmpEngine, groupName, contextPrefix, securityModel, securityLevel
     )
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (vacmAccessEntry.name + (9,) + tblIdx, "destroy"), **dict(snmpEngine=snmpEngine)
     )
 
 
-def __cookVacmViewInfo(snmpEngine, viewName, subTree):
-    mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+def __cook_vacm_view_info(snmpEngine: SnmpEngine, viewName, subTree):
+    mibBuilder = snmpEngine.get_mib_builder()
 
-    (vacmViewTreeFamilyEntry,) = mibBuilder.importSymbols(
+    (vacmViewTreeFamilyEntry,) = mibBuilder.import_symbols(  # type: ignore
         "SNMP-VIEW-BASED-ACM-MIB", "vacmViewTreeFamilyEntry"
     )
     tblIdx = vacmViewTreeFamilyEntry.getInstIdFromIndices(viewName, subTree)
     return vacmViewTreeFamilyEntry, tblIdx
 
 
-def addVacmView(snmpEngine, viewName, viewType, subTree, subTreeMask):
+def add_vacm_view(snmpEngine: SnmpEngine, viewName, viewType, subTree, subTreeMask):
     """Setup VACM view."""
-    vacmViewTreeFamilyEntry, tblIdx = __cookVacmViewInfo(snmpEngine, viewName, subTree)
+    vacmViewTreeFamilyEntry, tblIdx = __cook_vacm_view_info(
+        snmpEngine, viewName, subTree
+    )
 
     # Allow bitmask specification in form of an OID
     if rfc1902.OctetString(".").asOctets() in rfc1902.OctetString(subTreeMask):
@@ -788,11 +772,11 @@ def addVacmView(snmpEngine, viewName, viewType, subTree, subTreeMask):
             "".join(str(x) for x in subTreeMask)
         )
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (vacmViewTreeFamilyEntry.name + (6,) + tblIdx, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (vacmViewTreeFamilyEntry.name + (1,) + tblIdx, viewName),
         (vacmViewTreeFamilyEntry.name + (2,) + tblIdx, subTree),
         (vacmViewTreeFamilyEntry.name + (3,) + tblIdx, subTreeMask),
@@ -802,10 +786,12 @@ def addVacmView(snmpEngine, viewName, viewType, subTree, subTreeMask):
     )
 
 
-def delVacmView(snmpEngine, viewName, subTree):
+def delete_vacm_view(snmpEngine: SnmpEngine, viewName, subTree):
     """Delete VACM view."""
-    vacmViewTreeFamilyEntry, tblIdx = __cookVacmViewInfo(snmpEngine, viewName, subTree)
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    vacmViewTreeFamilyEntry, tblIdx = __cook_vacm_view_info(
+        snmpEngine, viewName, subTree
+    )
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (vacmViewTreeFamilyEntry.name + (6,) + tblIdx, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
@@ -814,18 +800,20 @@ def delVacmView(snmpEngine, viewName, subTree):
 # VACM simplicity wrappers
 
 
-def __cookVacmUserInfo(snmpEngine, securityModel, securityName, securityLevel):
-    mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+def __cook_vacm_user_info(
+    snmpEngine: SnmpEngine, securityModel, securityName, securityLevel
+):
+    mibBuilder = snmpEngine.get_mib_builder()
 
     groupName = "v-%s-%d" % (hash(securityName), securityModel)
-    (SnmpSecurityLevel,) = mibBuilder.importSymbols(
+    (SnmpSecurityLevel,) = mibBuilder.import_symbols(  # type: ignore
         "SNMP-FRAMEWORK-MIB", "SnmpSecurityLevel"
     )
     securityLevel = SnmpSecurityLevel(securityLevel)
     return (groupName, securityLevel, "r" + groupName, "w" + groupName, "n" + groupName)
 
 
-def addVacmUser(
+def add_vacm_user(
     snmpEngine: SnmpEngine,
     securityModel: int,
     securityName: str,
@@ -836,12 +824,12 @@ def addVacmUser(
     contextName=b"",
 ):
     """Setup VACM user."""
-    (groupName, securityLevel, readView, writeView, notifyView) = __cookVacmUserInfo(
+    (groupName, securityLevel, readView, writeView, notifyView) = __cook_vacm_user_info(
         snmpEngine, securityModel, securityName, securityLevel
     )
-    addContext(snmpEngine, contextName)
-    addVacmGroup(snmpEngine, groupName, securityModel, securityName)
-    addVacmAccess(
+    add_context(snmpEngine, contextName)
+    add_vacm_group(snmpEngine, groupName, securityModel, securityName)
+    add_vacm_access(
         snmpEngine,
         groupName,
         contextName,
@@ -853,15 +841,15 @@ def addVacmUser(
         notifyView,
     )
     if readSubTree:
-        addVacmView(snmpEngine, readView, "included", readSubTree, b"")
+        add_vacm_view(snmpEngine, readView, "included", readSubTree, b"")
     if writeSubTree:
-        addVacmView(snmpEngine, writeView, "included", writeSubTree, b"")
+        add_vacm_view(snmpEngine, writeView, "included", writeSubTree, b"")
     if notifySubTree:
-        addVacmView(snmpEngine, notifyView, "included", notifySubTree, b"")
+        add_vacm_view(snmpEngine, notifyView, "included", notifySubTree, b"")
 
 
-def delVacmUser(
-    snmpEngine,
+def delete_vacm_user(
+    snmpEngine: SnmpEngine,
     securityModel,
     securityName,
     securityLevel,
@@ -871,34 +859,34 @@ def delVacmUser(
     contextName=b"",
 ):
     """Delete VACM user."""
-    (groupName, securityLevel, readView, writeView, notifyView) = __cookVacmUserInfo(
+    (groupName, securityLevel, readView, writeView, notifyView) = __cook_vacm_user_info(
         snmpEngine, securityModel, securityName, securityLevel
     )
-    delContext(snmpEngine, contextName)
-    delVacmGroup(snmpEngine, securityModel, securityName)
-    delVacmAccess(snmpEngine, groupName, contextName, securityModel, securityLevel)
+    delete_context(snmpEngine, contextName)
+    delete_vacm_group(snmpEngine, securityModel, securityName)
+    delete_vacm_access(snmpEngine, groupName, contextName, securityModel, securityLevel)
     if readSubTree:
-        delVacmView(snmpEngine, readView, readSubTree)
+        delete_vacm_view(snmpEngine, readView, readSubTree)
     if writeSubTree:
-        delVacmView(snmpEngine, writeView, writeSubTree)
+        delete_vacm_view(snmpEngine, writeView, writeSubTree)
     if notifySubTree:
-        delVacmView(snmpEngine, notifyView, notifySubTree)
+        delete_vacm_view(snmpEngine, notifyView, notifySubTree)
 
 
 # Notification target setup
 
 
-def __cookNotificationTargetInfo(
-    snmpEngine, notificationName, paramsName, filterSubtree=None
+def __cook_notification_target_info(
+    snmpEngine: SnmpEngine, notificationName, paramsName, filterSubtree=None
 ):
-    mibBuilder = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder
+    mibBuilder = snmpEngine.get_mib_builder()
 
-    (snmpNotifyEntry,) = mibBuilder.importSymbols(
+    (snmpNotifyEntry,) = mibBuilder.import_symbols(  # type: ignore
         "SNMP-NOTIFICATION-MIB", "snmpNotifyEntry"
     )
     tblIdx1 = snmpNotifyEntry.getInstIdFromIndices(notificationName)
 
-    (snmpNotifyFilterProfileEntry,) = mibBuilder.importSymbols(
+    (snmpNotifyFilterProfileEntry,) = mibBuilder.import_symbols(
         "SNMP-NOTIFICATION-MIB", "snmpNotifyFilterProfileEntry"
     )
     tblIdx2 = snmpNotifyFilterProfileEntry.getInstIdFromIndices(paramsName)
@@ -906,7 +894,7 @@ def __cookNotificationTargetInfo(
     profileName = "%s-filter" % hash(notificationName)
 
     if filterSubtree:
-        (snmpNotifyFilterEntry,) = mibBuilder.importSymbols(
+        (snmpNotifyFilterEntry,) = mibBuilder.import_symbols(
             "SNMP-NOTIFICATION-MIB", "snmpNotifyFilterEntry"
         )
         tblIdx3 = snmpNotifyFilterEntry.getInstIdFromIndices(profileName, filterSubtree)
@@ -924,8 +912,8 @@ def __cookNotificationTargetInfo(
     )
 
 
-def addNotificationTarget(
-    snmpEngine,
+def add_notification_target(
+    snmpEngine: SnmpEngine,
     notificationName,
     paramsName,
     transportTag,
@@ -943,26 +931,26 @@ def addNotificationTarget(
         profileName,
         snmpNotifyFilterEntry,
         tblIdx3,
-    ) = __cookNotificationTargetInfo(
+    ) = __cook_notification_target_info(
         snmpEngine, notificationName, paramsName, filterSubtree
     )
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpNotifyEntry.name + (5,) + tblIdx1, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpNotifyEntry.name + (2,) + tblIdx1, transportTag),
         (snmpNotifyEntry.name + (3,) + tblIdx1, notifyType),
         (snmpNotifyEntry.name + (5,) + tblIdx1, "createAndGo"),
         **dict(snmpEngine=snmpEngine),
     )
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpNotifyFilterProfileEntry.name + (3,) + tblIdx2, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpNotifyFilterProfileEntry.name + (1,) + tblIdx2, profileName),
         (snmpNotifyFilterProfileEntry.name + (3,) + tblIdx2, "createAndGo"),
         **dict(snmpEngine=snmpEngine),
@@ -971,11 +959,11 @@ def addNotificationTarget(
     if not snmpNotifyFilterEntry:
         return
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpNotifyFilterEntry.name + (5,) + tblIdx3, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpNotifyFilterEntry.name + (1,) + tblIdx3, filterSubtree),
         (snmpNotifyFilterEntry.name + (2,) + tblIdx3, filterMask),
         (snmpNotifyFilterEntry.name + (3,) + tblIdx3, filterType),
@@ -984,7 +972,9 @@ def addNotificationTarget(
     )
 
 
-def delNotificationTarget(snmpEngine, notificationName, paramsName, filterSubtree=None):
+def delete_notification_target(
+    snmpEngine: SnmpEngine, notificationName, paramsName, filterSubtree=None
+):
     """Remove notification target."""
     (
         snmpNotifyEntry,
@@ -994,16 +984,16 @@ def delNotificationTarget(snmpEngine, notificationName, paramsName, filterSubtre
         profileName,
         snmpNotifyFilterEntry,
         tblIdx3,
-    ) = __cookNotificationTargetInfo(
+    ) = __cook_notification_target_info(
         snmpEngine, notificationName, paramsName, filterSubtree
     )
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpNotifyEntry.name + (5,) + tblIdx1, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpNotifyFilterProfileEntry.name + (3,) + tblIdx2, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
@@ -1011,25 +1001,25 @@ def delNotificationTarget(snmpEngine, notificationName, paramsName, filterSubtre
     if not snmpNotifyFilterEntry:
         return
 
-    snmpEngine.msgAndPduDsp.mibInstrumController.writeVars(
+    snmpEngine.message_dispatcher.mib_instrum_controller.write_variables(
         (snmpNotifyFilterEntry.name + (5,) + tblIdx3, "destroy"),
         **dict(snmpEngine=snmpEngine),
     )
 
 
 # rfc3415: A.1
-def setInitialVacmParameters(snmpEngine):
+def set_initial_vacm_parameters(snmpEngine: SnmpEngine):
     """Set initial VACM parameters as per SNMP-FRAMEWORK-MIB."""
     # rfc3415: A.1.1 --> initial-semi-security-configuration
 
     # rfc3415: A.1.2
-    addContext(snmpEngine, "")
+    add_context(snmpEngine, "")
 
     # rfc3415: A.1.3
-    addVacmGroup(snmpEngine, "initial", 3, "initial")
+    add_vacm_group(snmpEngine, "initial", 3, "initial")
 
     # rfc3415: A.1.4
-    addVacmAccess(
+    add_vacm_access(
         snmpEngine,
         "initial",
         "",
@@ -1040,7 +1030,7 @@ def setInitialVacmParameters(snmpEngine):
         None,
         "restricted",
     )
-    addVacmAccess(
+    add_vacm_access(
         snmpEngine,
         "initial",
         "",
@@ -1051,7 +1041,7 @@ def setInitialVacmParameters(snmpEngine):
         "internet",
         "internet",
     )
-    addVacmAccess(
+    add_vacm_access(
         snmpEngine,
         "initial",
         "",
@@ -1064,9 +1054,15 @@ def setInitialVacmParameters(snmpEngine):
     )
 
     # rfc3415: A.1.5 (semi-secure)
-    addVacmView(snmpEngine, "internet", "included", (1, 3, 6, 1), "")
-    addVacmView(snmpEngine, "restricted", "included", (1, 3, 6, 1, 2, 1, 1), "")
-    addVacmView(snmpEngine, "restricted", "included", (1, 3, 6, 1, 2, 1, 11), "")
-    addVacmView(snmpEngine, "restricted", "included", (1, 3, 6, 1, 6, 3, 10, 2, 1), "")
-    addVacmView(snmpEngine, "restricted", "included", (1, 3, 6, 1, 6, 3, 11, 2, 1), "")
-    addVacmView(snmpEngine, "restricted", "included", (1, 3, 6, 1, 6, 3, 15, 1, 1), "")
+    add_vacm_view(snmpEngine, "internet", "included", (1, 3, 6, 1), "")
+    add_vacm_view(snmpEngine, "restricted", "included", (1, 3, 6, 1, 2, 1, 1), "")
+    add_vacm_view(snmpEngine, "restricted", "included", (1, 3, 6, 1, 2, 1, 11), "")
+    add_vacm_view(
+        snmpEngine, "restricted", "included", (1, 3, 6, 1, 6, 3, 10, 2, 1), ""
+    )
+    add_vacm_view(
+        snmpEngine, "restricted", "included", (1, 3, 6, 1, 6, 3, 11, 2, 1), ""
+    )
+    add_vacm_view(
+        snmpEngine, "restricted", "included", (1, 3, 6, 1, 6, 3, 15, 1, 1), ""
+    )

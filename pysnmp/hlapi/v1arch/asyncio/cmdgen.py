@@ -18,6 +18,13 @@ from pysnmp.smi.rfc1902 import ObjectType
 
 
 __all__ = [
+    "get_cmd",
+    "next_cmd",
+    "set_cmd",
+    "bulk_cmd",
+    "walk_cmd",
+    "bulk_walk_cmd",
+    "is_end_of_mib",
     "getCmd",
     "nextCmd",
     "setCmd",
@@ -28,10 +35,10 @@ __all__ = [
 ]
 
 VB_PROCESSOR = varbinds.CommandGeneratorVarBinds()
-isEndOfMib = varbinds.isEndOfMib
+is_end_of_mib = varbinds.is_end_of_mib
 
 
-async def getCmd(
+async def get_cmd(
     snmpDispatcher: SnmpDispatcher,
     authData: CommunityData,
     transportTarget: AbstractTransportTarget,
@@ -118,18 +125,18 @@ async def getCmd(
     >>>
     """
 
-    def _cbFun(snmpDispatcher, stateHandle, errorIndication, rspPdu, cbCtx):
+    def __callback(snmpDispatcher, stateHandle, errorIndication, rspPdu, cbCtx):
         lookupMib, future = cbCtx
         if future.cancelled():
             return
 
-        errorStatus = pMod.apiPDU.getErrorStatus(rspPdu)
-        errorIndex = pMod.apiPDU.getErrorIndex(rspPdu)
+        errorStatus = pMod.apiPDU.get_error_status(rspPdu)
+        errorIndex = pMod.apiPDU.get_error_index(rspPdu)
 
-        varBinds = pMod.apiPDU.getVarBinds(rspPdu)
+        varBinds = pMod.apiPDU.get_varbinds(rspPdu)
 
         try:
-            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+            varBindsUnmade = VB_PROCESSOR.unmake_varbinds(
                 snmpDispatcher.cache, varBinds, lookupMib
             )
         except Exception as e:
@@ -145,24 +152,24 @@ async def getCmd(
         lookupMib = True
 
     if lookupMib:
-        varBinds = VB_PROCESSOR.makeVarBinds(snmpDispatcher.cache, varBinds)
+        varBinds = VB_PROCESSOR.make_varbinds(snmpDispatcher.cache, varBinds)
 
     pMod = api.PROTOCOL_MODULES[authData.mpModel]
 
     reqPdu = pMod.GetRequestPDU()
-    pMod.apiPDU.setDefaults(reqPdu)
-    pMod.apiPDU.setVarBinds(reqPdu, varBinds)
+    pMod.apiPDU.set_defaults(reqPdu)
+    pMod.apiPDU.set_varbinds(reqPdu, varBinds)
 
     future = asyncio.Future()
 
-    snmpDispatcher.sendPdu(
-        authData, transportTarget, reqPdu, cbFun=_cbFun, cbCtx=(lookupMib, future)
+    snmpDispatcher.send_pdu(
+        authData, transportTarget, reqPdu, cbFun=__callback, cbCtx=(lookupMib, future)
     )
 
     return await future
 
 
-async def setCmd(
+async def set_cmd(
     snmpDispatcher: SnmpDispatcher,
     authData: CommunityData,
     transportTarget: AbstractTransportTarget,
@@ -249,18 +256,18 @@ async def setCmd(
     >>>
     """
 
-    def _cbFun(snmpDispatcher, stateHandle, errorIndication, rspPdu, cbCtx):
+    def __callback(snmpDispatcher, stateHandle, errorIndication, rspPdu, cbCtx):
         lookupMib, future = cbCtx
         if future.cancelled():
             return
 
-        errorStatus = pMod.apiPDU.getErrorStatus(rspPdu)
-        errorIndex = pMod.apiPDU.getErrorIndex(rspPdu)
+        errorStatus = pMod.apiPDU.get_error_status(rspPdu)
+        errorIndex = pMod.apiPDU.get_error_index(rspPdu)
 
-        varBinds = pMod.apiPDU.getVarBinds(rspPdu)
+        varBinds = pMod.apiPDU.get_varbinds(rspPdu)
 
         try:
-            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+            varBindsUnmade = VB_PROCESSOR.unmake_varbinds(
                 snmpDispatcher.cache, varBinds, lookupMib
             )
         except Exception as e:
@@ -276,24 +283,24 @@ async def setCmd(
         lookupMib = True
 
     if lookupMib:
-        varBinds = VB_PROCESSOR.makeVarBinds(snmpDispatcher.cache, varBinds)
+        varBinds = VB_PROCESSOR.make_varbinds(snmpDispatcher.cache, varBinds)
 
     pMod = api.PROTOCOL_MODULES[authData.mpModel]
 
     reqPdu = pMod.SetRequestPDU()
-    pMod.apiPDU.setDefaults(reqPdu)
-    pMod.apiPDU.setVarBinds(reqPdu, varBinds)
+    pMod.apiPDU.set_defaults(reqPdu)
+    pMod.apiPDU.set_varbinds(reqPdu, varBinds)
 
     future = asyncio.Future()
 
-    snmpDispatcher.sendPdu(
-        authData, transportTarget, reqPdu, cbFun=_cbFun, cbCtx=(lookupMib, future)
+    snmpDispatcher.send_pdu(
+        authData, transportTarget, reqPdu, cbFun=__callback, cbCtx=(lookupMib, future)
     )
 
     return await future
 
 
-async def nextCmd(
+async def next_cmd(
     snmpDispatcher: SnmpDispatcher,
     authData: CommunityData,
     transportTarget: AbstractTransportTarget,
@@ -384,7 +391,7 @@ async def nextCmd(
     >>>
     """
 
-    def _cbFun(
+    def __callback(
         snmpDispatcher: SnmpDispatcher,
         stateHandle,
         errorIndication: errind.ErrorIndication,
@@ -402,13 +409,13 @@ async def nextCmd(
         ):
             errorIndication = None  # type: ignore # TODO: fix this
 
-        errorStatus = pMod.apiPDU.getErrorStatus(rspPdu)
-        errorIndex = pMod.apiPDU.getErrorIndex(rspPdu)
+        errorStatus = pMod.apiPDU.get_error_status(rspPdu)
+        errorIndex = pMod.apiPDU.get_error_index(rspPdu)
 
-        varBinds = pMod.apiPDU.getVarBinds(rspPdu)
+        varBinds = pMod.apiPDU.get_varbinds(rspPdu)
 
         try:
-            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+            varBindsUnmade = VB_PROCESSOR.unmake_varbinds(
                 snmpDispatcher.cache, varBinds, lookupMib
             )
         except Exception as e:
@@ -424,24 +431,24 @@ async def nextCmd(
         lookupMib = True
 
     if lookupMib:
-        varBinds = VB_PROCESSOR.makeVarBinds(snmpDispatcher.cache, varBinds)
+        varBinds = VB_PROCESSOR.make_varbinds(snmpDispatcher.cache, varBinds)
 
     pMod = api.PROTOCOL_MODULES[authData.mpModel]
 
     reqPdu = pMod.GetNextRequestPDU()
-    pMod.apiPDU.setDefaults(reqPdu)
-    pMod.apiPDU.setVarBinds(reqPdu, varBinds)
+    pMod.apiPDU.set_defaults(reqPdu)
+    pMod.apiPDU.set_varbinds(reqPdu, varBinds)
 
     future = asyncio.Future()
 
-    snmpDispatcher.sendPdu(
-        authData, transportTarget, reqPdu, cbFun=_cbFun, cbCtx=(lookupMib, future)
+    snmpDispatcher.send_pdu(
+        authData, transportTarget, reqPdu, cbFun=__callback, cbCtx=(lookupMib, future)
     )
 
     return await future
 
 
-async def bulkCmd(
+async def bulk_cmd(
     snmpDispatcher: SnmpDispatcher,
     authData: CommunityData,
     transportTarget: AbstractTransportTarget,
@@ -556,7 +563,7 @@ async def bulkCmd(
     >>>
     """
 
-    def _cbFun(
+    def __callback(
         snmpDispatcher: SnmpDispatcher,
         stateHandle,
         errorIndication: errind.ErrorIndication,
@@ -574,13 +581,13 @@ async def bulkCmd(
         ):
             errorIndication = None  # type: ignore # TODO: fix here
 
-        errorStatus = pMod.apiPDU.getErrorStatus(rspPdu)
-        errorIndex = pMod.apiPDU.getErrorIndex(rspPdu)
+        errorStatus = pMod.apiPDU.get_error_status(rspPdu)
+        errorIndex = pMod.apiPDU.get_error_index(rspPdu)
 
-        varBinds = pMod.apiBulkPDU.getVarBinds(rspPdu)
+        varBinds = pMod.apiBulkPDU.get_varbinds(rspPdu)
 
         try:
-            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+            varBindsUnmade = VB_PROCESSOR.unmake_varbinds(
                 snmpDispatcher.cache, varBinds, lookupMib
             )
         except Exception as e:
@@ -596,26 +603,26 @@ async def bulkCmd(
         lookupMib = True
 
     if lookupMib:
-        varBinds = VB_PROCESSOR.makeVarBinds(snmpDispatcher.cache, varBinds)
+        varBinds = VB_PROCESSOR.make_varbinds(snmpDispatcher.cache, varBinds)
 
     pMod = api.PROTOCOL_MODULES[authData.mpModel]
 
     reqPdu = pMod.GetBulkRequestPDU()
-    pMod.apiPDU.setDefaults(reqPdu)
-    pMod.apiBulkPDU.setNonRepeaters(reqPdu, nonRepeaters)
-    pMod.apiBulkPDU.setMaxRepetitions(reqPdu, maxRepetitions)
-    pMod.apiPDU.setVarBinds(reqPdu, varBinds)
+    pMod.apiPDU.set_defaults(reqPdu)
+    pMod.apiBulkPDU.set_non_repeaters(reqPdu, nonRepeaters)
+    pMod.apiBulkPDU.set_max_repetitions(reqPdu, maxRepetitions)
+    pMod.apiPDU.set_varbinds(reqPdu, varBinds)
 
     future = asyncio.Future()
 
-    snmpDispatcher.sendPdu(
-        authData, transportTarget, reqPdu, cbFun=_cbFun, cbCtx=(lookupMib, future)
+    snmpDispatcher.send_pdu(
+        authData, transportTarget, reqPdu, cbFun=__callback, cbCtx=(lookupMib, future)
     )
 
     return await future
 
 
-async def walkCmd(
+async def walk_cmd(
     dispatcher: SnmpDispatcher,
     authData: CommunityData,
     transportTarget: AbstractTransportTarget,
@@ -719,14 +726,14 @@ async def walkCmd(
     maxCalls = options.get("maxCalls", 0)
 
     initialVars = [
-        x[0] for x in VB_PROCESSOR.makeVarBinds(dispatcher.cache, (varBind,))
+        x[0] for x in VB_PROCESSOR.make_varbinds(dispatcher.cache, (varBind,))
     ]
 
     totalRows = totalCalls = 0
 
     while True:
         if varBind:
-            errorIndication, errorStatus, errorIndex, varBindTable = await nextCmd(
+            errorIndication, errorStatus, errorIndex, varBindTable = await next_cmd(
                 dispatcher,
                 authData,
                 transportTarget,
@@ -786,7 +793,7 @@ async def walkCmd(
             varBind = initialVarBinds[0]
             initialVars = [
                 x[0]
-                for x in VB_PROCESSOR.makeVarBinds(dispatcher.cache, initialVarBinds)
+                for x in VB_PROCESSOR.make_varbinds(dispatcher.cache, initialVarBinds)
             ]
 
         if maxRows and totalRows >= maxRows:
@@ -796,7 +803,7 @@ async def walkCmd(
             return
 
 
-async def bulkWalkCmd(
+async def bulk_walk_cmd(
     dispatcher: SnmpDispatcher,
     authData: CommunityData,
     transportTarget: AbstractTransportTarget,
@@ -917,7 +924,7 @@ async def bulkWalkCmd(
     maxCalls = options.get("maxCalls", 0)
 
     initialVars = [
-        x[0] for x in VB_PROCESSOR.makeVarBinds(dispatcher.cache, (varBind,))
+        x[0] for x in VB_PROCESSOR.make_varbinds(dispatcher.cache, (varBind,))
     ]
 
     totalRows = totalCalls = 0
@@ -929,7 +936,7 @@ async def bulkWalkCmd(
             maxRepetitions = min(maxRepetitions, maxRows - totalRows)
 
         if varBinds:
-            errorIndication, errorStatus, errorIndex, varBindTable = await bulkCmd(
+            errorIndication, errorStatus, errorIndex, varBindTable = await bulk_cmd(
                 dispatcher,
                 authData,
                 transportTarget,
@@ -1011,7 +1018,7 @@ async def bulkWalkCmd(
         if initialVarBinds:
             varBinds = initialVarBinds
             initialVars = [
-                x[0] for x in VB_PROCESSOR.makeVarBinds(dispatcher.cache, varBinds)
+                x[0] for x in VB_PROCESSOR.make_varbinds(dispatcher.cache, varBinds)
             ]
 
         if maxRows and totalRows >= maxRows:
@@ -1019,3 +1026,13 @@ async def bulkWalkCmd(
 
         if maxCalls and totalCalls >= maxCalls:
             return
+
+
+# Compatibility API
+getCmd = get_cmd  # noqa: N816
+setCmd = set_cmd  # noqa: N816
+nextCmd = next_cmd  # noqa: N816
+bulkCmd = bulk_cmd  # noqa: N816
+walkCmd = walk_cmd  # noqa: N816
+bulkWalkCmd = bulk_walk_cmd  # noqa: N816
+isEndOfMib = is_end_of_mib  # noqa: N816

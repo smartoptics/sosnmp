@@ -21,13 +21,13 @@ from pysnmp.hlapi.v3arch.asyncio import *
 
 async def run():
     snmpEngine = SnmpEngine()
-    errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+    errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
         snmpEngine,
         CommunityData("public"),
         await UdpTransportTarget.create(("demo.pysnmp.com", 161)),
         ContextData(),
         ObjectType(
-            ObjectIdentity("IF-MIB", "ifInOctets", 1).addAsn1MibSource(
+            ObjectIdentity("IF-MIB", "ifInOctets", 1).add_asn1_mib_source(
                 "file:///usr/share/snmp", "https://mibs.pysnmp.com/asn1/@mib@"
             )
         ),

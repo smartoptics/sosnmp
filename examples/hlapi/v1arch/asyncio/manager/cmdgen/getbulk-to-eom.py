@@ -25,7 +25,7 @@ async def run(varBinds):
     snmpDispatcher = SnmpDispatcher()
 
     while True:
-        iterator = await bulkCmd(
+        iterator = await bulk_cmd(
             snmpDispatcher,
             CommunityData("public"),
             await UdpTransportTarget.create(("demo.pysnmp.com", 161)),
@@ -52,10 +52,10 @@ async def run(varBinds):
                 print(" = ".join([x.prettyPrint() for x in varBind]))
 
         varBinds = varBindTable
-        if isEndOfMib(varBinds):
+        if is_end_of_mib(varBinds):
             break
 
-    snmpDispatcher.transportDispatcher.closeDispatcher()
+    snmpDispatcher.transportDispatcher.close_dispatcher()
 
 
 asyncio.run(run([ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr"))]))

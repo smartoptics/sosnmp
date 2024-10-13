@@ -101,10 +101,12 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
 
     def datagram_received(self, datagram, transportAddress: AbstractTransportAddress):
         """Process incoming datagram."""
-        if self._cbFun is None:
+        if self._callback_function is None:
             raise error.CarrierError("Unable to call cbFun")
         else:
-            self.loop.call_soon(self._cbFun, self, transportAddress, datagram)
+            self.loop.call_soon(
+                self._callback_function, self, transportAddress, datagram
+            )
 
     def connection_made(self, transport: asyncio.DatagramTransport):
         """Prepare to send datagrams."""
@@ -118,7 +120,7 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
             )
             try:
                 self.transport.sendto(
-                    outgoingMessage, self.normalizeAddress(transportAddress)  # type: ignore
+                    outgoingMessage, self.normalize_address(transportAddress)  # type: ignore
                 )
             except Exception:
                 raise error.CarrierError(
@@ -131,7 +133,7 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
 
     # AbstractAsyncioTransport API
 
-    def openClientMode(
+    def open_client_mode(
         self, iface: "tuple[str, int] | None" = None, allow_broadcast: bool = False
     ):
         """Open client mode."""
@@ -151,7 +153,7 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
             )
         return self
 
-    def openServerMode(
+    def open_server_mode(
         self, iface: "tuple[str, int] | None" = None, sock: "socket | None" = None
     ):
         """Open server mode."""
@@ -173,15 +175,15 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
             )
         return self
 
-    def closeTransport(self):
+    def close_transport(self):
         """Close the transport."""
         if self._lport is not None:
             self._lport.cancel()
         if self.transport is not None:
             self.transport.close()
-        AbstractAsyncioTransport.closeTransport(self)
+        AbstractAsyncioTransport.close_transport(self)
 
-    def sendMessage(
+    def send_message(
         self,
         outgoingMessage,
         transportAddress: "AbstractTransportAddress | tuple[str, int]",
@@ -199,14 +201,14 @@ class DgramAsyncioProtocol(asyncio.DatagramProtocol, AbstractAsyncioTransport):
         else:
             try:
                 self.transport.sendto(
-                    outgoingMessage, self.normalizeAddress(transportAddress)  # type: ignore
+                    outgoingMessage, self.normalize_address(transportAddress)  # type: ignore
                 )
             except Exception:
                 raise error.CarrierError(
                     ";".join(traceback.format_exception(*sys.exc_info()))
                 )
 
-    def normalizeAddress(
+    def normalize_address(
         self, transportAddress: "AbstractTransportAddress | tuple[str, int]"
     ):
         """Return a transport address object."""

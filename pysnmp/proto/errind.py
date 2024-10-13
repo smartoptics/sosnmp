@@ -6,7 +6,7 @@
 #
 
 
-class ErrorIndication(Exception):
+class ErrorIndication(Exception):  # noqa: N818
     """SNMPv3 error-indication values."""
 
     def __init__(self, descr=None):
@@ -128,7 +128,7 @@ class ParseError(DeserializationError):
 parseError = ParseError("SNMP message deserialization error")  # noqa: N816
 
 
-class UnsupportedMsgProcessingModel(ErrorIndication):
+class UnsupportedMsgProcessingModel(ErrorIndication):  # noqa: N818
     """Unsupported SNMP message processing model."""
 
     pass
@@ -139,7 +139,7 @@ unsupportedMsgProcessingModel = UnsupportedMsgProcessingModel(  # noqa: N816
 )
 
 
-class UnknownPDUHandler(ErrorIndication):
+class UnknownPDUHandler(ErrorIndication):  # noqa: N818
     """Unknown SNMP PDU handler."""
 
     pass
@@ -148,7 +148,7 @@ class UnknownPDUHandler(ErrorIndication):
 unknownPDUHandler = UnknownPDUHandler("Unhandled PDU type encountered")  # noqa: N816
 
 
-class UnsupportedPDUtype(ErrorIndication):
+class UnsupportedPDUtype(ErrorIndication):  # noqa: N818
     """Unsupported SNMP PDU type."""
 
     pass
@@ -159,7 +159,7 @@ unsupportedPDUtype = UnsupportedPDUtype(  # noqa: N816
 )
 
 
-class RequestTimedOut(ErrorIndication):
+class RequestTimedOut(ErrorIndication):  # noqa: N818
     """SNMP request timed out."""
 
     pass
@@ -170,7 +170,7 @@ requestTimedOut = RequestTimedOut(  # noqa: N816
 )
 
 
-class EmptyResponse(ErrorIndication):
+class EmptyResponse(ErrorIndication):  # noqa: N818
     """Empty SNMP response message."""
 
     pass
@@ -179,7 +179,7 @@ class EmptyResponse(ErrorIndication):
 emptyResponse = EmptyResponse("Empty SNMP response message")  # noqa: N816
 
 
-class NonReportable(ErrorIndication):
+class NonReportable(ErrorIndication):  # noqa: N818
     """SNMP report PDU generation not attempted."""
 
     pass
@@ -188,7 +188,7 @@ class NonReportable(ErrorIndication):
 nonReportable = NonReportable("Report PDU generation not attempted")  # noqa: N816
 
 
-class DataMismatch(ErrorIndication):
+class DataMismatch(ErrorIndication):  # noqa: N818
     """SNMP request/response parameters mismatch."""
 
     pass
@@ -197,7 +197,7 @@ class DataMismatch(ErrorIndication):
 dataMismatch = DataMismatch("SNMP request/response parameters mismatched")  # noqa: N816
 
 
-class EngineIDMismatch(ErrorIndication):
+class EngineIDMismatch(ErrorIndication):  # noqa: N818
     """SNMP engine ID mismatch."""
 
     pass
@@ -206,7 +206,7 @@ class EngineIDMismatch(ErrorIndication):
 engineIDMismatch = EngineIDMismatch("SNMP engine ID mismatch encountered")  # noqa: N816
 
 
-class UnknownEngineID(ErrorIndication):
+class UnknownEngineID(ErrorIndication):  # noqa: N818
     """Unknown SNMP engine ID."""
 
     pass
@@ -215,7 +215,7 @@ class UnknownEngineID(ErrorIndication):
 unknownEngineID = UnknownEngineID("Unknown SNMP engine ID encountered")  # noqa: N816
 
 
-class TooBig(ErrorIndication):
+class TooBig(ErrorIndication):  # noqa: N818
     """SNMP message too big."""
 
     pass
@@ -224,7 +224,7 @@ class TooBig(ErrorIndication):
 tooBig = TooBig("SNMP message will be too big")  # noqa: N816
 
 
-class LoopTerminated(ErrorIndication):
+class LoopTerminated(ErrorIndication):  # noqa: N818
     """SNMP entities talk terminated."""
 
     pass
@@ -233,7 +233,7 @@ class LoopTerminated(ErrorIndication):
 loopTerminated = LoopTerminated("Infinite SNMP entities talk terminated")  # noqa: N816
 
 
-class InvalidMsg(ErrorIndication):
+class InvalidMsg(ErrorIndication):  # noqa: N818
     """Invalid SNMP message header parameters."""
 
     pass
@@ -247,7 +247,7 @@ invalidMsg = InvalidMsg(  # noqa: N816
 # SNMP security modules errors
 
 
-class UnknownCommunityName(ErrorIndication):
+class UnknownCommunityName(ErrorIndication):  # noqa: N818
     """Unknown SNMP community name."""
 
     pass
@@ -258,7 +258,7 @@ unknownCommunityName = UnknownCommunityName(  # noqa: N816
 )
 
 
-class NoEncryption(ErrorIndication):
+class NoEncryption(ErrorIndication):  # noqa: N818
     """No encryption services configured."""
 
     pass
@@ -287,7 +287,7 @@ decryptionError = DecryptionError(  # noqa: N816
 )
 
 
-class NoAuthentication(ErrorIndication):
+class NoAuthentication(ErrorIndication):  # noqa: N818
     """No authentication services configured."""
 
     pass
@@ -309,7 +309,7 @@ authenticationError = AuthenticationError(  # noqa: N816
 )
 
 
-class AuthenticationFailure(ErrorIndication):
+class AuthenticationFailure(ErrorIndication):  # noqa: N818
     """SNMP message authentication failure."""
 
     pass
@@ -318,7 +318,7 @@ class AuthenticationFailure(ErrorIndication):
 authenticationFailure = AuthenticationFailure("Authenticator mismatched")  # noqa: N816
 
 
-class UnsupportedAuthProtocol(ErrorIndication):
+class UnsupportedAuthProtocol(ErrorIndication):  # noqa: N818
     """Unsupported SNMP authentication protocol."""
 
     pass
@@ -329,7 +329,7 @@ unsupportedAuthProtocol = UnsupportedAuthProtocol(  # noqa: N816
 )
 
 
-class UnsupportedPrivProtocol(ErrorIndication):
+class UnsupportedPrivProtocol(ErrorIndication):  # noqa: N818
     """Unsupported SNMP privacy protocol."""
 
     pass
@@ -340,7 +340,7 @@ unsupportedPrivProtocol = UnsupportedPrivProtocol(  # noqa: N816
 )
 
 
-class UnknownSecurityName(ErrorIndication):
+class UnknownSecurityName(ErrorIndication):  # noqa: N818
     """Unknown SNMP security name."""
 
     pass
@@ -351,7 +351,7 @@ unknownSecurityName = UnknownSecurityName(  # noqa: N816
 )
 
 
-class UnsupportedSecurityModel(ErrorIndication):
+class UnsupportedSecurityModel(ErrorIndication):  # noqa: N818
     """Unsupported SNMP security model."""
 
     pass
@@ -362,7 +362,7 @@ unsupportedSecurityModel = UnsupportedSecurityModel(  # noqa: N816
 )
 
 
-class UnsupportedSecurityLevel(ErrorIndication):
+class UnsupportedSecurityLevel(ErrorIndication):  # noqa: N818
     """Unsupported SNMP security level."""
 
     pass
@@ -373,7 +373,7 @@ unsupportedSecurityLevel = UnsupportedSecurityLevel(  # noqa: N816
 )
 
 
-class NotInTimeWindow(ErrorIndication):
+class NotInTimeWindow(ErrorIndication):  # noqa: N818
     """SNMP message timing parameters not in windows of trust."""
 
     pass
@@ -384,7 +384,7 @@ notInTimeWindow = NotInTimeWindow(  # noqa: N816
 )
 
 
-class UnknownUserName(ErrorIndication):
+class UnknownUserName(ErrorIndication):  # noqa: N818
     """Unknown SNMP user name."""
 
     pass
@@ -393,7 +393,7 @@ class UnknownUserName(ErrorIndication):
 unknownUserName = UnknownUserName("Unknown USM user")  # noqa: N816
 
 
-class WrongDigest(ErrorIndication):
+class WrongDigest(ErrorIndication):  # noqa: N818
     """Wrong SNMP PDU digest."""
 
     pass
@@ -402,7 +402,7 @@ class WrongDigest(ErrorIndication):
 wrongDigest = WrongDigest("Wrong SNMP PDU digest")  # noqa: N816
 
 
-class ReportPduReceived(ErrorIndication):
+class ReportPduReceived(ErrorIndication):  # noqa: N818
     """Remote SNMP engine reported error."""
 
     pass
@@ -414,7 +414,7 @@ reportPduReceived = ReportPduReceived("Remote SNMP engine reported error")  # no
 # SNMP access-control errors
 
 
-class NoSuchView(ErrorIndication):
+class NoSuchView(ErrorIndication):  # noqa: N818
     """No such MIB view currently exists."""
 
     pass
@@ -423,7 +423,7 @@ class NoSuchView(ErrorIndication):
 noSuchView = NoSuchView("No such MIB view currently exists")  # noqa: N816
 
 
-class NoAccessEntry(ErrorIndication):
+class NoAccessEntry(ErrorIndication):  # noqa: N818
     """Access to MIB node denied."""
 
     pass
@@ -432,7 +432,7 @@ class NoAccessEntry(ErrorIndication):
 noAccessEntry = NoAccessEntry("Access to MIB node denied")  # noqa: N816
 
 
-class NoGroupName(ErrorIndication):
+class NoGroupName(ErrorIndication):  # noqa: N818
     """No such VACM group configured."""
 
     pass
@@ -441,7 +441,7 @@ class NoGroupName(ErrorIndication):
 noGroupName = NoGroupName("No such VACM group configured")  # noqa: N816
 
 
-class NoSuchContext(ErrorIndication):
+class NoSuchContext(ErrorIndication):  # noqa: N818
     """No such SNMP context exists."""
 
     pass
@@ -450,7 +450,7 @@ class NoSuchContext(ErrorIndication):
 noSuchContext = NoSuchContext("SNMP context now found")  # noqa: N816
 
 
-class NotInView(ErrorIndication):
+class NotInView(ErrorIndication):  # noqa: N818
     """Requested OID is out of MIB view."""
 
     pass
@@ -459,7 +459,7 @@ class NotInView(ErrorIndication):
 notInView = NotInView("Requested OID is out of MIB view")  # noqa: N816
 
 
-class AccessAllowed(ErrorIndication):
+class AccessAllowed(ErrorIndication):  # noqa: N818
     """Access to MIB node allowed."""
 
     pass
@@ -480,7 +480,7 @@ otherError = OtherError("Unspecified SNMP engine error occurred")  # noqa: N816
 # SNMP Apps errors
 
 
-class OidNotIncreasing(ErrorIndication):
+class OidNotIncreasing(ErrorIndication):  # noqa: N818
     """OID not increasing."""
 
     pass

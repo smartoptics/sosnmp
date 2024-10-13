@@ -27,10 +27,10 @@ snmpEngine = engine.SnmpEngine()
 #
 
 # SecurityName <-> CommunityName mapping
-config.addV1System(snmpEngine, "my-area", "public")
+config.add_v1_system(snmpEngine, "my-area", "public")
 
 # Specify security settings per SecurityName (SNMPv1 - 0, SNMPv2c - 1)
-config.addTargetParams(snmpEngine, "my-creds", "my-area", "noAuthNoPriv", 1)
+config.add_target_parameters(snmpEngine, "my-creds", "my-area", "noAuthNoPriv", 1)
 
 #
 # Setup transport endpoint and bind it with security settings yielding
@@ -38,10 +38,10 @@ config.addTargetParams(snmpEngine, "my-creds", "my-area", "noAuthNoPriv", 1)
 #
 
 # UDP/IPv4
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().open_client_mode()
 )
-config.addTargetAddr(
+config.add_target_address(
     snmpEngine,
     "my-router",
     udp.DOMAIN_NAME,
@@ -75,7 +75,7 @@ def cbFun(
 
 
 # Prepare and send a request message
-cmdgen.GetCommandGenerator().sendVarBinds(
+cmdgen.GetCommandGenerator().send_varbinds(
     snmpEngine,
     "my-router",
     None,
@@ -87,4 +87,4 @@ cmdgen.GetCommandGenerator().sendVarBinds(
 # Run I/O dispatcher which would send pending queries and process responses
 snmpEngine.openDispatcher(3)
 
-snmpEngine.closeDispatcher()
+snmpEngine.close_dispatcher()

@@ -6,7 +6,7 @@
 #
 from pysnmp.error import PySnmpError
 from pysnmp.hlapi.v1arch.asyncio.auth import CommunityData
-from pysnmp.hlapi.v1arch.asyncio.cmdgen import bulkCmd, getCmd, nextCmd, setCmd
+from pysnmp.hlapi.v1arch.asyncio.cmdgen import bulk_cmd, get_cmd, next_cmd, set_cmd
 from pysnmp.hlapi.v1arch.asyncio.dispatch import SnmpDispatcher
 from pysnmp.hlapi.v1arch.asyncio.transport import (
     Udp6TransportTarget,
@@ -43,19 +43,19 @@ class Slim:
 
     """
 
-    snmpDispatcher: SnmpDispatcher
+    __snmp_dispatcher: SnmpDispatcher
     version: int
 
     def __init__(self, version: int = 2):
         """Creates a slim SNMP wrapper object."""
-        self.snmpDispatcher = SnmpDispatcher()
+        self.__snmp_dispatcher = SnmpDispatcher()
         if version not in (1, 2):
             raise PySnmpError(f"Not supported version {version}")
         self.version = version
 
     def close(self):
         """Closes the wrapper to release its resources."""
-        self.snmpDispatcher.transportDispatcher.closeDispatcher()
+        self.__snmp_dispatcher.transportDispatcher.close_dispatcher()
 
     def __enter__(self):
         """Returns the wrapper object."""
@@ -142,8 +142,8 @@ class Slim:
         (None, 0, 0, [ObjectType(ObjectIdentity(ObjectName('1.3.6.1.2.1.1.1.0')), DisplayString('SunOS zeus.pysnmp.com 4.1.3_U1 1 sun4m'))])
         >>>
         """
-        return await getCmd(
-            self.snmpDispatcher,
+        return await get_cmd(
+            self.__snmp_dispatcher,
             CommunityData(communityName, mpModel=self.version - 1),
             await Udp6TransportTarget.create((address, port), timeout, retries)
             if ":" in address
@@ -232,8 +232,8 @@ class Slim:
         (None, 0, 0, [[ObjectType(ObjectIdentity('1.3.6.1.2.1.1.1.0'), DisplayString('Linux i386'))]])
         >>>
         """
-        return await nextCmd(
-            self.snmpDispatcher,
+        return await next_cmd(
+            self.__snmp_dispatcher,
             CommunityData(communityName, mpModel=self.version - 1),
             await Udp6TransportTarget.create((address, port), timeout, retries)
             if ":" in address
@@ -354,8 +354,8 @@ class Slim:
         version = self.version - 1
         if version == 0:
             raise PySnmpError("Cannot send V2 PDU on V1 session")
-        return await bulkCmd(
-            self.snmpDispatcher,
+        return await bulk_cmd(
+            self.__snmp_dispatcher,
             CommunityData(communityName, mpModel=version),
             await Udp6TransportTarget.create((address, port), timeout, retries)
             if ":" in address
@@ -439,8 +439,8 @@ class Slim:
         (None, 0, 0, [ObjectType(ObjectIdentity(ObjectName('1.3.6.1.2.1.1.1.0')), DisplayString('Linux i386'))])
         >>>
         """
-        return await setCmd(
-            self.snmpDispatcher,
+        return await set_cmd(
+            self.__snmp_dispatcher,
             CommunityData(communityName, mpModel=self.version - 1),
             await Udp6TransportTarget.create((address, port), timeout, retries)
             if ":" in address

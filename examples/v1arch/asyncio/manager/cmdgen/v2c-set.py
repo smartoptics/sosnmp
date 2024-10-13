@@ -26,8 +26,8 @@ pMod = api.PROTOCOL_MODULES[api.SNMP_VERSION_2C]
 
 # Build PDU
 reqPDU = pMod.SetRequestPDU()
-pMod.apiPDU.setDefaults(reqPDU)
-pMod.apiPDU.setVarBinds(
+pMod.apiPDU.set_defaults(reqPDU)
+pMod.apiPDU.set_varbinds(
     reqPDU,
     # A list of Var-Binds to SET
     (
@@ -38,52 +38,52 @@ pMod.apiPDU.setVarBinds(
 
 # Build message
 reqMsg = pMod.Message()
-pMod.apiMessage.setDefaults(reqMsg)
-pMod.apiMessage.setCommunity(reqMsg, "public")
-pMod.apiMessage.setPDU(reqMsg, reqPDU)
+pMod.apiMessage.set_defaults(reqMsg)
+pMod.apiMessage.set_community(reqMsg, "public")
+pMod.apiMessage.set_pdu(reqMsg, reqPDU)
 
 
 # noinspection PyUnusedLocal,PyUnusedLocal
-def cbRecvFun(
+def __callback(
     transportDispatcher, transportDomain, transportAddress, wholeMsg, reqPDU=reqPDU
 ):
     while wholeMsg:
         rspMsg, wholeMsg = decoder.decode(wholeMsg, asn1Spec=pMod.Message())
-        rspPDU = pMod.apiMessage.getPDU(rspMsg)
+        rspPDU = pMod.apiMessage.get_pdu(rspMsg)
 
         # Match response to request
-        if pMod.apiPDU.getRequestID(reqPDU) == pMod.apiPDU.getRequestID(rspPDU):
+        if pMod.apiPDU.get_request_id(reqPDU) == pMod.apiPDU.get_request_id(rspPDU):
             # Check for SNMP errors reported
-            errorStatus = pMod.apiPDU.getErrorStatus(rspPDU)
+            errorStatus = pMod.apiPDU.get_error_status(rspPDU)
             if errorStatus:
                 print(errorStatus.prettyPrint())
 
             else:
-                for oid, val in pMod.apiPDU.getVarBinds(rspPDU):
+                for oid, val in pMod.apiPDU.get_varbinds(rspPDU):
                     print(f"{oid.prettyPrint()} = {val.prettyPrint()}")
 
-            transportDispatcher.jobFinished(1)
+            transportDispatcher.job_finished(1)
 
     return wholeMsg
 
 
 transportDispatcher = AsyncioDispatcher()
 
-transportDispatcher.registerRecvCbFun(cbRecvFun)
+transportDispatcher.register_recv_callback(__callback)
 
 # UDP/IPv4
-transportDispatcher.registerTransport(
-    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
+transportDispatcher.register_transport(
+    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().open_client_mode()
 )
 
 # Pass message to dispatcher
-transportDispatcher.sendMessage(
+transportDispatcher.send_message(
     encoder.encode(reqMsg), udp.DOMAIN_NAME, ("demo.pysnmp.com", 161)
 )
 
-transportDispatcher.jobStarted(1)
+transportDispatcher.job_started(1)
 
 # Dispatcher will finish as job#1 counter reaches zero
-transportDispatcher.runDispatcher(3)
+transportDispatcher.run_dispatcher(3)
 
-transportDispatcher.closeDispatcher()
+transportDispatcher.close_dispatcher()

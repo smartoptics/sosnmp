@@ -73,16 +73,16 @@ class OrderedDict(dict):
             for k in kwargs:
                 self[k] = kwargs[k]
 
-    def sortingFun(self, keys):
+    def sorting_function(self, keys):
         """Sort the keys in the dictionary."""
         keys.sort()
 
     def __order(self):
-        self.sortingFun(self.__keys)
+        self.sorting_function(self.__keys)
         self.__keysLens = sorted({len(k) for k in self.__keys}, reverse=True)
         self.__dirty = False
 
-    def nextKey(self, key):
+    def next_key(self, key):
         """Return the next key in the dictionary."""
         if self.__dirty:
             self.__order()
@@ -97,7 +97,7 @@ class OrderedDict(dict):
         else:
             raise KeyError(key)
 
-    def getKeysLens(self):
+    def get_keys_lengths(self):
         """Return the keys lengths in the dictionary."""
         if self.__dirty:
             self.__order()
@@ -127,6 +127,6 @@ class OidOrderedDict(OrderedDict):
         if key in self.__keysCache:
             del self.__keysCache[key]
 
-    def sortingFun(self, keys):
+    def sorting_function(self, keys):
         """Sort the keys in the dictionary."""
         keys.sort(key=lambda k, d=self.__keysCache: d[k])

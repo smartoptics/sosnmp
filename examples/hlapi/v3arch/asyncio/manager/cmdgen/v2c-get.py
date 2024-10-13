@@ -21,7 +21,7 @@ from pysnmp.smi.rfc1902 import ObjectIdentity, ObjectType
 
 async def run():
     snmpEngine = SnmpEngine()
-    errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+    errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
         snmpEngine,
         CommunityData("public"),
         await UdpTransportTarget.create(("demo.pysnmp.com", 161)),

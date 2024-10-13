@@ -22,14 +22,14 @@ from pysnmp.hlapi.v1arch.asyncio import *
 
 
 async def sendone(snmpDispatcher, hostname, notifyType):
-    iterator = await sendNotification(
+    iterator = await send_notification(
         snmpDispatcher,
         CommunityData("public"),
         await UdpTransportTarget.create((hostname, 162)),
         notifyType,
         NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2"))
-        .loadMibs("SNMPv2-MIB")
-        .addVarBinds(
+        .load_mibs("SNMPv2-MIB")
+        .add_varbinds(
             ("1.3.6.1.6.3.1.1.4.3.0", "1.3.6.1.4.1.20408.4.1.1.2"),
             ("1.3.6.1.2.1.1.1.0", OctetString("my system")),
         ),

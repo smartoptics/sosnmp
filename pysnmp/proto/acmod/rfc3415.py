@@ -4,9 +4,14 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+from typing import TYPE_CHECKING
+
 from pysnmp import debug
 from pysnmp.proto import errind, error
 from pysnmp.smi.error import NoSuchInstanceError
+
+if TYPE_CHECKING:
+    from pysnmp.entity.engine import SnmpEngine
 
 
 # 3.2
@@ -15,7 +20,7 @@ class Vacm:
 
     ACCESS_MODEL_ID = 3
 
-    _powOfTwoSeq = (128, 64, 32, 16, 8, 4, 2, 1)
+    _power_of_two_sequences = (128, 64, 32, 16, 8, 4, 2, 1)
 
     def __init__(self):
         """Create a VACM instance."""
@@ -29,7 +34,7 @@ class Vacm:
         self._accessMap = {}
         self._viewTreeMap = {}
 
-    def _addAccessEntry(
+    def _add_access_entry(
         self,
         groupName,
         contextPrefix,
@@ -82,7 +87,7 @@ class Vacm:
 
             levels[securityLevel] = viewName
 
-    def _getFamilyViewName(
+    def _get_family_view_name(
         self, groupName, contextName, securityModel, securityLevel, viewType
     ):
         groups = self._accessMap
@@ -137,9 +142,9 @@ class Vacm:
         rating, viewName = candidates[0]
         return viewName
 
-    def isAccessAllowed(
+    def is_access_allowed(
         self,
-        snmpEngine,
+        snmpEngine: "SnmpEngine",
         securityModel,
         securityName,
         securityLevel,
@@ -164,8 +169,6 @@ class Vacm:
         Raises:
             StatusInformation: If access is denied.
         """
-        mibInstrumController = snmpEngine.msgAndPduDsp.mibInstrumController
-
         debug.logger & debug.FLAG_ACL and debug.logger(
             "isAccessAllowed: securityModel %s, securityName %s, "
             "securityLevel %s, viewType %s, contextName %s for "
@@ -182,7 +185,7 @@ class Vacm:
 
         # Rebuild contextName map if changed
 
-        (vacmContextName,) = mibInstrumController.mibBuilder.importSymbols(
+        (vacmContextName,) = snmpEngine.get_mib_builder().import_symbols(  # type: ignore
             "SNMP-VIEW-BASED-ACM-MIB", "vacmContextName"
         )
 
@@ -208,12 +211,12 @@ class Vacm:
 
         # Rebuild groupName map if changed
 
-        (vacmGroupName,) = mibInstrumController.mibBuilder.importSymbols(
+        (vacmGroupName,) = snmpEngine.get_mib_builder().import_symbols(  # type: ignore
             "SNMP-VIEW-BASED-ACM-MIB", "vacmGroupName"
         )
 
         if self._groupNameBranchId != vacmGroupName.branchVersionId:
-            (vacmSecurityToGroupEntry,) = mibInstrumController.mibBuilder.importSymbols(
+            (vacmSecurityToGroupEntry,) = snmpEngine.get_mib_builder().import_symbols(  # type: ignore
                 "SNMP-VIEW-BASED-ACM-MIB", "vacmSecurityToGroupEntry"
             )
 
@@ -247,7 +250,7 @@ class Vacm:
 
         # Rebuild access map if changed
 
-        (vacmAccessStatus,) = mibInstrumController.mibBuilder.importSymbols(
+        (vacmAccessStatus,) = snmpEngine.get_mib_builder().import_symbols(  # type: ignore
             "SNMP-VIEW-BASED-ACM-MIB", "vacmAccessStatus"
         )
 
@@ -261,7 +264,7 @@ class Vacm:
                 vacmAccessReadViewName,
                 vacmAccessWriteViewName,
                 vacmAccessNotifyViewName,
-            ) = mibInstrumController.mibBuilder.importSymbols(
+            ) = snmpEngine.get_mib_builder().import_symbols(  # type: ignore
                 "SNMP-VIEW-BASED-ACM-MIB",
                 "vacmAccessEntry",
                 "vacmAccessContextPrefix",
@@ -293,7 +296,7 @@ class Vacm:
 
                 vacmGroupName = indices[0]
 
-                self._addAccessEntry(
+                self._add_access_entry(
                     vacmGroupName,
                     vacmAccessContextPrefix.getNode(
                         vacmAccessContextPrefix.name + instId
@@ -320,13 +323,13 @@ class Vacm:
 
             self._accessBranchId = vacmAccessStatus.branchVersionId
 
-        viewName = self._getFamilyViewName(
+        viewName = self._get_family_view_name(
             groupName, contextName, securityModel, securityLevel, viewType
         )
 
         # Rebuild family subtree map if changed
 
-        (vacmViewTreeFamilyViewName,) = mibInstrumController.mibBuilder.importSymbols(
+        (vacmViewTreeFamilyViewName,) = snmpEngine.get_mib_builder().import_symbols(  # type: ignore
             "SNMP-VIEW-BASED-ACM-MIB", "vacmViewTreeFamilyViewName"
         )
 
@@ -335,7 +338,7 @@ class Vacm:
                 vacmViewTreeFamilySubtree,
                 vacmViewTreeFamilyMask,
                 vacmViewTreeFamilyType,
-            ) = mibInstrumController.mibBuilder.importSymbols(
+            ) = snmpEngine.get_mib_builder().import_symbols(  # type: ignore
                 "SNMP-VIEW-BASED-ACM-MIB",
                 "vacmViewTreeFamilySubtree",
                 "vacmViewTreeFamilyMask",

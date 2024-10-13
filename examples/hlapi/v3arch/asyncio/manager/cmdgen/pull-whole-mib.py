@@ -23,7 +23,7 @@ from pysnmp.hlapi.v3arch.asyncio import *
 async def run():
     snmpEngine = SnmpEngine()
 
-    async for (errorIndication, errorStatus, errorIndex, varBindTable) in walkCmd(
+    async for (errorIndication, errorStatus, errorIndex, varBindTable) in walk_cmd(
         snmpEngine,
         UsmUserData("usr-md5-none", "authkey1"),
         await UdpTransportTarget.create(("demo.pysnmp.com", 161)),
@@ -47,7 +47,7 @@ async def run():
             for varBind in varBindTable:
                 print(" = ".join([x.prettyPrint() for x in varBind]))
 
-    snmpEngine.transportDispatcher.runDispatcher()
+    snmpEngine.transport_dispatcher.run_dispatcher()
 
 
 asyncio.run(run())

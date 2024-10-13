@@ -6,8 +6,7 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 """
-This module provides a class for generating sequential integers in a
-reasonably multi-thread safe manner.
+This module provides a class for generating sequential integers in a reasonably multi-thread safe manner.
 
 Classes:
     Integer: A class to generate the next integer value within a specified

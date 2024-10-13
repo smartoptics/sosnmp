@@ -16,12 +16,12 @@ from pysnmp.proto.proxy import rfc2576
 from pysnmp.proto.rfc1902 import Integer32
 from pysnmp.smi.rfc1902 import ObjectType
 
-__all__ = ["sendNotification"]
+__all__ = ["send_notification", "sendNotification"]
 
 VB_PROCESSOR = NotificationOriginatorVarBinds()
 
 
-async def sendNotification(
+async def send_notification(
     snmpDispatcher: SnmpDispatcher,
     authData: CommunityData,
     transportTarget: AbstractTransportTarget,
@@ -134,7 +134,7 @@ async def sendNotification(
     sysUpTime = v2c.apiTrapPDU.sysUpTime
     snmpTrapOID = v2c.apiTrapPDU.snmpTrapOID
 
-    def _ensureVarBinds(varBinds):
+    def _ensure_varbinds(varBinds):
         # Add sysUpTime if not present already
         if not varBinds or varBinds[0][0] != sysUpTime:
             varBinds.insert(0, (v2c.ObjectIdentifier(sysUpTime), v2c.TimeTicks(0)))
@@ -171,18 +171,18 @@ async def sendNotification(
 
         return varBinds
 
-    def _cbFun(snmpDispatcher, stateHandle, errorIndication, rspPdu, _cbCtx):
+    def __callback(snmpDispatcher, stateHandle, errorIndication, rspPdu, _cbCtx):
         lookupMib, future = _cbCtx
         if future.cancelled():
             return
 
-        errorStatus = v2c.apiTrapPDU.getErrorStatus(rspPdu)
-        errorIndex = v2c.apiTrapPDU.getErrorIndex(rspPdu)
+        errorStatus = v2c.apiTrapPDU.get_error_status(rspPdu)
+        errorIndex = v2c.apiTrapPDU.get_error_index(rspPdu)
 
-        varBinds = v2c.apiTrapPDU.getVarBinds(rspPdu)
+        varBinds = v2c.apiTrapPDU.get_varbinds(rspPdu)
 
         try:
-            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+            varBindsUnmade = VB_PROCESSOR.unmake_varbinds(
                 snmpDispatcher.cache, varBinds, lookupMib  # type: ignore
             )
         except Exception as e:
@@ -201,7 +201,7 @@ async def sendNotification(
         lookupMib = True
 
     if lookupMib:
-        inputVarBinds = VB_PROCESSOR.makeVarBinds(snmpDispatcher.cache, varBinds)
+        inputVarBinds = VB_PROCESSOR.make_varbinds(snmpDispatcher.cache, varBinds)
 
     # # make sure required PDU payload is in place
     # completeVarBinds = []
@@ -226,30 +226,34 @@ async def sendNotification(
     else:
         reqPdu = v2c.InformRequestPDU()
 
-    v2c.apiTrapPDU.setDefaults(reqPdu)
-    v2c.apiTrapPDU.setVarBinds(reqPdu, inputVarBinds)
+    v2c.apiTrapPDU.set_defaults(reqPdu)
+    v2c.apiTrapPDU.set_varbinds(reqPdu, inputVarBinds)
 
-    inputVarBinds = v2c.apiTrapPDU.getVarBinds(reqPdu)
+    inputVarBinds = v2c.apiTrapPDU.get_varbinds(reqPdu)
 
-    v2c.apiTrapPDU.setVarBinds(reqPdu, _ensureVarBinds(inputVarBinds))
+    v2c.apiTrapPDU.set_varbinds(reqPdu, _ensure_varbinds(inputVarBinds))
 
     if authData.mpModel == 0:
-        reqPdu = rfc2576.v2ToV1(reqPdu)
+        reqPdu = rfc2576.v2_to_v1(reqPdu)
 
     future = asyncio.Future()
 
-    snmpDispatcher.sendPdu(
-        authData, transportTarget, reqPdu, cbFun=_cbFun, cbCtx=(lookupMib, future)
+    snmpDispatcher.send_pdu(
+        authData, transportTarget, reqPdu, cbFun=__callback, cbCtx=(lookupMib, future)
     )
 
     if notifyType == "trap":
 
-        def __trapFun(future):
+        def __trap_function(future):
             if future.cancelled():
                 return
             future.set_result((None, 0, 0, []))
 
         loop = asyncio.get_event_loop()
-        loop.call_soon(__trapFun, future)
+        loop.call_soon(__trap_function, future)
 
     return await future
+
+
+# Compatibility API
+sendNotification = send_notification  # noqa: N816

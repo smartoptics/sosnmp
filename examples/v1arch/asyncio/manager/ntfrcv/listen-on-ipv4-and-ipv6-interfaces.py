@@ -27,7 +27,7 @@ from pysnmp.proto import api
 
 
 # noinspection PyUnusedLocal
-def cbFun(transportDispatcher, transportDomain, transportAddress, wholeMsg):
+def __callback(transportDispatcher, transportDomain, transportAddress, wholeMsg):
     while wholeMsg:
         msgVer = int(api.decodeMessageVersion(wholeMsg))
         if msgVer in api.PROTOCOL_MODULES:
@@ -48,32 +48,32 @@ def cbFun(transportDispatcher, transportDomain, transportAddress, wholeMsg):
             )
         )
 
-        reqPDU = pMod.apiMessage.getPDU(reqMsg)
+        reqPDU = pMod.apiMessage.get_pdu(reqMsg)
         if reqPDU.isSameTypeWith(pMod.TrapPDU()):
             if msgVer == api.SNMP_VERSION_1:
                 print(
                     "Enterprise: %s"
-                    % (pMod.apiTrapPDU.getEnterprise(reqPDU).prettyPrint())
+                    % (pMod.apiTrapPDU.get_enterprise(reqPDU).prettyPrint())
                 )
                 print(
                     "Agent Address: %s"
-                    % (pMod.apiTrapPDU.getAgentAddr(reqPDU).prettyPrint())
+                    % (pMod.apiTrapPDU.get_agent_address(reqPDU).prettyPrint())
                 )
                 print(
                     "Generic Trap: %s"
-                    % (pMod.apiTrapPDU.getGenericTrap(reqPDU).prettyPrint())
+                    % (pMod.apiTrapPDU.get_generic_trap(reqPDU).prettyPrint())
                 )
                 print(
                     "Specific Trap: %s"
-                    % (pMod.apiTrapPDU.getSpecificTrap(reqPDU).prettyPrint())
+                    % (pMod.apiTrapPDU.get_specific_trap(reqPDU).prettyPrint())
                 )
                 print(
-                    "Uptime: %s" % (pMod.apiTrapPDU.getTimeStamp(reqPDU).prettyPrint())
+                    "Uptime: %s" % (pMod.apiTrapPDU.get_timestamp(reqPDU).prettyPrint())
                 )
-                varBinds = pMod.apiTrapPDU.getVarBinds(reqPDU)
+                varBinds = pMod.apiTrapPDU.get_varbinds(reqPDU)
 
             else:
-                varBinds = pMod.apiPDU.getVarBinds(reqPDU)
+                varBinds = pMod.apiPDU.get_varbinds(reqPDU)
 
             print("Var-binds:")
 
@@ -85,28 +85,28 @@ def cbFun(transportDispatcher, transportDomain, transportAddress, wholeMsg):
 
 transportDispatcher = AsyncioDispatcher()
 
-transportDispatcher.registerRecvCbFun(cbFun)
+transportDispatcher.register_recv_callback(__callback)
 
 # UDP/IPv4
-transportDispatcher.registerTransport(
-    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openServerMode(("localhost", 162))
+transportDispatcher.register_transport(
+    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().open_server_mode(("localhost", 162))
 )
 
 # UDP/IPv6
-transportDispatcher.registerTransport(
-    udp6.DOMAIN_NAME, udp6.Udp6AsyncioTransport().openServerMode(("::1", 162))
+transportDispatcher.register_transport(
+    udp6.DOMAIN_NAME, udp6.Udp6AsyncioTransport().open_server_mode(("::1", 162))
 )
 
-transportDispatcher.jobStarted(1)
+transportDispatcher.job_started(1)
 
 try:
     print("This program needs to run as root/administrator to monitor port 162.")
     print("Started. Press Ctrl-C to stop")
     # Dispatcher will never finish as job#1 never reaches zero
-    transportDispatcher.runDispatcher()
+    transportDispatcher.run_dispatcher()
 
 except KeyboardInterrupt:
     print("Shutting down...")
 
 finally:
-    transportDispatcher.closeDispatcher()
+    transportDispatcher.close_dispatcher()

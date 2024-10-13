@@ -41,7 +41,7 @@ snmpEngineInfo = (
 transportDispatcher = AsyncioDispatcher()
 
 # Setup a custom data routing function to select snmpEngine by transportDomain
-transportDispatcher.registerRoutingCbFun(lambda td, t, d: td)
+transportDispatcher.register_routing_callback(lambda td, t, d: td)
 
 # Instantiate and configure SNMP Engines
 for snmpEngineId, transportDomain, transportAddress in snmpEngineInfo:
@@ -50,19 +50,21 @@ for snmpEngineId, transportDomain, transportAddress in snmpEngineInfo:
 
     # Register SNMP Engine object with transport dispatcher. Request incoming
     # data from specific transport endpoint to be funneled to this SNMP Engine.
-    snmpEngine.registerTransportDispatcher(transportDispatcher, transportDomain)
+    snmpEngine.register_transport_dispatcher(transportDispatcher, transportDomain)
 
     # Transport setup
 
     # UDP over IPv4
-    config.addTransport(
-        snmpEngine, transportDomain, udp.UdpTransport().openServerMode(transportAddress)
+    config.add_transport(
+        snmpEngine,
+        transportDomain,
+        udp.UdpTransport().open_server_mode(transportAddress),
     )
 
     # SNMPv3/USM setup
 
     # user: usr-md5-des, auth: MD5, priv DES
-    config.addV3User(
+    config.add_v3_user(
         snmpEngine,
         "usr-md5-des",
         config.USM_AUTH_HMAC96_MD5,
@@ -72,7 +74,7 @@ for snmpEngineId, transportDomain, transportAddress in snmpEngineInfo:
     )
 
     # Allow full MIB access for this user / securityModels at VACM
-    config.addVacmUser(
+    config.add_vacm_user(
         snmpEngine, 3, "usr-md5-des", "authPriv", (1, 3, 6), (1, 3, 6, 1, 2, 1)
     )
 
@@ -86,16 +88,16 @@ for snmpEngineId, transportDomain, transportAddress in snmpEngineInfo:
     cmdrsp.BulkCommandResponder(snmpEngine, snmpContext)
 
 # Register an imaginary never-ending job to keep I/O dispatcher running forever
-transportDispatcher.jobStarted(1)
+transportDispatcher.job_started(1)
 
 # Run I/O dispatcher which would receive queries and send responses
 try:
     print("This program needs to run as root/administrator to monitor port 161.")
     print("Started. Press Ctrl-C to stop")
-    transportDispatcher.runDispatcher()
+    transportDispatcher.run_dispatcher()
 
 except KeyboardInterrupt:
     print("Shutting down...")
 
 finally:
-    transportDispatcher.closeDispatcher()
+    transportDispatcher.close_dispatcher()

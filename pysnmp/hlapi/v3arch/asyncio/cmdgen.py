@@ -50,6 +50,13 @@ from pysnmp.smi.rfc1902 import ObjectType
 
 
 __all__ = [
+    "get_cmd",
+    "next_cmd",
+    "set_cmd",
+    "bulk_cmd",
+    "walk_cmd",
+    "bulk_walk_cmd",
+    "is_end_of_mib",
     "getCmd",
     "nextCmd",
     "setCmd",
@@ -61,10 +68,10 @@ __all__ = [
 
 VB_PROCESSOR = varbinds.CommandGeneratorVarBinds()
 LCD = CommandGeneratorLcdConfigurator()
-isEndOfMib = varbinds.isEndOfMib
+is_end_of_mib = varbinds.is_end_of_mib
 
 
-async def getCmd(
+async def get_cmd(
     snmpEngine: SnmpEngine,
     authData: "CommunityData | UsmUserData",
     transportTarget: AbstractTransportTarget,
@@ -144,7 +151,7 @@ async def getCmd(
 
     """
 
-    def __cbFun(
+    def __callback(
         snmpEngine: SnmpEngine,
         sendRequestHandle,
         errorIndication: errind.ErrorIndication,
@@ -157,7 +164,7 @@ async def getCmd(
         if future.cancelled():
             return
         try:
-            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+            varBindsUnmade = VB_PROCESSOR.unmake_varbinds(
                 snmpEngine.cache, varBinds, lookupMib
             )
         except Exception as e:
@@ -173,19 +180,19 @@ async def getCmd(
 
     future = asyncio.get_running_loop().create_future()
 
-    cmdgen.GetCommandGenerator().sendVarBinds(
+    cmdgen.GetCommandGenerator().send_varbinds(
         snmpEngine,
         addrName,
         contextData.contextEngineId,
         contextData.contextName,
-        VB_PROCESSOR.makeVarBinds(snmpEngine.cache, varBinds),
-        __cbFun,
+        VB_PROCESSOR.make_varbinds(snmpEngine.cache, varBinds),
+        __callback,
         (options.get("lookupMib", True), future),
     )
     return await future
 
 
-async def setCmd(
+async def set_cmd(
     snmpEngine: SnmpEngine,
     authData: "CommunityData | UsmUserData",
     transportTarget: AbstractTransportTarget,
@@ -265,7 +272,7 @@ async def setCmd(
 
     """
 
-    def __cbFun(
+    def __callback(
         snmpEngine: SnmpEngine,
         sendRequestHandle,
         errorIndication: errind.ErrorIndication,
@@ -278,7 +285,7 @@ async def setCmd(
         if future.cancelled():
             return
         try:
-            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+            varBindsUnmade = VB_PROCESSOR.unmake_varbinds(
                 snmpEngine.cache, varBinds, lookupMib
             )
         except Exception as e:
@@ -294,19 +301,19 @@ async def setCmd(
 
     future = asyncio.get_running_loop().create_future()
 
-    cmdgen.SetCommandGenerator().sendVarBinds(
+    cmdgen.SetCommandGenerator().send_varbinds(
         snmpEngine,
         addrName,
         contextData.contextEngineId,
         contextData.contextName,
-        VB_PROCESSOR.makeVarBinds(snmpEngine.cache, varBinds),
-        __cbFun,
+        VB_PROCESSOR.make_varbinds(snmpEngine.cache, varBinds),
+        __callback,
         (options.get("lookupMib", True), future),
     )
     return await future
 
 
-async def nextCmd(
+async def next_cmd(
     snmpEngine: SnmpEngine,
     authData: "CommunityData | UsmUserData",
     transportTarget: AbstractTransportTarget,
@@ -394,7 +401,7 @@ async def nextCmd(
 
     """
 
-    def __cbFun(
+    def __callback(
         snmpEngine: SnmpEngine,
         sendRequestHandle,
         errorIndication: errind.ErrorIndication,
@@ -415,7 +422,7 @@ async def nextCmd(
             errorIndication = None  # TODO: fix this
 
         try:
-            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+            varBindsUnmade = VB_PROCESSOR.unmake_varbinds(
                 snmpEngine.cache, varBinds, lookupMib
             )
         except Exception as e:
@@ -431,19 +438,19 @@ async def nextCmd(
 
     future = asyncio.get_running_loop().create_future()
 
-    cmdgen.NextCommandGenerator().sendVarBinds(
+    cmdgen.NextCommandGenerator().send_varbinds(
         snmpEngine,
         addrName,
         contextData.contextEngineId,
         contextData.contextName,
-        VB_PROCESSOR.makeVarBinds(snmpEngine.cache, varBinds),
-        __cbFun,
+        VB_PROCESSOR.make_varbinds(snmpEngine.cache, varBinds),
+        __callback,
         (options.get("lookupMib", True), future),
     )
     return await future
 
 
-async def bulkCmd(
+async def bulk_cmd(
     snmpEngine: SnmpEngine,
     authData: "CommunityData | UsmUserData",
     transportTarget: AbstractTransportTarget,
@@ -562,7 +569,7 @@ async def bulkCmd(
 
     """
 
-    def __cbFun(
+    def __callback(
         snmpEngine: SnmpEngine,
         sendRequestHandle,
         errorIndication: errind.ErrorIndication,
@@ -583,7 +590,7 @@ async def bulkCmd(
             errorIndication = None  # TODO: fix here
 
         try:
-            varBindsUnmade = VB_PROCESSOR.unmakeVarBinds(
+            varBindsUnmade = VB_PROCESSOR.unmake_varbinds(
                 snmpEngine.cache, varBinds, lookupMib
             )
         except Exception as e:
@@ -599,21 +606,21 @@ async def bulkCmd(
 
     future = asyncio.get_running_loop().create_future()
 
-    cmdgen.BulkCommandGenerator().sendVarBinds(
+    cmdgen.BulkCommandGenerator().send_varbinds(
         snmpEngine,
         addrName,
         contextData.contextEngineId,
         contextData.contextName,
         nonRepeaters,
         maxRepetitions,
-        VB_PROCESSOR.makeVarBinds(snmpEngine.cache, varBinds),
-        __cbFun,
+        VB_PROCESSOR.make_varbinds(snmpEngine.cache, varBinds),
+        __callback,
         (options.get("lookupMib", True), future),
     )
     return await future
 
 
-async def walkCmd(
+async def walk_cmd(
     snmpEngine: SnmpEngine,
     authData: "CommunityData | UsmUserData",
     transportTarget: AbstractTransportTarget,
@@ -722,14 +729,14 @@ async def walkCmd(
     maxCalls = options.get("maxCalls", 0)
 
     initialVars = [
-        x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine.cache, (varBind,))
+        x[0] for x in VB_PROCESSOR.make_varbinds(snmpEngine.cache, (varBind,))
     ]
 
     totalRows = totalCalls = 0
 
     while True:
         if varBind:
-            errorIndication, errorStatus, errorIndex, varBindTable = await nextCmd(
+            errorIndication, errorStatus, errorIndex, varBindTable = await next_cmd(
                 snmpEngine,
                 authData,
                 transportTarget,
@@ -790,7 +797,7 @@ async def walkCmd(
             varBind = initialVarBinds[0]
             initialVars = [
                 x[0]
-                for x in VB_PROCESSOR.makeVarBinds(snmpEngine.cache, initialVarBinds)
+                for x in VB_PROCESSOR.make_varbinds(snmpEngine.cache, initialVarBinds)
             ]
 
         if maxRows and totalRows >= maxRows:
@@ -800,7 +807,7 @@ async def walkCmd(
             return
 
 
-async def bulkWalkCmd(
+async def bulk_walk_cmd(
     snmpEngine: SnmpEngine,
     authData: "CommunityData | UsmUserData",
     transportTarget: AbstractTransportTarget,
@@ -926,7 +933,7 @@ async def bulkWalkCmd(
     maxCalls = options.get("maxCalls", 0)
 
     initialVars = [
-        x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine.cache, (varBind,))
+        x[0] for x in VB_PROCESSOR.make_varbinds(snmpEngine.cache, (varBind,))
     ]
 
     totalRows = totalCalls = 0
@@ -938,7 +945,7 @@ async def bulkWalkCmd(
             maxRepetitions = min(maxRepetitions, maxRows - totalRows)
 
         if varBinds:
-            errorIndication, errorStatus, errorIndex, varBindTable = await bulkCmd(
+            errorIndication, errorStatus, errorIndex, varBindTable = await bulk_cmd(
                 snmpEngine,
                 authData,
                 transportTarget,
@@ -1021,7 +1028,7 @@ async def bulkWalkCmd(
         if initialVarBinds:
             varBinds = initialVarBinds
             initialVars = [
-                x[0] for x in VB_PROCESSOR.makeVarBinds(snmpEngine.cache, varBinds)
+                x[0] for x in VB_PROCESSOR.make_varbinds(snmpEngine.cache, varBinds)
             ]
 
         if maxRows and totalRows >= maxRows:
@@ -1029,3 +1036,13 @@ async def bulkWalkCmd(
 
         if maxCalls and totalCalls >= maxCalls:
             return
+
+
+# Compatibility API
+getCmd = get_cmd  # noqa: N816
+setCmd = set_cmd  # noqa: N816
+nextCmd = next_cmd  # noqa: N816
+bulkCmd = bulk_cmd  # noqa: N816
+walkCmd = walk_cmd  # noqa: N816
+bulkWalkCmd = bulk_walk_cmd  # noqa: N816
+isEndOfMib = is_end_of_mib  # noqa: N816

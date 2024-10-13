@@ -24,7 +24,7 @@ from pysnmp.hlapi.v3arch.asyncio import *
 async def run(varBinds):
     snmpEngine = SnmpEngine()
     while True:
-        errorIndication, errorStatus, errorIndex, varBindTable = await bulkCmd(
+        errorIndication, errorStatus, errorIndex, varBindTable = await bulk_cmd(
             snmpEngine,
             UsmUserData("usr-none-none"),
             await UdpTransportTarget.create(("demo.pysnmp.com", 161)),
@@ -46,7 +46,7 @@ async def run(varBinds):
                 print(" = ".join([x.prettyPrint() for x in varBind]))
 
         varBinds = varBindTable
-        if isEndOfMib(varBinds):
+        if is_end_of_mib(varBinds):
             break
     return
 

@@ -4,8 +4,14 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+from typing import TYPE_CHECKING
+
+
 from pysnmp import debug
 from pysnmp.proto import errind, error
+
+if TYPE_CHECKING:
+    from pysnmp.entity.engine import SnmpEngine
 
 
 # rfc3415 3.2
@@ -15,9 +21,9 @@ class Vacm:
 
     ACCESS_MODEL_ID = 0
 
-    def isAccessAllowed(
+    def is_access_allowed(
         self,
-        snmpEngine,
+        snmpEngine: "SnmpEngine",
         securityModel,
         securityName,
         securityLevel,

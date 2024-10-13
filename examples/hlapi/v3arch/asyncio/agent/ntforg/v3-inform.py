@@ -18,15 +18,15 @@ from pysnmp.hlapi.v3arch.asyncio import *
 
 async def run():
     snmpEngine = SnmpEngine()
-    errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
+    errorIndication, errorStatus, errorIndex, varBinds = await send_notification(
         snmpEngine,
         UsmUserData("usr-md5-des", "authkey1", "privkey1"),
         await UdpTransportTarget.create(("demo.pysnmp.com", 162)),
         ContextData(),
         "inform",
         NotificationType(ObjectIdentity("1.3.6.1.6.3.1.1.5.2"))
-        .addVarBinds(ObjectType(ObjectIdentity("1.3.6.1.2.1.1.5.0"), "system name"))
-        .loadMibs("SNMPv2-MIB"),
+        .add_varbinds(ObjectType(ObjectIdentity("1.3.6.1.2.1.1.5.0"), "system name"))
+        .load_mibs("SNMPv2-MIB"),
     )
 
     if errorIndication:
@@ -44,7 +44,7 @@ async def run():
         for varBind in varBinds:
             print(" = ".join([x.prettyPrint() for x in varBind]))
 
-    snmpEngine.closeDispatcher()
+    snmpEngine.close_dispatcher()
 
 
 asyncio.run(run())

@@ -36,32 +36,34 @@ snmpEngine = engine.SnmpEngine()
 # Transport setup
 
 # UDP over IPv4
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().openServerMode(("127.0.0.1", 161))
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().open_server_mode(("127.0.0.1", 161))
 )
 
 # SNMPv2c setup
 
 # SecurityName <-> CommunityName mapping.
-config.addV1System(snmpEngine, "my-area", "public")
+config.add_v1_system(snmpEngine, "my-area", "public")
 
 # Allow read MIB access for this user / securityModels at VACM
-config.addVacmUser(snmpEngine, 2, "my-area", "noAuthNoPriv", (1, 3, 6, 6), (1, 3, 6, 6))
+config.add_vacm_user(
+    snmpEngine, 2, "my-area", "noAuthNoPriv", (1, 3, 6, 6), (1, 3, 6, 6)
+)
 
 # Create an SNMP context
 snmpContext = context.SnmpContext(snmpEngine)
 
 # --- define custom SNMP Table within a newly defined EXAMPLE-MIB ---
 
-mibBuilder = snmpContext.getMibInstrum().getMibBuilder()
+mibBuilder = snmpContext.get_mib_instrum().get_mib_builder()
 
-(MibTable, MibTableRow, MibTableColumn, MibScalarInstance) = mibBuilder.importSymbols(
+(MibTable, MibTableRow, MibTableColumn, MibScalarInstance) = mibBuilder.import_symbols(
     "SNMPv2-SMI", "MibTable", "MibTableRow", "MibTableColumn", "MibScalarInstance"
 )
 
-(RowStatus,) = mibBuilder.importSymbols("SNMPv2-TC", "RowStatus")
+(RowStatus,) = mibBuilder.import_symbols("SNMPv2-TC", "RowStatus")
 
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "__EXAMPLE-MIB",
     # table object
     exampleTable=MibTable((1, 3, 6, 6, 1)).setMaxAccess("read-create"),
@@ -96,7 +98,7 @@ mibBuilder.exportSymbols(
     exampleTableColumn2,
     exampleTableColumn3,
     exampleTableStatus,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "__EXAMPLE-MIB",
     "exampleTableEntry",
     "exampleTableColumn2",
@@ -104,8 +106,8 @@ mibBuilder.exportSymbols(
     "exampleTableStatus",
 )
 rowInstanceId = exampleTableEntry.getInstIdFromIndices("example record one")
-mibInstrumentation = snmpContext.getMibInstrum()
-mibInstrumentation.writeVars(
+mibInstrumentation = snmpContext.get_mib_instrum()
+mibInstrumentation.write_variables(
     (exampleTableColumn2.name + rowInstanceId, "my string value"),
     (exampleTableColumn3.name + rowInstanceId, 123456),
     (exampleTableStatus.name + rowInstanceId, "createAndGo"),
@@ -120,11 +122,11 @@ cmdrsp.NextCommandResponder(snmpEngine, snmpContext)
 cmdrsp.BulkCommandResponder(snmpEngine, snmpContext)
 
 # Register an imaginary never-ending job to keep I/O dispatcher running forever
-snmpEngine.transportDispatcher.jobStarted(1)
+snmpEngine.transport_dispatcher.job_started(1)
 
 # Run I/O dispatcher which would receive queries and send responses
 try:
-    snmpEngine.openDispatcher()
+    snmpEngine.open_dispatcher()
 except:
-    snmpEngine.closeDispatcher()
+    snmpEngine.close_dispatcher()
     raise

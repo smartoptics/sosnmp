@@ -8,6 +8,7 @@ import sys
 
 
 from pysnmp import debug
+from pysnmp.entity.engine import SnmpEngine
 from pysnmp.proto import error, rfc3411
 from pysnmp.proto.api import v1, v2c  # backend is always SMIv2 compliant
 from pysnmp.proto.proxy import rfc2576
@@ -23,31 +24,33 @@ class NotificationReceiver:
         v2c.InformRequestPDU.tagSet,
     )
 
-    def __init__(self, snmpEngine, cbFun, cbCtx=None):
+    def __init__(self, snmpEngine: SnmpEngine, cbFun, cbCtx=None):
         """Creates a Notification receiver instance."""
-        snmpEngine.msgAndPduDsp.registerContextEngineId(
-            b"", self.SUPPORTED_PDU_TYPES, self.processPdu  # '' is a wildcard
+        snmpEngine.message_dispatcher.register_context_engine_id(
+            b"", self.SUPPORTED_PDU_TYPES, self.process_pdu  # '' is a wildcard
         )
 
         self.__snmpTrapCommunity = ""
         self.__cbFun = cbFun
         self.__cbCtx = cbCtx
 
-        def storeSnmpTrapCommunity(snmpEngine, execpoint, variables, cbCtx):
+        def store_snmp_trap_community(snmpEngine, execpoint, variables, cbCtx):
             self.__snmpTrapCommunity = variables.get("communityName", "")
 
-        snmpEngine.observer.registerObserver(
-            storeSnmpTrapCommunity, "rfc2576.processIncomingMsg"
+        snmpEngine.observer.register_observer(
+            store_snmp_trap_community, "rfc2576.processIncomingMsg"
         )
 
-    def close(self, snmpEngine):
+    def close(self, snmpEngine: SnmpEngine):
         """Unregisters a Notification receiver instance."""
-        snmpEngine.msgAndPduDsp.unregisterContextEngineId(b"", self.SUPPORTED_PDU_TYPES)
+        snmpEngine.message_dispatcher.unregister_context_engine_id(
+            b"", self.SUPPORTED_PDU_TYPES
+        )
         self.__cbFun = self.__cbCtx = None
 
-    def processPdu(
+    def process_pdu(
         self,
-        snmpEngine,
+        snmpEngine: SnmpEngine,
         messageProcessingModel,
         securityModel,
         securityName,
@@ -63,13 +66,13 @@ class NotificationReceiver:
         # Agent-side API complies with SMIv2
         if messageProcessingModel == 0:
             origPdu = PDU
-            PDU = rfc2576.v1ToV2(PDU, snmpTrapCommunity=self.__snmpTrapCommunity)
+            PDU = rfc2576.v1_to_v2(PDU, snmpTrapCommunity=self.__snmpTrapCommunity)
         else:
             origPdu = None
 
         errorStatus = "noError"
         errorIndex = 0
-        varBinds = v2c.apiPDU.getVarBinds(PDU)
+        varBinds = v2c.apiPDU.get_varbinds(PDU)
 
         debug.logger & debug.FLAG_APP and debug.logger(
             f"processPdu: stateReference {stateReference}, varBinds {varBinds}"
@@ -79,12 +82,12 @@ class NotificationReceiver:
         if PDU.tagSet in rfc3411.CONFIRMED_CLASS_PDUS:
             # 3.4.1 --> no-op
 
-            rspPDU = v2c.apiPDU.getResponse(PDU)
+            rspPDU = v2c.apiPDU.get_response(PDU)
 
             # 3.4.2
-            v2c.apiPDU.setErrorStatus(rspPDU, errorStatus)
-            v2c.apiPDU.setErrorIndex(rspPDU, errorIndex)
-            v2c.apiPDU.setVarBinds(rspPDU, varBinds)
+            v2c.apiPDU.set_error_status(rspPDU, errorStatus)
+            v2c.apiPDU.set_error_index(rspPDU, errorIndex)
+            v2c.apiPDU.set_varbinds(rspPDU, varBinds)
 
             debug.logger & debug.FLAG_APP and debug.logger(
                 f"processPdu: stateReference {stateReference}, confirm PDU {rspPDU.prettyPrint()}"
@@ -92,13 +95,13 @@ class NotificationReceiver:
 
             # Agent-side API complies with SMIv2
             if messageProcessingModel == 0:
-                rspPDU = rfc2576.v2ToV1(rspPDU, origPdu)
+                rspPDU = rfc2576.v2_to_v1(rspPDU, origPdu)
 
             statusInformation = {}
 
             # 3.4.3
             try:
-                snmpEngine.msgAndPduDsp.returnResponsePdu(
+                snmpEngine.message_dispatcher.return_response_pdu(
                     snmpEngine,
                     messageProcessingModel,
                     securityModel,
@@ -117,9 +120,7 @@ class NotificationReceiver:
                 debug.logger & debug.FLAG_APP and debug.logger(
                     f"processPdu: stateReference {stateReference}, statusInformation {sys.exc_info()[1]}"
                 )
-                (
-                    snmpSilentDrops,
-                ) = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(
+                (snmpSilentDrops,) = snmpEngine.get_mib_builder().import_symbols(
                     "__SNMPv2-MIB", "snmpSilentDrops"
                 )
                 snmpSilentDrops.syntax += 1

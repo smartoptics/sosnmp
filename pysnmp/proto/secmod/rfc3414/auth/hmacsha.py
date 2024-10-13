@@ -28,21 +28,21 @@ class HmacSha(base.AbstractAuthenticationService):
     IPAD = [0x36] * 64
     OPAD = [0x5C] * 64
 
-    def hashPassphrase(self, authKey) -> univ.OctetString:
+    def hash_passphrase(self, authKey) -> univ.OctetString:
         """Hash a passphrase."""
-        return localkey.hashPassphraseSHA(authKey)
+        return localkey.hash_passphrase_sha(authKey)
 
-    def localizeKey(self, authKey, snmpEngineID) -> univ.OctetString:
+    def localize_key(self, authKey, snmpEngineID) -> univ.OctetString:
         """Localize a key."""
-        return localkey.localizeKeySHA(authKey, snmpEngineID)
+        return localkey.localize_key_sha(authKey, snmpEngineID)
 
     @property
-    def digestLength(self):
+    def digest_length(self):
         """Return digest length."""
         return 12
 
     # 7.3.1
-    def authenticateOutgoingMsg(self, authKey, wholeMsg):
+    def authenticate_outgoing_message(self, authKey, wholeMsg):
         """Authenticate outgoing message."""
         # 7.3.1.1
         # Here we expect calling secmod to indicate where the digest
@@ -79,7 +79,7 @@ class HmacSha(base.AbstractAuthenticationService):
         return wholeHead + mac + wholeTail
 
     # 7.3.2
-    def authenticateIncomingMsg(self, authKey, authParameters, wholeMsg):
+    def authenticate_incoming_message(self, authKey, authParameters, wholeMsg):
         """Authenticate incoming message."""
         # 7.3.2.1 & 2
         if len(authParameters) != 12:

@@ -56,7 +56,7 @@ async def run():
 
     # Submit initial GETNEXT requests and wait for responses
     for authData, transportTarget, varBind in targets:
-        async for (errorIndication, errorStatus, errorIndex, varBindTable) in walkCmd(
+        async for (errorIndication, errorStatus, errorIndex, varBindTable) in walk_cmd(
             snmpEngine, authData, transportTarget, ContextData(), varBind
         ):
             if errorIndication:
@@ -76,7 +76,7 @@ async def run():
                 for varBind in varBindTable:
                     print(" = ".join([x.prettyPrint() for x in varBind]))
 
-    snmpEngine.transportDispatcher.runDispatcher()
+    snmpEngine.transport_dispatcher.run_dispatcher()
 
 
 asyncio.run(run())

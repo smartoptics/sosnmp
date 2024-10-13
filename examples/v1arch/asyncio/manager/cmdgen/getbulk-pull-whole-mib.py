@@ -25,16 +25,16 @@ headVars = [v2c.ObjectIdentifier((1, 3, 6))]
 
 # Build PDU
 reqPDU = v2c.GetBulkRequestPDU()
-v2c.apiBulkPDU.setDefaults(reqPDU)
-v2c.apiBulkPDU.setNonRepeaters(reqPDU, 0)
-v2c.apiBulkPDU.setMaxRepetitions(reqPDU, 25)
-v2c.apiBulkPDU.setVarBinds(reqPDU, [(x, v2c.null) for x in headVars])
+v2c.apiBulkPDU.set_defaults(reqPDU)
+v2c.apiBulkPDU.set_non_repeaters(reqPDU, 0)
+v2c.apiBulkPDU.set_max_repetitions(reqPDU, 25)
+v2c.apiBulkPDU.set_varbinds(reqPDU, [(x, v2c.null) for x in headVars])
 
 # Build message
 reqMsg = v2c.Message()
-v2c.apiMessage.setDefaults(reqMsg)
-v2c.apiMessage.setCommunity(reqMsg, "public")
-v2c.apiMessage.setPDU(reqMsg, reqPDU)
+v2c.apiMessage.set_defaults(reqMsg)
+v2c.apiMessage.set_community(reqMsg, "public")
+v2c.apiMessage.set_pdu(reqMsg, reqPDU)
 
 
 # noinspection PyUnusedLocal
@@ -49,24 +49,26 @@ def cbRecvFun(
     while wholeMsg:
         rspMsg, wholeMsg = decoder.decode(wholeMsg, asn1Spec=v2c.Message())
 
-        rspPDU = v2c.apiMessage.getPDU(rspMsg)
+        rspPDU = v2c.apiMessage.get_pdu(rspMsg)
 
         # Match response to request
-        if v2c.apiBulkPDU.getRequestID(reqPDU) == v2c.apiBulkPDU.getRequestID(rspPDU):
+        if v2c.apiBulkPDU.get_request_id(reqPDU) == v2c.apiBulkPDU.get_request_id(
+            rspPDU
+        ):
             # Format var-binds table
-            varBindTable = v2c.apiBulkPDU.getVarBindTable(reqPDU, rspPDU)
+            varBindTable = v2c.apiBulkPDU.get_varbind_table(reqPDU, rspPDU)
 
             # Check for SNMP errors reported
-            errorStatus = v2c.apiBulkPDU.getErrorStatus(rspPDU)
+            errorStatus = v2c.apiBulkPDU.get_error_status(rspPDU)
             if errorStatus and errorStatus != 2:
-                errorIndex = v2c.apiBulkPDU.getErrorIndex(rspPDU)
+                errorIndex = v2c.apiBulkPDU.get_error_index(rspPDU)
                 print(
                     "{} at {}".format(
                         errorStatus.prettyPrint(),
                         errorIndex and varBindTable[int(errorIndex) - 1] or "?",
                     )
                 )
-                transportDispatcher.jobFinished(1)
+                transportDispatcher.job_finished(1)
                 break
 
             # Report SNMP table
@@ -84,17 +86,17 @@ def cbRecvFun(
                     break
 
             else:
-                transportDispatcher.jobFinished(1)
+                transportDispatcher.job_finished(1)
                 continue
 
             # Generate request for next row
-            v2c.apiBulkPDU.setVarBinds(
+            v2c.apiBulkPDU.set_varbinds(
                 reqPDU, [(x, v2c.null) for x, y in varBindTable[-1]]
             )
 
-            v2c.apiBulkPDU.setRequestID(reqPDU, v2c.getNextRequestID())
+            v2c.apiBulkPDU.set_request_id(reqPDU, v2c.getNextRequestID())
 
-            transportDispatcher.sendMessage(
+            transportDispatcher.send_message(
                 encoder.encode(reqMsg), transportDomain, transportAddress
             )
 
@@ -103,19 +105,19 @@ def cbRecvFun(
 
 transportDispatcher = AsyncioDispatcher()
 
-transportDispatcher.registerRecvCbFun(cbRecvFun)
+transportDispatcher.register_recv_callback(cbRecvFun)
 
-transportDispatcher.registerTransport(
-    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
+transportDispatcher.register_transport(
+    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().open_client_mode()
 )
 
-transportDispatcher.sendMessage(
+transportDispatcher.send_message(
     encoder.encode(reqMsg), udp.DOMAIN_NAME, ("demo.pysnmp.com", 161)
 )
 
-transportDispatcher.jobStarted(1)
+transportDispatcher.job_started(1)
 
 # Dispatcher will finish as job#1 counter reaches zero
-transportDispatcher.runDispatcher(3)
+transportDispatcher.run_dispatcher(3)
 
-transportDispatcher.closeDispatcher()
+transportDispatcher.close_dispatcher()

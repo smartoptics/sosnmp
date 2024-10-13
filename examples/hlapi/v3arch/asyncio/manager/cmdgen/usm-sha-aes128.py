@@ -30,7 +30,7 @@ from pysnmp.hlapi.v3arch.asyncio import *
 
 async def run():
     snmpEngine = SnmpEngine()
-    errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+    errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
         snmpEngine,
         UsmUserData(
             "usr-sha-aes",

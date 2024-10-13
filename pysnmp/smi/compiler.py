@@ -7,6 +7,8 @@
 import os
 import sys
 
+from pysnmp.smi.builder import MibBuilder
+
 DEFAULT_SOURCES = ["file:///usr/share/snmp/mibs", "file:///usr/share/mibs"]
 
 if sys.platform[:3] == "win":
@@ -30,22 +32,22 @@ try:
 except ImportError:
     from pysnmp.smi import error
 
-    def addMibCompilerDecorator(errorMsg):
+    def add_mib_compiler_decorator(errorMsg):
         """Add MIB compiler decorator."""
 
-        def addMibCompiler(mibBuilder, **kwargs):
+        def add_mib_compiler(mibBuilder, **kwargs):
             if not kwargs.get("ifAvailable"):
                 raise error.SmiError("MIB compiler not available: %s" % errorMsg)
 
-        return addMibCompiler
+        return add_mib_compiler
 
-    addMibCompiler = addMibCompilerDecorator(sys.exc_info()[1])  # noqa: N816
+    add_mib_compiler = add_mib_compiler_decorator(sys.exc_info()[1])
 
 else:
 
-    def addMibCompiler(mibBuilder, **kwargs):
+    def add_mib_compiler(mibBuilder: MibBuilder, **kwargs):
         """Add MIB compiler to MIB builder."""
-        if kwargs.get("ifNotAdded") and mibBuilder.getMibCompiler():
+        if kwargs.get("ifNotAdded") and mibBuilder.get_mib_compiler():
             return
 
         compiler = MibCompiler(
@@ -60,7 +62,7 @@ else:
 
         compiler.addSearchers(StubSearcher(*baseMibs))
         compiler.addSearchers(
-            *[PyPackageSearcher(x.fullPath()) for x in mibBuilder.getMibSources()]
+            *[PyPackageSearcher(x.full_path()) for x in mibBuilder.get_mib_sources()]
         )
         compiler.addBorrowers(
             *[
@@ -72,4 +74,4 @@ else:
             ]
         )
 
-        mibBuilder.setMibCompiler(compiler, kwargs.get("destination") or DEFAULT_DEST)
+        mibBuilder.set_mib_compiler(compiler, kwargs.get("destination") or DEFAULT_DEST)

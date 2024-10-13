@@ -18,7 +18,7 @@ class AbstractTransportTarget:
     retries: int
     timeout: float
     transport: "AbstractTransport | None"
-    transportAddr: Tuple[str, int]
+    transport_address: Tuple[str, int]
 
     TRANSPORT_DOMAIN = None
     PROTO_TRANSPORT = AbstractTransport
@@ -35,7 +35,7 @@ class AbstractTransportTarget:
         self.iface = None
         self.transport = None
 
-        if not hasattr(self, "transportAddr"):
+        if not hasattr(self, "transport_address"):
             raise Exception(
                 f"Please call .create() to construct {self.__class__.__name__} object"
             )
@@ -57,23 +57,23 @@ class AbstractTransportTarget:
         """
         self = cls.__new__(cls)
         transportAddr = address
-        self.transportAddr = await self._resolveAddr(transportAddr)
+        self.transport_address = await self._resolve_address(transportAddr)
         self.__init__(*args, **kwargs)
         return self
 
     def __repr__(self):
         return "{}({!r}, timeout={!r}, retries={!r}, tagList={!r})".format(
             self.__class__.__name__,
-            self.transportAddr,
+            self.transport_address,
             self.timeout,
             self.retries,
             self.tagList,
         )
 
-    def getTransportInfo(self):
-        return self.TRANSPORT_DOMAIN, self.transportAddr
+    def get_transport_info(self):
+        return self.TRANSPORT_DOMAIN, self.transport_address
 
-    def setLocalAddress(self, iface):
+    def set_local_address(self, iface):
         """Set source address.
 
         Parameters
@@ -90,22 +90,22 @@ class AbstractTransportTarget:
         self.iface = iface
         return self
 
-    def openClientMode(self):
-        self.transport = self.PROTO_TRANSPORT().openClientMode(self.iface)
+    def open_client_mode(self):
+        self.transport = self.PROTO_TRANSPORT().open_client_mode(self.iface)
         return self.transport
 
-    def verifyDispatcherCompatibility(self, snmpEngine: SnmpEngine):
+    def verify_dispatcher_compatibility(self, snmpEngine: SnmpEngine):
         if (
-            snmpEngine.transportDispatcher is None
-            or not self.PROTO_TRANSPORT.isCompatibleWithDispatcher(
-                snmpEngine.transportDispatcher
+            snmpEngine.transport_dispatcher is None
+            or not self.PROTO_TRANSPORT.is_compatible_with_dispatcher(
+                snmpEngine.transport_dispatcher
             )
         ):
             raise error.PySnmpError(
                 "Transport {!r} is not compatible with dispatcher {!r}".format(
-                    self.PROTO_TRANSPORT, snmpEngine.transportDispatcher
+                    self.PROTO_TRANSPORT, snmpEngine.transport_dispatcher
                 )
             )
 
-    async def _resolveAddr(self, transportAddr: Tuple) -> Tuple[str, int]:
+    async def _resolve_address(self, transportAddr: Tuple) -> Tuple[str, int]:
         raise NotImplementedError()

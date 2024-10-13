@@ -13,18 +13,18 @@ class AbstractEncryptionService:
     SERVICE_ID = None
     KEY_SIZE = 0
 
-    def hashPassphrase(self, authProtocol, privKey):
+    def hash_passphrase(self, authProtocol, privKey):
         """Hash authentication key."""
         raise error.ProtocolError("no encryption")
 
-    def localizeKey(self, authProtocol, privKey, snmpEngineID):
+    def localize_key(self, authProtocol, privKey, snmpEngineID):
         """Localize privacy key."""
         raise error.ProtocolError("no encryption")
 
-    def encryptData(self, encryptKey, privParameters, dataToEncrypt):
+    def encrypt_data(self, encryptKey, privParameters, dataToEncrypt):
         """Encrypt data."""
         raise error.ProtocolError("no encryption")
 
-    def decryptData(self, decryptKey, privParameters, encryptedData):
+    def decrypt_data(self, decryptKey, privParameters, encryptedData):
         """Decrypt data."""
         raise error.ProtocolError("no encryption")

@@ -25,12 +25,12 @@ snmpEngine = engine.SnmpEngine()
 
 # Attach MIB compiler to SNMP Engine (MIB Builder)
 # This call will fail if PySMI is not present on the system
-compiler.addMibCompiler(snmpEngine.getMibBuilder())
+compiler.add_mib_compiler(snmpEngine.get_mib_builder())
 # ... alternatively, this call will not complain on missing PySMI
 # compiler.addMibCompiler(snmpEngine.getMibBuilder(), ifAvailable=True)
 
 # Used for MIB objects resolution
-mibViewController = view.MibViewController(snmpEngine.getMibBuilder())
+mibViewController = view.MibViewController(snmpEngine.get_mib_builder())
 
 #
 #
@@ -38,10 +38,10 @@ mibViewController = view.MibViewController(snmpEngine.getMibBuilder())
 #
 
 # SecurityName <-> CommunityName mapping
-config.addV1System(snmpEngine, "my-area", "public")
+config.add_v1_system(snmpEngine, "my-area", "public")
 
 # Specify security settings per SecurityName (SNMPv1 - 0, SNMPv2c - 1)
-config.addTargetParams(snmpEngine, "my-creds", "my-area", "noAuthNoPriv", 1)
+config.add_target_parameters(snmpEngine, "my-creds", "my-area", "noAuthNoPriv", 1)
 
 #
 # Setup transport endpoint and bind it with security settings yielding
@@ -49,10 +49,10 @@ config.addTargetParams(snmpEngine, "my-creds", "my-area", "noAuthNoPriv", 1)
 #
 
 # UDP/IPv4
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().open_client_mode()
 )
-config.addTargetAddr(
+config.add_target_address(
     snmpEngine, "my-router", udp.DOMAIN_NAME, ("127.0.0.1", 161), "my-creds"
 )
 
@@ -82,23 +82,23 @@ def cbFun(
         for varBind in varBindRow:
             print(
                 rfc1902.ObjectType(rfc1902.ObjectIdentity(varBind[0]), varBind[1])
-                .resolveWithMib(mibViewController)
+                .resolve_with_mib(mibViewController)
                 .prettyPrint()
             )
     return 1  # signal dispatcher to continue
 
 
 # Prepare initial request to be sent
-cmdgen.NextCommandGenerator().sendVarBinds(
+cmdgen.NextCommandGenerator().send_varbinds(
     snmpEngine,
     "my-router",
     None,
     "",  # contextEngineId, contextName
     [
-        rfc1902.ObjectType(rfc1902.ObjectIdentity("iso.org.dod")).resolveWithMib(
+        rfc1902.ObjectType(rfc1902.ObjectIdentity("iso.org.dod")).resolve_with_mib(
             mibViewController
         ),
-        rfc1902.ObjectType(rfc1902.ObjectIdentity("IF-MIB", "ifMIB")).resolveWithMib(
+        rfc1902.ObjectType(rfc1902.ObjectIdentity("IF-MIB", "ifMIB")).resolve_with_mib(
             mibViewController
         ),
     ],
@@ -108,4 +108,4 @@ cmdgen.NextCommandGenerator().sendVarBinds(
 # Run I/O dispatcher which would send pending queries and process responses
 snmpEngine.openDispatcher(3)
 
-snmpEngine.closeDispatcher()
+snmpEngine.close_dispatcher()

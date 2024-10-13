@@ -11,10 +11,12 @@ import tempfile
 from typing import Any, Dict
 
 
+from pyasn1.type import univ
 from pysnmp import debug, error
 from pysnmp.carrier.base import AbstractTransportAddress, AbstractTransportDispatcher
 from pysnmp.entity import observer
 from pysnmp.proto.acmod import rfc3415, void
+from pysnmp.proto.mpmod.base import AbstractMessageProcessingModel
 from pysnmp.proto.mpmod.rfc2576 import (
     SnmpV1MessageProcessingModel,
     SnmpV2cMessageProcessingModel,
@@ -61,11 +63,13 @@ class SnmpEngine:
 
     """
 
-    transportDispatcher: "AbstractTransportDispatcher | None"
-    msgAndPduDsp: MsgAndPduDispatcher
-    snmpEngineId: OctetString
+    transport_dispatcher: "AbstractTransportDispatcher"
+    message_dispatcher: MsgAndPduDispatcher
+    engine_id: OctetString
     cache: Dict[str, Any]
-    securityModels: Dict[int, AbstractSecurityModel]
+    security_models: Dict[int, AbstractSecurityModel]
+    message_processing_subsystems: Dict[univ.Integer, AbstractMessageProcessingModel]
+    access_control_model: Dict[int, "void.Vacm | rfc3415.Vacm"]
 
     def __init__(
         self,
@@ -79,45 +83,41 @@ class SnmpEngine:
         self.observer = observer.MetaObserver()
 
         if msgAndPduDsp is None:
-            self.msgAndPduDsp = MsgAndPduDispatcher()
+            self.message_dispatcher = MsgAndPduDispatcher()
         else:
-            self.msgAndPduDsp = msgAndPduDsp
-        self.messageProcessingSubsystems = {
+            self.message_dispatcher = msgAndPduDsp
+        self.message_processing_subsystems = {
             SnmpV1MessageProcessingModel.MESSAGE_PROCESSING_MODEL_ID: SnmpV1MessageProcessingModel(),
             SnmpV2cMessageProcessingModel.MESSAGE_PROCESSING_MODEL_ID: SnmpV2cMessageProcessingModel(),
             SnmpV3MessageProcessingModel.MESSAGE_PROCESSING_MODEL_ID: SnmpV3MessageProcessingModel(),
         }
-        self.securityModels = {
+        self.security_models = {
             SnmpV1SecurityModel.SECURITY_MODEL_ID: SnmpV1SecurityModel(),
             SnmpV2cSecurityModel.SECURITY_MODEL_ID: SnmpV2cSecurityModel(),
             SnmpUSMSecurityModel.SECURITY_MODEL_ID: SnmpUSMSecurityModel(),
         }
-        self.accessControlModel = {
+        self.access_control_model: dict[int, "void.Vacm | rfc3415.Vacm"] = {
             void.Vacm.ACCESS_MODEL_ID: void.Vacm(),
             rfc3415.Vacm.ACCESS_MODEL_ID: rfc3415.Vacm(),
         }
 
-        self.transportDispatcher = None
+        self.transport_dispatcher = None  # type: ignore
 
-        if self.msgAndPduDsp.mibInstrumController is None:
+        if self.message_dispatcher.mib_instrum_controller is None:
             raise error.PySnmpError("MIB instrumentation does not yet exist")
         (
             snmpEngineMaxMessageSize,
-        ) = self.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(  # type: ignore
+        ) = self.get_mib_builder().import_symbols(  # type: ignore
             "__SNMP-FRAMEWORK-MIB", "snmpEngineMaxMessageSize"
         )
         snmpEngineMaxMessageSize.syntax = snmpEngineMaxMessageSize.syntax.clone(
             maxMessageSize
         )
-        (
-            snmpEngineBoots,
-        ) = self.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(  # type: ignore
+        (snmpEngineBoots,) = self.get_mib_builder().import_symbols(  # type: ignore
             "__SNMP-FRAMEWORK-MIB", "snmpEngineBoots"
         )
         snmpEngineBoots.syntax += 1
-        (
-            origSnmpEngineID,
-        ) = self.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(  # type: ignore
+        (origSnmpEngineID,) = self.get_mib_builder().import_symbols(  # type: ignore
             "__SNMP-FRAMEWORK-MIB", "snmpEngineID"
         )
 
@@ -187,10 +187,10 @@ class SnmpEngine:
         This method is intended for unit testing purposes only.
         It closes the SNMP engine and checks if all associated resources are released.
         """
-        for securityModel in self.securityModels.values():
+        for securityModel in self.security_models.values():
             securityModel._close()
 
-    def openDispatcher(self, timeout: float = 0):
+    def open_dispatcher(self, timeout: float = 0):
         """
         Open the dispatcher used by SNMP engine.
 
@@ -198,78 +198,82 @@ class SnmpEngine:
         messages. It opens the dispatcher and starts processing incoming
         messages.
         """
-        if self.transportDispatcher:
-            self.transportDispatcher.runDispatcher(timeout)
+        if self.transport_dispatcher:
+            self.transport_dispatcher.run_dispatcher(timeout)
 
-    def closeDispatcher(self):
+    def close_dispatcher(self):
         """
         Close the dispatcher used by SNMP engine.
 
         This method is called when SNMP engine is no longer needed. It
         releases all resources allocated by the engine.
         """
-        if self.transportDispatcher:
-            self.transportDispatcher.closeDispatcher()
-            self.unregisterTransportDispatcher()
+        if self.transport_dispatcher:
+            self.transport_dispatcher.close_dispatcher()
+            self.unregister_transport_dispatcher()
 
     # Transport dispatcher bindings
 
-    def __receiveMessageCbFun(
+    def __receive_message_callback(
         self,
         transportDispatcher: AbstractTransportDispatcher,
         transportDomain: "tuple[int, ...]",
         transportAddress: AbstractTransportAddress,
         wholeMsg,
     ):
-        self.msgAndPduDsp.receiveMessage(
+        self.message_dispatcher.receive_message(
             self, transportDomain, transportAddress, wholeMsg
         )
 
-    def __receiveTimerTickCbFun(self, timeNow: float):
-        self.msgAndPduDsp.receiveTimerTick(self, timeNow)
-        for mpHandler in self.messageProcessingSubsystems.values():
-            mpHandler.receiveTimerTick(self, timeNow)
-        for smHandler in self.securityModels.values():
-            smHandler.receiveTimerTick(self, timeNow)
+    def __receive_timer_tick_callback(self, timeNow: float):
+        self.message_dispatcher.receive_timer_tick(self, timeNow)
+        for mpHandler in self.message_processing_subsystems.values():
+            mpHandler.receive_timer_tick(self, timeNow)
+        for smHandler in self.security_models.values():
+            smHandler.receive_timer_tick(self, timeNow)
 
-    def registerTransportDispatcher(
+    def register_transport_dispatcher(
         self,
         transportDispatcher: AbstractTransportDispatcher,
         recvId: "tuple[int, ...] | str | None" = None,
     ):
         """Register transport dispatcher."""
         if (
-            self.transportDispatcher is not None
-            and self.transportDispatcher is not transportDispatcher
+            self.transport_dispatcher is not None
+            and self.transport_dispatcher is not transportDispatcher
         ):
             raise error.PySnmpError("Transport dispatcher already registered")
-        transportDispatcher.registerRecvCbFun(self.__receiveMessageCbFun, recvId)
-        if self.transportDispatcher is None:
-            transportDispatcher.registerTimerCbFun(self.__receiveTimerTickCbFun)
-            self.transportDispatcher = transportDispatcher
+        transportDispatcher.register_recv_callback(
+            self.__receive_message_callback, recvId
+        )
+        if self.transport_dispatcher is None:
+            transportDispatcher.register_timer_callback(
+                self.__receive_timer_tick_callback
+            )
+            self.transport_dispatcher = transportDispatcher
 
-    def unregisterTransportDispatcher(self, recvId: "tuple[int, ...] | None" = None):
+    def unregister_transport_dispatcher(self, recvId: "tuple[int, ...] | None" = None):
         """Remove transport dispatcher."""
-        if self.transportDispatcher is None:
+        if self.transport_dispatcher is None:
             raise error.PySnmpError("Transport dispatcher not registered")
-        self.transportDispatcher.unregisterRecvCbFun(recvId)
-        self.transportDispatcher.unregisterTimerCbFun()
-        self.transportDispatcher = None
+        self.transport_dispatcher.unregister_recv_callback(recvId)
+        self.transport_dispatcher.unregister_timer_callback()
+        self.transport_dispatcher = None  # type: ignore
 
-    def getMibBuilder(self) -> MibBuilder:
+    def get_mib_builder(self) -> MibBuilder:
         """Get MIB builder."""
-        return self.msgAndPduDsp.mibInstrumController.mibBuilder
+        return self.message_dispatcher.mib_instrum_controller.get_mib_builder()
 
     # User app may attach opaque objects to SNMP Engine
-    def setUserContext(self, **kwargs):
+    def set_user_context(self, **kwargs):
         """Attach user context to the SNMP engine."""
         self.cache.update({"__%s" % k: kwargs[k] for k in kwargs})
 
-    def getUserContext(self, arg) -> "dict[str, Any] | None":
+    def get_user_context(self, arg) -> "dict[str, Any] | None":
         """Get user context."""
         return self.cache.get("__%s" % arg)
 
-    def delUserContext(self, arg):
+    def delete_user_context(self, arg):
         """Delete user context."""
         try:
             del self.cache["__%s" % arg]

@@ -27,8 +27,8 @@ snmpEngine = engine.SnmpEngine()
 #
 
 # user: usr-md5-des, auth: MD5, priv NONE
-config.addV3User(snmpEngine, "usr-md5-none", config.USM_AUTH_HMAC96_MD5, "authkey1")
-config.addTargetParams(snmpEngine, "my-creds", "usr-md5-none", "authNoPriv")
+config.add_v3_user(snmpEngine, "usr-md5-none", config.USM_AUTH_HMAC96_MD5, "authkey1")
+config.add_target_parameters(snmpEngine, "my-creds", "usr-md5-none", "authNoPriv")
 
 #
 # Setup transport endpoint and bind it with security settings yielding
@@ -36,10 +36,10 @@ config.addTargetParams(snmpEngine, "my-creds", "usr-md5-none", "authNoPriv")
 #
 
 # UDP/IPv6
-config.addTransport(
-    snmpEngine, udp6.DOMAIN_NAME, udp6.Udp6AsyncioTransport().openClientMode()
+config.add_transport(
+    snmpEngine, udp6.DOMAIN_NAME, udp6.Udp6AsyncioTransport().open_client_mode()
 )
-config.addTargetAddr(
+config.add_target_address(
     snmpEngine, "my-router", udp6.DOMAIN_NAME, ("::1", 161), "my-creds"
 )
 
@@ -70,7 +70,7 @@ def cbFun(
 
 
 # Prepare initial request to be sent
-cmdgen.NextCommandGenerator().sendVarBinds(
+cmdgen.NextCommandGenerator().send_varbinds(
     snmpEngine,
     "my-router",
     None,
@@ -82,4 +82,4 @@ cmdgen.NextCommandGenerator().sendVarBinds(
 # Run I/O dispatcher which would send pending queries and process responses
 snmpEngine.openDispatcher(3)
 
-snmpEngine.closeDispatcher()
+snmpEngine.close_dispatcher()

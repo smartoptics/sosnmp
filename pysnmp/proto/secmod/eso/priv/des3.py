@@ -38,7 +38,7 @@ class Des3(base.AbstractEncryptionService):
     KEY_SIZE = 32
     local_int = random.randrange(0, 0xFFFFFFFF)
 
-    def hashPassphrase(self, authProtocol, privKey) -> bytes:
+    def hash_passphrase(self, authProtocol, privKey) -> univ.OctetString:
         """Hash a passphrase.
 
         This method hashes a passphrase using the authentication protocol.
@@ -63,10 +63,10 @@ class Des3(base.AbstractEncryptionService):
             hashAlgo = hmacsha2.HmacSha2.HASH_ALGORITHM[authProtocol]
         else:
             raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
-        return localkey.hashPassphrase(privKey, hashAlgo)
+        return localkey.hash_passphrase(privKey, hashAlgo)
 
     # 2.1
-    def localizeKey(self, authProtocol, privKey, snmpEngineID) -> bytes:
+    def localize_key(self, authProtocol, privKey, snmpEngineID) -> bytes:
         """3-DES key localization algorithm.
 
         This algorithm is used to localize a 3-DES key to an authoritative
@@ -94,18 +94,18 @@ class Des3(base.AbstractEncryptionService):
             hashAlgo = hmacsha2.HmacSha2.HASH_ALGORITHM[authProtocol]
         else:
             raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
-        localPrivKey = localkey.localizeKey(privKey, snmpEngineID, hashAlgo)
+        localPrivKey = localkey.localize_key(privKey, snmpEngineID, hashAlgo)
 
         # now extend this key if too short by repeating steps that includes the hashPassphrase step
         while len(localPrivKey) < self.KEY_SIZE:
             # this is the difference between reeder and bluementhal
-            newKey = localkey.hashPassphrase(localPrivKey, hashAlgo)
-            localPrivKey += localkey.localizeKey(newKey, snmpEngineID, hashAlgo)
+            newKey = localkey.hash_passphrase(localPrivKey, hashAlgo)
+            localPrivKey += localkey.localize_key(newKey, snmpEngineID, hashAlgo)
 
         return localPrivKey[: self.KEY_SIZE]
 
     # 5.1.1.1
-    def __getEncryptionKey(self, privKey, snmpEngineBoots):
+    def __get_encryption_key(self, privKey, snmpEngineBoots):
         # 5.1.1.1.1
         des3Key = privKey[:24]
         preIV = privKey[24:32]
@@ -138,7 +138,7 @@ class Des3(base.AbstractEncryptionService):
         )
 
     @staticmethod
-    def __getDecryptionKey(privKey, salt):
+    def __get_decryption_key(privKey, salt):
         return (
             privKey[:24].asOctets(),
             univ.OctetString(
@@ -147,14 +147,14 @@ class Des3(base.AbstractEncryptionService):
         )
 
     # 5.1.1.2
-    def encryptData(self, encryptKey, privParameters, dataToEncrypt):
+    def encrypt_data(self, encryptKey, privParameters, dataToEncrypt):
         """Encrypt data."""
         if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.encryptionError)
 
         snmpEngineBoots, snmpEngineTime, salt = privParameters
 
-        des3Key, salt, iv = self.__getEncryptionKey(encryptKey, snmpEngineBoots)
+        des3Key, salt, iv = self.__get_encryption_key(encryptKey, snmpEngineBoots)
 
         privParameters = univ.OctetString(salt)
 
@@ -175,7 +175,7 @@ class Des3(base.AbstractEncryptionService):
         return univ.OctetString(ciphertext), privParameters
 
     # 5.1.1.3
-    def decryptData(self, decryptKey, privParameters, encryptedData):
+    def decrypt_data(self, decryptKey, privParameters, encryptedData):
         """Decrypt data."""
         if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.decryptionError)
@@ -184,7 +184,7 @@ class Des3(base.AbstractEncryptionService):
         if len(salt) != 8:
             raise error.StatusInformation(errorIndication=errind.decryptionError)
 
-        des3Key, iv = self.__getDecryptionKey(decryptKey, salt)
+        des3Key, iv = self.__get_decryption_key(decryptKey, salt)
 
         if len(encryptedData) % 8 != 0:
             raise error.StatusInformation(errorIndication=errind.decryptionError)

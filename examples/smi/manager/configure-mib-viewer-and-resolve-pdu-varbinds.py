@@ -13,13 +13,13 @@ from pysnmp.smi import builder, view, compiler, rfc1902
 # Assemble MIB browser
 mibBuilder = builder.MibBuilder()
 mibViewController = view.MibViewController(mibBuilder)
-compiler.addMibCompiler(
+compiler.add_mib_compiler(
     mibBuilder,
     sources=["file:///usr/share/snmp/mibs", "https://mibs.pysnmp.com/asn1/@mib@"],
 )
 
 # Pre-load MIB modules we expect to work with
-mibBuilder.loadModules("SNMPv2-MIB", "SNMP-COMMUNITY-MIB")
+mibBuilder.load_modules("SNMPv2-MIB", "SNMP-COMMUNITY-MIB")
 
 # This is what we can get in TRAP PDU
 varBinds = [
@@ -34,7 +34,7 @@ varBinds = [
 # Run var-binds through MIB resolver
 # You may want to catch and ignore resolution errors here
 varBinds = [
-    rfc1902.ObjectType(rfc1902.ObjectIdentity(x[0]), x[1]).resolveWithMib(
+    rfc1902.ObjectType(rfc1902.ObjectIdentity(x[0]), x[1]).resolve_with_mib(
         mibViewController
     )
     for x in varBinds

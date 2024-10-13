@@ -56,7 +56,7 @@ def requestObserver(snmpEngine, execpoint, variables, cbCtx):
     print("* PDU: %s" % variables["pdu"].prettyPrint())
 
 
-snmpEngine.observer.registerObserver(
+snmpEngine.observer.register_observer(
     requestObserver, "rfc3412.sendPdu", "rfc3412.receiveMessage:response"
 )
 
@@ -65,7 +65,7 @@ snmpEngine.observer.registerObserver(
 #
 
 # user: usr-sha-aes, auth: SHA, priv AES
-config.addV3User(
+config.add_v3_user(
     snmpEngine,
     "usr-sha-aes",
     config.USM_AUTH_HMAC96_SHA,
@@ -73,7 +73,7 @@ config.addV3User(
     config.USM_PRIV_CFB128_AES,
     "privkey1",
 )
-config.addTargetParams(snmpEngine, "my-creds", "usr-sha-aes", "authPriv")
+config.add_target_parameters(snmpEngine, "my-creds", "usr-sha-aes", "authPriv")
 
 #
 # Setup transport endpoint and bind it with security settings yielding
@@ -81,10 +81,10 @@ config.addTargetParams(snmpEngine, "my-creds", "usr-sha-aes", "authPriv")
 #
 
 # UDP/IPv4
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().open_client_mode()
 )
-config.addTargetAddr(
+config.add_target_address(
     snmpEngine, "my-router", udp.DOMAIN_NAME, ("127.0.0.1", 161), "my-creds"
 )
 
@@ -112,7 +112,7 @@ def cbFun(
 
 
 # Prepare and send a request message
-cmdgen.GetCommandGenerator().sendVarBinds(
+cmdgen.GetCommandGenerator().send_varbinds(
     snmpEngine,
     "my-router",
     None,
@@ -126,4 +126,4 @@ snmpEngine.openDispatcher(3)
 
 snmpEngine.observer.unregisterObserver()
 
-snmpEngine.closeDispatcher()
+snmpEngine.close_dispatcher()

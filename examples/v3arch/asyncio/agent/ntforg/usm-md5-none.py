@@ -26,15 +26,15 @@ from pysnmp.proto.api import v2c
 snmpEngine = engine.SnmpEngine()
 
 # Add USM user
-config.addV3User(snmpEngine, "usr-md5-none", config.USM_AUTH_HMAC96_MD5, "authkey1")
-config.addTargetParams(snmpEngine, "my-creds", "usr-md5-none", "authNoPriv")
+config.add_v3_user(snmpEngine, "usr-md5-none", config.USM_AUTH_HMAC96_MD5, "authkey1")
+config.add_target_parameters(snmpEngine, "my-creds", "usr-md5-none", "authNoPriv")
 
 # Setup transport endpoint and bind it with security settings yielding
 # a target name
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().open_client_mode()
 )
-config.addTargetAddr(
+config.add_target_address(
     snmpEngine,
     "my-nms",
     udp.DOMAIN_NAME,
@@ -46,14 +46,14 @@ config.addTargetAddr(
 # Specify what kind of notification should be sent (TRAP or INFORM),
 # to what targets (chosen by tag) and what filter should apply to
 # the set of targets (selected by tag)
-config.addNotificationTarget(
+config.add_notification_target(
     snmpEngine, "my-notification", "my-filter", "all-my-managers", "inform"
 )
 
 # Allow NOTIFY access to Agent's MIB by this SNMP model (3), securityLevel
 # and SecurityName
-config.addContext(snmpEngine, "")
-config.addVacmUser(snmpEngine, 3, "usr-md5-none", "authNoPriv", (), (), (1, 3, 6))
+config.add_context(snmpEngine, "")
+config.add_vacm_user(snmpEngine, 3, "usr-md5-none", "authNoPriv", (), (), (1, 3, 6))
 
 # *** SNMP engine configuration is complete by this line ***
 
@@ -80,7 +80,7 @@ def cbFun(
 
 
 # Build and submit notification message to dispatcher
-sendRequestHandle = ntfOrg.sendVarBinds(
+sendRequestHandle = ntfOrg.send_varbinds(
     snmpEngine,
     "my-notification",  # notification targets
     None,
@@ -99,4 +99,4 @@ sendRequestHandle = ntfOrg.sendVarBinds(
 print("Notification %s scheduled to be sent" % sendRequestHandle)
 
 # Run I/O dispatcher which would send pending message and process response
-snmpEngine.openDispatcher()
+snmpEngine.open_dispatcher()

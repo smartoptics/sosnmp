@@ -36,7 +36,7 @@ class Des(base.AbstractEncryptionService):
 
     local_int = random.randrange(0, 0xFFFFFFFF)
 
-    def hashPassphrase(self, authProtocol, privKey) -> univ.OctetString:
+    def hash_passphrase(self, authProtocol, privKey) -> univ.OctetString:
         """Hash a passphrase.
 
         This method hashes a passphrase using the authentication protocol.
@@ -61,9 +61,9 @@ class Des(base.AbstractEncryptionService):
             hashAlgo = hmacsha2.HmacSha2.HASH_ALGORITHM[authProtocol]
         else:
             raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
-        return localkey.hashPassphrase(privKey, hashAlgo)
+        return localkey.hash_passphrase(privKey, hashAlgo)
 
-    def localizeKey(self, authProtocol, privKey, snmpEngineID) -> bytes:
+    def localize_key(self, authProtocol, privKey, snmpEngineID) -> bytes:
         """Localize privacy key.
 
         This method localizes privacy key using the authentication protocol
@@ -91,11 +91,11 @@ class Des(base.AbstractEncryptionService):
             hashAlgo = hmacsha2.HmacSha2.HASH_ALGORITHM[authProtocol]
         else:
             raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
-        localPrivKey = localkey.localizeKey(privKey, snmpEngineID, hashAlgo)
+        localPrivKey = localkey.localize_key(privKey, snmpEngineID, hashAlgo)
         return localPrivKey[: self.KEY_SIZE]
 
     # 8.1.1.1
-    def __getEncryptionKey(self, privKey, snmpEngineBoots):
+    def __get_encryption_key(self, privKey, snmpEngineBoots):
         desKey = privKey[:8]
         preIV = privKey[8:16]
 
@@ -125,7 +125,7 @@ class Des(base.AbstractEncryptionService):
         )
 
     @staticmethod
-    def __getDecryptionKey(privKey, salt):
+    def __get_decryption_key(privKey, salt):
         return (
             privKey[:8].asOctets(),
             univ.OctetString(
@@ -134,7 +134,7 @@ class Des(base.AbstractEncryptionService):
         )
 
     # 8.2.4.1
-    def encryptData(self, encryptKey, privParameters, dataToEncrypt):
+    def encrypt_data(self, encryptKey, privParameters, dataToEncrypt):
         """Encrypt data."""
         if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.encryptionError)
@@ -142,7 +142,7 @@ class Des(base.AbstractEncryptionService):
         snmpEngineBoots, snmpEngineTime, salt = privParameters
 
         # 8.3.1.1
-        desKey, salt, iv = self.__getEncryptionKey(encryptKey, snmpEngineBoots)
+        desKey, salt, iv = self.__get_encryption_key(encryptKey, snmpEngineBoots)
 
         # 8.3.1.2
         privParameters = univ.OctetString(salt)
@@ -166,7 +166,7 @@ class Des(base.AbstractEncryptionService):
         return univ.OctetString(ciphertext), privParameters
 
     # 8.2.4.2
-    def decryptData(self, decryptKey, privParameters, encryptedData):
+    def decrypt_data(self, decryptKey, privParameters, encryptedData):
         """Decrypt data."""
         if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.decryptionError)
@@ -180,7 +180,7 @@ class Des(base.AbstractEncryptionService):
         # 8.3.2.2 no-op
 
         # 8.3.2.3
-        desKey, iv = self.__getDecryptionKey(decryptKey, salt)
+        desKey, iv = self.__get_decryption_key(decryptKey, salt)
 
         # 8.3.2.4 -> 8.1.1.3
         if len(encryptedData) % 8 != 0:

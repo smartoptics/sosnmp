@@ -27,8 +27,8 @@ snmpEngine = engine.SnmpEngine()
 #
 
 # user: usr-sha-none, auth: SHA, priv none
-config.addV3User(snmpEngine, "usr-sha-none", config.USM_AUTH_HMAC96_SHA, "authkey1")
-config.addTargetParams(snmpEngine, "my-creds", "usr-sha-none", "authNoPriv")
+config.add_v3_user(snmpEngine, "usr-sha-none", config.USM_AUTH_HMAC96_SHA, "authkey1")
+config.add_target_parameters(snmpEngine, "my-creds", "usr-sha-none", "authNoPriv")
 
 #
 # Setup transport endpoint and bind it with security settings yielding
@@ -36,10 +36,10 @@ config.addTargetParams(snmpEngine, "my-creds", "usr-sha-none", "authNoPriv")
 #
 
 # UDP/IPv4
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().open_client_mode()
 )
-config.addTargetAddr(
+config.add_target_address(
     snmpEngine, "my-router", udp.DOMAIN_NAME, ("127.0.0.1", 161), "my-creds"
 )
 
@@ -67,7 +67,7 @@ def cbFun(
 
 
 # Prepare and send a request message
-cmdgen.SetCommandGenerator().sendVarBinds(
+cmdgen.SetCommandGenerator().send_varbinds(
     snmpEngine,
     "my-router",
     None,
@@ -79,4 +79,4 @@ cmdgen.SetCommandGenerator().sendVarBinds(
 # Run I/O dispatcher which would send pending queries and process responses
 snmpEngine.openDispatcher(3)
 
-snmpEngine.closeDispatcher()
+snmpEngine.close_dispatcher()

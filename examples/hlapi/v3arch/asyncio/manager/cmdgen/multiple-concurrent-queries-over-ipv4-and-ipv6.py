@@ -22,7 +22,7 @@ from pysnmp.hlapi.v3arch.asyncio import *
 
 
 async def getone(snmpEngine, hostname):
-    errorIndication, errorStatus, errorIndex, varBinds = await getCmd(
+    errorIndication, errorStatus, errorIndex, varBinds = await get_cmd(
         snmpEngine,
         CommunityData("public"),
         await UdpTransportTarget.create(hostname),

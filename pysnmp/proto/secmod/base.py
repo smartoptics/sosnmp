@@ -4,9 +4,16 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+
+from typing import TYPE_CHECKING
+
+
 from pysnmp.proto import error
 from pysnmp.proto.errind import ErrorIndication
 from pysnmp.proto.secmod import cache
+
+if TYPE_CHECKING:
+    from pysnmp.entity.engine import SnmpEngine
 
 
 class AbstractSecurityModel:
@@ -19,9 +26,9 @@ class AbstractSecurityModel:
         """Create a security model object."""
         self._cache = cache.Cache()
 
-    def processIncomingMsg(
+    def process_incoming_message(
         self,
-        snmpEngine,
+        snmpEngine: "SnmpEngine",
         messageProcessingModel,
         maxMessageSize,
         securityParameters,
@@ -33,9 +40,9 @@ class AbstractSecurityModel:
         """Process an incoming message."""
         raise error.ProtocolError("Security model %s not implemented" % self)
 
-    def generateRequestMsg(
+    def generate_request_message(
         self,
-        snmpEngine,
+        snmpEngine: "SnmpEngine",
         messageProcessingModel,
         globalData,
         maxMessageSize,
@@ -48,9 +55,9 @@ class AbstractSecurityModel:
         """Generate a request message."""
         raise error.ProtocolError("Security model %s not implemented" % self)
 
-    def generateResponseMsg(
+    def generate_response_message(
         self,
-        snmpEngine,
+        snmpEngine: "SnmpEngine",
         messageProcessingModel,
         globalData,
         maxMessageSize,
@@ -65,11 +72,11 @@ class AbstractSecurityModel:
         """Generate a response message."""
         raise error.ProtocolError("Security model %s not implemented" % self)
 
-    def releaseStateInformation(self, stateReference):
+    def release_state_information(self, stateReference):
         """Release state information."""
         self._cache.pop(stateReference)
 
-    def receiveTimerTick(self, snmpEngine, timeNow):
+    def receive_timer_tick(self, snmpEngine: "SnmpEngine", timeNow):
         """Process a timer tick."""
         pass
 

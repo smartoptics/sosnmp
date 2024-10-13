@@ -51,6 +51,7 @@ flake8-rst-docstrings = "^0.3.0"
 sphinx-polyversion = "^1.0.0"
 cryptography = "^43.0.1"
 pysmi = "^1.3.0"
+pep8-naming = "^0.14.1"
 
 [tool.poetry_bumpversion.file."pysnmp/__init__.py"]
 

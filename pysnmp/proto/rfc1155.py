@@ -23,12 +23,14 @@ __all__ = [
 class IpAddress(univ.OctetString):
     """IP address."""
 
-    tagSet = univ.OctetString.tagSet.tagImplicitly(
+    tagSet = univ.OctetString.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x00)
     )
-    subtypeSpec = univ.OctetString.subtypeSpec + constraint.ValueSizeConstraint(4, 4)
+    subtypeSpec = univ.OctetString.subtypeSpec + constraint.ValueSizeConstraint(
+        4, 4
+    )  # noqa: N815
 
-    def prettyIn(self, value):
+    def prettyIn(self, value):  # noqa: N802
         """Return a pretty-formatted IP address."""
         if isinstance(value, str) and len(value) != 4:
             try:
@@ -39,7 +41,7 @@ class IpAddress(univ.OctetString):
             raise error.ProtocolError("Bad IP address syntax")
         return univ.OctetString.prettyIn(self, value)
 
-    def prettyOut(self, value):
+    def prettyOut(self, value):  # noqa: N802
         """Return a pretty-printed IP address."""
         if value:
             return ".".join(["%d" % x for x in self.__class__(value).asNumbers()])
@@ -50,18 +52,20 @@ class IpAddress(univ.OctetString):
 class Counter(univ.Integer):
     """Counter."""
 
-    tagSet = univ.Integer.tagSet.tagImplicitly(
+    tagSet = univ.Integer.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x01)
     )
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
         0, 4294967295
-    )
+    )  # noqa: N815
 
 
 class NetworkAddress(univ.Choice):
     """Network address."""
 
-    componentType = namedtype.NamedTypes(namedtype.NamedType("internet", IpAddress()))
+    componentType = namedtype.NamedTypes(  # noqa: N815
+        namedtype.NamedType("internet", IpAddress())
+    )
 
     def clone(self, value=univ.noValue, **kwargs):
         """Clone this instance.
@@ -98,7 +102,7 @@ class NetworkAddress(univ.Choice):
     #          sub-identifier indicates the kind of address, value 1
     #          indicates an IpAddress);"
 
-    def cloneFromName(self, value, impliedFlag, parentRow, parentIndices):
+    def clone_from_name(self, value, impliedFlag, parentRow, parentIndices):
         """Clone this instance from a tuple of sub-identifiers."""
         kind = value[0]
         clone = self.clone()
@@ -108,7 +112,7 @@ class NetworkAddress(univ.Choice):
         else:
             raise SmiError(f"unknown NetworkAddress type {kind!r}")
 
-    def cloneAsName(self, impliedFlag, parentRow, parentIndices):
+    def clone_as_name(self, impliedFlag, parentRow, parentIndices):
         """Return a tuple of sub-identifiers representing this instance.
 
         :param bool impliedFlag: (Unused) whether the value is implied.
@@ -130,29 +134,29 @@ class NetworkAddress(univ.Choice):
 class Gauge(univ.Integer):
     """Gauge."""
 
-    tagSet = univ.Integer.tagSet.tagImplicitly(
+    tagSet = univ.Integer.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x02)
     )
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
         0, 4294967295
-    )
+    )  # noqa: N815
 
 
 class TimeTicks(univ.Integer):
     """TimeTicks."""
 
-    tagSet = univ.Integer.tagSet.tagImplicitly(
+    tagSet = univ.Integer.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x03)
     )
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
         0, 4294967295
-    )
+    )  # noqa: N815
 
 
 class Opaque(univ.OctetString):
     """Opaque."""
 
-    tagSet = univ.OctetString.tagSet.tagImplicitly(
+    tagSet = univ.OctetString.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x04)
     )
 
@@ -166,8 +170,8 @@ class ObjectName(univ.ObjectIdentifier):
 class TypeCoercionHackMixIn:  # XXX keep this old-style class till pyasn1 types becomes new-style
     # Reduce ASN1 type check to simple tag check as SMIv2 objects may
     # not be constraints-compatible with those used in SNMP PDU.
-    def _verifyComponent(self, idx, value, **kwargs):
-        componentType = self._componentType
+    def _verify_component(self, idx, value, **kwargs):
+        componentType = self._componentType  # noqa: N806
         if componentType:
             if idx >= len(componentType):
                 raise PyAsn1Error("Component type error out of range")
@@ -177,7 +181,7 @@ class TypeCoercionHackMixIn:  # XXX keep this old-style class till pyasn1 types 
 
 
 class SimpleSyntax(TypeCoercionHackMixIn, univ.Choice):
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("number", univ.Integer()),
         namedtype.NamedType("string", univ.OctetString()),
         namedtype.NamedType("object", univ.ObjectIdentifier()),
@@ -186,7 +190,7 @@ class SimpleSyntax(TypeCoercionHackMixIn, univ.Choice):
 
 
 class ApplicationSyntax(TypeCoercionHackMixIn, univ.Choice):
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("address", NetworkAddress()),
         namedtype.NamedType("counter", Counter()),
         namedtype.NamedType("gauge", Gauge()),
@@ -196,7 +200,7 @@ class ApplicationSyntax(TypeCoercionHackMixIn, univ.Choice):
 
 
 class ObjectSyntax(univ.Choice):
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("simple", SimpleSyntax()),
         namedtype.NamedType("application-wide", ApplicationSyntax()),
     )

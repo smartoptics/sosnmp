@@ -27,19 +27,19 @@ from pysnmp.proto.api import v2c
 snmpEngine = engine.SnmpEngine()
 
 # SecurityName <-> CommunityName mapping
-config.addV1System(snmpEngine, "my-area", "public")
+config.add_v1_system(snmpEngine, "my-area", "public")
 
 # Specify security settings per SecurityName (SNMPv2c -> 1)
-config.addTargetParams(snmpEngine, "my-creds", "my-area", "noAuthNoPriv", 1)
+config.add_target_parameters(snmpEngine, "my-creds", "my-area", "noAuthNoPriv", 1)
 
 # Setup transport endpoint and bind it with security settings yielding
 # a target name
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().open_client_mode()
 )
 
 # Create named target
-config.addTargetAddr(
+config.add_target_address(
     snmpEngine, "my-nms", udp.DOMAIN_NAME, ("127.0.0.1", 162), "my-creds"
 )
 
@@ -47,10 +47,10 @@ config.addTargetAddr(
 
 # Create SNMP v2c TRAP PDU with defaults
 trapPDU = v2c.TrapPDU()
-v2c.apiTrapPDU.setDefaults(trapPDU)
+v2c.apiTrapPDU.set_defaults(trapPDU)
 
 # Set custom var-binds to TRAP PDU
-v2c.apiTrapPDU.setVarBinds(
+v2c.apiTrapPDU.set_varbinds(
     trapPDU,
     [
         # sysUpTime
@@ -86,7 +86,7 @@ def cbFun(
 
 
 # Build and submit notification message to dispatcher
-ntfOrg.sendPdu(
+ntfOrg.send_pdu(
     snmpEngine,
     # Notification targets
     "my-nms",  # target address

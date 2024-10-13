@@ -43,18 +43,18 @@ async def run():
     snmpEngine = SnmpEngine()
 
     for authData, transportTarget, contextData in TARGETS:
-        await sendNotification(
+        await send_notification(
             snmpEngine,
             authData,
             transportTarget,
             contextData,
             "trap",  # NotifyType
-            NotificationType(ObjectIdentity("SNMPv2-MIB", "coldStart")).addVarBinds(
+            NotificationType(ObjectIdentity("SNMPv2-MIB", "coldStart")).add_varbinds(
                 ("1.3.6.1.2.1.1.1.0", "my name")
             ),
         )
 
-    snmpEngine.transportDispatcher.runDispatcher()
+    snmpEngine.transport_dispatcher.run_dispatcher()
 
 
 asyncio.run(run())

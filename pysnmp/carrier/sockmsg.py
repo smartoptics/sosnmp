@@ -26,13 +26,13 @@ uint32_t = ctypes.c_uint32
 in_addr_t = uint32_t
 
 
-class in_addr(ctypes.Structure):
+class in_addr(ctypes.Structure):  # noqa: N801
     """Represent an IPv4 address."""
 
     _fields_ = [("s_addr", in_addr_t)]
 
 
-class in6_addr_U(ctypes.Union):
+class in6_addr_U(ctypes.Union):  # noqa: N801
     """Represent an IPv6 address."""
 
     _fields_ = [
@@ -42,7 +42,7 @@ class in6_addr_U(ctypes.Union):
     ]
 
 
-class in6_addr(ctypes.Structure):
+class in6_addr(ctypes.Structure):  # noqa: N801
     """Represent an IPv6 address."""
 
     _fields_ = [
@@ -50,7 +50,7 @@ class in6_addr(ctypes.Structure):
     ]
 
 
-class in_pktinfo(ctypes.Structure):
+class in_pktinfo(ctypes.Structure):  # noqa: N801
     """Represent an IPv4 packet information."""
 
     _fields_ = [
@@ -60,7 +60,7 @@ class in_pktinfo(ctypes.Structure):
     ]
 
 
-class in6_pktinfo(ctypes.Structure):
+class in6_pktinfo(ctypes.Structure):  # noqa: N801
     """Represent an IPv6 packet information."""
 
     _fields_ = [
@@ -69,7 +69,7 @@ class in6_pktinfo(ctypes.Structure):
     ]
 
 
-def getRecvFrom(addressType):
+def get_recvfrom(addressType):
     """Return a function that receives data from a socket and returns the data and the address of the sender.
 
     The address is an instance of addressType.
@@ -103,7 +103,7 @@ def getRecvFrom(addressType):
     return recvfrom
 
 
-def getSendTo(addressType):
+def get_sendto(addressType):
     """Return a function that sends data to a socket and returns the number of bytes sent.
 
     The address is an instance of addressType.

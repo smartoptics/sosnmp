@@ -16,18 +16,18 @@ class NoPriv(base.AbstractEncryptionService):
 
     SERVICE_ID = (1, 3, 6, 1, 6, 3, 10, 1, 2, 1)  # usmNoPrivProtocol
 
-    def hashPassphrase(self, authProtocol, privKey):
+    def hash_passphrase(self, authProtocol, privKey):
         """Hash a passphrase."""
         return
 
-    def localizeKey(self, authProtocol, privKey, snmpEngineID):
+    def localize_key(self, authProtocol, privKey, snmpEngineID):
         """Localize key."""
         return
 
-    def encryptData(self, encryptKey, privParameters, dataToEncrypt):
+    def encrypt_data(self, encryptKey, privParameters, dataToEncrypt):
         """Encrypt data."""
         raise error.StatusInformation(errorIndication=errind.noEncryption)
 
-    def decryptData(self, decryptKey, privParameters, encryptedData):
+    def decrypt_data(self, decryptKey, privParameters, encryptedData):
         """Decrypt data."""
         raise error.StatusInformation(errorIndication=errind.noEncryption)

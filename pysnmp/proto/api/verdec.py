@@ -10,7 +10,7 @@ from pyasn1.type import univ
 from pysnmp.proto.error import ProtocolError
 
 
-def decodeMessageVersion(wholeMsg):
+def decode_message_version(wholeMsg):
     """Decode SNMP version from the message."""
     try:
         seq, wholeMsg = decoder.decode(

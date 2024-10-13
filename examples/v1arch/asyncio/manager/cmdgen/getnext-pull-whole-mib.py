@@ -28,14 +28,14 @@ headVars = [pMod.ObjectIdentifier((1, 3, 6))]
 
 # Build PDU
 reqPDU = pMod.GetNextRequestPDU()
-pMod.apiPDU.setDefaults(reqPDU)
-pMod.apiPDU.setVarBinds(reqPDU, [(x, pMod.null) for x in headVars])
+pMod.apiPDU.set_defaults(reqPDU)
+pMod.apiPDU.set_varbinds(reqPDU, [(x, pMod.null) for x in headVars])
 
 # Build message
 reqMsg = pMod.Message()
-pMod.apiMessage.setDefaults(reqMsg)
-pMod.apiMessage.setCommunity(reqMsg, "public")
-pMod.apiMessage.setPDU(reqMsg, reqPDU)
+pMod.apiMessage.set_defaults(reqMsg)
+pMod.apiMessage.set_community(reqMsg, "public")
+pMod.apiMessage.set_pdu(reqMsg, reqPDU)
 
 
 # noinspection PyUnusedLocal
@@ -49,17 +49,17 @@ def cbRecvFun(
 ):
     while wholeMsg:
         rspMsg, wholeMsg = decoder.decode(wholeMsg, asn1Spec=pMod.Message())
-        rspPDU = pMod.apiMessage.getPDU(rspMsg)
+        rspPDU = pMod.apiMessage.get_pdu(rspMsg)
 
         # Match response to request
-        if pMod.apiPDU.getRequestID(reqPDU) == pMod.apiPDU.getRequestID(rspPDU):
+        if pMod.apiPDU.get_request_id(reqPDU) == pMod.apiPDU.get_request_id(rspPDU):
             # Check for SNMP errors reported
-            errorStatus = pMod.apiPDU.getErrorStatus(rspPDU)
+            errorStatus = pMod.apiPDU.get_error_status(rspPDU)
             if errorStatus and errorStatus != 2:
                 raise Exception(errorStatus)
 
             # Format var-binds table
-            varBindTable = pMod.apiPDU.getVarBindTable(reqPDU, rspPDU)
+            varBindTable = pMod.apiPDU.get_varbind_table(reqPDU, rspPDU)
 
             # Report SNMP table
             for tableRow in varBindTable:
@@ -76,17 +76,17 @@ def cbRecvFun(
                     break
 
             else:
-                transportDispatcher.jobFinished(1)
+                transportDispatcher.job_finished(1)
                 continue
 
             # Generate request for next row
-            pMod.apiPDU.setVarBinds(
+            pMod.apiPDU.set_varbinds(
                 reqPDU, [(x, pMod.null) for x, y in varBindTable[-1]]
             )
 
-            pMod.apiPDU.setRequestID(reqPDU, pMod.getNextRequestID())
+            pMod.apiPDU.set_request_id(reqPDU, pMod.get_next_request_id())
 
-            transportDispatcher.sendMessage(
+            transportDispatcher.send_message(
                 encoder.encode(reqMsg), transportDomain, transportAddress
             )
 
@@ -95,18 +95,18 @@ def cbRecvFun(
 
 transportDispatcher = AsyncioDispatcher()
 
-transportDispatcher.registerRecvCbFun(cbRecvFun)
+transportDispatcher.register_recv_callback(cbRecvFun)
 
-transportDispatcher.registerTransport(
-    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
+transportDispatcher.register_transport(
+    udp.DOMAIN_NAME, udp.UdpAsyncioTransport().open_client_mode()
 )
 
-transportDispatcher.sendMessage(
+transportDispatcher.send_message(
     encoder.encode(reqMsg), udp.DOMAIN_NAME, ("demo.pysnmp.com", 161)
 )
 
-transportDispatcher.jobStarted(1)
+transportDispatcher.job_started(1)
 
-transportDispatcher.runDispatcher(3)
+transportDispatcher.run_dispatcher(3)
 
-transportDispatcher.closeDispatcher()
+transportDispatcher.close_dispatcher()

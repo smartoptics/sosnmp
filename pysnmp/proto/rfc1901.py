@@ -13,7 +13,7 @@ version = univ.Integer(namedValues=namedval.NamedValues(("version-2c", 1)))
 class Message(univ.Sequence):
     """Create a new SNMP message."""
 
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("version", version),
         namedtype.NamedType("community", univ.OctetString()),
         namedtype.NamedType("data", rfc1905.PDUs()),

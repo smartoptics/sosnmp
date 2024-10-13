@@ -17,10 +17,10 @@ mibBuilder = builder.MibBuilder()
 #
 
 # A base class for a custom Managed Object
-(MibScalarInstance,) = mibBuilder.importSymbols("SNMPv2-SMI", "MibScalarInstance")
+(MibScalarInstance,) = mibBuilder.import_symbols("SNMPv2-SMI", "MibScalarInstance")
 
 # Managed object specification
-(sysLocation,) = mibBuilder.importSymbols("SNMPv2-MIB", "sysLocation")
+(sysLocation,) = mibBuilder.import_symbols("SNMPv2-MIB", "sysLocation")
 
 
 # Custom Managed Object
@@ -34,7 +34,7 @@ class MySysLocationInstance(MibScalarInstance):
 sysLocationInstance = MySysLocationInstance(sysLocation.name, (0,), sysLocation.syntax)
 
 # Register Managed Object with a MIB tree
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     # '__' prefixed MIB modules take precedence on indexing
     "__MY-LOCATION-MIB",
     sysLocationInstance=sysLocationInstance,
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     varBinds = [((), None)]
 
     while True:
-        varBinds = mibInstrum.readNextVars(*varBinds)
+        varBinds = mibInstrum.read_next_variables(*varBinds)
         oid, val = varBinds[0]
         if exval.endOfMib.isSameTypeWith(val):
             break

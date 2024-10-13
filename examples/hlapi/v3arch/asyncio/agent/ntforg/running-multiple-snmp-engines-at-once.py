@@ -56,27 +56,31 @@ async def run():
     transportDispatcher = AsyncioDispatcher()
 
     # Setup a custom data routing function to select snmpEngine by transportDomain
-    transportDispatcher.registerRoutingCbFun(lambda td, ta, d: ta[1] % 3 and "A" or "B")
+    transportDispatcher.register_routing_callback(
+        lambda td, ta, d: ta[1] % 3 and "A" or "B"
+    )
 
     snmpEngineA = SnmpEngine()
-    snmpEngineA.registerTransportDispatcher(transportDispatcher, "A")
+    snmpEngineA.register_transport_dispatcher(transportDispatcher, "A")
 
     snmpEngineB = SnmpEngine()
-    snmpEngineB.registerTransportDispatcher(transportDispatcher, "B")
+    snmpEngineB.register_transport_dispatcher(transportDispatcher, "B")
 
     for authData, transportTarget, contextData in TARGETS:
         # Pick one of the two SNMP engines
         snmpEngine = (
-            transportTarget.getTransportInfo()[1][1] % 3 and snmpEngineA or snmpEngineB
+            transportTarget.get_transport_info()[1][1] % 3
+            and snmpEngineA
+            or snmpEngineB
         )
 
-        errorIndication, errorStatus, errorIndex, varBinds = await sendNotification(
+        errorIndication, errorStatus, errorIndex, varBinds = await send_notification(
             snmpEngine,
             authData,
             transportTarget,
             contextData,
             "inform",  # NotifyType
-            NotificationType(ObjectIdentity("SNMPv2-MIB", "coldStart")).addVarBinds(
+            NotificationType(ObjectIdentity("SNMPv2-MIB", "coldStart")).add_varbinds(
                 ("1.3.6.1.2.1.1.1.0", "my name")
             ),
         )
@@ -104,7 +108,7 @@ async def run():
             for name, val in varBinds:
                 print(f"{name.prettyPrint()} = {val.prettyPrint()}")
 
-    transportDispatcher.runDispatcher()
+    transportDispatcher.run_dispatcher()
 
 
 asyncio.run(run())

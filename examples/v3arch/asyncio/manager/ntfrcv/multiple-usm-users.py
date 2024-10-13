@@ -38,15 +38,15 @@ snmpEngine = engine.SnmpEngine()
 # Transport setup
 
 # UDP over IPv4
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().openServerMode(("127.0.0.1", 162))
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().open_server_mode(("127.0.0.1", 162))
 )
 
 # SNMPv3/USM setup
 
 # user: usr-md5-des, auth: MD5, priv DES, securityEngineId: 8000000001020304
 # this USM entry is configured for TRAP receiving purposes
-config.addV3User(
+config.add_v3_user(
     snmpEngine,
     "usr-md5-des",
     config.USM_AUTH_HMAC96_MD5,
@@ -58,7 +58,7 @@ config.addV3User(
 
 # user: usr-md5-none, auth: MD5, priv NONE, securityEngineId: 8000000001020304
 # this USM entry is configured for TRAP receiving purposes
-config.addV3User(
+config.add_v3_user(
     snmpEngine,
     "usr-md5-none",
     config.USM_AUTH_HMAC96_MD5,
@@ -68,7 +68,7 @@ config.addV3User(
 
 # user: usr-md5-aes256, auth: MD5, priv AES-256, securityEngineId: 8000000001020304
 # this USM entry is configured for TRAP receiving purposes
-config.addV3User(
+config.add_v3_user(
     snmpEngine,
     "usr-md5-aes256",
     config.USM_AUTH_HMAC96_MD5,
@@ -80,7 +80,7 @@ config.addV3User(
 
 # user: usr-sha-aes128, auth: SHA, priv AES, securityEngineId: 8000000001020304
 # this USM entry is configured for TRAP receiving purposes
-config.addV3User(
+config.add_v3_user(
     snmpEngine,
     "usr-sha-aes128",
     config.USM_AUTH_HMAC96_SHA,
@@ -105,11 +105,11 @@ def cbFun(snmpEngine, stateReference, contextEngineId, contextName, varBinds, cb
 # Register SNMP Application at the SNMP engine
 ntfrcv.NotificationReceiver(snmpEngine, cbFun)
 
-snmpEngine.transportDispatcher.jobStarted(1)  # this job would never finish
+snmpEngine.transport_dispatcher.job_started(1)  # this job would never finish
 
 # Run I/O dispatcher which would receive queries and send confirmations
 try:
-    snmpEngine.openDispatcher()
+    snmpEngine.open_dispatcher()
 except:
-    snmpEngine.closeDispatcher()
+    snmpEngine.close_dispatcher()
     raise

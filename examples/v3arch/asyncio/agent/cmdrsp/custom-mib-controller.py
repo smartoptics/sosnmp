@@ -29,17 +29,17 @@ snmpEngine = engine.SnmpEngine()
 # Transport setup
 
 # UDP over IPv4
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().openServerMode(("127.0.0.1", 161))
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().open_server_mode(("127.0.0.1", 161))
 )
 
 # SNMPv3/USM setup
 
 # user: usr-none-none, auth: NONE, priv NONE
-config.addV3User(snmpEngine, "usr-none-none")
+config.add_v3_user(snmpEngine, "usr-none-none")
 
 # Allow full MIB access for each user at VACM
-config.addVacmUser(
+config.add_vacm_user(
     snmpEngine,
     3,
     "usr-none-none",
@@ -56,7 +56,7 @@ snmpContext = context.SnmpContext(snmpEngine)
 # any Managed Objects attached. It supports only GET's and
 # always echos request var-binds in response.
 class EchoMibInstrumController(instrum.AbstractMibInstrumController):
-    def readVars(self, *varBinds, **context):
+    def read_variables(self, *varBinds, **context):
         return [
             (ov[0], v2c.OctetString("You queried OID %s" % ov[0])) for ov in varBinds
         ]
@@ -64,7 +64,7 @@ class EchoMibInstrumController(instrum.AbstractMibInstrumController):
 
 # Create a custom Management Instrumentation Controller and register at
 # SNMP Context under ContextName 'my-context'
-snmpContext.registerContextName(
+snmpContext.register_context_name(
     v2c.OctetString("my-context"),  # Context Name
     EchoMibInstrumController(),  # Management Instrumentation
 )
@@ -74,11 +74,11 @@ cmdrsp.GetCommandResponder(snmpEngine, snmpContext)
 cmdrsp.SetCommandResponder(snmpEngine, snmpContext)
 
 # Register an imaginary never-ending job to keep I/O dispatcher running forever
-snmpEngine.transportDispatcher.jobStarted(1)
+snmpEngine.transport_dispatcher.job_started(1)
 
 # Run I/O dispatcher which would receive queries and send responses
 try:
-    snmpEngine.openDispatcher()
+    snmpEngine.open_dispatcher()
 except:
-    snmpEngine.closeDispatcher()
+    snmpEngine.close_dispatcher()
     raise

@@ -46,4 +46,4 @@ A. The Agent you are talking to seems to be broken. The
             for varBind in varBinds:
                 print(' = '.join([x.prettyPrint() for x in varBind])
 
-    snmpEngine.closeDispatcher()
+    snmpEngine.close_dispatcher()

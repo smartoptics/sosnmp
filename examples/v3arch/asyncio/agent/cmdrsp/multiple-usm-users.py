@@ -29,14 +29,14 @@ snmpEngine = engine.SnmpEngine()
 # Transport setup
 
 # UDP over IPv4
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().openServerMode(("127.0.0.1", 161))
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().open_server_mode(("127.0.0.1", 161))
 )
 
 # SNMPv3/USM setup
 
 # user: usr-md5-des, auth: MD5, priv DES
-config.addV3User(
+config.add_v3_user(
     snmpEngine,
     "usr-md5-des",
     config.USM_AUTH_HMAC96_MD5,
@@ -45,9 +45,9 @@ config.addV3User(
     "privkey1",
 )
 # user: usr-sha-none, auth: SHA, priv NONE
-config.addV3User(snmpEngine, "usr-sha-none", config.USM_AUTH_HMAC96_SHA, "authkey1")
+config.add_v3_user(snmpEngine, "usr-sha-none", config.USM_AUTH_HMAC96_SHA, "authkey1")
 # user: usr-sha-aes128, auth: SHA, priv AES
-config.addV3User(
+config.add_v3_user(
     snmpEngine,
     "usr-sha-aes128",
     config.USM_AUTH_HMAC96_SHA,
@@ -57,13 +57,13 @@ config.addV3User(
 )
 
 # Allow full MIB access for each user at VACM
-config.addVacmUser(
+config.add_vacm_user(
     snmpEngine, 3, "usr-md5-des", "authPriv", (1, 3, 6, 1, 2, 1), (1, 3, 6, 1, 2, 1)
 )
-config.addVacmUser(
+config.add_vacm_user(
     snmpEngine, 3, "usr-sha-none", "authNoPriv", (1, 3, 6, 1, 2, 1), (1, 3, 6, 1, 2, 1)
 )
-config.addVacmUser(
+config.add_vacm_user(
     snmpEngine, 3, "usr-sha-aes128", "authPriv", (1, 3, 6, 1, 2, 1), (1, 3, 6, 1, 2, 1)
 )
 
@@ -77,11 +77,11 @@ cmdrsp.NextCommandResponder(snmpEngine, snmpContext)
 cmdrsp.BulkCommandResponder(snmpEngine, snmpContext)
 
 # Register an imaginary never-ending job to keep I/O dispatcher running forever
-snmpEngine.transportDispatcher.jobStarted(1)
+snmpEngine.transport_dispatcher.job_started(1)
 
 # Run I/O dispatcher which would receive queries and send responses
 try:
-    snmpEngine.openDispatcher()
+    snmpEngine.open_dispatcher()
 except:
-    snmpEngine.closeDispatcher()
+    snmpEngine.close_dispatcher()
     raise

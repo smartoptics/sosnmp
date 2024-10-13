@@ -13,59 +13,59 @@ from pysnmp.carrier import error
 class TimerCallable:
     """Timer callable object."""
 
-    __cbFun: Callable
-    __nextCall: float
-    __callInterval: float
+    __callback: Callable
+    __next_call: float
+    __call_interval: float
 
     def __init__(self, cbFun: Callable, callInterval: float):
         """Create a timer callable object."""
-        self.__cbFun = cbFun
-        self.__nextCall = 0
+        self.__callback = cbFun
+        self.__next_call = 0
 
-        self.__callInterval = callInterval
+        self.__call_interval = callInterval
 
     def __call__(self, timeNow: float):
         """Call the callback function if the time is right."""
-        if self.__nextCall <= timeNow:
-            self.__cbFun(timeNow)
-            self.__nextCall = timeNow + self.interval
+        if self.__next_call <= timeNow:
+            self.__callback(timeNow)
+            self.__next_call = timeNow + self.interval
 
     def __eq__(self, cbFun: Callable):
         """Return True if the callback function is the same."""
-        return self.__cbFun == cbFun
+        return self.__callback == cbFun
 
     def __ne__(self, cbFun: Callable):
         """Return True if the callback function is not the same."""
-        return self.__cbFun != cbFun
+        return self.__callback != cbFun
 
     @property
     def interval(self):
         """Return the call interval."""
-        return self.__callInterval
+        return self.__call_interval
 
     @interval.setter
     def interval(self, callInterval: float):
-        self.__callInterval = callInterval
+        self.__call_interval = callInterval
 
 
 class AbstractTransportAddress:
     """Abstract transport address interface."""
 
-    _localAddress = None
+    _local_address = None
 
-    def setLocalAddress(self, s):
+    def set_local_address(self, s):
         """Set the local address."""
-        self._localAddress = s
+        self._local_address = s
         return self
 
-    def getLocalAddress(self):
+    def get_local_address(self):
         """Return the local address."""
-        return self._localAddress
+        return self._local_address
 
     def clone(self, localAddress=None):
         """Clone the address."""
-        return self.__class__(self).setLocalAddress(
-            localAddress is None and self.getLocalAddress() or localAddress
+        return self.__class__(self).set_local_address(
+            localAddress is None and self.get_local_address() or localAddress
         )
 
 
@@ -74,10 +74,10 @@ class AbstractTransport:
 
     PROTO_TRANSPORT_DISPATCHER = None
     ADDRESS_TYPE = AbstractTransportAddress
-    _cbFun = None
+    _callback_function = None
 
     @classmethod
-    def isCompatibleWithDispatcher(
+    def is_compatible_with_dispatcher(
         cls, transportDispatcher: "AbstractTransportDispatcher"
     ):
         """Return True if the transport dispatcher is compatible."""
@@ -87,33 +87,33 @@ class AbstractTransport:
             )
         return isinstance(transportDispatcher, cls.PROTO_TRANSPORT_DISPATCHER)
 
-    def registerCbFun(self, cbFun):
+    def register_callback(self, cbFun):
         """Register the callback function."""
-        if self._cbFun:
+        if self._callback_function:
             raise error.CarrierError(
-                f"Callback function {self._cbFun} already registered at {self}"
+                f"Callback function {self._callback_function} already registered at {self}"
             )
-        self._cbFun = cbFun
+        self._callback_function = cbFun
 
-    def unregisterCbFun(self):
+    def unregister_callback(self):
         """Unregister the callback function."""
-        self._cbFun = None
+        self._callback_function = None
 
-    def closeTransport(self):
+    def close_transport(self):
         """Close the transport."""
-        self.unregisterCbFun()
+        self.unregister_callback()
 
     # Public API
 
-    def openClientMode(self, iface: "tuple[str, int] | None" = None):
+    def open_client_mode(self, iface: "tuple[str, int] | None" = None):
         """Open client mode."""
         raise error.CarrierError("Method not implemented")
 
-    def openServerMode(self, iface: "tuple[str, int]"):
+    def open_server_mode(self, iface: "tuple[str, int]"):
         """Open server mode."""
         raise error.CarrierError("Method not implemented")
 
-    def sendMessage(self, outgoingMessage, transportAddress: AbstractTransportAddress):
+    def send_message(self, outgoingMessage, transportAddress: AbstractTransportAddress):
         """Send a message to the transport."""
         raise error.CarrierError("Method not implemented")
 
@@ -122,48 +122,48 @@ class AbstractTransportDispatcher:
     """Abstract transport dispatcher interface."""
 
     __transports: "dict[tuple[int, ...], AbstractTransport]"
-    __transportDomainMap: "dict[AbstractTransport, tuple[int, ...]]"
-    __recvCallables: "dict['tuple[int, ...] | str | None', Callable]"
-    __timerCallables: "list[TimerCallable]"
+    __transport_domain_map: "dict[AbstractTransport, tuple[int, ...]]"
+    __recv_callables: "dict['tuple[int, ...] | str | None', Callable]"
+    __timer_callables: "list[TimerCallable]"
     __ticks: int
-    __timerResolution: float
-    __timerDelta: float
-    __nextTime: float
-    __routingCbFun: "Callable[[tuple[int, ...], AbstractTransportAddress, Any], 'tuple[int, ...]'] | None"  # fix message type
+    __timer_resolution: float
+    __timer_delta: float
+    __next_time: float
+    __routing_callback: "Callable[[tuple[int, ...], AbstractTransportAddress, Any], 'tuple[int, ...]'] | None"  # fix message type
 
     def __init__(self):
         """Create a transport dispatcher object."""
         self.__transports = {}
-        self.__transportDomainMap = {}
+        self.__transport_domain_map = {}
         self.__jobs = {}
-        self.__recvCallables = {}
-        self.__timerCallables = []
+        self.__recv_callables = {}
+        self.__timer_callables = []
         self.__ticks = 0
-        self.__timerResolution = 0.1
-        self.__timerDelta = self.__timerResolution * 0.05
-        self.__nextTime = 0
-        self.__routingCbFun = None
+        self.__timer_resolution = 0.1
+        self.__timer_delta = self.__timer_resolution * 0.05
+        self.__next_time = 0
+        self.__routing_callback = None
 
-    def _cbFun(
+    def _callback_function(
         self,
         incomingTransport: AbstractTransport,
         transportAddress: AbstractTransportAddress,
         incomingMessage,
     ):
-        if incomingTransport in self.__transportDomainMap:
-            transportDomain = self.__transportDomainMap[incomingTransport]
+        if incomingTransport in self.__transport_domain_map:
+            transportDomain = self.__transport_domain_map[incomingTransport]
         else:
             raise error.CarrierError(f"Unregistered transport {incomingTransport}")
 
-        if self.__routingCbFun:
-            recvId = self.__routingCbFun(
+        if self.__routing_callback:
+            recvId = self.__routing_callback(
                 transportDomain, transportAddress, incomingMessage
             )
         else:
             recvId = None
 
-        if recvId in self.__recvCallables:
-            self.__recvCallables[recvId](
+        if recvId in self.__recv_callables:
+            self.__recv_callables[recvId](
                 self, transportDomain, transportAddress, incomingMessage
             )
         else:
@@ -173,75 +173,77 @@ class AbstractTransportDispatcher:
 
     # Dispatcher API
 
-    def registerRoutingCbFun(
+    def register_routing_callback(
         self,
         routingCbFun: "Callable[[tuple[int, ...], AbstractTransportAddress, Any], 'tuple[int, ...]'] | None",
     ):
         """Register a routing callback."""
-        if self.__routingCbFun:
+        if self.__routing_callback:
             raise error.CarrierError("Data routing callback already registered")
-        self.__routingCbFun = routingCbFun
+        self.__routing_callback = routingCbFun
 
-    def unregisterRoutingCbFun(self):
+    def unregister_routing_callback(self):
         """Unregister a routing callback."""
-        if self.__routingCbFun:
-            self.__routingCbFun = None
+        if self.__routing_callback:
+            self.__routing_callback = None
 
-    def registerRecvCbFun(self, recvCb, recvId: "tuple[int, ...] | str | None" = None):
+    def register_recv_callback(
+        self, recvCb, recvId: "tuple[int, ...] | str | None" = None
+    ):
         """Register a receive callback."""
-        if recvId in self.__recvCallables:
+        if recvId in self.__recv_callables:
             raise error.CarrierError(
                 "Receive callback {!r} already registered".format(
                     recvId is None and "<default>" or recvId
                 )
             )
-        self.__recvCallables[recvId] = recvCb
+        self.__recv_callables[recvId] = recvCb
 
-    def unregisterRecvCbFun(self, recvId: "tuple[int, ...] | None" = None):
+    def unregister_recv_callback(self, recvId: "tuple[int, ...] | None" = None):
         """Unregister a receive callback."""
-        if recvId in self.__recvCallables:
-            del self.__recvCallables[recvId]
+        if recvId in self.__recv_callables:
+            del self.__recv_callables[recvId]
 
-    def registerTimerCbFun(
+    def register_timer_callback(
         self, timerCbFun: Callable, tickInterval: "float | None" = None
     ):
         """Register a timer callback."""
         if not tickInterval:
-            tickInterval = self.__timerResolution
-        self.__timerCallables.append(TimerCallable(timerCbFun, tickInterval))
+            tickInterval = self.__timer_resolution
+        self.__timer_callables.append(TimerCallable(timerCbFun, tickInterval))
 
-    def unregisterTimerCbFun(self, timerCbFun: "TimerCallable | None" = None):
+    def unregister_timer_callback(self, timerCbFun: "TimerCallable | None" = None):
         """Unregister a timer callback."""
         if timerCbFun:
-            self.__timerCallables.remove(timerCbFun)
+            self.__timer_callables.remove(timerCbFun)
         else:
-            self.__timerCallables = []
+            self.__timer_callables = []
 
-    def registerTransport(
+    def register_transport(
         self, tDomain: "tuple[int, ...]", transport: AbstractTransport
     ):
         """Register a transport."""
         if tDomain in self.__transports:
             raise error.CarrierError(f"Transport {tDomain} already registered")
-        transport.registerCbFun(self._cbFun)
+        transport.register_callback(self._callback_function)
         self.__transports[tDomain] = transport
-        self.__transportDomainMap[transport] = tDomain
+        self.__transport_domain_map[transport] = tDomain
 
-    def unregisterTransport(self, tDomain: "tuple[int, ...]"):
+    def unregister_transport(self, tDomain: "tuple[int, ...]"):
         """Unregister a transport."""
         if tDomain not in self.__transports:
             raise error.CarrierError(f"Transport {tDomain} not registered")
-        self.__transports[tDomain].unregisterCbFun()
-        del self.__transportDomainMap[self.__transports[tDomain]]
+        self.__transports[tDomain].unregister_callback()
+        del self.__transport_domain_map[self.__transports[tDomain]]
         del self.__transports[tDomain]
 
-    def getTransport(self, transportDomain: "tuple[int, ...]"):
+    def get_transport(self, transportDomain: "tuple[int, ...]"):
         """Return the transport object."""
         if transportDomain in self.__transports:
             return self.__transports[transportDomain]
         raise error.CarrierError(f"Transport {transportDomain} not registered")
 
-    def sendMessage(
+    def send_message(
         self,
         outgoingMessage,
         transportDomain: "tuple[int, ...]",
@@ -249,7 +251,7 @@ class AbstractTransportDispatcher:
     ):
         """Send a message to the transport."""
         if transportDomain in self.__transports:
-            self.__transports[transportDomain].sendMessage(
+            self.__transports[transportDomain].send_message(
                 outgoingMessage, transportAddress
             )
         else:
@@ -257,67 +259,67 @@ class AbstractTransportDispatcher:
                 f"No suitable transport domain for {transportDomain}"
             )
 
-    def getTimerResolution(self):
+    def get_timer_resolution(self):
         """Return the timer resolution."""
-        return self.__timerResolution
+        return self.__timer_resolution
 
-    def setTimerResolution(self, timerResolution: float):
+    def set_timer_resolution(self, timerResolution: float):
         """Set the timer resolution."""
         if timerResolution < 0.01 or timerResolution > 10:
             raise error.CarrierError("Impossible timer resolution")
 
-        for timerCallable in self.__timerCallables:
-            if timerCallable.interval == self.__timerResolution:
+        for timerCallable in self.__timer_callables:
+            if timerCallable.interval == self.__timer_resolution:
                 # Update periodics for default resolutions
                 timerCallable.interval = timerResolution
 
-        self.__timerResolution = timerResolution
-        self.__timerDelta = timerResolution * 0.05
+        self.__timer_resolution = timerResolution
+        self.__timer_delta = timerResolution * 0.05
 
-    def getTimerTicks(self):
+    def get_timer_ticks(self):
         """Return the number of timer ticks."""
         return self.__ticks
 
-    def handleTimerTick(self, timeNow: float):
+    def handle_timer_tick(self, timeNow: float):
         """Handle timer tick."""
-        if self.__nextTime == 0:  # initial initialization
-            self.__nextTime = timeNow + self.__timerResolution - self.__timerDelta
+        if self.__next_time == 0:  # initial initialization
+            self.__next_time = timeNow + self.__timer_resolution - self.__timer_delta
 
-        if self.__nextTime >= timeNow:
+        if self.__next_time >= timeNow:
             return
 
         self.__ticks += 1
-        self.__nextTime = timeNow + self.__timerResolution - self.__timerDelta
+        self.__next_time = timeNow + self.__timer_resolution - self.__timer_delta
 
-        for timerCallable in self.__timerCallables:
+        for timerCallable in self.__timer_callables:
             timerCallable(timeNow)
 
-    def jobStarted(self, jobId, count: int = 1):
+    def job_started(self, jobId, count: int = 1):
         """Mark a job as started."""
         if jobId in self.__jobs:
             self.__jobs[jobId] += count
         else:
             self.__jobs[jobId] = count
 
-    def jobFinished(self, jobId, count: int = 1):
+    def job_finished(self, jobId, count: int = 1):
         """Mark a job as finished."""
         self.__jobs[jobId] -= count
         if self.__jobs[jobId] == 0:
             del self.__jobs[jobId]
 
-    def jobsArePending(self):
+    def jobs_are_pending(self):
         """Return True if there are pending jobs."""
         return bool(self.__jobs)
 
-    def runDispatcher(self, timeout: float = 0.0):
+    def run_dispatcher(self, timeout: float = 0.0):
         """Run the dispatcher."""
         raise error.CarrierError("Method not implemented")
 
-    def closeDispatcher(self):
+    def close_dispatcher(self):
         """Close the dispatcher."""
         for tDomain in list(self.__transports):
-            self.__transports[tDomain].closeTransport()
-            self.unregisterTransport(tDomain)
+            self.__transports[tDomain].close_transport()
+            self.unregister_transport(tDomain)
         self.__transports.clear()
-        self.unregisterRecvCbFun()
-        self.unregisterTimerCbFun()
+        self.unregister_recv_callback()
+        self.unregister_timer_callback()

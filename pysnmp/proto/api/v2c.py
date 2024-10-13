@@ -50,23 +50,23 @@ apiVarBind = v1.apiVarBind  # noqa: N816
 class PDUAPI(v1.PDUAPI):
     """SNMPv2c request PDU API."""
 
-    _errorStatus = rfc1905.errorStatus.clone(0)
-    _errorIndex = univ.Integer(0).subtype(
+    _error_status = rfc1905.errorStatus.clone(0)
+    _error_index = univ.Integer(0).subtype(
         subtypeSpec=constraint.ValueRangeConstraint(0, rfc1905.max_bindings)
     )
 
-    def getResponse(self, reqPDU):
+    def get_response(self, reqPDU) -> rfc1905.ResponsePDU:
         """Build response PDU."""
         rspPDU = ResponsePDU()
-        self.setDefaults(rspPDU)
-        self.setRequestID(rspPDU, self.getRequestID(reqPDU))
+        self.set_defaults(rspPDU)
+        self.set_request_id(rspPDU, self.get_request_id(reqPDU))
         return rspPDU
 
-    def getVarBindTable(self, reqPDU, rspPDU):
+    def get_varbind_table(self, reqPDU, rspPDU):
         """Get var-binds table from response PDU."""
-        return [apiPDU.getVarBinds(rspPDU)]
+        return [apiPDU.get_varbinds(rspPDU)]
 
-    def getNextVarBinds(self, varBinds, origVarBinds=None):
+    def get_next_varbinds(self, varBinds, origVarBinds=None):
         """Get next var-binds."""
         errorIndication = None
         idx = nonNulls = len(varBinds)
@@ -92,9 +92,9 @@ class PDUAPI(v1.PDUAPI):
 
         return errorIndication, rspVarBinds
 
-    def setEndOfMibError(self, pdu, errorIndex):
+    def set_end_of_mib_error(self, pdu, errorIndex):
         """Set endOfMibView error."""
-        varBindList = self.getVarBindList(pdu)
+        varBindList = self.get_varbind_list(pdu)
         varBindList[errorIndex - 1].setComponentByPosition(
             1,
             rfc1905.endOfMibView,
@@ -103,9 +103,9 @@ class PDUAPI(v1.PDUAPI):
             matchConstraints=False,
         )
 
-    def setNoSuchInstanceError(self, pdu, errorIndex):
+    def set_no_such_instance_error(self, pdu, errorIndex):
         """Set noSuchInstance error."""
-        varBindList = self.getVarBindList(pdu)
+        varBindList = self.get_varbind_list(pdu)
         varBindList[errorIndex - 1].setComponentByPosition(
             1,
             rfc1905.noSuchInstance,
@@ -121,12 +121,12 @@ apiPDU = PDUAPI()  # noqa: N816
 class BulkPDUAPI(PDUAPI):
     """SNMPv2c bulk request PDU API."""
 
-    _nonRepeaters = rfc1905.nonRepeaters.clone(0)
-    _maxRepetitions = rfc1905.maxRepetitions.clone(10)
+    _non_repeaters = rfc1905.nonRepeaters.clone(0)
+    _max_repetitions = rfc1905.maxRepetitions.clone(10)
 
-    def setDefaults(self, pdu):
+    def set_defaults(self, pdu):
         """Set SNMPv2c bulk request defaults."""
-        PDUAPI.setDefaults(self, pdu)
+        PDUAPI.set_defaults(self, pdu)
         pdu.setComponentByPosition(
             0,
             getNextRequestID(),
@@ -136,14 +136,14 @@ class BulkPDUAPI(PDUAPI):
         )
         pdu.setComponentByPosition(
             1,
-            self._nonRepeaters,
+            self._non_repeaters,
             verifyConstraints=False,
             matchTags=False,
             matchConstraints=False,
         )
         pdu.setComponentByPosition(
             2,
-            self._maxRepetitions,
+            self._max_repetitions,
             verifyConstraints=False,
             matchTags=False,
             matchConstraints=False,
@@ -152,34 +152,34 @@ class BulkPDUAPI(PDUAPI):
         varBindList.clear()
 
     @staticmethod
-    def getNonRepeaters(pdu):
+    def get_non_repeaters(pdu):
         """Get non-repeaters component of the PDU."""
         return pdu.getComponentByPosition(1)
 
     @staticmethod
-    def setNonRepeaters(pdu, value):
+    def set_non_repeaters(pdu, value):
         """Set non-repeaters component of the PDU."""
         pdu.setComponentByPosition(1, value)
 
     @staticmethod
-    def getMaxRepetitions(pdu):
+    def get_max_repetitions(pdu):
         """Get max repetitions component of the PDU."""
         return pdu.getComponentByPosition(2)
 
     @staticmethod
-    def setMaxRepetitions(pdu, value):
+    def set_max_repetitions(pdu, value):
         """Set max repetitions component of the PDU."""
         pdu.setComponentByPosition(2, value)
 
-    def getVarBindTable(self, reqPDU, rspPDU):
+    def get_varbind_table(self, reqPDU, rspPDU):
         """Get var-binds table from response PDU."""
-        nonRepeaters = self.getNonRepeaters(reqPDU)
+        nonRepeaters = self.get_non_repeaters(reqPDU)
 
-        reqVarBinds = self.getVarBinds(reqPDU)
+        reqVarBinds = self.get_varbinds(reqPDU)
 
         N = min(int(nonRepeaters), len(reqVarBinds))
 
-        rspVarBinds = self.getVarBinds(rspPDU)
+        rspVarBinds = self.get_varbinds(rspPDU)
 
         # shortcut for the most trivial case
         if N == 0 and len(reqVarBinds) == 1:
@@ -207,23 +207,23 @@ apiBulkPDU = BulkPDUAPI()  # noqa: N816
 class TrapPDUAPI(v1.PDUAPI):
     """SNMPv2c trap PDU API."""
 
-    sysUpTime = (1, 3, 6, 1, 2, 1, 1, 3, 0)
-    snmpTrapAddress = (1, 3, 6, 1, 6, 3, 18, 1, 3, 0)
-    snmpTrapCommunity = (1, 3, 6, 1, 6, 3, 18, 1, 4, 0)
-    snmpTrapOID = (1, 3, 6, 1, 6, 3, 1, 1, 4, 1, 0)
-    snmpTrapEnterprise = (1, 3, 6, 1, 6, 3, 1, 1, 4, 3, 0)
-    _zeroTime = TimeTicks(0)
-    _genTrap = ObjectIdentifier((1, 3, 6, 1, 6, 3, 1, 1, 5, 1))
+    sysUpTime = (1, 3, 6, 1, 2, 1, 1, 3, 0)  # noqa: N815
+    snmpTrapAddress = (1, 3, 6, 1, 6, 3, 18, 1, 3, 0)  # noqa: N815
+    snmpTrapCommunity = (1, 3, 6, 1, 6, 3, 18, 1, 4, 0)  # noqa: N815
+    snmpTrapOID = (1, 3, 6, 1, 6, 3, 1, 1, 4, 1, 0)  # noqa: N815
+    snmpTrapEnterprise = (1, 3, 6, 1, 6, 3, 1, 1, 4, 3, 0)  # noqa: N815
+    _zeroTime = TimeTicks(0)  # noqa: N815
+    _genTrap = ObjectIdentifier((1, 3, 6, 1, 6, 3, 1, 1, 5, 1))  # noqa: N815
 
-    def setDefaults(self, pdu):
+    def set_defaults(self, pdu):
         """Set SNMPv2c trap defaults."""
-        v1.PDUAPI.setDefaults(self, pdu)
+        v1.PDUAPI.set_defaults(self, pdu)
         varBinds = [
             (self.sysUpTime, self._zeroTime),
             # generic trap
             (self.snmpTrapOID, self._genTrap),
         ]
-        self.setVarBinds(pdu, varBinds)
+        self.set_varbinds(pdu, varBinds)
 
 
 apiTrapPDU = TrapPDUAPI()  # noqa: N816
@@ -234,7 +234,7 @@ class MessageAPI(v1.MessageAPI):
 
     _version = rfc1901.version.clone(1)
 
-    def setDefaults(self, msg):
+    def set_defaults(self, msg):
         """Set SNMP message defaults."""
         msg.setComponentByPosition(
             0,
@@ -252,13 +252,13 @@ class MessageAPI(v1.MessageAPI):
         )
         return msg
 
-    def getResponse(self, reqMsg):
+    def get_response(self, reqMsg) -> rfc1901.Message:
         """Build response message."""
         rspMsg = Message()
-        self.setDefaults(rspMsg)
-        self.setVersion(rspMsg, self.getVersion(reqMsg))
-        self.setCommunity(rspMsg, self.getCommunity(reqMsg))
-        self.setPDU(rspMsg, apiPDU.getResponse(self.getPDU(reqMsg)))
+        self.set_defaults(rspMsg)
+        self.set_version(rspMsg, self.get_version(reqMsg))
+        self.set_community(rspMsg, self.get_community(reqMsg))
+        self.set_pdu(rspMsg, apiPDU.get_response(self.get_pdu(reqMsg)))
         return rspMsg
 
 

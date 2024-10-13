@@ -97,7 +97,7 @@ V2_TO_V1_ERROR_MAP = {
 zeroInt = v1.Integer(0)  # noqa: N816
 
 
-def v1ToV2(v1Pdu, origV2Pdu=None, snmpTrapCommunity=""):
+def v1_to_v2(v1Pdu, origV2Pdu=None, snmpTrapCommunity=""):
     """Return SNMPv2 PDU given SNMPv1 PDU."""
     pduType = v1Pdu.tagSet
     v2Pdu = V1_TO_V2_PDU_MAP[pduType].clone()
@@ -111,14 +111,14 @@ def v1ToV2(v1Pdu, origV2Pdu=None, snmpTrapCommunity=""):
     # 3.1
     if pduType in rfc3411.NOTIFICATION_CLASS_PDUS:
         # 3.1.1
-        sysUpTime = v1.apiTrapPDU.getTimeStamp(v1Pdu)
+        sysUpTime = v1.apiTrapPDU.get_timestamp(v1Pdu)
 
         # 3.1.2
-        genericTrap = v1.apiTrapPDU.getGenericTrap(v1Pdu)
+        genericTrap = v1.apiTrapPDU.get_generic_trap(v1Pdu)
         if genericTrap == 6:
-            snmpTrapOIDParam = v1.apiTrapPDU.getEnterprise(v1Pdu) + (
+            snmpTrapOIDParam = v1.apiTrapPDU.get_enterprise(v1Pdu) + (
                 0,
-                int(v1.apiTrapPDU.getSpecificTrap(v1Pdu)),
+                int(v1.apiTrapPDU.get_specific_trap(v1Pdu)),
             )
 
         # 3.1.3
@@ -129,19 +129,19 @@ def v1ToV2(v1Pdu, origV2Pdu=None, snmpTrapCommunity=""):
         v2VarBinds.append((v2c.apiTrapPDU.sysUpTime, sysUpTime))
         v2VarBinds.append((v2c.apiTrapPDU.snmpTrapOID, snmpTrapOIDParam))
         v2VarBinds.append(
-            (v2c.apiTrapPDU.snmpTrapAddress, v1.apiTrapPDU.getAgentAddr(v1Pdu))
+            (v2c.apiTrapPDU.snmpTrapAddress, v1.apiTrapPDU.get_agent_address(v1Pdu))
         )
         v2VarBinds.append(
             (v2c.apiTrapPDU.snmpTrapCommunity, v2c.OctetString(snmpTrapCommunity))
         )
         v2VarBinds.append(
-            (v2c.apiTrapPDU.snmpTrapEnterprise, v1.apiTrapPDU.getEnterprise(v1Pdu))
+            (v2c.apiTrapPDU.snmpTrapEnterprise, v1.apiTrapPDU.get_enterprise(v1Pdu))
         )
 
-        varBinds = v1.apiTrapPDU.getVarBinds(v1Pdu)
+        varBinds = v1.apiTrapPDU.get_varbinds(v1Pdu)
 
     else:
-        varBinds = v1.apiPDU.getVarBinds(v1Pdu)
+        varBinds = v1.apiPDU.get_varbinds(v1Pdu)
 
     # Translate Var-Binds
     for oid, v1Val in varBinds:
@@ -152,8 +152,8 @@ def v1ToV2(v1Pdu, origV2Pdu=None, snmpTrapCommunity=""):
         v2VarBinds.append((oid, V1_TO_V2_VALUE_MAP[v1Val.tagSet].clone(v1Val)))
 
     if pduType not in rfc3411.NOTIFICATION_CLASS_PDUS:
-        errorStatus = int(v1.apiPDU.getErrorStatus(v1Pdu))
-        errorIndex = int(v1.apiPDU.getErrorIndex(v1Pdu, muteErrors=True))
+        errorStatus = int(v1.apiPDU.get_error_status(v1Pdu))
+        errorIndex = int(v1.apiPDU.get_error_index(v1Pdu, muteErrors=True))
 
         if pduType in rfc3411.RESPONSE_CLASS_PDUS:
             # 4.1.2.2.1&2
@@ -164,17 +164,17 @@ def v1ToV2(v1Pdu, origV2Pdu=None, snmpTrapCommunity=""):
                     v2VarBinds = [(o, rfc1905.noSuchObject) for o, v in v2VarBinds]
 
         # partial one-to-one mapping - 4.2.1
-        v2c.apiPDU.setErrorStatus(v2Pdu, errorStatus)
-        v2c.apiPDU.setErrorIndex(v2Pdu, errorIndex)
+        v2c.apiPDU.set_error_status(v2Pdu, errorStatus)
+        v2c.apiPDU.set_error_index(v2Pdu, errorIndex)
 
         # 4.1.2.1 --> no-op
 
-        v2c.apiPDU.setRequestID(v2Pdu, int(v1.apiPDU.getRequestID(v1Pdu)))
+        v2c.apiPDU.set_request_id(v2Pdu, int(v1.apiPDU.get_request_id(v1Pdu)))
 
     else:
-        v2c.apiPDU.setDefaults(v2Pdu)
+        v2c.apiPDU.set_defaults(v2Pdu)
 
-    v2c.apiPDU.setVarBinds(v2Pdu, v2VarBinds)
+    v2c.apiPDU.set_varbinds(v2Pdu, v2VarBinds)
 
     debug.logger & debug.FLAG_PRX and debug.logger(
         "v1ToV2: v2Pdu %s" % v2Pdu.prettyPrint()
@@ -183,7 +183,7 @@ def v1ToV2(v1Pdu, origV2Pdu=None, snmpTrapCommunity=""):
     return v2Pdu
 
 
-def v2ToV1(v2Pdu, origV1Pdu=None):
+def v2_to_v1(v2Pdu, origV1Pdu=None):
     """Return SNMPv1 PDU given SNMPv2 PDU."""
     debug.logger & debug.FLAG_PRX and debug.logger(
         "v2ToV1: v2Pdu %s" % v2Pdu.prettyPrint()
@@ -197,7 +197,7 @@ def v2ToV1(v2Pdu, origV1Pdu=None):
     else:
         raise error.ProtocolError("Unsupported PDU type")
 
-    v2VarBinds = v2c.apiPDU.getVarBinds(v2Pdu)
+    v2VarBinds = v2c.apiPDU.get_varbinds(v2Pdu)
     v1VarBinds = []
 
     # 3.2
@@ -215,48 +215,48 @@ def v2ToV1(v2Pdu, origV1Pdu=None):
         if snmpTrapOIDParam in V2_TO_V1_TRAP_MAP:
             for oid, val in v2VarBinds:
                 if oid == v2c.apiTrapPDU.snmpTrapEnterprise:
-                    v1.apiTrapPDU.setEnterprise(v1Pdu, val)
+                    v1.apiTrapPDU.set_enterprise(v1Pdu, val)
                     break
 
             else:
                 # snmpTraps
-                v1.apiTrapPDU.setEnterprise(v1Pdu, (1, 3, 6, 1, 6, 3, 1, 1, 5))
+                v1.apiTrapPDU.set_enterprise(v1Pdu, (1, 3, 6, 1, 6, 3, 1, 1, 5))
 
         else:
             if snmpTrapOIDParam[-2] == 0:
-                v1.apiTrapPDU.setEnterprise(v1Pdu, snmpTrapOIDParam[:-2])
+                v1.apiTrapPDU.set_enterprise(v1Pdu, snmpTrapOIDParam[:-2])
 
             else:
-                v1.apiTrapPDU.setEnterprise(v1Pdu, snmpTrapOIDParam[:-1])
+                v1.apiTrapPDU.set_enterprise(v1Pdu, snmpTrapOIDParam[:-1])
 
         # 3.2.2
         for oid, val in v2VarBinds:
             # snmpTrapAddress
             if oid == v2c.apiTrapPDU.snmpTrapAddress:
-                v1.apiTrapPDU.setAgentAddr(
+                v1.apiTrapPDU.set_agent_address(
                     v1Pdu, v1.IpAddress(val)
                 )  # v2c.OctetString is more constrained
                 break
 
         else:
-            v1.apiTrapPDU.setAgentAddr(v1Pdu, v1.IpAddress("0.0.0.0"))
+            v1.apiTrapPDU.set_agent_address(v1Pdu, v1.IpAddress("0.0.0.0"))
 
         # 3.2.3
         if snmpTrapOIDParam in V2_TO_V1_TRAP_MAP:
-            v1.apiTrapPDU.setGenericTrap(v1Pdu, V2_TO_V1_TRAP_MAP[snmpTrapOIDParam])
+            v1.apiTrapPDU.set_generic_trap(v1Pdu, V2_TO_V1_TRAP_MAP[snmpTrapOIDParam])
 
         else:
-            v1.apiTrapPDU.setGenericTrap(v1Pdu, 6)
+            v1.apiTrapPDU.set_generic_trap(v1Pdu, 6)
 
         # 3.2.4
         if snmpTrapOIDParam in V2_TO_V1_TRAP_MAP:
-            v1.apiTrapPDU.setSpecificTrap(v1Pdu, zeroInt)
+            v1.apiTrapPDU.set_specific_trap(v1Pdu, zeroInt)
 
         else:
-            v1.apiTrapPDU.setSpecificTrap(v1Pdu, snmpTrapOIDParam[-1])
+            v1.apiTrapPDU.set_specific_trap(v1Pdu, snmpTrapOIDParam[-1])
 
         # 3.2.5
-        v1.apiTrapPDU.setTimeStamp(v1Pdu, v2VarBinds[0][1])
+        v1.apiTrapPDU.set_timestamp(v1Pdu, v2VarBinds[0][1])
 
         __v2VarBinds = []
         for oid, val in v2VarBinds[2:]:
@@ -274,8 +274,8 @@ def v2ToV1(v2Pdu, origV1Pdu=None):
         # 3.2.6 --> done below
 
     else:
-        v1.apiPDU.setErrorStatus(v1Pdu, zeroInt)
-        v1.apiPDU.setErrorIndex(v1Pdu, zeroInt)
+        v1.apiPDU.set_error_status(v1Pdu, zeroInt)
+        v1.apiPDU.set_error_index(v1Pdu, zeroInt)
 
     if pduType in rfc3411.RESPONSE_CLASS_PDUS:
         idx = len(v2VarBinds) - 1
@@ -285,8 +285,8 @@ def v2ToV1(v2Pdu, origV1Pdu=None):
             oid, val = v2VarBinds[idx]
             if v2c.Counter64.tagSet == val.tagSet:
                 if origV1Pdu.tagSet == v1.GetRequestPDU.tagSet:
-                    v1.apiPDU.setErrorStatus(v1Pdu, 2)
-                    v1.apiPDU.setErrorIndex(v1Pdu, idx + 1)
+                    v1.apiPDU.set_error_status(v1Pdu, 2)
+                    v1.apiPDU.set_error_index(v1Pdu, idx + 1)
                     break
 
                 elif origV1Pdu.tagSet == v1.GetNextRequestPDU.tagSet:
@@ -301,38 +301,38 @@ def v2ToV1(v2Pdu, origV1Pdu=None):
                 v2c.NoSuchInstance.tagSet,
                 v2c.EndOfMibView.tagSet,
             ):
-                v1.apiPDU.setErrorStatus(v1Pdu, 2)
-                v1.apiPDU.setErrorIndex(v1Pdu, idx + 1)
+                v1.apiPDU.set_error_status(v1Pdu, 2)
+                v1.apiPDU.set_error_index(v1Pdu, idx + 1)
 
             idx -= 1
 
         # 4.1.2.3.1
-        v2ErrorStatus = v2c.apiPDU.getErrorStatus(v2Pdu)
+        v2ErrorStatus = v2c.apiPDU.get_error_status(v2Pdu)
         if v2ErrorStatus:
-            v1.apiPDU.setErrorStatus(v1Pdu, V2_TO_V1_ERROR_MAP.get(v2ErrorStatus, 5))
-            v1.apiPDU.setErrorIndex(
-                v1Pdu, v2c.apiPDU.getErrorIndex(v2Pdu, muteErrors=True)
+            v1.apiPDU.set_error_status(v1Pdu, V2_TO_V1_ERROR_MAP.get(v2ErrorStatus, 5))
+            v1.apiPDU.set_error_index(
+                v1Pdu, v2c.apiPDU.get_error_index(v2Pdu, muteErrors=True)
             )
 
     elif pduType in rfc3411.CONFIRMED_CLASS_PDUS:
-        v1.apiPDU.setErrorStatus(v1Pdu, 0)
-        v1.apiPDU.setErrorIndex(v1Pdu, 0)
+        v1.apiPDU.set_error_status(v1Pdu, 0)
+        v1.apiPDU.set_error_index(v1Pdu, 0)
 
     # Translate Var-Binds
-    if pduType in rfc3411.RESPONSE_CLASS_PDUS and v1.apiPDU.getErrorStatus(v1Pdu):
-        v1VarBinds = v1.apiPDU.getVarBinds(origV1Pdu)
+    if pduType in rfc3411.RESPONSE_CLASS_PDUS and v1.apiPDU.get_error_status(v1Pdu):
+        v1VarBinds = v1.apiPDU.get_varbinds(origV1Pdu)
 
     else:
         for oid, v2Val in v2VarBinds:
             v1VarBinds.append((oid, V2_TO_V1_VALUE_MAP[v2Val.tagSet].clone(v2Val)))
 
     if pduType in rfc3411.NOTIFICATION_CLASS_PDUS:
-        v1.apiTrapPDU.setVarBinds(v1Pdu, v1VarBinds)
+        v1.apiTrapPDU.set_varbinds(v1Pdu, v1VarBinds)
 
     else:
-        v1.apiPDU.setVarBinds(v1Pdu, v1VarBinds)
+        v1.apiPDU.set_varbinds(v1Pdu, v1VarBinds)
 
-        v1.apiPDU.setRequestID(v1Pdu, v2c.apiPDU.getRequestID(v2Pdu))
+        v1.apiPDU.set_request_id(v1Pdu, v2c.apiPDU.get_request_id(v2Pdu))
 
     debug.logger & debug.FLAG_PRX and debug.logger(
         "v2ToV1: v1Pdu %s" % v1Pdu.prettyPrint()

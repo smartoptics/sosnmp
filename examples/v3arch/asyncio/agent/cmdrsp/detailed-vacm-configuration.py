@@ -41,8 +41,8 @@ snmpEngine = engine.SnmpEngine()
 # Transport setup
 
 # UDP over IPv4
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().openServerMode(("127.0.0.1", 161))
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().open_server_mode(("127.0.0.1", 161))
 )
 
 # Register default MIB instrumentation controller with a new SNMP context
@@ -51,8 +51,8 @@ contextName = "abcd"
 
 snmpContext = context.SnmpContext(snmpEngine)
 
-snmpContext.registerContextName(
-    contextName, snmpEngine.msgAndPduDsp.mibInstrumController
+snmpContext.register_context_name(
+    contextName, snmpEngine.message_dispatcher.mib_instrum_controller
 )
 
 # Add new SNMP community name, map it to a new security name and
@@ -61,7 +61,7 @@ snmpContext.registerContextName(
 securityName = "my-area"
 communityName = "public"
 
-config.addV1System(
+config.add_v1_system(
     snmpEngine,
     securityName,
     communityName,
@@ -81,13 +81,13 @@ readViewName = "my-read-view"
 contextPrefix = contextName[:1]
 
 # Populate SNMP-VIEW-BASED-ACM-MIB::vacmContextTable
-config.addContext(snmpEngine, contextName)
+config.add_context(snmpEngine, contextName)
 
 # Populate SNMP-VIEW-BASED-ACM-MIB::vacmSecurityToGroupTable
-config.addVacmGroup(snmpEngine, vacmGroup, securityModel, securityName)
+config.add_vacm_group(snmpEngine, vacmGroup, securityModel, securityName)
 
 # Populate SNMP-VIEW-BASED-ACM-MIB::vacmAccessTable
-config.addVacmAccess(
+config.add_vacm_access(
     snmpEngine,
     vacmGroup,
     contextPrefix,
@@ -102,12 +102,12 @@ config.addVacmAccess(
 # Populate SNMP-VIEW-BASED-ACM-MIB::vacmViewTreeFamilyTable
 
 # Allow the whole system subtree
-config.addVacmView(
+config.add_vacm_view(
     snmpEngine, readViewName, "included", "1.3.6.1.2.1.1.1", "1.1.1.1.1.1.1.0"
 )
 
 # ...but exclude one sub-branch (just one scalar OID)
-config.addVacmView(
+config.add_vacm_view(
     snmpEngine, readViewName, "excluded", "1.3.6.1.2.1.1.3", "1.1.1.1.1.1.1.1"
 )
 
@@ -117,12 +117,12 @@ cmdrsp.SetCommandResponder(snmpEngine, snmpContext)
 cmdrsp.NextCommandResponder(snmpEngine, snmpContext)
 
 # Register an imaginary never-ending job to keep I/O dispatcher running forever
-snmpEngine.transportDispatcher.jobStarted(1)
+snmpEngine.transport_dispatcher.job_started(1)
 
 # Run I/O dispatcher which would receive queries and send responses
 try:
-    snmpEngine.openDispatcher()
+    snmpEngine.open_dispatcher()
 
 except Exception:
-    snmpEngine.closeDispatcher()
+    snmpEngine.close_dispatcher()
     raise

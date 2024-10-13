@@ -28,26 +28,26 @@ snmpEngine = engine.SnmpEngine()
 # Transport setup
 
 # UDP over IPv4
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().openServerMode(("127.0.0.1", 161))
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().open_server_mode(("127.0.0.1", 161))
 )
 
 # SNMPv2c setup
 
 # SecurityName <-> CommunityName mapping.
-config.addV1System(snmpEngine, "my-area", "public")
+config.add_v1_system(snmpEngine, "my-area", "public")
 
 # Allow read MIB access for this user / securityModels at VACM
-config.addVacmUser(snmpEngine, 2, "my-area", "noAuthNoPriv", (1, 3, 6, 5))
+config.add_vacm_user(snmpEngine, 2, "my-area", "noAuthNoPriv", (1, 3, 6, 5))
 
 # Create an SNMP context
 snmpContext = context.SnmpContext(snmpEngine)
 
 # --- create custom Managed Object Instance ---
 
-mibBuilder = snmpContext.getMibInstrum().getMibBuilder()
+mibBuilder = snmpContext.get_mib_instrum().get_mib_builder()
 
-MibScalar, MibScalarInstance = mibBuilder.importSymbols(
+MibScalar, MibScalarInstance = mibBuilder.import_symbols(
     "SNMPv2-SMI", "MibScalar", "MibScalarInstance"
 )
 
@@ -60,7 +60,7 @@ class MyStaticMibScalarInstance(MibScalarInstance):
         )
 
 
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "__MY_MIB",
     MibScalar((1, 3, 6, 5, 1), v2c.OctetString()),
     MyStaticMibScalarInstance((1, 3, 6, 5, 1), (0,), v2c.OctetString()),
@@ -74,11 +74,11 @@ cmdrsp.NextCommandResponder(snmpEngine, snmpContext)
 cmdrsp.BulkCommandResponder(snmpEngine, snmpContext)
 
 # Register an imaginary never-ending job to keep I/O dispatcher running forever
-snmpEngine.transportDispatcher.jobStarted(1)
+snmpEngine.transport_dispatcher.job_started(1)
 
 # Run I/O dispatcher which would receive queries and send responses
 try:
-    snmpEngine.openDispatcher()
+    snmpEngine.open_dispatcher()
 except:
-    snmpEngine.closeDispatcher()
+    snmpEngine.close_dispatcher()
     raise

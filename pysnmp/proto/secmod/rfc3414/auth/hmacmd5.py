@@ -28,21 +28,21 @@ class HmacMd5(base.AbstractAuthenticationService):
     IPAD = [0x36] * 64
     OPAD = [0x5C] * 64
 
-    def hashPassphrase(self, authKey):
+    def hash_passphrase(self, authKey):
         """Hash a passphrase."""
-        return localkey.hashPassphraseMD5(authKey)
+        return localkey.hash_passphrase_md5(authKey)
 
-    def localizeKey(self, authKey, snmpEngineID):
+    def localize_key(self, authKey, snmpEngineID):
         """Localize a key."""
-        return localkey.localizeKeyMD5(authKey, snmpEngineID)
+        return localkey.localize_key_md5(authKey, snmpEngineID)
 
     @property
-    def digestLength(self):
+    def digest_length(self):
         """Return digest length."""
         return 12
 
     # 6.3.1
-    def authenticateOutgoingMsg(self, authKey, wholeMsg):
+    def authenticate_outgoing_message(self, authKey, wholeMsg):
         """Authenticate outgoing message."""
         # Here we expect calling secmod to indicate where the digest
         # should be in the substrate. Also, it pre-sets digest placeholder
@@ -82,7 +82,7 @@ class HmacMd5(base.AbstractAuthenticationService):
         return wholeHead + mac + wholeTail
 
     # 6.3.2
-    def authenticateIncomingMsg(self, authKey, authParameters, wholeMsg):
+    def authenticate_incoming_message(self, authKey, authParameters, wholeMsg):
         """Authenticate incoming message."""
         # 6.3.2.1 & 2
         if len(authParameters) != 12:

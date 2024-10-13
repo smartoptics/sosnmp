@@ -182,7 +182,7 @@ class Debug:
 logger = 0
 
 
-def setLogger(value):
+def set_logger(value):
     """Set the global logger."""
     global logger
     logger = value

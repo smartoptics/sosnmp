@@ -42,7 +42,7 @@ class Aes(base.AbstractEncryptionService):
     local_int = random.randrange(0, 0xFFFFFFFFFFFFFFFF)
 
     # 3.1.2.1
-    def __getEncryptionKey(self, privKey, snmpEngineBoots, snmpEngineTime):
+    def __get_encryption_key(self, privKey, snmpEngineBoots, snmpEngineTime):
         salt = [
             self.local_int >> 56 & 0xFF,
             self.local_int >> 48 & 0xFF,
@@ -59,11 +59,11 @@ class Aes(base.AbstractEncryptionService):
         else:
             self.local_int += 1
 
-        return self.__getDecryptionKey(
+        return self.__get_decryption_key(
             privKey, snmpEngineBoots, snmpEngineTime, salt
         ) + (univ.OctetString(salt).asOctets(),)
 
-    def __getDecryptionKey(self, privKey, snmpEngineBoots, snmpEngineTime, salt):
+    def __get_decryption_key(self, privKey, snmpEngineBoots, snmpEngineTime, salt):
         snmpEngineBoots, snmpEngineTime, salt = (
             int(snmpEngineBoots),
             int(snmpEngineTime),
@@ -83,7 +83,7 @@ class Aes(base.AbstractEncryptionService):
 
         return privKey[: self.KEY_SIZE].asOctets(), univ.OctetString(iv).asOctets()
 
-    def hashPassphrase(self, authProtocol, privKey) -> univ.OctetString:
+    def hash_passphrase(self, authProtocol, privKey) -> univ.OctetString:
         """Hash a passphrase."""
         if authProtocol == hmacmd5.HmacMd5.SERVICE_ID:
             hashAlgo = md5
@@ -93,9 +93,9 @@ class Aes(base.AbstractEncryptionService):
             hashAlgo = hmacsha2.HmacSha2.HASH_ALGORITHM[authProtocol]
         else:
             raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
-        return localkey.hashPassphrase(privKey, hashAlgo)
+        return localkey.hash_passphrase(privKey, hashAlgo)
 
-    def localizeKey(self, authProtocol, privKey, snmpEngineID) -> univ.OctetString:
+    def localize_key(self, authProtocol, privKey, snmpEngineID) -> univ.OctetString:
         """Localize a key."""
         if authProtocol == hmacmd5.HmacMd5.SERVICE_ID:
             hashAlgo = md5
@@ -105,11 +105,11 @@ class Aes(base.AbstractEncryptionService):
             hashAlgo = hmacsha2.HmacSha2.HASH_ALGORITHM[authProtocol]
         else:
             raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
-        localPrivKey = localkey.localizeKey(privKey, snmpEngineID, hashAlgo)
+        localPrivKey = localkey.localize_key(privKey, snmpEngineID, hashAlgo)
         return localPrivKey[: self.KEY_SIZE]
 
     # 3.2.4.1
-    def encryptData(self, encryptKey, privParameters, dataToEncrypt):
+    def encrypt_data(self, encryptKey, privParameters, dataToEncrypt):
         """Encrypt data."""
         if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.encryptionError)
@@ -117,7 +117,7 @@ class Aes(base.AbstractEncryptionService):
         snmpEngineBoots, snmpEngineTime, salt = privParameters
 
         # 3.3.1.1
-        aesKey, iv, salt = self.__getEncryptionKey(
+        aesKey, iv, salt = self.__get_encryption_key(
             encryptKey, snmpEngineBoots, snmpEngineTime
         )
 
@@ -135,7 +135,7 @@ class Aes(base.AbstractEncryptionService):
         return univ.OctetString(ciphertext), univ.OctetString(salt)
 
     # 3.2.4.2
-    def decryptData(self, decryptKey, privParameters, encryptedData):
+    def decrypt_data(self, decryptKey, privParameters, encryptedData):
         """Decrypt data."""
         if PysnmpCryptoError:
             raise error.StatusInformation(errorIndication=errind.decryptionError)
@@ -147,7 +147,7 @@ class Aes(base.AbstractEncryptionService):
             raise error.StatusInformation(errorIndication=errind.decryptionError)
 
         # 3.3.2.3
-        aesKey, iv = self.__getDecryptionKey(
+        aesKey, iv = self.__get_decryption_key(
             decryptKey, snmpEngineBoots, snmpEngineTime, salt
         )
 

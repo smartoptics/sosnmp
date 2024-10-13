@@ -29,19 +29,19 @@ snmpEngine = engine.SnmpEngine()
 # Transport setup
 
 # UDP over IPv4
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().openServerMode(("127.0.0.1", 162))
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().open_server_mode(("127.0.0.1", 162))
 )
 
 # UDP over IPv6
-config.addTransport(
-    snmpEngine, udp6.DOMAIN_NAME, udp6.Udp6Transport().openServerMode(("::1", 162))
+config.add_transport(
+    snmpEngine, udp6.DOMAIN_NAME, udp6.Udp6Transport().open_server_mode(("::1", 162))
 )
 
 # SNMPv1/2c setup
 
 # SecurityName <-> CommunityName mapping
-config.addV1System(snmpEngine, "my-area", "public")
+config.add_v1_system(snmpEngine, "my-area", "public")
 
 
 # Callback function for receiving notifications
@@ -59,11 +59,11 @@ def cbFun(snmpEngine, stateReference, contextEngineId, contextName, varBinds, cb
 # Register SNMP Application at the SNMP engine
 ntfrcv.NotificationReceiver(snmpEngine, cbFun)
 
-snmpEngine.transportDispatcher.jobStarted(1)  # this job would never finish
+snmpEngine.transport_dispatcher.job_started(1)  # this job would never finish
 
 # Run I/O dispatcher which would receive queries and send confirmations
 try:
-    snmpEngine.openDispatcher()
+    snmpEngine.open_dispatcher()
 except:
-    snmpEngine.closeDispatcher()
+    snmpEngine.close_dispatcher()
     raise

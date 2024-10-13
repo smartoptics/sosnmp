@@ -392,7 +392,7 @@ class MibTree(ObjectType):
 
     def getBranch(self, name, **context):
         """Return a branch of this tree where the 'name' OID may reside"""
-        for keyLen in self._vars.getKeysLens():
+        for keyLen in self._vars.get_keys_lengths():
             subName = name[:keyLen]
             if subName in self._vars:
                 return self._vars[subName]
@@ -409,7 +409,7 @@ class MibTree(ObjectType):
             return self._vars[first]
         else:
             try:
-                return self._vars[self._vars.nextKey(name)]
+                return self._vars[self._vars.next_key(name)]
             except KeyError:
                 raise error.NoSuchObjectError(name=name, idx=context.get("idx"))
 
@@ -431,7 +431,7 @@ class MibTree(ObjectType):
                 return nextNode.getNextNode(name, **context)
             except (error.NoSuchInstanceError, error.NoSuchObjectError):
                 try:
-                    return self._vars[self._vars.nextKey(nextNode.name)]
+                    return self._vars[self._vars.next_key(nextNode.name)]
                 except KeyError:
                     raise error.NoSuchObjectError(name=name, idx=context.get("idx"))
 

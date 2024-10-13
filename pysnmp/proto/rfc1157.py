@@ -17,14 +17,14 @@ __all__ = [
 
 
 class VarBind(univ.Sequence):
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("name", rfc1155.ObjectName()),
         namedtype.NamedType("value", rfc1155.ObjectSyntax()),
     )
 
 
 class VarBindList(univ.SequenceOf):
-    componentType = VarBind()
+    componentType = VarBind()  # noqa: N815
 
 
 errorStatus = univ.Integer(  # noqa: N816
@@ -40,7 +40,7 @@ errorStatus = univ.Integer(  # noqa: N816
 
 
 class _RequestBase(univ.Sequence):
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("request-id", univ.Integer()),
         namedtype.NamedType("error-status", errorStatus),
         namedtype.NamedType("error-index", univ.Integer()),
@@ -51,7 +51,7 @@ class _RequestBase(univ.Sequence):
 class GetRequestPDU(_RequestBase):
     """GetRequest PDU."""
 
-    tagSet = _RequestBase.tagSet.tagImplicitly(
+    tagSet = _RequestBase.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)
     )
 
@@ -59,7 +59,7 @@ class GetRequestPDU(_RequestBase):
 class GetNextRequestPDU(_RequestBase):
     """GetNextRequest PDU."""
 
-    tagSet = _RequestBase.tagSet.tagImplicitly(
+    tagSet = _RequestBase.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 1)
     )
 
@@ -67,7 +67,7 @@ class GetNextRequestPDU(_RequestBase):
 class GetResponsePDU(_RequestBase):
     """GetResponse PDU."""
 
-    tagSet = _RequestBase.tagSet.tagImplicitly(
+    tagSet = _RequestBase.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 2)
     )
 
@@ -75,7 +75,7 @@ class GetResponsePDU(_RequestBase):
 class SetRequestPDU(_RequestBase):
     """SetRequest PDU."""
 
-    tagSet = _RequestBase.tagSet.tagImplicitly(
+    tagSet = _RequestBase.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 3)
     )
 
@@ -96,10 +96,10 @@ genericTrap = univ.Integer().clone(  # noqa: N816
 class TrapPDU(univ.Sequence):
     """Trap PDU."""
 
-    tagSet = univ.Sequence.tagSet.tagImplicitly(
+    tagSet = univ.Sequence.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 4)
     )
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("enterprise", univ.ObjectIdentifier()),
         namedtype.NamedType("agent-addr", rfc1155.NetworkAddress()),
         namedtype.NamedType("generic-trap", genericTrap),
@@ -110,7 +110,7 @@ class TrapPDU(univ.Sequence):
 
 
 class PDUs(univ.Choice):
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("get-request", GetRequestPDU()),
         namedtype.NamedType("get-next-request", GetNextRequestPDU()),
         namedtype.NamedType("get-response", GetResponsePDU()),
@@ -123,7 +123,7 @@ version = univ.Integer(namedValues=namedval.NamedValues(("version-1", 0)))
 
 
 class Message(univ.Sequence):
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("version", version),
         namedtype.NamedType("community", univ.OctetString()),
         namedtype.NamedType("data", PDUs()),

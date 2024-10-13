@@ -8,6 +8,9 @@ from time import time
 
 from pyasn1.codec.ber import decoder, encoder
 from pysnmp import debug
+from pysnmp.carrier.base import AbstractTransportDispatcher
+from pysnmp.entity.engine import SnmpEngine
+from pysnmp.hlapi.transport import AbstractTransportTarget
 from pysnmp.proto import api
 from pysnmp.proto import error
 from pysnmp.proto.api import verdec
@@ -34,7 +37,7 @@ class AbstractSnmpDispatcher:
 
     PROTO_DISPATCHER = None
 
-    def __init__(self, transportDispatcher=None):
+    def __init__(self, transportDispatcher: AbstractTransportDispatcher = None):
         if transportDispatcher:
             self.transportDispatcher = transportDispatcher
 
@@ -46,8 +49,8 @@ class AbstractSnmpDispatcher:
 
         self._pendingReqs = {}
 
-        self.transportDispatcher.registerRecvCbFun(self._recvCb)
-        self.transportDispatcher.registerTimerCbFun(self._timerCb)
+        self.transportDispatcher.register_recv_callback(self._recv_callback)
+        self.transportDispatcher.register_timer_callback(self._timer_callback)
 
         self.cache = {}
 
@@ -57,8 +60,8 @@ class AbstractSnmpDispatcher:
         )
 
     def close(self):
-        self.transportDispatcher.unregisterRecvCbFun()
-        self.transportDispatcher.unregisterTimerCbFun()
+        self.transportDispatcher.unregister_recv_callback()
+        self.transportDispatcher.unregister_timer_callback()
         if self._automaticDispatcher:
             self.transportDispatcher.close()
 
@@ -71,27 +74,34 @@ class AbstractSnmpDispatcher:
 
         self._pendingReqs.clear()
 
-    def sendPdu(self, authData, transportTarget, reqPdu, cbFun=None, cbCtx=None):
+    def send_pdu(
+        self,
+        authData,
+        transportTarget: AbstractTransportTarget,
+        reqPdu,
+        cbFun=None,
+        cbCtx=None,
+    ):
         if (
             self._automaticDispatcher
             and transportTarget.TRANSPORT_DOMAIN not in self._configuredTransports
         ):
-            self.transportDispatcher.registerTransport(
+            self.transportDispatcher.register_transport(
                 transportTarget.TRANSPORT_DOMAIN,
-                transportTarget.PROTO_TRANSPORT().openClientMode(),
+                transportTarget.PROTO_TRANSPORT().open_client_mode(),
             )
             self._configuredTransports.add(transportTarget.TRANSPORT_DOMAIN)
 
         pMod = api.PROTOCOL_MODULES[authData.mpModel]
 
         reqMsg = pMod.Message()
-        pMod.apiMessage.setDefaults(reqMsg)
-        pMod.apiMessage.setCommunity(reqMsg, authData.communityName)
-        pMod.apiMessage.setPDU(reqMsg, reqPdu)
+        pMod.apiMessage.set_defaults(reqMsg)
+        pMod.apiMessage.set_community(reqMsg, authData.communityName)
+        pMod.apiMessage.set_pdu(reqMsg, reqPdu)
 
         outgoingMsg = encoder.encode(reqMsg)
 
-        requestId = pMod.apiPDU.getRequestID(reqPdu)
+        requestId = pMod.apiPDU.get_request_id(reqPdu)
 
         self._pendingReqs[requestId] = dict(
             outgoingMsg=outgoingMsg,
@@ -102,8 +112,10 @@ class AbstractSnmpDispatcher:
             retries=0,
         )
 
-        self.transportDispatcher.sendMessage(
-            outgoingMsg, transportTarget.TRANSPORT_DOMAIN, transportTarget.transportAddr
+        self.transportDispatcher.send_message(
+            outgoingMsg,
+            transportTarget.TRANSPORT_DOMAIN,
+            transportTarget.transport_address,
         )
 
         if reqPdu.__class__ is getattr(
@@ -111,13 +123,15 @@ class AbstractSnmpDispatcher:
         ) or reqPdu.__class__ is getattr(pMod, "TrapPDU", None):
             return requestId
 
-        self.transportDispatcher.jobStarted(id(self))
+        self.transportDispatcher.job_started(id(self))
 
         return requestId
 
-    def _recvCb(self, snmpEngine, transportDomain, transportAddress, wholeMsg):
+    def _recv_callback(
+        self, snmpEngine: SnmpEngine, transportDomain, transportAddress, wholeMsg
+    ):
         try:
-            mpModel = verdec.decodeMessageVersion(wholeMsg)
+            mpModel = verdec.decode_message_version(wholeMsg)
 
         except error.ProtocolError:
             return  # n.b the whole buffer gets dropped
@@ -130,9 +144,9 @@ class AbstractSnmpDispatcher:
 
         while wholeMsg:
             rspMsg, wholeMsg = decoder.decode(wholeMsg, asn1Spec=pMod.Message())
-            rspPdu = pMod.apiMessage.getPDU(rspMsg)
+            rspPdu = pMod.apiMessage.get_pdu(rspMsg)
 
-            requestId = pMod.apiPDU.getRequestID(rspPdu)
+            requestId = pMod.apiPDU.get_request_id(rspPdu)
 
             try:
                 stateInfo = self._pendingReqs.pop(requestId)
@@ -140,7 +154,7 @@ class AbstractSnmpDispatcher:
             except KeyError:
                 continue
 
-            self.transportDispatcher.jobFinished(id(self))
+            self.transportDispatcher.job_finished(id(self))
 
             cbFun = stateInfo["cbFun"]
             cbCtx = stateInfo["cbCtx"]
@@ -150,13 +164,13 @@ class AbstractSnmpDispatcher:
 
         return wholeMsg
 
-    def _timerCb(self, timeNow):
+    def _timer_callback(self, timeNow):
         for requestId, stateInfo in tuple(self._pendingReqs.items()):
             if stateInfo["timestamp"] > timeNow:
                 continue
 
             retries = stateInfo["retries"]
-            transportTarget = stateInfo["transportTarget"]
+            transportTarget: AbstractTransportTarget = stateInfo["transportTarget"]
 
             if retries == transportTarget.retries:
                 cbFun = stateInfo["cbFun"]
@@ -171,7 +185,7 @@ class AbstractSnmpDispatcher:
                         None,
                         cbCtx,
                     )
-                    self.transportDispatcher.jobFinished(id(self))
+                    self.transportDispatcher.job_finished(id(self))
                     continue
 
             stateInfo["retries"] += 1
@@ -179,8 +193,8 @@ class AbstractSnmpDispatcher:
 
             outgoingMsg = stateInfo["outgoingMsg"]
 
-            self.transportDispatcher.sendMessage(
+            self.transportDispatcher.send_message(
                 outgoingMsg,
                 transportTarget.TRANSPORT_DOMAIN,
-                transportTarget.transportAddr,
+                transportTarget.transport_address,
             )

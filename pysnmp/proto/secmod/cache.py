@@ -14,30 +14,30 @@ from pysnmp.proto import error
 class Cache:
     """SNMP securityData cache."""
 
-    __stateReference = nextid.Integer(0xFFFFFF)
-    __cacheEntries: Dict[int, Any]
+    __state_reference = nextid.Integer(0xFFFFFF)
+    __cache_entries: Dict[int, Any]
 
     def __init__(self):
         """Create a cache object."""
-        self.__cacheEntries = {}
+        self.__cache_entries = {}
 
     def push(self, **securityData):
         """Push securityData into cache."""
-        stateReference = self.__stateReference()
-        self.__cacheEntries[stateReference] = securityData
+        stateReference = self.__state_reference()
+        self.__cache_entries[stateReference] = securityData
         return stateReference
 
     def pop(self, stateReference):
         """Pop securityData from cache."""
-        if stateReference in self.__cacheEntries:
-            securityData = self.__cacheEntries[stateReference]
+        if stateReference in self.__cache_entries:
+            securityData = self.__cache_entries[stateReference]
         else:
             raise error.ProtocolError(
                 f"Cache miss for stateReference={stateReference} at {self}"
             )
-        del self.__cacheEntries[stateReference]
+        del self.__cache_entries[stateReference]
         return securityData
 
-    def isEmpty(self):
+    def is_empty(self):
         """Return True if cache is empty."""
-        return not bool(self.__cacheEntries)
+        return not bool(self.__cache_entries)

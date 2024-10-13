@@ -28,9 +28,9 @@ class CommandGenerator:
         self.__options = options
         self.__pendingReqs = {}
 
-    def processResponsePdu(
+    def process_response_pdu(
         self,
-        snmpEngine,
+        snmpEngine: SnmpEngine,
         messageProcessingModel,
         securityModel,
         securityName,
@@ -67,7 +67,7 @@ class CommandGenerator:
             origDiscoveryRetries,
         ) = self.__pendingReqs.pop(sendPduHandle)
 
-        snmpEngine.transportDispatcher.jobFinished(id(self))
+        snmpEngine.transport_dispatcher.job_finished(id(self))
 
         # 3.1.3
         if statusInformation:
@@ -97,14 +97,14 @@ class CommandGenerator:
 
             # User-side API assumes SMIv2
             if origMessageProcessingModel == 0:
-                reqPDU = rfc2576.v2ToV1(origPdu)
+                reqPDU = rfc2576.v2_to_v1(origPdu)
                 pduVersion = 0
             else:
                 reqPDU = origPdu
                 pduVersion = 1
 
             try:
-                sendPduHandle = snmpEngine.msgAndPduDsp.sendPdu(
+                sendPduHandle = snmpEngine.message_dispatcher.send_pdu(
                     snmpEngine,
                     origTransportDomain,
                     origTransportAddress,
@@ -118,11 +118,11 @@ class CommandGenerator:
                     reqPDU,
                     True,
                     origTimeout,
-                    self.processResponsePdu,
+                    self.process_response_pdu,
                     (origSendRequestHandle, cbFun, cbCtx),
                 )
 
-                snmpEngine.transportDispatcher.jobStarted(id(self))
+                snmpEngine.transport_dispatcher.job_started(id(self))
 
                 self.__pendingReqs[sendPduHandle] = (
                     origTransportDomain,
@@ -178,10 +178,10 @@ class CommandGenerator:
 
         # User-side API assumes SMIv2
         if messageProcessingModel == 0:
-            PDU = rfc2576.v1ToV2(PDU, origPdu)
+            PDU = rfc2576.v1_to_v2(PDU, origPdu)
 
         # 3.1.2
-        if v2c.apiPDU.getRequestID(PDU) != v2c.apiPDU.getRequestID(origPdu):
+        if v2c.apiPDU.get_request_id(PDU) != v2c.apiPDU.get_request_id(origPdu):
             debug.logger & debug.FLAG_APP and debug.logger(
                 "processResponsePdu: sendPduHandle %s, request-id/response-id mismatch"
                 % sendPduHandle
@@ -191,7 +191,7 @@ class CommandGenerator:
 
         cbFun(snmpEngine, origSendRequestHandle, None, PDU, cbCtx)
 
-    def sendPdu(
+    def send_pdu(
         self,
         snmpEngine: SnmpEngine,
         targetName,
@@ -211,16 +211,18 @@ class CommandGenerator:
             securityModel,
             securityName,
             securityLevel,
-        ) = config.getTargetInfo(snmpEngine, targetName)
+        ) = config.get_target_info(snmpEngine, targetName)
 
-        if snmpEngine.transportDispatcher is None:
+        if snmpEngine.transport_dispatcher is None:
             raise error.PySnmpError("No transport dispatcher available")
         # Convert timeout in seconds into timeout in timer ticks
         timeoutInTicks = (
-            float(timeout) / 100 / snmpEngine.transportDispatcher.getTimerResolution()
+            float(timeout)
+            / 100
+            / snmpEngine.transport_dispatcher.get_timer_resolution()
         )
 
-        SnmpEngineID, SnmpAdminString = snmpEngine.msgAndPduDsp.mibInstrumController.mibBuilder.importSymbols(  # type: ignore
+        SnmpEngineID, SnmpAdminString = snmpEngine.get_mib_builder().import_symbols(  # type: ignore
             "SNMP-FRAMEWORK-MIB", "SnmpEngineID", "SnmpAdminString"
         )
 
@@ -233,7 +235,7 @@ class CommandGenerator:
 
         # User-side API assumes SMIv2
         if messageProcessingModel == 0:
-            PDU = rfc2576.v2ToV1(PDU)
+            PDU = rfc2576.v2_to_v1(PDU)
             pduVersion = 0
         else:
             pduVersion = 1
@@ -241,7 +243,7 @@ class CommandGenerator:
         sendRequestHandle = getNextHandle()
 
         # 3.1
-        sendPduHandle = snmpEngine.msgAndPduDsp.sendPdu(
+        sendPduHandle = snmpEngine.message_dispatcher.send_pdu(
             snmpEngine,
             transportDomain,
             transportAddress,
@@ -255,11 +257,11 @@ class CommandGenerator:
             PDU,
             True,
             timeoutInTicks,
-            self.processResponsePdu,
+            self.process_response_pdu,
             (sendRequestHandle, cbFun, cbCtx),
         )
 
-        snmpEngine.transportDispatcher.jobStarted(id(self))
+        snmpEngine.transport_dispatcher.job_started(id(self))
 
         self.__pendingReqs[sendPduHandle] = (
             transportDomain,
@@ -289,8 +291,8 @@ class CommandGenerator:
 class GetCommandGenerator(CommandGenerator):
     """SNMP GET command generator."""
 
-    def processResponseVarBinds(
-        self, snmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
+    def process_response_varbinds(
+        self, snmpEngine: SnmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
     ):
         """Process SNMP GET response."""
         cbFun, cbCtx = cbCtx
@@ -299,15 +301,15 @@ class GetCommandGenerator(CommandGenerator):
             snmpEngine,
             sendRequestHandle,
             errorIndication,
-            PDU and v2c.apiPDU.getErrorStatus(PDU) or 0,
-            PDU and v2c.apiPDU.getErrorIndex(PDU, muteErrors=True) or 0,
-            PDU and v2c.apiPDU.getVarBinds(PDU) or (),
+            PDU and v2c.apiPDU.get_error_status(PDU) or 0,
+            PDU and v2c.apiPDU.get_error_index(PDU, muteErrors=True) or 0,
+            PDU and v2c.apiPDU.get_varbinds(PDU) or (),
             cbCtx,
         )
 
-    def sendVarBinds(
+    def send_varbinds(
         self,
-        snmpEngine,
+        snmpEngine: SnmpEngine,
         targetName,
         contextEngineId,
         contextName,
@@ -317,17 +319,17 @@ class GetCommandGenerator(CommandGenerator):
     ):
         """Send SNMP GET request."""
         reqPDU = v2c.GetRequestPDU()
-        v2c.apiPDU.setDefaults(reqPDU)
+        v2c.apiPDU.set_defaults(reqPDU)
 
-        v2c.apiPDU.setVarBinds(reqPDU, varBinds)
+        v2c.apiPDU.set_varbinds(reqPDU, varBinds)
 
-        return self.sendPdu(
+        return self.send_pdu(
             snmpEngine,
             targetName,
             contextEngineId,
             contextName,
             reqPDU,
-            self.processResponseVarBinds,
+            self.process_response_varbinds,
             (cbFun, cbCtx),
         )
 
@@ -335,8 +337,8 @@ class GetCommandGenerator(CommandGenerator):
 class SetCommandGenerator(CommandGenerator):
     """SNMP SET command generator."""
 
-    def processResponseVarBinds(
-        self, snmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
+    def process_response_varbinds(
+        self, snmpEngine: SnmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
     ):
         """Process SNMP SET response."""
         cbFun, cbCtx = cbCtx
@@ -345,15 +347,15 @@ class SetCommandGenerator(CommandGenerator):
             snmpEngine,
             sendRequestHandle,
             errorIndication,
-            PDU and v2c.apiPDU.getErrorStatus(PDU) or 0,
-            PDU and v2c.apiPDU.getErrorIndex(PDU, muteErrors=True) or 0,
-            PDU and v2c.apiPDU.getVarBinds(PDU) or (),
+            PDU and v2c.apiPDU.get_error_status(PDU) or 0,
+            PDU and v2c.apiPDU.get_error_index(PDU, muteErrors=True) or 0,
+            PDU and v2c.apiPDU.get_varbinds(PDU) or (),
             cbCtx,
         )
 
-    def sendVarBinds(
+    def send_varbinds(
         self,
-        snmpEngine,
+        snmpEngine: SnmpEngine,
         targetName,
         contextEngineId,
         contextName,
@@ -363,17 +365,17 @@ class SetCommandGenerator(CommandGenerator):
     ):
         """Send SNMP SET request."""
         reqPDU = v2c.SetRequestPDU()
-        v2c.apiPDU.setDefaults(reqPDU)
+        v2c.apiPDU.set_defaults(reqPDU)
 
-        v2c.apiPDU.setVarBinds(reqPDU, varBinds)
+        v2c.apiPDU.set_varbinds(reqPDU, varBinds)
 
-        return self.sendPdu(
+        return self.send_pdu(
             snmpEngine,
             targetName,
             contextEngineId,
             contextName,
             reqPDU,
-            self.processResponseVarBinds,
+            self.process_response_varbinds,
             (cbFun, cbCtx),
         )
 
@@ -381,8 +383,8 @@ class SetCommandGenerator(CommandGenerator):
 class NextCommandGeneratorSingleRun(CommandGenerator):
     """Single-run SNMP GETNEXT command generator."""
 
-    def processResponseVarBinds(
-        self, snmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
+    def process_response_varbinds(
+        self, snmpEngine: SnmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
     ):
         """Process SNMP GETNEXT response."""
         targetName, contextEngineId, contextName, reqPDU, cbFun, cbCtx = cbCtx
@@ -391,15 +393,15 @@ class NextCommandGeneratorSingleRun(CommandGenerator):
             snmpEngine,
             sendRequestHandle,
             errorIndication,
-            PDU and v2c.apiPDU.getErrorStatus(PDU) or 0,
-            PDU and v2c.apiPDU.getErrorIndex(PDU, muteErrors=True) or 0,
-            PDU and v2c.apiPDU.getVarBinds(PDU) or (),
+            PDU and v2c.apiPDU.get_error_status(PDU) or 0,
+            PDU and v2c.apiPDU.get_error_index(PDU, muteErrors=True) or 0,
+            PDU and v2c.apiPDU.get_varbinds(PDU) or (),
             cbCtx,
         )
 
-    def sendVarBinds(
+    def send_varbinds(
         self,
-        snmpEngine,
+        snmpEngine: SnmpEngine,
         targetName,
         contextEngineId,
         contextName,
@@ -409,17 +411,17 @@ class NextCommandGeneratorSingleRun(CommandGenerator):
     ):
         """Send SNMP GETNEXT request."""
         reqPDU = v2c.GetNextRequestPDU()
-        v2c.apiPDU.setDefaults(reqPDU)
+        v2c.apiPDU.set_defaults(reqPDU)
 
-        v2c.apiPDU.setVarBinds(reqPDU, varBinds)
+        v2c.apiPDU.set_varbinds(reqPDU, varBinds)
 
-        return self.sendPdu(
+        return self.send_pdu(
             snmpEngine,
             targetName,
             contextEngineId,
             contextName,
             reqPDU,
-            self.processResponseVarBinds,
+            self.process_response_varbinds,
             (targetName, contextEngineId, contextName, reqPDU, cbFun, cbCtx),
         )
 
@@ -427,8 +429,8 @@ class NextCommandGeneratorSingleRun(CommandGenerator):
 class NextCommandGenerator(NextCommandGeneratorSingleRun):
     """SNMP GETNEXT command generator."""
 
-    def processResponseVarBinds(
-        self, snmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
+    def process_response_varbinds(
+        self, snmpEngine: SnmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
     ):
         """Process SNMP GETNEXT response."""
         targetName, contextEngineId, contextName, reqPDU, cbFun, cbCtx = cbCtx
@@ -437,9 +439,9 @@ class NextCommandGenerator(NextCommandGeneratorSingleRun):
             cbFun(snmpEngine, sendRequestHandle, errorIndication, 0, 0, (), cbCtx)
             return
 
-        varBinds = v2c.apiPDU.getVarBinds(PDU)
+        varBinds = v2c.apiPDU.get_varbinds(PDU)
 
-        if v2c.apiPDU.getErrorStatus(PDU):
+        if v2c.apiPDU.get_error_status(PDU):
             errorIndication, varBinds = None, ()
         elif not varBinds:
             errorIndication, varBinds = errind.emptyResponse, ()
@@ -448,8 +450,8 @@ class NextCommandGenerator(NextCommandGeneratorSingleRun):
             snmpEngine,
             sendRequestHandle,
             errorIndication,
-            v2c.apiPDU.getErrorStatus(PDU),
-            v2c.apiPDU.getErrorIndex(PDU, muteErrors=True),
+            v2c.apiPDU.get_error_status(PDU),
+            v2c.apiPDU.get_error_index(PDU, muteErrors=True),
             varBinds,
             cbCtx,
         ):
@@ -466,8 +468,8 @@ class NextCommandGenerator(NextCommandGeneratorSingleRun):
 class BulkCommandGeneratorSingleRun(CommandGenerator):
     """Single-run SNMP GETBULK command generator."""
 
-    def processResponseVarBinds(
-        self, snmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
+    def process_response_varbinds(
+        self, snmpEngine: SnmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
     ):
         """Process SNMP GETBULK response."""
         (
@@ -485,15 +487,15 @@ class BulkCommandGeneratorSingleRun(CommandGenerator):
             snmpEngine,
             sendRequestHandle,
             errorIndication,
-            PDU and v2c.apiPDU.getErrorStatus(PDU) or 0,
-            PDU and v2c.apiPDU.getErrorIndex(PDU, muteErrors=True) or 0,
-            PDU and v2c.apiPDU.getVarBinds(PDU) or (),
+            PDU and v2c.apiPDU.get_error_status(PDU) or 0,
+            PDU and v2c.apiPDU.get_error_index(PDU, muteErrors=True) or 0,
+            PDU and v2c.apiPDU.get_varbinds(PDU) or (),
             cbCtx,
         )
 
-    def sendVarBinds(
+    def send_varbinds(
         self,
-        snmpEngine,
+        snmpEngine: SnmpEngine,
         targetName,
         contextEngineId,
         contextName,
@@ -505,20 +507,20 @@ class BulkCommandGeneratorSingleRun(CommandGenerator):
     ):
         """Send SNMP GETBULK request."""
         reqPDU = v2c.GetBulkRequestPDU()
-        v2c.apiBulkPDU.setDefaults(reqPDU)
+        v2c.apiBulkPDU.set_defaults(reqPDU)
 
-        v2c.apiBulkPDU.setNonRepeaters(reqPDU, nonRepeaters)
-        v2c.apiBulkPDU.setMaxRepetitions(reqPDU, maxRepetitions)
+        v2c.apiBulkPDU.set_non_repeaters(reqPDU, nonRepeaters)
+        v2c.apiBulkPDU.set_max_repetitions(reqPDU, maxRepetitions)
 
-        v2c.apiBulkPDU.setVarBinds(reqPDU, varBinds)
+        v2c.apiBulkPDU.set_varbinds(reqPDU, varBinds)
 
-        return self.sendPdu(
+        return self.send_pdu(
             snmpEngine,
             targetName,
             contextEngineId,
             contextName,
             reqPDU,
-            self.processResponseVarBinds,
+            self.process_response_varbinds,
             (
                 targetName,
                 nonRepeaters,
@@ -535,8 +537,8 @@ class BulkCommandGeneratorSingleRun(CommandGenerator):
 class BulkCommandGenerator(BulkCommandGeneratorSingleRun):
     """Bulk SNMP GET command generator."""
 
-    def processResponseVarBinds(
-        self, snmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
+    def process_response_varbinds(
+        self, snmpEngine: SnmpEngine, sendRequestHandle, errorIndication, PDU, cbCtx
     ):
         """Process SNMP GETBULK response."""
         (
@@ -554,9 +556,9 @@ class BulkCommandGenerator(BulkCommandGeneratorSingleRun):
             cbFun(snmpEngine, sendRequestHandle, errorIndication, 0, 0, (), cbCtx)
             return
 
-        varBinds = v2c.apiBulkPDU.getVarBinds(PDU)
+        varBinds = v2c.apiBulkPDU.get_varbinds(PDU)
 
-        if v2c.apiBulkPDU.getErrorStatus(PDU):
+        if v2c.apiBulkPDU.get_error_status(PDU):
             errorIndication, varBinds = None, ()
         elif not varBinds:
             errorIndication, varBinds = errind.emptyResponse, ()
@@ -565,8 +567,8 @@ class BulkCommandGenerator(BulkCommandGeneratorSingleRun):
             snmpEngine,
             sendRequestHandle,
             errorIndication,
-            v2c.apiBulkPDU.getErrorStatus(PDU),
-            v2c.apiBulkPDU.getErrorIndex(PDU, muteErrors=True),
+            v2c.apiBulkPDU.get_error_status(PDU),
+            v2c.apiBulkPDU.get_error_index(PDU, muteErrors=True),
             varBinds,
             cbCtx,
         ):

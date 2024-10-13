@@ -4,7 +4,13 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+from typing import TYPE_CHECKING
+
+
 from pysnmp import error
+
+if TYPE_CHECKING:
+    from pysnmp.entity.engine import SnmpEngine
 
 
 class MetaObserver:
@@ -29,7 +35,7 @@ class MetaObserver:
         self.__contexts = {}
         self.__execpoints = {}
 
-    def registerObserver(self, cbFun, *execpoints, **kwargs):
+    def register_observer(self, cbFun, *execpoints, **kwargs):
         """Register a callback function to be invoked at specified execution points.
 
         Args:
@@ -49,7 +55,7 @@ class MetaObserver:
                 self.__observers[execpoint] = []
             self.__observers[execpoint].append(cbFun)
 
-    def unregisterObserver(self, cbFun=None):
+    def unregister_observer(self, cbFun=None):
         """Unregister a callback function.
 
         Args:
@@ -66,7 +72,7 @@ class MetaObserver:
                 if not self.__observers[execpoint]:
                     del self.__observers[execpoint]
 
-    def storeExecutionContext(self, snmpEngine, execpoint, variables):
+    def store_execution_context(self, snmpEngine: "SnmpEngine", execpoint, variables):
         """Store execution context at specified execution point.
 
         Args:
@@ -78,7 +84,7 @@ class MetaObserver:
             for cbFun in self.__observers[execpoint]:
                 cbFun(snmpEngine, execpoint, variables, self.__contexts[cbFun])
 
-    def clearExecutionContext(self, snmpEngine, *execpoints):
+    def clear_execution_context(self, snmpEngine: "SnmpEngine", *execpoints):
         """Clear execution context at specified execution points.
 
         Args:
@@ -90,7 +96,7 @@ class MetaObserver:
         else:
             self.__execpoints.clear()
 
-    def getExecutionContext(self, execpoint):
+    def get_execution_context(self, execpoint):
         """Retrieve execution context at specified execution point.
 
         Args:

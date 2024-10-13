@@ -26,7 +26,7 @@ from pysnmp.hlapi.v3arch.asyncio import *
 
 
 async def run_snmp_get():
-    iterator = await getCmd(
+    iterator = await get_cmd(
         SnmpEngine(),
         UsmUserData(
             "usr-md5-des",

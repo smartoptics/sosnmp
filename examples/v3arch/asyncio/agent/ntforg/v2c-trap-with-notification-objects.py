@@ -49,22 +49,22 @@ objects = {
 snmpEngine = engine.SnmpEngine()
 
 # MIB view controller is used for MIB lookup purposes
-mibViewController = view.MibViewController(snmpEngine.getMibBuilder())
+mibViewController = view.MibViewController(snmpEngine.get_mib_builder())
 
 # SecurityName <-> CommunityName mapping
-config.addV1System(snmpEngine, "my-area", "public", transportTag="all-my-managers")
+config.add_v1_system(snmpEngine, "my-area", "public", transportTag="all-my-managers")
 
 # Specify security settings per SecurityName (SNMPv2c -> 1)
-config.addTargetParams(snmpEngine, "my-creds", "my-area", "noAuthNoPriv", 1)
+config.add_target_parameters(snmpEngine, "my-creds", "my-area", "noAuthNoPriv", 1)
 
 # Setup transport endpoints and bind it with security settings yielding
 # a target name:
 
 # UDP/IPv4
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().openClientMode()
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpAsyncioTransport().open_client_mode()
 )
-config.addTargetAddr(
+config.add_target_address(
     snmpEngine,
     "my-nms-1",
     udp.DOMAIN_NAME,
@@ -76,14 +76,14 @@ config.addTargetAddr(
 # Specify what kind of notification should be sent (TRAP or INFORM),
 # to what targets (chosen by tag) and what filter should apply to
 # the set of targets (selected by tag)
-config.addNotificationTarget(
+config.add_notification_target(
     snmpEngine, "my-notification", "my-filter", "all-my-managers", "trap"
 )
 
 # Allow NOTIFY access to Agent's MIB by this SNMP model (2), securityLevel
 # and SecurityName
-config.addContext(snmpEngine, "")
-config.addVacmUser(snmpEngine, 2, "my-area", "noAuthNoPriv", (), (), (1, 3, 6))
+config.add_context(snmpEngine, "")
+config.add_vacm_user(snmpEngine, 2, "my-area", "noAuthNoPriv", (), (), (1, 3, 6))
 
 # *** SNMP engine configuration is complete by this line ***
 
@@ -91,7 +91,7 @@ config.addVacmUser(snmpEngine, 2, "my-area", "noAuthNoPriv", (), (), (1, 3, 6))
 ntfOrg = ntforg.NotificationOriginator()
 
 # Build and submit notification message to dispatcher
-ntfOrg.sendVarBinds(
+ntfOrg.send_varbinds(
     snmpEngine,
     "my-notification",  # notification targets
     None,
@@ -100,10 +100,10 @@ ntfOrg.sendVarBinds(
         rfc1902.ObjectIdentity("IF-MIB", "linkUp"),
         instanceIndex=instanceIndex,
         objects=objects,
-    ).resolveWithMib(mibViewController),
+    ).resolve_with_mib(mibViewController),
 )
 
 print("Notification is scheduled to be sent")
 
 # Run I/O dispatcher which would send pending message and process response
-snmpEngine.openDispatcher()
+snmpEngine.open_dispatcher()

@@ -54,21 +54,21 @@ def requestObserver(snmpEngine, execpoint, variables, cbCtx):
     print("* PDU: %s" % variables["pdu"].prettyPrint())
 
 
-snmpEngine.observer.registerObserver(
+snmpEngine.observer.register_observer(
     requestObserver, "rfc3412.receiveMessage:request", "rfc3412.returnResponsePdu"
 )
 
 # Transport setup
 
 # UDP over IPv4
-config.addTransport(
-    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().openServerMode(("127.0.0.1", 161))
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().open_server_mode(("127.0.0.1", 161))
 )
 
 # SNMPv3/USM setup
 
 # user: usr-md5-des, auth: MD5, priv DES
-config.addV3User(
+config.add_v3_user(
     snmpEngine,
     "usr-md5-des",
     config.USM_AUTH_HMAC96_MD5,
@@ -78,7 +78,7 @@ config.addV3User(
 )
 
 # Allow full MIB access for each user at VACM
-config.addVacmUser(
+config.add_vacm_user(
     snmpEngine, 3, "usr-md5-des", "authPriv", (1, 3, 6, 1, 2, 1), (1, 3, 6, 1, 2, 1)
 )
 
@@ -92,12 +92,12 @@ cmdrsp.NextCommandResponder(snmpEngine, snmpContext)
 cmdrsp.BulkCommandResponder(snmpEngine, snmpContext)
 
 # Register an imaginary never-ending job to keep I/O dispatcher running forever
-snmpEngine.transportDispatcher.jobStarted(1)
+snmpEngine.transport_dispatcher.job_started(1)
 
 # Run I/O dispatcher which would receive queries and send responses
 try:
-    snmpEngine.openDispatcher()
+    snmpEngine.open_dispatcher()
 except:
-    snmpEngine.observer.unregisterObserver()
-    snmpEngine.closeDispatcher()
+    snmpEngine.observer.unregister_observer()
+    snmpEngine.close_dispatcher()
     raise

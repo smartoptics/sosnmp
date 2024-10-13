@@ -94,26 +94,28 @@ class Integer32(univ.Integer):
 
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
         -2147483648, 2147483647
-    )
+    )  # noqa: N815
 
     @classmethod
-    def withValues(cls, *values):
+    def with_values(cls, *values):
         """Creates a subclass with discreet values constraint."""
 
         class X(cls):
-            subtypeSpec = cls.subtypeSpec + constraint.SingleValueConstraint(*values)
+            subtypeSpec = cls.subtypeSpec + constraint.SingleValueConstraint(
+                *values
+            )  # noqa: N815
 
         X.__name__ = cls.__name__
         return X
 
     @classmethod
-    def withRange(cls, minimum, maximum):
+    def with_range(cls, minimum, maximum):
         """Creates a subclass with value range constraint."""
 
         class X(cls):
             subtypeSpec = cls.subtypeSpec + constraint.ValueRangeConstraint(
                 minimum, maximum
-            )
+            )  # noqa: N815
 
         X.__name__ = cls.__name__
         return X
@@ -164,7 +166,7 @@ class Integer(Integer32):
     """
 
     @classmethod
-    def withNamedValues(cls, **values):
+    def with_named_values(cls, **values):
         """Create a subclass with discreet named values constraint.
 
         Reduce fully duplicate enumerations along the way.
@@ -173,10 +175,10 @@ class Integer(Integer32):
         enums.update(values.items())
 
         class X(cls):
-            namedValues = namedval.NamedValues(*enums)
+            named_values = namedval.NamedValues(*enums)
             subtypeSpec = cls.subtypeSpec + constraint.SingleValueConstraint(
                 *values.values()
-            )
+            )  # noqa: N815
 
         X.__name__ = cls.__name__
         return X
@@ -224,50 +226,55 @@ class OctetString(univ.OctetString):
 
     subtypeSpec = univ.OctetString.subtypeSpec + constraint.ValueSizeConstraint(
         0, 65535
-    )
+    )  # noqa: N815
 
     # rfc1902 uses a notion of "fixed length string" what might mean
     # having zero-range size constraint applied. The following is
     # supposed to be used for setting and querying this property.
 
-    fixedLength = None
+    fixed_length = None
 
-    def setFixedLength(self, value):
+    def set_fixed_length(self, value):
         """Set fixed length."""
-        self.fixedLength = value
+        self.fixed_length = value
         return self
 
-    def isFixedLength(self):
+    def is_fixed_length(self):
         """Return if fixed length."""
-        return self.fixedLength is not None
+        return self.fixed_length is not None
 
-    def getFixedLength(self):
+    def get_fixed_length(self):
         """Return fixed length."""
-        return self.fixedLength
+        return self.fixed_length
 
     def clone(self, *args, **kwargs):
         """Clone the data."""
         return univ.OctetString.clone(self, *args, **kwargs).setFixedLength(
-            self.getFixedLength()
+            self.get_fixed_length()
         )
 
     def subtype(self, *args, **kwargs):
         """Subtype the data."""
         return univ.OctetString.subtype(self, *args, **kwargs).setFixedLength(
-            self.getFixedLength()
+            self.get_fixed_length()
         )
 
     @classmethod
-    def withSize(cls, minimum, maximum):
+    def with_size(cls, minimum, maximum):
         """Creates a subclass with value size constraint."""
 
         class X(cls):
             subtypeSpec = cls.subtypeSpec + constraint.ValueSizeConstraint(
                 minimum, maximum
-            )
+            )  # noqa: N815
 
         X.__name__ = cls.__name__
         return X
+
+    # Compatibility API
+    setFixedLength = set_fixed_length  # noqa: N815
+    isFixedLength = is_fixed_length  # noqa: N815
+    getFixedLength = get_fixed_length  # noqa: N815
 
 
 class ObjectIdentifier(univ.ObjectIdentifier):
@@ -336,13 +343,15 @@ class IpAddress(OctetString):
 
     """
 
-    tagSet = OctetString.tagSet.tagImplicitly(
+    tagSet = OctetString.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x00)
     )
-    subtypeSpec = OctetString.subtypeSpec + constraint.ValueSizeConstraint(4, 4)
-    fixedLength = 4
+    subtypeSpec = OctetString.subtypeSpec + constraint.ValueSizeConstraint(
+        4, 4
+    )  # noqa: N815
+    fixed_length = 4
 
-    def prettyIn(self, value):
+    def prettyIn(self, value):  # noqa: N802
         """Convert string to IP address."""
         if isinstance(value, str) and len(value) != 4:
             try:
@@ -354,7 +363,7 @@ class IpAddress(OctetString):
             raise error.ProtocolError("Bad IP address syntax")
         return value
 
-    def prettyOut(self, value):
+    def prettyOut(self, value):  # noqa: N802
         """Convert IP address to a string."""
         if value:
             return ".".join(["%d" % x for x in self.__class__(value).asNumbers()])
@@ -394,12 +403,12 @@ class Counter32(univ.Integer):
 
     """
 
-    tagSet = univ.Integer.tagSet.tagImplicitly(
+    tagSet = univ.Integer.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x01)
     )
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
         0, 4294967295
-    )
+    )  # noqa: N815
 
 
 class Gauge32(univ.Integer):
@@ -434,12 +443,12 @@ class Gauge32(univ.Integer):
 
     """
 
-    tagSet = univ.Integer.tagSet.tagImplicitly(
+    tagSet = univ.Integer.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x02)
     )
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
         0, 4294967295
-    )
+    )  # noqa: N815
 
 
 class Unsigned32(univ.Integer):
@@ -473,12 +482,12 @@ class Unsigned32(univ.Integer):
 
     """
 
-    tagSet = univ.Integer.tagSet.tagImplicitly(
+    tagSet = univ.Integer.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x02)
     )
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
         0, 4294967295
-    )
+    )  # noqa: N815
 
 
 class TimeTicks(univ.Integer):
@@ -512,12 +521,12 @@ class TimeTicks(univ.Integer):
 
     """
 
-    tagSet = univ.Integer.tagSet.tagImplicitly(
+    tagSet = univ.Integer.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x03)
     )
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
         0, 4294967295
-    )
+    )  # noqa: N815
 
 
 class Opaque(univ.OctetString):
@@ -561,7 +570,7 @@ class Opaque(univ.OctetString):
 
     """
 
-    tagSet = univ.OctetString.tagSet.tagImplicitly(
+    tagSet = univ.OctetString.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x04)
     )
 
@@ -598,12 +607,12 @@ class Counter64(univ.Integer):
 
     """
 
-    tagSet = univ.Integer.tagSet.tagImplicitly(
+    tagSet = univ.Integer.tagSet.tagImplicitly(  # noqa: N815
         tag.Tag(tag.tagClassApplication, tag.tagFormatSimple, 0x06)
     )
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
         0, 18446744073709551615
-    )
+    )  # noqa: N815
 
 
 class Bits(OctetString):
@@ -656,23 +665,23 @@ class Bits(OctetString):
 
     """
 
-    namedValues = namedval.NamedValues()
+    named_values = namedval.NamedValues()
 
     def __new__(cls, *args, **kwargs):
         """Create a new instance of the class."""
         if "namedValues" in kwargs:
-            Bits = cls.withNamedBits(**dict(kwargs.pop("namedValues")))
+            Bits = cls.with_named_bits(**dict(kwargs.pop("namedValues")))
             return Bits(*args, **kwargs)
 
         return OctetString.__new__(cls)
 
-    def prettyIn(self, bits):
+    def prettyIn(self, bits):  # noqa: N802
         """Return raw bitstring."""
         if not isinstance(bits, (tuple, list)):
             return OctetString.prettyIn(self, bits)  # raw bitstring
         octets = []
         for bit in bits:  # tuple of named bits
-            v = self.namedValues.getValue(bit)
+            v = self.named_values.getValue(bit)
             if v is None:
                 raise error.ProtocolError("Unknown named bit %s" % bit)
             d, m = divmod(v, 8)
@@ -681,7 +690,7 @@ class Bits(OctetString):
             octets[d] |= 0x01 << (7 - m)
         return OctetString.prettyIn(self, octets)
 
-    def prettyOut(self, value):
+    def prettyOut(self, value):  # noqa: N802
         """Return named bits."""
         names = []
         ints = self.__class__(value).asNumbers()
@@ -690,7 +699,7 @@ class Bits(OctetString):
             j = 7
             while j >= 0:
                 if v & (0x01 << j):
-                    name = self.namedValues.getName(i * 8 + 7 - j)
+                    name = self.named_values.getName(i * 8 + 7 - j)
                     if name is None:
                         name = f"UnknownBit-{i * 8 + 7 - j}"
                     names.append(name)
@@ -698,16 +707,16 @@ class Bits(OctetString):
         return ", ".join([str(x) for x in names])
 
     @classmethod
-    def withNamedBits(cls, **values):
+    def with_named_bits(cls, **values):
         """Creates a subclass with discreet named bits constraint.
 
         Reduce fully duplicate enumerations along the way.
         """
-        enums = set(cls.namedValues.items())
+        enums = set(cls.named_values.items())
         enums.update(values.items())
 
         class X(cls):
-            namedValues = namedval.NamedValues(*enums)
+            named_values = namedval.NamedValues(*enums)
 
         X.__name__ = cls.__name__
         return X
@@ -718,7 +727,7 @@ class ObjectName(univ.ObjectIdentifier):
 
 
 class SimpleSyntax(rfc1155.TypeCoercionHackMixIn, univ.Choice):
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("integer-value", Integer()),
         namedtype.NamedType("string-value", OctetString()),
         namedtype.NamedType("objectID-value", univ.ObjectIdentifier()),
@@ -726,7 +735,7 @@ class SimpleSyntax(rfc1155.TypeCoercionHackMixIn, univ.Choice):
 
 
 class ApplicationSyntax(rfc1155.TypeCoercionHackMixIn, univ.Choice):
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("ipAddress-value", IpAddress()),
         namedtype.NamedType("counter-value", Counter32()),
         namedtype.NamedType("timeticks-value", TimeTicks()),
@@ -739,7 +748,7 @@ class ApplicationSyntax(rfc1155.TypeCoercionHackMixIn, univ.Choice):
 
 
 class ObjectSyntax(univ.Choice):
-    componentType = namedtype.NamedTypes(
+    componentType = namedtype.NamedTypes(  # noqa: N815
         namedtype.NamedType("simple", SimpleSyntax()),
         namedtype.NamedType("application-wide", ApplicationSyntax()),
     )

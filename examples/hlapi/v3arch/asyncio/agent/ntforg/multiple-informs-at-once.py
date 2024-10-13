@@ -48,13 +48,13 @@ async def run():
             errorStatus,
             errorIndex,
             varBindTable,
-        ) = await sendNotification(
+        ) = await send_notification(
             snmpEngine,
             authData,
             transportTarget,
             contextData,
             "inform",  # NotifyType
-            NotificationType(ObjectIdentity("SNMPv2-MIB", "coldStart")).addVarBinds(
+            NotificationType(ObjectIdentity("SNMPv2-MIB", "coldStart")).add_varbinds(
                 ("1.3.6.1.2.1.1.1.0", "my name")
             ),
         )
@@ -71,7 +71,7 @@ async def run():
             for name, val in varBindTable:
                 print(f"{name.prettyPrint()} = {val.prettyPrint()}")
 
-    snmpEngine.transportDispatcher.runDispatcher()
+    snmpEngine.transport_dispatcher.run_dispatcher()
 
 
 asyncio.run(run())

@@ -33,7 +33,7 @@ operations.
 .. warning::
 
    ``SnmpEngine`` object allocates many resources under the hood, so make
-   sure to call its :py:meth:`~pysnmp.hlapi.v3arch.asyncio.SnmpEngine.closeDispatcher`
+   sure to call its :py:meth:`~pysnmp.hlapi.v3arch.asyncio.SnmpEngine.close_dispatcher`
    method when you are done with it.
 
 Making SNMP Query

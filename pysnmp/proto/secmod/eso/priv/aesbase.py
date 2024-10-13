@@ -21,7 +21,7 @@ class AbstractAesBlumenthal(aes.Aes):
     KEY_SIZE = 0
 
     # 3.1.2.1
-    def localizeKey(self, authProtocol, privKey, snmpEngineID) -> bytes:
+    def localize_key(self, authProtocol, privKey, snmpEngineID) -> bytes:
         """AES key localization algorithm.
 
         This algorithm is used to localize an AES key to an authoritative
@@ -50,7 +50,7 @@ class AbstractAesBlumenthal(aes.Aes):
         else:
             raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
 
-        localPrivKey = localkey.localizeKey(privKey, snmpEngineID, hashAlgo)
+        localPrivKey = localkey.localize_key(privKey, snmpEngineID, hashAlgo)
 
         # now extend this key if too short by repeating steps that includes the hashPassphrase step
         for count in range(1, int(ceil(self.KEY_SIZE * 1.0 / len(localPrivKey)))):
@@ -81,7 +81,7 @@ class AbstractAesReeder(aes.Aes):
     KEY_SIZE = 0
 
     # 2.1 of https://tools.itef.org/pdf/draft_bluementhal-aes-usm-04.txt
-    def localizeKey(self, authProtocol, privKey, snmpEngineID) -> bytes:
+    def localize_key(self, authProtocol, privKey, snmpEngineID) -> bytes:
         """AES key localization algorithm.
 
         This algorithm is used to localize an AES key to an authoritative
@@ -110,12 +110,12 @@ class AbstractAesReeder(aes.Aes):
         else:
             raise error.ProtocolError(f"Unknown auth protocol {authProtocol}")
 
-        localPrivKey = localkey.localizeKey(privKey, snmpEngineID, hashAlgo)
+        localPrivKey = localkey.localize_key(privKey, snmpEngineID, hashAlgo)
 
         # now extend this key if too short by repeating steps that includes the hashPassphrase step
         while len(localPrivKey) < self.KEY_SIZE:
             # this is the difference between reeder and bluementhal
-            newKey = localkey.hashPassphrase(localPrivKey, hashAlgo)
-            localPrivKey += localkey.localizeKey(newKey, snmpEngineID, hashAlgo)
+            newKey = localkey.hash_passphrase(localPrivKey, hashAlgo)
+            localPrivKey += localkey.localize_key(newKey, snmpEngineID, hashAlgo)
 
         return localPrivKey[: self.KEY_SIZE]

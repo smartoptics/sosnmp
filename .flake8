@@ -1,4 +1,4 @@
 [flake8]
 import-order-style = smarkets
 exclude = .git,__pycache__,docs/source/conf.py,old,build,dist,pysnmp/smi/mibs
-ignore = D100, D401, E203, E722, E501, W503, F401, F403, RST210, RST213, RST304
+ignore = D100, D401, E203, E722, E501, W503, F401, F403, N803, N806, N815, RST210, RST213, RST304

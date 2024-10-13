@@ -29,7 +29,7 @@ class Udp6AsyncioTransport(DgramAsyncioProtocol):
     SOCK_FAMILY = socket.has_ipv6 and socket.AF_INET6 or 0
     ADDRESS_TYPE = Udp6TransportAddress
 
-    def normalizeAddress(self, transportAddress):
+    def normalize_address(self, transportAddress):
         """Normalize IPv6 address."""
         if "%" in transportAddress[0]:  # strip zone ID
             return self.ADDRESS_TYPE(

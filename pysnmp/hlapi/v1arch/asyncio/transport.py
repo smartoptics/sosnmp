@@ -55,7 +55,7 @@ class UdpTransportTarget(AbstractTransportTarget):
     TRANSPORT_DOMAIN: Tuple[int, ...] = udp.DOMAIN_NAME
     PROTO_TRANSPORT = udp.UdpAsyncioTransport
 
-    async def _resolveAddr(self, transportAddr: Tuple) -> Tuple[str, int]:
+    async def _resolve_address(self, transportAddr: Tuple) -> Tuple[str, int]:
         try:
             loop = asyncio.get_event_loop()
             return (
@@ -124,7 +124,7 @@ class Udp6TransportTarget(AbstractTransportTarget):
     TRANSPORT_DOMAIN: Tuple[int, ...] = udp6.DOMAIN_NAME
     PROTO_TRANSPORT = udp6.Udp6AsyncioTransport
 
-    async def _resolveAddr(self, transportAddr: Tuple) -> Tuple[str, int]:
+    async def _resolve_address(self, transportAddr: Tuple) -> Tuple[str, int]:
         try:
             loop = asyncio.get_event_loop()
             return (
