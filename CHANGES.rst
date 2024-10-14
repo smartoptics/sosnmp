@@ -1,3 +1,8 @@
+Revision 7.1.7, released on Oct 13, 2024
+----------------------------------------
+
+- Fixed two bugs in MIB related code and improved compatibility layer.
+
 Revision 7.1.6, released on Oct 12, 2024
 ----------------------------------------
 
