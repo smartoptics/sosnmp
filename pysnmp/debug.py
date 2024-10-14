@@ -41,28 +41,32 @@ import warnings
 
 from pysnmp import __version__, error
 
+# Compatibility API
+deprecated_attributes = {
+    "flagMap": "FLAG_MAP",
+    "flagNone": "FLAG_NONE",
+    "flagIO": "FLAG_IO",
+    "flagDSP": "FLAG_DSP",
+    "flagMP": "FLAG_MP",
+    "flagSM": "FLAG_SM",
+    "flagBLD": "FLAG_BLD",
+    "flagMIB": "FLAG_MIB",
+    "flagINS": "FLAG_INS",
+    "flagACL": "FLAG_ACL",
+    "flagPRX": "FLAG_PRX",
+    "flagAPP": "FLAG_APP",
+    "flagALL": "FLAG_ALL",
+}
+
 
 def __getattr__(attr: str):
-    if newAttr := {
-        "flagMap": "FLAG_MAP",
-        "flagNone": "FLAG_NONE",
-        "flagIO": "FLAG_IO",
-        "flagDSP": "FLAG_DSP",
-        "flagMP": "FLAG_MP",
-        "flagSM": "FLAG_SM",
-        "flagBLD": "FLAG_BLD",
-        "flagMIB": "FLAG_MIB",
-        "flagINS": "FLAG_INS",
-        "flagACL": "FLAG_ACL",
-        "flagPRX": "FLAG_PRX",
-        "flagAPP": "FLAG_APP",
-        "flagALL": "FLAG_ALL",
-    }.get(attr):
+    """Handle deprecated attributes."""
+    if newAttr := deprecated_attributes.get(attr):
         warnings.warn(
             f"{attr} is deprecated. Please use {newAttr} instead.", DeprecationWarning
         )
         return globals()[newAttr]
-    raise AttributeError(attr)
+    raise AttributeError(f"module {__name__} has no attribute {attr}")
 
 
 FLAG_NONE = 0x0000

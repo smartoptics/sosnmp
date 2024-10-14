@@ -251,13 +251,13 @@ class OctetString(univ.OctetString):
 
     def clone(self, *args, **kwargs):
         """Clone the data."""
-        return univ.OctetString.clone(self, *args, **kwargs).setFixedLength(
+        return univ.OctetString.clone(self, *args, **kwargs).set_fixed_length(
             self.get_fixed_length()
         )
 
     def subtype(self, *args, **kwargs):
         """Subtype the data."""
-        return univ.OctetString.subtype(self, *args, **kwargs).setFixedLength(
+        return univ.OctetString.subtype(self, *args, **kwargs).set_fixed_length(
             self.get_fixed_length()
         )
 
