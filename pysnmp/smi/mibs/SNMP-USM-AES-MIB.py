@@ -10,17 +10,17 @@
 # On host grommit.local platform Darwin version 16.4.0 by user ilya
 # Using Python version 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
 #
-OctetString, Integer, ObjectIdentifier = mibBuilder.importSymbols(
+OctetString, Integer, ObjectIdentifier = mibBuilder.import_symbols(
     "ASN1", "OctetString", "Integer", "ObjectIdentifier"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     ValueSizeConstraint,
     ConstraintsUnion,
     SingleValueConstraint,
     ValueRangeConstraint,
     ConstraintsIntersection,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "ValueSizeConstraint",
     "ConstraintsUnion",
@@ -28,10 +28,10 @@ OctetString, Integer, ObjectIdentifier = mibBuilder.importSymbols(
     "ValueRangeConstraint",
     "ConstraintsIntersection",
 )
-(snmpPrivProtocols,) = mibBuilder.importSymbols(
+(snmpPrivProtocols,) = mibBuilder.import_symbols(
     "SNMP-FRAMEWORK-MIB", "snmpPrivProtocols"
 )
-NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
+NotificationGroup, ModuleCompliance = mibBuilder.import_symbols(
     "SNMPv2-CONF", "NotificationGroup", "ModuleCompliance"
 )
 (
@@ -53,7 +53,7 @@ NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
     MibTableRow,
     MibTableColumn,
     Counter64,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "Counter32",
     "iso",
@@ -74,7 +74,7 @@ NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
     "MibTableColumn",
     "Counter64",
 )
-DisplayString, TextualConvention = mibBuilder.importSymbols(
+DisplayString, TextualConvention = mibBuilder.import_symbols(
     "SNMPv2-TC", "DisplayString", "TextualConvention"
 )
 snmpUsmAesMIB = ModuleIdentity((1, 3, 6, 1, 6, 3, 20))
@@ -101,7 +101,7 @@ if mibBuilder.loadTexts:
     usmAesCfb128Protocol.setReference(
         "- Specification for the ADVANCED ENCRYPTION STANDARD. Federal Information Processing Standard (FIPS) Publication 197. (November 2001). - Dworkin, M., NIST Recommendation for Block Cipher Modes of Operation, Methods and Techniques. NIST Special Publication 800-38A (December 2001). "
     )
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "SNMP-USM-AES-MIB",
     usmAesCfb128Protocol=usmAesCfb128Protocol,
     snmpUsmAesMIB=snmpUsmAesMIB,

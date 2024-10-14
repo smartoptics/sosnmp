@@ -10,17 +10,17 @@
 # On host grommit.local platform Darwin version 16.4.0 by user ilya
 # Using Python version 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
 #
-OctetString, ObjectIdentifier, Integer = mibBuilder.importSymbols(
+OctetString, ObjectIdentifier, Integer = mibBuilder.import_symbols(
     "ASN1", "OctetString", "ObjectIdentifier", "Integer"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     SingleValueConstraint,
     ValueSizeConstraint,
     ConstraintsIntersection,
     ValueRangeConstraint,
     ConstraintsUnion,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "SingleValueConstraint",
     "ValueSizeConstraint",
@@ -28,7 +28,7 @@ OctetString, ObjectIdentifier, Integer = mibBuilder.importSymbols(
     "ValueRangeConstraint",
     "ConstraintsUnion",
 )
-ObjectGroup, ModuleCompliance, NotificationGroup = mibBuilder.importSymbols(
+ObjectGroup, ModuleCompliance, NotificationGroup = mibBuilder.import_symbols(
     "SNMPv2-CONF", "ObjectGroup", "ModuleCompliance", "NotificationGroup"
 )
 (
@@ -51,7 +51,7 @@ ObjectGroup, ModuleCompliance, NotificationGroup = mibBuilder.importSymbols(
     Unsigned32,
     TimeTicks,
     MibIdentifier,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "mib-2",
     "snmpModules",
@@ -73,7 +73,7 @@ ObjectGroup, ModuleCompliance, NotificationGroup = mibBuilder.importSymbols(
     "TimeTicks",
     "MibIdentifier",
 )
-TextualConvention, TestAndIncr, TimeStamp, DisplayString = mibBuilder.importSymbols(
+TextualConvention, TestAndIncr, TimeStamp, DisplayString = mibBuilder.import_symbols(
     "SNMPv2-TC", "TextualConvention", "TestAndIncr", "TimeStamp", "DisplayString"
 )
 snmpMIB = ModuleIdentity((1, 3, 6, 1, 6, 3, 1))
@@ -666,7 +666,7 @@ if mibBuilder.loadTexts:
     snmpObsoleteGroup.setDescription(
         "A collection of objects from RFC 1213 made obsolete by this MIB module."
     )
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "SNMPv2-MIB",
     snmpOutBadValues=snmpOutBadValues,
     coldStart=coldStart,

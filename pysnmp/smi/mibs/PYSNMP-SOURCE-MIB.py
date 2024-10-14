@@ -10,17 +10,17 @@
 # On host grommit.local platform Darwin version 16.4.0 by user ilya
 # Using Python version 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
 #
-Integer, OctetString, ObjectIdentifier = mibBuilder.importSymbols(
+Integer, OctetString, ObjectIdentifier = mibBuilder.import_symbols(
     "ASN1", "Integer", "OctetString", "ObjectIdentifier"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     SingleValueConstraint,
     ValueRangeConstraint,
     ConstraintsIntersection,
     ValueSizeConstraint,
     ConstraintsUnion,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "SingleValueConstraint",
     "ValueRangeConstraint",
@@ -28,11 +28,11 @@ Integer, OctetString, ObjectIdentifier = mibBuilder.importSymbols(
     "ValueSizeConstraint",
     "ConstraintsUnion",
 )
-(pysnmpModuleIDs,) = mibBuilder.importSymbols("PYSNMP-MIB", "pysnmpModuleIDs")
-(snmpTargetAddrEntry,) = mibBuilder.importSymbols(
+(pysnmpModuleIDs,) = mibBuilder.import_symbols("PYSNMP-MIB", "pysnmpModuleIDs")
+(snmpTargetAddrEntry,) = mibBuilder.import_symbols(
     "SNMP-TARGET-MIB", "snmpTargetAddrEntry"
 )
-NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
+NotificationGroup, ModuleCompliance = mibBuilder.import_symbols(
     "SNMPv2-CONF", "NotificationGroup", "ModuleCompliance"
 )
 (
@@ -53,7 +53,7 @@ NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
     Bits,
     Integer32,
     TimeTicks,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "ModuleIdentity",
     "iso",
@@ -73,7 +73,7 @@ NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
     "Integer32",
     "TimeTicks",
 )
-TextualConvention, DisplayString, TAddress = mibBuilder.importSymbols(
+TextualConvention, DisplayString, TAddress = mibBuilder.import_symbols(
     "SNMPv2-TC", "TextualConvention", "DisplayString", "TAddress"
 )
 pysnmpSourceMIB = ModuleIdentity((1, 3, 6, 1, 4, 1, 20408, 3, 1, 8))
@@ -129,7 +129,7 @@ if mibBuilder.loadTexts:
     )
 pysnmpSourceMIBCompliances = MibIdentifier((1, 3, 6, 1, 4, 1, 20408, 3, 1, 8, 2, 1))
 pysnmpSourceMIBGroups = MibIdentifier((1, 3, 6, 1, 4, 1, 20408, 3, 1, 8, 2, 2))
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "PYSNMP-SOURCE-MIB",
     pysnmpSourceMIBConformance=pysnmpSourceMIBConformance,
     pysnmpSourceMIB=pysnmpSourceMIB,

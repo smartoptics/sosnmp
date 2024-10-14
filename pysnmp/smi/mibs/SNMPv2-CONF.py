@@ -10,7 +10,7 @@
 # On host grommit.local platform Darwin version 16.4.0 by user ilya
 # Using Python version 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
 #
-(MibNode,) = mibBuilder.importSymbols("SNMPv2-SMI", "MibNode")
+(MibNode,) = mibBuilder.import_symbols("SNMPv2-SMI", "MibNode")
 
 
 class ObjectGroup(MibNode):
@@ -177,7 +177,7 @@ AGENT-CAPABILITIES
         )
 
 
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "SNMPv2-CONF",
     ObjectGroup=ObjectGroup,
     NotificationGroup=NotificationGroup,

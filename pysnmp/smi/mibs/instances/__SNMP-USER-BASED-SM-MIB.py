@@ -4,7 +4,7 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-(MibScalarInstance,) = mibBuilder.importSymbols("SNMPv2-SMI", "MibScalarInstance")
+(MibScalarInstance,) = mibBuilder.import_symbols("SNMPv2-SMI", "MibScalarInstance")
 
 (
     usmStatsUnsupportedSecLevels,
@@ -14,7 +14,7 @@
     usmStatsWrongDigests,
     usmStatsDecryptionErrors,
     usmUserSpinLock,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMP-USER-BASED-SM-MIB",
     "usmStatsUnsupportedSecLevels",
     "usmStatsNotInTimeWindows",
@@ -49,7 +49,7 @@ __usmUserSpinLock = MibScalarInstance(
     usmUserSpinLock.name, (0,), usmUserSpinLock.syntax.clone(0)
 )
 
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "__SNMP-USER-BASED-SM-MIB",
     usmStatsUnsupportedSecLevels=__usmStatsUnsupportedSecLevels,
     usmStatsNotInTimeWindows=__usmStatsNotInTimeWindows,

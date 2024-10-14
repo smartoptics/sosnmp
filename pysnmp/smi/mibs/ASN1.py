@@ -7,7 +7,7 @@
 from pyasn1.type import univ
 from pysnmp.proto import rfc1902
 
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "ASN1",
     ObjectIdentifier=univ.ObjectIdentifier,
     # Instead of using base ASN,1 types we use SNMPv2 SMI ones to make

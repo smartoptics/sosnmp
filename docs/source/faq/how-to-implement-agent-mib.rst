@@ -91,7 +91,7 @@ A. You need to create MibScalarInstance class instances and register
     )
 
     # add anonymous column instances
-    snmpEngine.get_mib_builder().exportSymbols(
+    snmpEngine.get_mib_builder().export_symbols(
         '_IP-MIB',
         _ipAddressAddrType,
         _ipAddressAddr,

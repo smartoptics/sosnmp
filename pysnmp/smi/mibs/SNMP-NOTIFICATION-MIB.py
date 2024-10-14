@@ -10,17 +10,17 @@
 # On host grommit.local platform Darwin version 16.4.0 by user ilya
 # Using Python version 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
 #
-OctetString, Integer, ObjectIdentifier = mibBuilder.importSymbols(
+OctetString, Integer, ObjectIdentifier = mibBuilder.import_symbols(
     "ASN1", "OctetString", "Integer", "ObjectIdentifier"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     ValueRangeConstraint,
     ConstraintsIntersection,
     SingleValueConstraint,
     ValueSizeConstraint,
     ConstraintsUnion,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "ValueRangeConstraint",
     "ConstraintsIntersection",
@@ -28,11 +28,11 @@ OctetString, Integer, ObjectIdentifier = mibBuilder.importSymbols(
     "ValueSizeConstraint",
     "ConstraintsUnion",
 )
-(SnmpAdminString,) = mibBuilder.importSymbols("SNMP-FRAMEWORK-MIB", "SnmpAdminString")
-snmpTargetParamsName, SnmpTagValue = mibBuilder.importSymbols(
+(SnmpAdminString,) = mibBuilder.import_symbols("SNMP-FRAMEWORK-MIB", "SnmpAdminString")
+snmpTargetParamsName, SnmpTagValue = mibBuilder.import_symbols(
     "SNMP-TARGET-MIB", "snmpTargetParamsName", "SnmpTagValue"
 )
-NotificationGroup, ObjectGroup, ModuleCompliance = mibBuilder.importSymbols(
+NotificationGroup, ObjectGroup, ModuleCompliance = mibBuilder.import_symbols(
     "SNMPv2-CONF", "NotificationGroup", "ObjectGroup", "ModuleCompliance"
 )
 (
@@ -54,7 +54,7 @@ NotificationGroup, ObjectGroup, ModuleCompliance = mibBuilder.importSymbols(
     ObjectIdentity,
     NotificationType,
     Counter64,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "TimeTicks",
     "IpAddress",
@@ -75,7 +75,7 @@ NotificationGroup, ObjectGroup, ModuleCompliance = mibBuilder.importSymbols(
     "NotificationType",
     "Counter64",
 )
-DisplayString, TextualConvention, RowStatus, StorageType = mibBuilder.importSymbols(
+DisplayString, TextualConvention, RowStatus, StorageType = mibBuilder.import_symbols(
     "SNMPv2-TC", "DisplayString", "TextualConvention", "RowStatus", "StorageType"
 )
 snmpNotificationMIB = ModuleIdentity((1, 3, 6, 1, 6, 3, 13))
@@ -342,7 +342,7 @@ if mibBuilder.loadTexts:
     snmpNotifyFilterGroup.setDescription(
         "A collection of objects providing remote configuration of notification filters."
     )
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "SNMP-NOTIFICATION-MIB",
     PYSNMP_MODULE_ID=snmpNotificationMIB,
     snmpNotifyFilterProfileTable=snmpNotifyFilterProfileTable,

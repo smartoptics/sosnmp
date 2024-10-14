@@ -12,17 +12,17 @@
 #
 from pysnmp.smi import error
 
-ObjectIdentifier, Integer, OctetString = mibBuilder.importSymbols(
+ObjectIdentifier, Integer, OctetString = mibBuilder.import_symbols(
     "ASN1", "ObjectIdentifier", "Integer", "OctetString"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     ValueRangeConstraint,
     ValueSizeConstraint,
     ConstraintsIntersection,
     ConstraintsUnion,
     SingleValueConstraint,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "ValueRangeConstraint",
     "ValueSizeConstraint",
@@ -30,7 +30,7 @@ ObjectIdentifier, Integer, OctetString = mibBuilder.importSymbols(
     "ConstraintsUnion",
     "SingleValueConstraint",
 )
-NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
+NotificationGroup, ModuleCompliance = mibBuilder.import_symbols(
     "SNMPv2-CONF", "NotificationGroup", "ModuleCompliance"
 )
 (
@@ -52,7 +52,7 @@ NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
     Unsigned32,
     ObjectIdentity,
     ModuleIdentity,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "Gauge32",
     "iso",
@@ -73,7 +73,7 @@ NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
     "ObjectIdentity",
     "ModuleIdentity",
 )
-TextualConvention, DisplayString = mibBuilder.importSymbols(
+TextualConvention, DisplayString = mibBuilder.import_symbols(
     "SNMPv2-TC", "TextualConvention", "DisplayString"
 )
 inetAddressMIB = ModuleIdentity((1, 3, 6, 1, 2, 1, 76))
@@ -257,7 +257,7 @@ class InetVersion(TextualConvention, Integer32):
     namedValues = NamedValues(("unknown", 0), ("ipv4", 1), ("ipv6", 2))
 
 
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "INET-ADDRESS-MIB",
     inetAddressMIB=inetAddressMIB,
     InetVersion=InetVersion,

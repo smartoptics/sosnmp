@@ -4,13 +4,13 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-(MibScalarInstance,) = mibBuilder.importSymbols("SNMPv2-SMI", "MibScalarInstance")
+(MibScalarInstance,) = mibBuilder.import_symbols("SNMPv2-SMI", "MibScalarInstance")
 
 (
     snmpUnknownSecurityModels,
     snmpInvalidMsgs,
     snmpUnknownPDUHandlers,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMP-MPD-MIB",
     "snmpUnknownSecurityModels",
     "snmpInvalidMsgs",
@@ -27,7 +27,7 @@ __snmpUnknownPDUHandlers = MibScalarInstance(
     snmpUnknownPDUHandlers.name, (0,), snmpUnknownPDUHandlers.syntax.clone(0)
 )
 
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "__SNMP-MPD-MIB",
     snmpUnknownSecurityModels=__snmpUnknownSecurityModels,
     snmpInvalidMsgs=__snmpInvalidMsgs,

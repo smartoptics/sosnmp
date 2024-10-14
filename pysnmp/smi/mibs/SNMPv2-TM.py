@@ -19,14 +19,14 @@ except ImportError:
     inet_pton = lambda x, y: inet_aton(y)
 
 
-(OctetString,) = mibBuilder.importSymbols("ASN1", "OctetString")
+(OctetString,) = mibBuilder.import_symbols("ASN1", "OctetString")
 (
     ConstraintsIntersection,
     ConstraintsUnion,
     SingleValueConstraint,
     ValueRangeConstraint,
     ValueSizeConstraint,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "ConstraintsIntersection",
     "ConstraintsUnion",
@@ -41,7 +41,7 @@ except ImportError:
     snmpModules,
     snmpDomains,
     snmpProxys,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "ModuleIdentity",
     "MibIdentifier",
@@ -50,7 +50,7 @@ except ImportError:
     "snmpDomains",
     "snmpProxys",
 )
-(TextualConvention,) = mibBuilder.importSymbols("SNMPv2-TC", "TextualConvention")
+(TextualConvention,) = mibBuilder.import_symbols("SNMPv2-TC", "TextualConvention")
 
 snmpv2tm = ModuleIdentity((1, 3, 6, 1, 6, 3, 19))
 if mibBuilder.loadTexts:
@@ -178,7 +178,7 @@ if mibBuilder.loadTexts:
         "The transport domain for SNMPv1 over UDP over IPv4. The corresponding transport address is of type SnmpUDPAddress."
     )
 
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "SNMPv2-TM",
     SnmpNBPAddress=SnmpNBPAddress,
     rfc1157Domain=rfc1157Domain,

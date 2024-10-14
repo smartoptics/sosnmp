@@ -467,7 +467,7 @@ class MibBuilder:
 
         for symObj in anonymousSyms:
             debug.logger & debug.FLAG_BLD and debug.logger(
-                "exportSymbols: anonymous symbol %s::__pysnmp_%ld"
+                "export_symbols: anonymous symbol %s::__pysnmp_%ld"
                 % (modName, self._autoName)
             )
             mibSymbols["__pysnmp_%ld" % self._autoName] = symObj
@@ -486,7 +486,7 @@ class MibBuilder:
             mibSymbols[symName] = symObj
 
             debug.logger & debug.FLAG_BLD and debug.logger(
-                f"exportSymbols: symbol {modName}::{symName}"
+                f"export_symbols: symbol {modName}::{symName}"
             )
 
         self.lastBuildId += 1
@@ -504,7 +504,7 @@ class MibBuilder:
             del mibSymbols[symName]
 
             debug.logger & debug.FLAG_BLD and debug.logger(
-                f"unexportSymbols: symbol {modName}::{symName}"
+                f"unexport_symbols: symbol {modName}::{symName}"
             )
 
         if not self.mibSymbols[modName]:

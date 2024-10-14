@@ -4,6 +4,7 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
+import warnings
 from bisect import bisect
 
 
@@ -102,6 +103,26 @@ class OrderedDict(dict):
         if self.__dirty:
             self.__order()
         return self.__keysLens
+
+    # Compatibility API
+    # compatibility with legacy code
+    # Old to new attribute mapping
+    deprecated_attributes = {
+        "nextKey": "next_key",
+        "getKeysLens": "get_keys_lengths",
+    }
+
+    def __getattr__(self, attr: str):
+        if new_attr := self.deprecated_attributes.get(attr):
+            warnings.warn(
+                f"{attr} is deprecated. Please use {new_attr} instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return getattr(self, new_attr)
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+        )
 
 
 class OidOrderedDict(OrderedDict):

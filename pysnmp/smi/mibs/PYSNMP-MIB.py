@@ -10,17 +10,17 @@
 # On host grommit.local platform Darwin version 16.4.0 by user ilya
 # Using Python version 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
 #
-Integer, OctetString, ObjectIdentifier = mibBuilder.importSymbols(
+Integer, OctetString, ObjectIdentifier = mibBuilder.import_symbols(
     "ASN1", "Integer", "OctetString", "ObjectIdentifier"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     SingleValueConstraint,
     ValueRangeConstraint,
     ConstraintsIntersection,
     ValueSizeConstraint,
     ConstraintsUnion,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "SingleValueConstraint",
     "ValueRangeConstraint",
@@ -28,7 +28,7 @@ Integer, OctetString, ObjectIdentifier = mibBuilder.importSymbols(
     "ValueSizeConstraint",
     "ConstraintsUnion",
 )
-NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
+NotificationGroup, ModuleCompliance = mibBuilder.import_symbols(
     "SNMPv2-CONF", "NotificationGroup", "ModuleCompliance"
 )
 (
@@ -50,7 +50,7 @@ NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
     Integer32,
     enterprises,
     TimeTicks,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "ModuleIdentity",
     "iso",
@@ -71,7 +71,7 @@ NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
     "enterprises",
     "TimeTicks",
 )
-TextualConvention, DisplayString = mibBuilder.importSymbols(
+TextualConvention, DisplayString = mibBuilder.import_symbols(
     "SNMPv2-TC", "TextualConvention", "DisplayString"
 )
 pysnmp = ModuleIdentity((1, 3, 6, 1, 4, 1, 20408))
@@ -105,7 +105,7 @@ pysnmpNotificationObjects = MibIdentifier((1, 3, 6, 1, 4, 1, 20408, 4, 1))
 pysnmpConformance = MibIdentifier((1, 3, 6, 1, 4, 1, 20408, 5))
 pysnmpCompliances = MibIdentifier((1, 3, 6, 1, 4, 1, 20408, 5, 1))
 pysnmpGroups = MibIdentifier((1, 3, 6, 1, 4, 1, 20408, 5, 2))
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "PYSNMP-MIB",
     pysnmpCompliances=pysnmpCompliances,
     pysnmpObjects=pysnmpObjects,

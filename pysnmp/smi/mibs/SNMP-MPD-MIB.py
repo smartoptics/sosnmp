@@ -11,17 +11,17 @@
 # On host grommit.local platform Darwin version 16.4.0 by user ilya
 # Using Python version 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
 #
-OctetString, ObjectIdentifier, Integer = mibBuilder.importSymbols(
+OctetString, ObjectIdentifier, Integer = mibBuilder.import_symbols(
     "ASN1", "OctetString", "ObjectIdentifier", "Integer"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     SingleValueConstraint,
     ConstraintsUnion,
     ValueSizeConstraint,
     ValueRangeConstraint,
     ConstraintsIntersection,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "SingleValueConstraint",
     "ConstraintsUnion",
@@ -29,7 +29,7 @@ OctetString, ObjectIdentifier, Integer = mibBuilder.importSymbols(
     "ValueRangeConstraint",
     "ConstraintsIntersection",
 )
-NotificationGroup, ModuleCompliance, ObjectGroup = mibBuilder.importSymbols(
+NotificationGroup, ModuleCompliance, ObjectGroup = mibBuilder.import_symbols(
     "SNMPv2-CONF", "NotificationGroup", "ModuleCompliance", "ObjectGroup"
 )
 (
@@ -51,7 +51,7 @@ NotificationGroup, ModuleCompliance, ObjectGroup = mibBuilder.importSymbols(
     Counter64,
     IpAddress,
     snmpModules,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "iso",
     "Counter32",
@@ -72,7 +72,7 @@ NotificationGroup, ModuleCompliance, ObjectGroup = mibBuilder.importSymbols(
     "IpAddress",
     "snmpModules",
 )
-DisplayString, TextualConvention = mibBuilder.importSymbols(
+DisplayString, TextualConvention = mibBuilder.import_symbols(
     "SNMPv2-TC", "DisplayString", "TextualConvention"
 )
 snmpMPDMIB = ModuleIdentity((1, 3, 6, 1, 6, 3, 11))
@@ -142,7 +142,7 @@ if mibBuilder.loadTexts:
     snmpMPDGroup.setDescription(
         "A collection of objects providing for remote monitoring of the SNMP Message Processing and Dispatching process. "
     )
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "SNMP-MPD-MIB",
     snmpMPDMIBGroups=snmpMPDMIBGroups,
     PYSNMP_MODULE_ID=snmpMPDMIB,

@@ -15,17 +15,17 @@
 #
 from pysnmp.proto.rfc1155 import NetworkAddress
 
-OctetString, ObjectIdentifier, Integer = mibBuilder.importSymbols(
+OctetString, ObjectIdentifier, Integer = mibBuilder.import_symbols(
     "ASN1", "OctetString", "ObjectIdentifier", "Integer"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     SingleValueConstraint,
     ConstraintsIntersection,
     ValueSizeConstraint,
     ConstraintsUnion,
     ValueRangeConstraint,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "SingleValueConstraint",
     "ConstraintsIntersection",
@@ -33,7 +33,7 @@ OctetString, ObjectIdentifier, Integer = mibBuilder.importSymbols(
     "ConstraintsUnion",
     "ValueRangeConstraint",
 )
-ModuleCompliance, NotificationGroup = mibBuilder.importSymbols(
+ModuleCompliance, NotificationGroup = mibBuilder.import_symbols(
     "SNMPv2-CONF", "ModuleCompliance", "NotificationGroup"
 )
 (
@@ -56,7 +56,7 @@ ModuleCompliance, NotificationGroup = mibBuilder.importSymbols(
     iso,
     Counter64,
     mib_2,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "IpAddress",
     "TimeTicks",
@@ -78,7 +78,7 @@ ModuleCompliance, NotificationGroup = mibBuilder.importSymbols(
     "Counter64",
     "mib-2",
 )
-DisplayString, PhysAddress = mibBuilder.importSymbols(
+DisplayString, PhysAddress = mibBuilder.import_symbols(
     "SNMPv2-TC", "DisplayString", "PhysAddress"
 )
 
@@ -1271,7 +1271,7 @@ if mibBuilder.loadTexts:
     egpAs.setStatus("mandatory")
 if mibBuilder.loadTexts:
     egpAs.setDescription("The autonomous system number of this EGP entity.")
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "RFC1213-MIB",
     ipAdEntReasmMaxSize=ipAdEntReasmMaxSize,
     icmpOutAddrMasks=icmpOutAddrMasks,

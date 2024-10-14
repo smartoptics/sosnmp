@@ -115,17 +115,17 @@ else:
             return ":".join([f(x) for x in groups])
 
 
-Integer, OctetString, ObjectIdentifier = mibBuilder.importSymbols(
+Integer, OctetString, ObjectIdentifier = mibBuilder.import_symbols(
     "ASN1", "Integer", "OctetString", "ObjectIdentifier"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     ConstraintsIntersection,
     ConstraintsUnion,
     ValueRangeConstraint,
     ValueSizeConstraint,
     SingleValueConstraint,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "ConstraintsIntersection",
     "ConstraintsUnion",
@@ -133,7 +133,7 @@ Integer, OctetString, ObjectIdentifier = mibBuilder.importSymbols(
     "ValueSizeConstraint",
     "SingleValueConstraint",
 )
-NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
+NotificationGroup, ModuleCompliance = mibBuilder.import_symbols(
     "SNMPv2-CONF", "NotificationGroup", "ModuleCompliance"
 )
 (
@@ -155,7 +155,7 @@ NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
     IpAddress,
     iso,
     mib_2,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "Integer32",
     "Unsigned32",
@@ -176,7 +176,7 @@ NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
     "iso",
     "mib-2",
 )
-DisplayString, TextualConvention = mibBuilder.importSymbols(
+DisplayString, TextualConvention = mibBuilder.import_symbols(
     "SNMPv2-TC", "DisplayString", "TextualConvention"
 )
 transportAddressMIB = ModuleIdentity((1, 3, 6, 1, 2, 1, 100))
@@ -451,7 +451,7 @@ class TransportAddressDns(TextualConvention, OctetString):
     subtypeSpec = OctetString.subtypeSpec + ValueSizeConstraint(1, 255)
 
 
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "TRANSPORT-ADDRESS-MIB",
     transportDomainUdpIpv6=transportDomainUdpIpv6,
     TransportDomain=TransportDomain,

@@ -10,17 +10,17 @@
 # On host grommit.local platform Darwin version 16.4.0 by user ilya
 # Using Python version 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
 #
-ObjectIdentifier, Integer, OctetString = mibBuilder.importSymbols(
+ObjectIdentifier, Integer, OctetString = mibBuilder.import_symbols(
     "ASN1", "ObjectIdentifier", "Integer", "OctetString"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     ConstraintsIntersection,
     ValueSizeConstraint,
     ConstraintsUnion,
     SingleValueConstraint,
     ValueRangeConstraint,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "ConstraintsIntersection",
     "ValueSizeConstraint",
@@ -33,14 +33,14 @@ ObjectIdentifier, Integer, OctetString = mibBuilder.importSymbols(
     SnmpSecurityLevel,
     SnmpMessageProcessingModel,
     SnmpSecurityModel,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMP-FRAMEWORK-MIB",
     "SnmpAdminString",
     "SnmpSecurityLevel",
     "SnmpMessageProcessingModel",
     "SnmpSecurityModel",
 )
-ModuleCompliance, ObjectGroup, NotificationGroup = mibBuilder.importSymbols(
+ModuleCompliance, ObjectGroup, NotificationGroup = mibBuilder.import_symbols(
     "SNMPv2-CONF", "ModuleCompliance", "ObjectGroup", "NotificationGroup"
 )
 (
@@ -62,7 +62,7 @@ ModuleCompliance, ObjectGroup, NotificationGroup = mibBuilder.importSymbols(
     TimeTicks,
     Gauge32,
     Counter64,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "MibIdentifier",
     "MibScalar",
@@ -92,7 +92,7 @@ ModuleCompliance, ObjectGroup, NotificationGroup = mibBuilder.importSymbols(
     StorageType,
     TDomain,
     DisplayString,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-TC",
     "TimeInterval",
     "RowStatus",
@@ -432,7 +432,7 @@ if mibBuilder.loadTexts:
     snmpTargetCommandResponderGroup.setDescription(
         "A collection of objects required for command responder applications, used for counting error conditions."
     )
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "SNMP-TARGET-MIB",
     snmpTargetAddrTimeout=snmpTargetAddrTimeout,
     SnmpTagValue=SnmpTagValue,

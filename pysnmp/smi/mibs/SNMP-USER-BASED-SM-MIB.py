@@ -10,17 +10,17 @@
 # On host grommit.local platform Darwin version 16.4.0 by user ilya
 # Using Python version 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
 #
-OctetString, Integer, ObjectIdentifier = mibBuilder.importSymbols(
+OctetString, Integer, ObjectIdentifier = mibBuilder.import_symbols(
     "ASN1", "OctetString", "Integer", "ObjectIdentifier"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     ValueRangeConstraint,
     SingleValueConstraint,
     ValueSizeConstraint,
     ConstraintsIntersection,
     ConstraintsUnion,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "ValueRangeConstraint",
     "SingleValueConstraint",
@@ -33,14 +33,14 @@ OctetString, Integer, ObjectIdentifier = mibBuilder.importSymbols(
     snmpAuthProtocols,
     snmpPrivProtocols,
     SnmpEngineID,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMP-FRAMEWORK-MIB",
     "SnmpAdminString",
     "snmpAuthProtocols",
     "snmpPrivProtocols",
     "SnmpEngineID",
 )
-ObjectGroup, ModuleCompliance, NotificationGroup = mibBuilder.importSymbols(
+ObjectGroup, ModuleCompliance, NotificationGroup = mibBuilder.import_symbols(
     "SNMPv2-CONF", "ObjectGroup", "ModuleCompliance", "NotificationGroup"
 )
 (
@@ -62,7 +62,7 @@ ObjectGroup, ModuleCompliance, NotificationGroup = mibBuilder.importSymbols(
     ModuleIdentity,
     snmpModules,
     ObjectIdentity,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "MibScalar",
     "MibTable",
@@ -91,7 +91,7 @@ ObjectGroup, ModuleCompliance, NotificationGroup = mibBuilder.importSymbols(
     TextualConvention,
     RowPointer,
     TestAndIncr,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-TC",
     "DisplayString",
     "AutonomousType",
@@ -410,7 +410,7 @@ if mibBuilder.loadTexts:
     usmMIBBasicGroup.setDescription(
         "A collection of objects providing for configuration of an SNMP engine which implements the SNMP User-based Security Model. "
     )
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "SNMP-USER-BASED-SM-MIB",
     usmUserStorageType=usmUserStorageType,
     PYSNMP_MODULE_ID=snmpUsmMIB,

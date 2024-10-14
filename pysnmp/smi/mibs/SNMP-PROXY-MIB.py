@@ -10,17 +10,17 @@
 # On host grommit.local platform Darwin version 16.4.0 by user ilya
 # Using Python version 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
 #
-ObjectIdentifier, Integer, OctetString = mibBuilder.importSymbols(
+ObjectIdentifier, Integer, OctetString = mibBuilder.import_symbols(
     "ASN1", "ObjectIdentifier", "Integer", "OctetString"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     SingleValueConstraint,
     ValueSizeConstraint,
     ConstraintsUnion,
     ValueRangeConstraint,
     ConstraintsIntersection,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "SingleValueConstraint",
     "ValueSizeConstraint",
@@ -28,11 +28,11 @@ ObjectIdentifier, Integer, OctetString = mibBuilder.importSymbols(
     "ValueRangeConstraint",
     "ConstraintsIntersection",
 )
-SnmpAdminString, SnmpEngineID = mibBuilder.importSymbols(
+SnmpAdminString, SnmpEngineID = mibBuilder.import_symbols(
     "SNMP-FRAMEWORK-MIB", "SnmpAdminString", "SnmpEngineID"
 )
-(SnmpTagValue,) = mibBuilder.importSymbols("SNMP-TARGET-MIB", "SnmpTagValue")
-ModuleCompliance, NotificationGroup, ObjectGroup = mibBuilder.importSymbols(
+(SnmpTagValue,) = mibBuilder.import_symbols("SNMP-TARGET-MIB", "SnmpTagValue")
+ModuleCompliance, NotificationGroup, ObjectGroup = mibBuilder.import_symbols(
     "SNMPv2-CONF", "ModuleCompliance", "NotificationGroup", "ObjectGroup"
 )
 (
@@ -54,7 +54,7 @@ ModuleCompliance, NotificationGroup, ObjectGroup = mibBuilder.importSymbols(
     TimeTicks,
     Unsigned32,
     snmpModules,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "ModuleIdentity",
     "Counter64",
@@ -75,7 +75,7 @@ ModuleCompliance, NotificationGroup, ObjectGroup = mibBuilder.importSymbols(
     "Unsigned32",
     "snmpModules",
 )
-TextualConvention, RowStatus, DisplayString, StorageType = mibBuilder.importSymbols(
+TextualConvention, RowStatus, DisplayString, StorageType = mibBuilder.import_symbols(
     "SNMPv2-TC", "TextualConvention", "RowStatus", "DisplayString", "StorageType"
 )
 snmpProxyMIB = ModuleIdentity((1, 3, 6, 1, 6, 3, 14))
@@ -228,7 +228,7 @@ if mibBuilder.loadTexts:
     snmpProxyGroup.setDescription(
         "A collection of objects providing remote configuration of management target translation parameters for use by proxy forwarder applications."
     )
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "SNMP-PROXY-MIB",
     snmpProxyObjects=snmpProxyObjects,
     snmpProxyType=snmpProxyType,

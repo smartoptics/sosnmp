@@ -25,7 +25,7 @@
     MibIdentifier,
     Bits,
     Counter32,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "Integer32",
     "MibScalar",
@@ -49,6 +49,6 @@ snmpOutReadOnlys = MibScalar((1, 3, 6, 1, 2, 1, 11, 23), Counter32()).setMaxAcce
 )
 if mibBuilder.loadTexts:
     snmpOutReadOnlys.setStatus("mandatory")
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "RFC1158-MIB", snmpOutReadOnlys=snmpOutReadOnlys, snmpInBadTypes=snmpInBadTypes
 )

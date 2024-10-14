@@ -9,7 +9,7 @@ from time import time
 
 from pysnmp import __version__
 
-(MibScalarInstance, TimeTicks) = mibBuilder.importSymbols(
+(MibScalarInstance, TimeTicks) = mibBuilder.import_symbols(
     "SNMPv2-SMI", "MibScalarInstance", "TimeTicks"
 )
 
@@ -53,7 +53,7 @@ from pysnmp import __version__
     snmpTrapOID,
     coldStart,
     snmpSetSerialNo,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-MIB",
     "sysDescr",
     "sysObjectID",
@@ -212,7 +212,7 @@ __snmpSetSerialNo = MibScalarInstance(
     snmpSetSerialNo.name, (0,), snmpSetSerialNo.syntax.clone(0)
 )
 
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "__SNMPv2-MIB",
     sysDescr=__sysDescr,
     sysObjectID=__sysObjectID,

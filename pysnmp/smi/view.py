@@ -281,7 +281,7 @@ class MibViewController:
         oid, label, suffix = self.get_node_name(nodeName, modName)
         try:
             return self.get_node_name(
-                self.__mibSymbolsIdx[modName]["oidToLabelIdx"].nextKey(oid) + suffix,
+                self.__mibSymbolsIdx[modName]["oidToLabelIdx"].next_key(oid) + suffix,
                 modName,
             )
         except KeyError:
@@ -346,7 +346,7 @@ class MibViewController:
         """Get next type name."""
         m, t = self.get_type_name(typeName, modName)
         try:
-            return self.__mibSymbolsIdx[m]["typeToModIdx"].nextKey(t)
+            return self.__mibSymbolsIdx[m]["typeToModIdx"].next_key(t)
         except KeyError:
             raise error.NoSuchObjectError(
                 str=f"No type next to {modName}::{typeName} at {self}"

@@ -5,17 +5,17 @@
 # On host grommit.local platform Darwin version 16.4.0 by user ilya
 # Using Python version 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
 #
-OctetString, Integer, ObjectIdentifier = mibBuilder.importSymbols(
+OctetString, Integer, ObjectIdentifier = mibBuilder.import_symbols(
     "ASN1", "OctetString", "Integer", "ObjectIdentifier"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     ValueSizeConstraint,
     SingleValueConstraint,
     ConstraintsUnion,
     ConstraintsIntersection,
     ValueRangeConstraint,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "ValueSizeConstraint",
     "SingleValueConstraint",
@@ -23,10 +23,10 @@ OctetString, Integer, ObjectIdentifier = mibBuilder.importSymbols(
     "ConstraintsIntersection",
     "ValueRangeConstraint",
 )
-(snmpAuthProtocols,) = mibBuilder.importSymbols(
+(snmpAuthProtocols,) = mibBuilder.import_symbols(
     "SNMP-FRAMEWORK-MIB", "snmpAuthProtocols"
 )
-NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
+NotificationGroup, ModuleCompliance = mibBuilder.import_symbols(
     "SNMPv2-CONF", "NotificationGroup", "ModuleCompliance"
 )
 (
@@ -48,7 +48,7 @@ NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
     NotificationType,
     IpAddress,
     Integer32,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "Counter32",
     "Bits",
@@ -69,7 +69,7 @@ NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
     "IpAddress",
     "Integer32",
 )
-TextualConvention, DisplayString = mibBuilder.importSymbols(
+TextualConvention, DisplayString = mibBuilder.import_symbols(
     "SNMPv2-TC", "TextualConvention", "DisplayString"
 )
 snmpUsmHmacSha2MIB = ModuleIdentity((1, 3, 6, 1, 2, 1, 235))
@@ -136,7 +136,7 @@ if mibBuilder.loadTexts:
     usmHMAC384SHA512AuthProtocol.setReference(
         "- Krawczyk, H., Bellare, M., and R. Canetti, HMAC: Keyed-Hashing for Message Authentication, RFC 2104. - National Institute of Standards and Technology, Secure Hash Standard (SHS), FIPS PUB 180-4, 2012."
     )
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "SNMP-USM-HMAC-SHA2-MIB",
     usmHMAC256SHA384AuthProtocol=usmHMAC256SHA384AuthProtocol,
     usmHMAC192SHA256AuthProtocol=usmHMAC192SHA256AuthProtocol,

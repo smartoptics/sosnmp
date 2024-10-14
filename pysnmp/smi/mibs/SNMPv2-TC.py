@@ -21,17 +21,17 @@ from pysnmp.smi.error import (
     SmiError,
 )
 
-OctetString, Integer, ObjectIdentifier = mibBuilder.importSymbols(
+OctetString, Integer, ObjectIdentifier = mibBuilder.import_symbols(
     "ASN1", "OctetString", "Integer", "ObjectIdentifier"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     ConstraintsIntersection,
     ConstraintsUnion,
     SingleValueConstraint,
     ValueRangeConstraint,
     ValueSizeConstraint,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "ConstraintsIntersection",
     "ConstraintsUnion",
@@ -39,7 +39,7 @@ OctetString, Integer, ObjectIdentifier = mibBuilder.importSymbols(
     "ValueRangeConstraint",
     "ValueSizeConstraint",
 )
-Counter32, Unsigned32, TimeTicks, Counter64 = mibBuilder.importSymbols(
+Counter32, Unsigned32, TimeTicks, Counter64 = mibBuilder.import_symbols(
     "SNMPv2-SMI", "Counter32", "Unsigned32", "TimeTicks", "Counter64"
 )
 
@@ -617,7 +617,7 @@ class TAddress(TextualConvention, OctetString):
     subtypeSpec = OctetString.subtypeSpec + ValueSizeConstraint(1, 255)
 
 
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "SNMPv2-TC",
     TextualConvention=TextualConvention,
     DisplayString=DisplayString,

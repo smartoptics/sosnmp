@@ -16,7 +16,7 @@ from pysnmp.smi import error, exval
 from pysnmp.smi.indices import OidOrderedDict
 
 
-Integer, ObjectIdentifier = mibBuilder.importSymbols(
+Integer, ObjectIdentifier = mibBuilder.import_symbols(
     "ASN1", "Integer", "ObjectIdentifier"
 )
 
@@ -26,7 +26,7 @@ Integer, ObjectIdentifier = mibBuilder.importSymbols(
     SingleValueConstraint,
     ValueRangeConstraint,
     ValueSizeConstraint,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "ConstraintsIntersection",
     "ConstraintsUnion",
@@ -1300,7 +1300,7 @@ class MibTableRow(MibTree):
         baseIndices = []
         indices = []
         for impliedFlag, modName, symName in self.indexNames:
-            (mibObj,) = mibBuilder.importSymbols(modName, symName)
+            (mibObj,) = mibBuilder.import_symbols(modName, symName)
             syntax, instId = self.setFromName(
                 mibObj.syntax, instId, impliedFlag, indices
             )
@@ -1319,7 +1319,7 @@ class MibTableRow(MibTree):
             return
 
         for modName, mibSym in self.augmentingRows:
-            (mibObj,) = mibBuilder.importSymbols(modName, mibSym)
+            (mibObj,) = mibBuilder.import_symbols(modName, mibSym)
             debug.logger & debug.FLAG_INS and debug.logger(
                 f"announceManagementEvent {action} to {mibObj}"
             )
@@ -1332,7 +1332,7 @@ class MibTableRow(MibTree):
         newSuffix = ()
         # Resolve indices intersection
         for impliedFlag, modName, symName in self.indexNames:
-            (mibObj,) = mibBuilder.importSymbols(modName, symName)
+            (mibObj,) = mibBuilder.import_symbols(modName, symName)
             parentIndices = []
             for name, syntax in baseIndices:
                 if name == mibObj.name:
@@ -1370,7 +1370,7 @@ class MibTableRow(MibTree):
         instId = nameSuffix
         indices = []
         for impliedFlag, modName, symName in self.indexNames:
-            (mibObj,) = mibBuilder.importSymbols(modName, symName)
+            (mibObj,) = mibBuilder.import_symbols(modName, symName)
             syntax, instId = self.setFromName(
                 mibObj.syntax, instId, impliedFlag, indices
             )
@@ -1480,7 +1480,7 @@ class MibTableRow(MibTree):
 
         indices = []
         for impliedFlag, modName, symName in self.indexNames:
-            (mibObj,) = mibBuilder.importSymbols(modName, symName)
+            (mibObj,) = mibBuilder.import_symbols(modName, symName)
             try:
                 syntax, instId = self.setFromName(
                     mibObj.syntax, instId, impliedFlag, indices
@@ -1519,7 +1519,7 @@ class MibTableRow(MibTree):
         for impliedFlag, modName, symName in self.indexNames:
             if idx >= len(indices):
                 break
-            (mibObj,) = mibBuilder.importSymbols(modName, symName)
+            (mibObj,) = mibBuilder.import_symbols(modName, symName)
             syntax = mibObj.syntax.clone(indices[idx])
             instId += self.getAsName(syntax, impliedFlag, parentIndices)
             parentIndices.append(syntax)
@@ -1573,7 +1573,7 @@ snmpDomains = MibIdentifier(snmpV2.name + (1,))
 snmpProxys = MibIdentifier(snmpV2.name + (2,))
 snmpModules = MibIdentifier(snmpV2.name + (3,))
 
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "SNMPv2-SMI",
     MibNode=MibNode,
     Integer32=Integer32,

@@ -10,17 +10,17 @@
 # On host grommit.local platform Darwin version 16.4.0 by user ilya
 # Using Python version 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
 #
-Integer, ObjectIdentifier, OctetString = mibBuilder.importSymbols(
+Integer, ObjectIdentifier, OctetString = mibBuilder.import_symbols(
     "ASN1", "Integer", "ObjectIdentifier", "OctetString"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     ValueRangeConstraint,
     ConstraintsUnion,
     ValueSizeConstraint,
     SingleValueConstraint,
     ConstraintsIntersection,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "ValueRangeConstraint",
     "ConstraintsUnion",
@@ -28,10 +28,10 @@ Integer, ObjectIdentifier, OctetString = mibBuilder.importSymbols(
     "SingleValueConstraint",
     "ConstraintsIntersection",
 )
-(snmpPrivProtocols,) = mibBuilder.importSymbols(
+(snmpPrivProtocols,) = mibBuilder.import_symbols(
     "SNMP-FRAMEWORK-MIB", "snmpPrivProtocols"
 )
-ModuleCompliance, NotificationGroup = mibBuilder.importSymbols(
+ModuleCompliance, NotificationGroup = mibBuilder.import_symbols(
     "SNMPv2-CONF", "ModuleCompliance", "NotificationGroup"
 )
 (
@@ -53,7 +53,7 @@ ModuleCompliance, NotificationGroup = mibBuilder.importSymbols(
     ModuleIdentity,
     iso,
     Counter32,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "Bits",
     "MibScalar",
@@ -74,7 +74,7 @@ ModuleCompliance, NotificationGroup = mibBuilder.importSymbols(
     "iso",
     "Counter32",
 )
-TextualConvention, AutonomousType, DisplayString = mibBuilder.importSymbols(
+TextualConvention, AutonomousType, DisplayString = mibBuilder.import_symbols(
     "SNMPv2-TC", "TextualConvention", "AutonomousType", "DisplayString"
 )
 snmpUsmMIB = ModuleIdentity((1, 3, 6, 1, 6, 3, 15))
@@ -101,7 +101,7 @@ if mibBuilder.loadTexts:
     usm3DESEDEPrivProtocol.setReference(
         "- Data Encryption Standard, National Institute of Standards and Technology. Federal Information Processing Standard (FIPS) Publication 46-3, (1999, pending approval). Will supersede FIPS Publication 46-2. - Data Encryption Algorithm, American National Standards Institute. ANSI X3.92-1981, (December, 1980). - DES Modes of Operation, National Institute of Standards and Technology. Federal Information Processing Standard (FIPS) Publication 81, (December, 1980). - Data Encryption Algorithm - Modes of Operation, American National Standards Institute. ANSI X3.106-1983, (May 1983). "
     )
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "SNMP-USER-BASED-SM-3DES-MIB",
     snmpUsmMIB=snmpUsmMIB,
     PYSNMP_MODULE_ID=snmpUsmMIB,

@@ -10,17 +10,17 @@
 # On host grommit.local platform Darwin version 16.4.0 by user ilya
 # Using Python version 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
 #
-OctetString, Integer, ObjectIdentifier = mibBuilder.importSymbols(
+OctetString, Integer, ObjectIdentifier = mibBuilder.import_symbols(
     "ASN1", "OctetString", "Integer", "ObjectIdentifier"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     ValueRangeConstraint,
     ValueSizeConstraint,
     ConstraintsIntersection,
     ConstraintsUnion,
     SingleValueConstraint,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "ValueRangeConstraint",
     "ValueSizeConstraint",
@@ -28,10 +28,10 @@ OctetString, Integer, ObjectIdentifier = mibBuilder.importSymbols(
     "ConstraintsUnion",
     "SingleValueConstraint",
 )
-SnmpAdminString, SnmpSecurityLevel, SnmpSecurityModel = mibBuilder.importSymbols(
+SnmpAdminString, SnmpSecurityLevel, SnmpSecurityModel = mibBuilder.import_symbols(
     "SNMP-FRAMEWORK-MIB", "SnmpAdminString", "SnmpSecurityLevel", "SnmpSecurityModel"
 )
-NotificationGroup, ModuleCompliance, ObjectGroup = mibBuilder.importSymbols(
+NotificationGroup, ModuleCompliance, ObjectGroup = mibBuilder.import_symbols(
     "SNMPv2-CONF", "NotificationGroup", "ModuleCompliance", "ObjectGroup"
 )
 (
@@ -53,7 +53,7 @@ NotificationGroup, ModuleCompliance, ObjectGroup = mibBuilder.importSymbols(
     ObjectIdentity,
     iso,
     Counter32,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "TimeTicks",
     "Gauge32",
@@ -80,7 +80,7 @@ NotificationGroup, ModuleCompliance, ObjectGroup = mibBuilder.importSymbols(
     TextualConvention,
     DisplayString,
     StorageType,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-TC",
     "TestAndIncr",
     "RowStatus",
@@ -455,7 +455,7 @@ if mibBuilder.loadTexts:
     vacmBasicGroup.setDescription(
         "A collection of objects providing for remote configuration of an SNMP engine which implements the SNMP View-based Access Control Model. "
     )
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "SNMP-VIEW-BASED-ACM-MIB",
     vacmSecurityModel=vacmSecurityModel,
     vacmSecurityToGroupEntry=vacmSecurityToGroupEntry,

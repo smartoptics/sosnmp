@@ -4,13 +4,13 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-(MibScalarInstance,) = mibBuilder.importSymbols("SNMPv2-SMI", "MibScalarInstance")
+(MibScalarInstance,) = mibBuilder.import_symbols("SNMPv2-SMI", "MibScalarInstance")
 
 (
     pysnmpUsmDiscoverable,
     pysnmpUsmDiscovery,
     pysnmpUsmKeyType,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "PYSNMP-USM-MIB", "pysnmpUsmDiscoverable", "pysnmpUsmDiscovery", "pysnmpUsmKeyType"
 )
 
@@ -24,7 +24,7 @@ __pysnmpUsmKeyType = MibScalarInstance(
     pysnmpUsmKeyType.name, (0,), pysnmpUsmKeyType.syntax
 )
 
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "__PYSNMP-USM-MIB",
     pysnmpUsmDiscoverable=__pysnmpUsmDiscoverable,
     pysnmpUsmDiscovery=__pysnmpUsmDiscovery,

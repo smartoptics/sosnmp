@@ -18,17 +18,17 @@ try:
 except ImportError:
     pass
 
-OctetString, ObjectIdentifier, Integer = mibBuilder.importSymbols(
+OctetString, ObjectIdentifier, Integer = mibBuilder.import_symbols(
     "ASN1", "OctetString", "ObjectIdentifier", "Integer"
 )
-(NamedValues,) = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+(NamedValues,) = mibBuilder.import_symbols("ASN1-ENUMERATION", "NamedValues")
 (
     ValueSizeConstraint,
     SingleValueConstraint,
     ValueRangeConstraint,
     ConstraintsUnion,
     ConstraintsIntersection,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "ASN1-REFINEMENT",
     "ValueSizeConstraint",
     "SingleValueConstraint",
@@ -36,7 +36,7 @@ OctetString, ObjectIdentifier, Integer = mibBuilder.importSymbols(
     "ConstraintsUnion",
     "ConstraintsIntersection",
 )
-ObjectGroup, NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
+ObjectGroup, NotificationGroup, ModuleCompliance = mibBuilder.import_symbols(
     "SNMPv2-CONF", "ObjectGroup", "NotificationGroup", "ModuleCompliance"
 )
 (
@@ -58,7 +58,7 @@ ObjectGroup, NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
     MibTableColumn,
     TimeTicks,
     NotificationType,
-) = mibBuilder.importSymbols(
+) = mibBuilder.import_symbols(
     "SNMPv2-SMI",
     "Gauge32",
     "Unsigned32",
@@ -79,7 +79,7 @@ ObjectGroup, NotificationGroup, ModuleCompliance = mibBuilder.importSymbols(
     "TimeTicks",
     "NotificationType",
 )
-DisplayString, TextualConvention = mibBuilder.importSymbols(
+DisplayString, TextualConvention = mibBuilder.import_symbols(
     "SNMPv2-TC", "DisplayString", "TextualConvention"
 )
 snmpFrameworkMIB = ModuleIdentity((1, 3, 6, 1, 6, 3, 10))
@@ -254,7 +254,7 @@ if mibBuilder.loadTexts:
     snmpEngineGroup.setDescription(
         "A collection of objects for identifying and determining the configuration and current timeliness values of an SNMP engine. "
     )
-mibBuilder.exportSymbols(
+mibBuilder.export_symbols(
     "SNMP-FRAMEWORK-MIB",
     snmpFrameworkMIBConformance=snmpFrameworkMIBConformance,
     snmpFrameworkMIB=snmpFrameworkMIB,
