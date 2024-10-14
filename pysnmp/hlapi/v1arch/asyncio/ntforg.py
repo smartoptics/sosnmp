@@ -17,7 +17,7 @@ from pysnmp.proto.proxy import rfc2576
 from pysnmp.proto.rfc1902 import Integer32
 from pysnmp.smi.rfc1902 import ObjectType
 
-__all__ = ["send_notification", "sendNotification"]
+__all__ = ["send_notification"]
 
 VB_PROCESSOR = NotificationOriginatorVarBinds()
 

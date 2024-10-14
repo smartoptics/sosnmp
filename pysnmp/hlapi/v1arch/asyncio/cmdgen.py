@@ -5,8 +5,8 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import asyncio
-from typing import AsyncGenerator
 import warnings
+from typing import AsyncGenerator
 
 from pysnmp.hlapi import varbinds
 from pysnmp.hlapi.transport import AbstractTransportTarget
@@ -26,13 +26,6 @@ __all__ = [
     "walk_cmd",
     "bulk_walk_cmd",
     "is_end_of_mib",
-    "getCmd",
-    "nextCmd",
-    "setCmd",
-    "bulkCmd",
-    "walkCmd",
-    "bulkWalkCmd",
-    "isEndOfMib",
 ]
 
 VB_PROCESSOR = varbinds.CommandGeneratorVarBinds()

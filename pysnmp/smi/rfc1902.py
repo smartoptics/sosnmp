@@ -1466,6 +1466,7 @@ class NotificationType:
     }
 
     def __getattr__(self, attr: str):
+        """Handle deprecated attributes."""
         if new_attr := self.deprecated_attributes.get(attr):
             warnings.warn(
                 f"{attr} is deprecated. Please use {new_attr} instead.",

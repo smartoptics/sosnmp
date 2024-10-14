@@ -5,6 +5,7 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import warnings
+
 from pyasn1.type import univ
 from pysnmp import debug, error
 from pysnmp.entity.engine import SnmpEngine
@@ -78,6 +79,7 @@ class SnmpContext:
     }
 
     def __getattr__(self, attr: str):
+        """Handle deprecated attributes."""
         if new_attr := self.deprecated_attributes.get(attr):
             warnings.warn(
                 f"{attr} is deprecated. Please use {new_attr} instead.",

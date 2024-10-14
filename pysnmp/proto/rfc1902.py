@@ -5,6 +5,7 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import warnings
+
 from pyasn1.type import constraint, namedtype, namedval, tag, univ
 from pysnmp.proto import error, rfc1155
 
@@ -280,6 +281,7 @@ class OctetString(univ.OctetString):
     }
 
     def __getattr__(self, attr: str):
+        """Handle deprecated attributes."""
         if new_attr := self.deprecated_attributes.get(attr):
             warnings.warn(
                 f"{attr} is deprecated. Please use {new_attr} instead.",

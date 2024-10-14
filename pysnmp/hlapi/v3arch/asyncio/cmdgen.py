@@ -34,8 +34,8 @@
 # THE POSSIBILITY OF SUCH DAMAGE.
 #
 import asyncio
-from typing import AsyncGenerator
 import warnings
+from typing import AsyncGenerator
 
 from pysnmp.entity.engine import SnmpEngine
 from pysnmp.entity.rfc3413 import cmdgen
@@ -58,13 +58,6 @@ __all__ = [
     "walk_cmd",
     "bulk_walk_cmd",
     "is_end_of_mib",
-    "getCmd",
-    "nextCmd",
-    "setCmd",
-    "bulkCmd",
-    "walkCmd",
-    "bulkWalkCmd",
-    "isEndOfMib",
 ]
 
 VB_PROCESSOR = varbinds.CommandGeneratorVarBinds()

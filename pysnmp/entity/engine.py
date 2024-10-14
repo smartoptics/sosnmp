@@ -8,8 +8,8 @@ import os
 import shutil
 import sys
 import tempfile
-from typing import Any, Dict
 import warnings
+from typing import Any, Dict
 
 
 from pyasn1.type import univ
@@ -291,6 +291,7 @@ class SnmpEngine:
     }
 
     def __getattr__(self, attr: str):
+        """Handle deprecated attributes."""
         if new_attr := self.deprecated_attributes.get(attr):
             warnings.warn(
                 f"{attr} is deprecated. Please use {new_attr} instead.",

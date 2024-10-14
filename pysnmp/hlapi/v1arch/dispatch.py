@@ -4,8 +4,8 @@
 # Copyright (c) 2005-2020, Ilya Etingof <etingof@gmail.com>
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
-from time import time
 import warnings
+from time import time
 
 from pyasn1.codec.ber import decoder, encoder
 from pysnmp import debug

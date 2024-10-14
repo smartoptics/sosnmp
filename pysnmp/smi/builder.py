@@ -10,10 +10,10 @@ import struct
 import sys
 import time
 import traceback
+import warnings
 from errno import ENOENT
 from importlib.machinery import BYTECODE_SUFFIXES, SOURCE_SUFFIXES
 from importlib.util import MAGIC_NUMBER as PY_MAGIC_NUMBER
-import warnings
 
 from pysnmp import debug, version as pysnmp_version
 from pysnmp.smi import error

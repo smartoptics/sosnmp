@@ -5,8 +5,8 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 import sys
-from typing import TYPE_CHECKING
 import warnings
+from typing import TYPE_CHECKING
 
 
 from pyasn1.error import PyAsn1Error
@@ -727,6 +727,7 @@ class MsgAndPduDispatcher:
     }
 
     def __getattr__(self, attr: str):
+        """Handle deprecated attributes."""
         if new_attr := self.deprecated_attributes.get(attr):
             warnings.warn(
                 f"{attr} is deprecated. Please use {new_attr} instead.",

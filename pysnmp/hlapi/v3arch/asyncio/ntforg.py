@@ -21,7 +21,7 @@ from pysnmp.hlapi.v3arch.asyncio.lcd import NotificationOriginatorLcdConfigurato
 from pysnmp.hlapi.varbinds import NotificationOriginatorVarBinds
 from pysnmp.smi.rfc1902 import NotificationType
 
-__all__ = ["send_notification", "sendNotification"]
+__all__ = ["send_notification"]
 
 VB_PROCESSOR = NotificationOriginatorVarBinds()
 LCD = NotificationOriginatorLcdConfigurator()

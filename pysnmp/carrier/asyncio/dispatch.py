@@ -36,9 +36,9 @@
 import asyncio
 import sys
 import traceback
+import warnings
 from time import time
 from typing import Tuple
-import warnings
 
 from pysnmp.carrier.base import AbstractTransport, AbstractTransportDispatcher
 from pysnmp.error import PySnmpError
@@ -114,6 +114,7 @@ class AsyncioDispatcher(AbstractTransportDispatcher):
     }
 
     def __getattr__(self, attr: str):
+        """Handle deprecated attributes."""
         if new_attr := self.deprecated_attributes.get(attr):
             warnings.warn(
                 f"{attr} is deprecated. Please use {new_attr} instead.",
