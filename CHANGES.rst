@@ -1,3 +1,8 @@
+Revision 7.1.8, released on Oct 14, 2024
+----------------------------------------
+
+- Fixed a bug in compatibility layer.
+
 Revision 7.1.7, released on Oct 13, 2024
 ----------------------------------------
 
