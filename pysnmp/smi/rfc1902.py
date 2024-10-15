@@ -757,7 +757,18 @@ class ObjectIdentity:
     }
 
     def __getattr__(self, attr):
-        """Redirect some attrs access to the OID object to behave alike."""
+        """Redirect some attributes."""
+        if new_attr := self.deprecated_attributes.get(attr):
+            warnings.warn(
+                f"{attr} is deprecated. Please use {new_attr} instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
+            # Redirect the deprecated attribute access to the new one.
+            return getattr(self, new_attr)
+
+        # Redirect some attrs access to the OID object to behave alike.
         if self.__state & self.ST_CLEAN:
             if attr in (
                 "asTuple",
@@ -775,14 +786,6 @@ class ObjectIdentity:
                 return getattr(self.__oid, attr)
             raise AttributeError(attr)
         else:
-            if new_attr := self.deprecated_attributes.get(attr):
-                warnings.warn(
-                    f"{attr} is deprecated. Please use {new_attr} instead.",
-                    DeprecationWarning,
-                    stacklevel=2,
-                )
-                return getattr(self, new_attr)
-
             raise SmiError(
                 f"{self.__class__.__name__} object not properly initialized for accessing {attr}"
             )
