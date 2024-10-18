@@ -65,8 +65,7 @@ def test_v1_get_timeout_invalid_target():
             ContextData(),
             ObjectType(ObjectIdentity("1.3.6.1.4.1.60069.9.1.0")),
         )
-        for varBind in varBinds:
-            print([str(varBind[0]), varBind[1]])
+        assert isinstance(errorIndication, RequestTimedOut)
 
     start = datetime.now()
     try:
