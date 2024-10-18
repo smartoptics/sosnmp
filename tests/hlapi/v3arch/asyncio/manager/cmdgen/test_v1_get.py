@@ -3,6 +3,7 @@ from datetime import datetime
 import pytest
 
 from pysnmp.hlapi.v3arch.asyncio import *
+from pysnmp.proto.errind import RequestTimedOut
 from pysnmp.proto.rfc1905 import errorStatus as pysnmp_errorStatus
 
 from tests.agent_context import AGENT_PORT, AgentContextManager
@@ -94,8 +95,7 @@ async def test_v1_get_timeout_slow_object():
                 ContextData(),
                 ObjectType(ObjectIdentity("1.3.6.1.4.1.60069.9.1.0")),
             )
-            for varBind in varBinds:
-                print([str(varBind[0]), varBind[1]])
+            assert isinstance(errorIndication, RequestTimedOut)
 
         start = datetime.now()
         try:

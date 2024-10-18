@@ -94,7 +94,6 @@ async def start_agent(
 
         class NoAccessMibScalarInstance(MibScalarInstance):
             def getValue(self, name, idx):
-                time.sleep(2)  # Add a 2-second sleep
                 return self.getSyntax().clone(f"Test agent")
 
             def setValue(self, name, idx, value):
