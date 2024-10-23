@@ -16,12 +16,12 @@ IMPORTS
 pysnmpUsmMIB MODULE-IDENTITY
     LAST-UPDATED "201704140000Z"
     ORGANIZATION "The PySNMP Project"
-    CONTACT-INFO "E-mail: Lex Li <support@lextudio.com>
+    CONTACT-INFO "E-mail: LeXtudio Inc. <support@lextudio.com>
                   GitHub: https://github.com/lextudio/pysnmp"
     DESCRIPTION
         "This MIB module defines objects specific to User
          Security Model (USM) implementation at PySNMP."
-    REVISION    "202211120000Z" 
+    REVISION    "202211120000Z"
     DESCRIPTION "Updated contact"
     REVISION    "201908300000Z"
     DESCRIPTION "Added USM key types"
@@ -88,7 +88,7 @@ pysnmpUsmSecretTable OBJECT-TYPE
     MAX-ACCESS   not-accessible
     STATUS       current
     DESCRIPTION
-        "The table of USM users passphrases configured in the SNMP 
+        "The table of USM users passphrases configured in the SNMP
          engine's Local Configuration Datastore (LCD)."
     ::= { pysnmpUsmMIBObjects 2 }
 
@@ -151,7 +151,7 @@ pysnmpUsmKeyTable OBJECT-TYPE
     MAX-ACCESS   not-accessible
     STATUS       current
     DESCRIPTION
-        "The table of USM users localized keys configured in the 
+        "The table of USM users localized keys configured in the
          SNMP engine's Local Configuration Datastore (LCD)."
     ::= { pysnmpUsmMIBObjects 3 }
 

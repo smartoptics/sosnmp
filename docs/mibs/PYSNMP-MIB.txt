@@ -10,7 +10,7 @@ IMPORTS
 pysnmp MODULE-IDENTITY
     LAST-UPDATED "201704140000Z"
     ORGANIZATION "The PySNMP Project"
-    CONTACT-INFO "E-mail: Lex Li <support@lextudio.com>
+    CONTACT-INFO "E-mail: LeXtudio Inc. <support@lextudio.com>
                   GitHub: https://github.com/lextudio/pysnmp"
     DESCRIPTION
 	"PySNMP top-level MIB tree infrastructure"
