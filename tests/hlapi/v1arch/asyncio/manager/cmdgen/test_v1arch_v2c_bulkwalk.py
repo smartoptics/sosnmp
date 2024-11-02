@@ -1,7 +1,10 @@
+import math
 import pytest
 
 from pysnmp.hlapi.v1arch.asyncio import *
 from tests.agent_context import AGENT_PORT, AgentContextManager
+
+total_count = 68
 
 
 @pytest.mark.asyncio
@@ -35,7 +38,7 @@ async def test_v2c_get_table_bulk(max_repetitions):
         assert len(varBinds) == max_repetitions
         # assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysName.0"
 
-        assert len(objects_list) == 60 / max_repetitions
+        assert len(objects_list) == math.ceil(total_count / max_repetitions)
 
         snmpDispatcher.transport_dispatcher.close_dispatcher()
 
@@ -146,7 +149,7 @@ async def test_v2c_get_table_bulk_0_7():
         assert len(varBinds) == max_repetitions
         # assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysName.0"
 
-        assert len(objects_list) == 9
+        assert len(objects_list) == math.ceil(total_count / max_repetitions)
         snmpDispatcher.transport_dispatcher.close_dispatcher()
 
 
@@ -180,15 +183,15 @@ async def test_v2c_get_table_bulk_0_8():
     assert len(varBinds) == max_repetitions
     # assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysName.0"
 
-    assert len(objects_list) == 8
+    assert len(objects_list) == math.ceil(total_count / max_repetitions)
     snmpDispatcher.transport_dispatcher.close_dispatcher()
 
 
 @pytest.mark.asyncio
-async def test_v2c_get_table_bulk_0_31():
+async def test_v2c_get_table_bulk_0_35():
     async with AgentContextManager():
         snmpDispatcher = SnmpDispatcher()
-        max_repetitions = 31
+        max_repetitions = 35  # 68/2 + 1
         objects = bulk_walk_cmd(
             snmpDispatcher,
             CommunityData("public"),
@@ -212,10 +215,10 @@ async def test_v2c_get_table_bulk_0_31():
 
         assert errorIndication is None
         assert errorStatus == 0
-        assert len(varBinds) == 60 - max_repetitions
+        assert len(varBinds) == total_count - max_repetitions
         # assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysName.0"
 
-        assert len(objects_list) == 2
+        assert len(objects_list) == math.ceil(total_count / max_repetitions)
         snmpDispatcher.transport_dispatcher.close_dispatcher()
 
 
@@ -243,7 +246,7 @@ async def test_v2c_get_table_bulk_0_60():
         assert len(varBinds) == max_repetitions
         assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysObjectID.0"
 
-        assert len(objects_list) == 1
+        assert len(objects_list) == math.ceil(total_count / max_repetitions)
         snmpDispatcher.transport_dispatcher.close_dispatcher()
 
 
