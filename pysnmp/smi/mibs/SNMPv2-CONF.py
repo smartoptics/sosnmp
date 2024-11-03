@@ -5,11 +5,8 @@
 # License: https://www.pysnmp.com/pysnmp/license.html
 #
 # PySNMP MIB module SNMPv2-CONF (https://www.pysnmp.com/pysnmp)
-# ASN.1 source http://mibs.pysnmp.com:80/asn1/SNMPv2-CONF
-# Produced by pysmi-0.1.3 at Tue Apr 18 00:51:39 2017
-# On host grommit.local platform Darwin version 16.4.0 by user ilya
-# Using Python version 3.4.2 (v3.4.2:ab2c023a9432, Oct  5 2014, 20:42:22)
 #
+
 (MibNode,) = mibBuilder.import_symbols("SNMPv2-SMI", "MibNode")
 
 
