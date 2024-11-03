@@ -1,3 +1,8 @@
+Revision 7.1.9, released on Nov 02, 2024
+----------------------------------------
+
+- Updated built-in MIBs to match latest PySMI compiled results.
+
 Revision 7.1.8, released on Oct 14, 2024
 ----------------------------------------
 
