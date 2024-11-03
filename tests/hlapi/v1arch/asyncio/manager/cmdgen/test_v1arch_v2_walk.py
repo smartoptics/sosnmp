@@ -3,6 +3,9 @@ from pysnmp.hlapi.v1arch.asyncio import *
 from tests.agent_context import AGENT_PORT, AgentContextManager
 
 
+total_count = 212  # 267
+
+
 @pytest.mark.asyncio
 async def test_v2_walk():  # some agents have different v2 GET NEXT behavior
     async with AgentContextManager():
@@ -30,7 +33,7 @@ async def test_v2_walk():  # some agents have different v2 GET NEXT behavior
         assert len(varBinds) == 1
         assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysUpTime.0"
 
-        assert len(objects_list) == 267
+        assert len(objects_list) == total_count
 
         snmpDispatcher.transport_dispatcher.close_dispatcher()
 

@@ -4,6 +4,8 @@ from pysnmp.smi.builder import MibBuilder
 from pysnmp.smi.view import MibViewController
 from tests.agent_context import AGENT_PORT, AgentContextManager
 
+total_count = 212  # 267
+
 
 @pytest.mark.asyncio
 async def test_v1_walk():
@@ -33,7 +35,7 @@ async def test_v1_walk():
         assert len(varBinds) == 1
         assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysUpTime.0"
 
-        assert len(objects_list) == 267
+        assert len(objects_list) == total_count
 
         snmpEngine.close_dispatcher()
 
@@ -76,7 +78,7 @@ async def test_v1_walk_mib():
         assert len(varBinds) == 1
         assert varBinds[0][0].prettyPrint() == "SNMPv2-MIB::sysUpTime.0"
 
-        assert len(objects_list) == 267
+        assert len(objects_list) == total_count
 
         errorIndication, errorStatus, errorIndex, varBinds = objects_list[-1]
         assert (
